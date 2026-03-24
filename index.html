@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>LexiLearn – Angol Szótanuló</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="screen-dashboard" class="screen active">
+  <header class="app-header">
+    <div class="logo" onclick="showScreen('dashboard')">🌿 Lexi<em>Learn</em></div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openImportModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span class="hide-text-mobile">Importálás</span>
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="openAddModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        <span class="hide-text-mobile">Új szó</span>
+      </button>
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('stats')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span class="hide-text-mobile">Statisztika</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="dashboard-grid">
+      <div class="stats-sidebar-col">
+        <div class="card animate-in" style="margin-bottom:14px">
+          <div class="card-title">📈 Haladás</div>
+          <div class="mini-stat-list" id="mini-stat-list">
+            <div class="mini-stat"><span class="mini-stat-icon">🔥</span><div><div class="mini-stat-val" id="ms-streak">0</div><div class="mini-stat-lbl">Aktív streak (nap)</div></div></div>
+            <div class="mini-stat"><span class="mini-stat-icon">🏆</span><div><div class="mini-stat-val" id="ms-record">0</div><div class="mini-stat-lbl">Rekord streak</div></div></div>
+            <div class="mini-stat"><span class="mini-stat-icon">🎯</span><div><div class="mini-stat-val" id="ms-avg">—</div><div class="mini-stat-lbl">Átlag pontosság</div></div></div>
+            <div class="mini-stat"><span class="mini-stat-icon">📚</span><div><div class="mini-stat-val" id="ms-learned">0</div><div class="mini-stat-lbl">Megtanult szó</div></div></div>
+            <div class="mini-stat"><span class="mini-stat-icon">💡</span><div><div class="mini-stat-val" id="ms-last-topic" style="font-size:12px;line-height:1.3">—</div><div class="mini-stat-lbl">Utolsó témakör</div></div></div>
+            <div class="mini-stat"><span class="mini-stat-icon">⚡</span><div><div class="mini-stat-val" id="ms-worst" style="font-size:12px;line-height:1.3">—</div><div class="mini-stat-lbl">Legtöbb hiba</div></div></div>
+          </div>
+        </div>
+
+        <div class="card animate-in" style="animation-delay:0.05s">
+          <div class="card-title">📅 Heti aktivitás</div>
+          <div class="week-tracker" id="week-tracker"></div>
+          <div class="streak-info">
+            <span class="streak-big" id="streak-big">0 🔥</span>
+            napos sorozat
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card animate-in" style="margin-bottom:14px">
+          <div class="card-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            Szűrők
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Szókeresés</span>
+            <div class="search-wrap">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="search-input" id="search-input" type="text" placeholder="Keress szavakat..." oninput="applyFilters()" style="padding-left: 34px;">
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Témakör</span>
+            <div class="search-wrap">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="search-input topic-search-input" id="topic-search" type="text" placeholder="Témakör szűrése..." oninput="filterTopicSearch()" style="padding-left: 30px;">
+            </div>
+            <div class="tag-filters" id="tag-filter-list"></div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Nehézségi szint</span>
+            <div class="diff-btns" id="diff-filter-list">
+              <button class="diff-btn" data-diff="B1" onclick="toggleDiff('B1')">B1</button>
+              <button class="diff-btn" data-diff="B2" onclick="toggleDiff('B2')">B2</button>
+              <button class="diff-btn" data-diff="C1" onclick="toggleDiff('C1')">C1</button>
+              <button class="diff-btn" data-diff="C2" onclick="toggleDiff('C2')">C2</button>
+            </div>
+          </div>
+          <div class="filter-group" style="margin-bottom:0">
+            <span class="filter-label">Rendezés</span>
+            <select class="sort-select" id="sort-select" onchange="setSort(this.value)">
+              <option value="az">A → Z</option>
+              <option value="za">Z → A</option>
+              <option value="diff-asc">Könnyebb → Nehezebb</option>
+              <option value="diff-desc">Nehezebb → Könnyebb</option>
+              <option value="unlearned">Még nem tanult elöl</option>
+              <option value="mastered">Már jól tudott elöl</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card animate-in" style="animation-delay:0.08s">
+          <div class="word-list-header">
+            <div class="card-title" style="margin-bottom:0">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              <span id="word-count-label">Szólista</span>
+            </div>
+            <div class="select-actions">
+              <button class="btn btn-outline btn-sm" onclick="selectAll()">Mind</button>
+              <button class="btn btn-outline btn-sm" onclick="selectNone()">Törlés</button>
+            </div>
+          </div>
+          <div class="view-tabs">
+            <button class="view-tab active" id="vtab-words" onclick="switchViewTab('words')">📚 Szavak</button>
+            <button class="view-tab" id="vtab-sentences" onclick="switchViewTab('sentences')">💬 Mondatok</button>
+          </div>
+          <div id="word-list-view"><div class="word-list" id="word-list"></div></div>
+          <div id="sentence-list-view" style="display:none"><div class="sentence-list" id="sentence-list"></div></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card animate-in" style="animation-delay:0.04s; margin-bottom:14px">
+          <div class="card-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            Fordítás iránya
+          </div>
+          <div class="dir-toggle">
+            <button class="dir-btn active" id="dir-en-hu" onclick="setDirection('en-hu')">GB→HU</button>
+            <button class="dir-btn" id="dir-hu-en" onclick="setDirection('hu-en')">HU→GB</button>
+          </div>
+        </div>
+        <div class="card start-panel animate-in" style="animation-delay:0.1s">
+          <div class="card-title">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Gyakorlás
+          </div>
+          <div class="selected-big" id="selected-count-big">0</div>
+          <div class="selected-label" id="selected-label-text">szó kijelölve</div>
+          <div class="count-input-wrap">
+            <label for="q-count">Kérdések száma:</label>
+            <input type="number" id="q-count" class="count-input" value="20" min="1" max="999">
+          </div>
+          <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" id="start-btn" onclick="startPractice()" disabled>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Gyakorlás indítása
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-practice" class="screen">
+  <div class="practice-top">
+    <div class="round-badge" id="round-badge">Round 1</div>
+    <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
+    <div class="prog-label" id="prog-label">0 / 0</div>
+    <div class="error-badge" id="error-badge" style="display:none">Hiba: <span id="error-count-badge">0</span></div>
+    <button class="btn btn-ghost btn-sm" onclick="confirmQuit()">Kilépés</button>
+  </div>
+  <div class="question-area" id="question-area"></div>
+</div>
+
+<div id="screen-round-end" class="screen">
+  <div class="round-end-wrap">
+    <div class="round-end-card animate-in">
+      <div class="re-title" id="re-title">Round vége!</div>
+      <div class="re-subtitle" id="re-subtitle">Szép munka!</div>
+      <div class="donut-wrap">
+        <svg viewBox="0 0 100 100" width="150" height="150">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="12"/>
+          <circle id="donut-correct" cx="50" cy="50" r="40" fill="none" stroke="var(--success)" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" style="transition: stroke-dashoffset 0.9s ease"/>
+          <circle id="donut-wrong" cx="50" cy="50" r="40" fill="none" stroke="var(--error)" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" style="transition: stroke-dashoffset 0.9s ease 0.9s"/>
+        </svg>
+        <div class="donut-label">
+          <div class="donut-pct" id="donut-pct">—</div>
+          <div class="donut-sub">helyes</div>
+        </div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box g"><div class="sb-val" id="re-correct">0</div><div class="sb-lbl">✓ Helyes</div></div>
+        <div class="stat-box r"><div class="sb-val" id="re-wrong">0</div><div class="sb-lbl">✗ Hibás</div></div>
+        <div class="stat-box b"><div class="sb-val" id="re-time">0s</div><div class="sb-lbl">⏱ Idő</div></div>
+      </div>
+      <div class="error-list-section" id="error-list-section" style="display:none">
+        <div class="err-title">Hibás szavak – következő körbe kerülnek:</div>
+        <div id="error-list-items"></div>
+      </div>
+      <div class="re-actions">
+        <button class="btn btn-primary" id="re-next-btn" onclick="startNextRound()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span id="re-next-label">Következő kör</span>
+        </button>
+        <button class="btn btn-outline" onclick="finishSession()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Főmenü
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="screen-stats" class="screen">
+  <header class="app-header">
+    <div class="logo" onclick="showScreen('dashboard')">🌿 Lexi<em>Learn</em></div>
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('dashboard')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      <span class="hide-text-mobile">Vissza</span>
+    </button>
+  </header>
+  <div class="stats-screen">
+    <div class="container">
+      <div class="stats-hero">
+        <h1 style="font-family:'Lora',serif;font-size:28px;font-weight:700;margin-bottom:20px">📊 Statisztikák</h1>
+        <div class="stats-kpi-grid" id="kpi-grid"></div>
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="switchStatsTab('topics')">Témakörök</button>
+        <button class="nav-tab" onclick="switchStatsTab('words')">Szavak</button>
+        <button class="nav-tab" onclick="switchStatsTab('history')">Előzmények</button>
+      </div>
+      <div id="stats-topics-tab"><div class="card" style="margin-bottom:20px"><div class="section-title">Teljesítmény témakörönként</div><div id="tag-perf-list"></div></div></div>
+      <div id="stats-words-tab" style="display:none"><div class="card"><div class="section-title">Szavak részletesen</div><div class="word-table-wrap"><table class="wtable"><thead><tr><th>Angol</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>Szint</th></tr></thead><tbody id="word-stats-tbody"></tbody></table></div></div></div>
+      <div id="stats-history-tab" style="display:none"><div class="card"><div class="section-title">Gyakorlási előzmények</div><div id="history-list"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="import-modal">
+  <div class="modal">
+    <div class="modal-title">📥 Importálás</div>
+    <p class="import-hint">CSV formátum (fejléc nélkül):<br><code style="font-size:11px;background:var(--surface-2);padding:2px 6px;border-radius:4px">angol,magyar,témakörök,nehézség</code></p>
+    <textarea class="import-area" id="import-textarea" placeholder="apple,alma,gyümölcs,B1"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="doImport()">Importálás</button>
+      <button class="btn btn-outline" onclick="closeModal('import-modal')">Mégse</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-modal">
+  <div class="modal">
+    <div class="modal-title">➕ Új szó hozzáadása</div>
+    <div class="add-form" id="add-form">
+      <div class="form-field"><label>Angol</label><input type="text" id="add-en" placeholder="apple"></div>
+      <div class="form-field"><label>Magyar</label><input type="text" id="add-hu" placeholder="alma"></div>
+      <div class="form-field form-full"><label>Témakörök (vesszővel elválasztva)</label><input type="text" id="add-tags" placeholder="gyümölcs, ételek"></div>
+      <div class="form-field"><label>Nehézségi szint</label><select id="add-diff"><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option><option value="C2">C2</option></select></div>
+      <div class="form-field"><label>Szinonima csoport (opcionális)</label><input type="text" id="add-syn"></div>
+      <div class="form-field form-full"><label>Példamondat angolul (opcionális)</label><input type="text" id="add-sentence"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="doAddWord()">Hozzáadás</button>
+      <button class="btn btn-outline" onclick="closeModal('add-modal')">Mégse</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

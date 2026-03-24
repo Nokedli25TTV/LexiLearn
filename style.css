@@ -1,0 +1,269 @@
+:root {
+  --bg: #f7f5f0; --surface: #ffffff; --surface-2: #f0ede6; --border: #e4ddd0;
+  --primary: #2d6a4f; --primary-h: #1e5038; --primary-light: #52b788; --primary-dim: #d8f3dc;
+  --accent: #e76f51; --accent-h: #c45a3b; --accent-dim: #fceae4;
+  --yellow: #f4a261; --yellow-dim: #fff3e0;
+  --text: #1a1a2e; --text-2: #5a5470; --text-3: #9e99b0;
+  --success: #2d6a4f; --success-bg: #d8f3dc; --error: #b5272a; --error-bg: #fde8e8;
+  --info-bg: #e3f0ff; --info: #1a73e8;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 2px 16px rgba(45,26,90,0.08); --shadow-lg: 0 8px 48px rgba(45,26,90,0.14);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: block; }
+
+/* Fejléc és Gombok */
+.app-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 12px rgba(0,0,0,0.06); }
+.logo { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.logo em { color: var(--accent); font-style: normal; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+.btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); border: none; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s ease; text-decoration: none; white-space: nowrap; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-h); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(45,106,79,0.3); }
+.btn-outline { background: transparent; border: 2px solid var(--border); color: var(--text-2); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-dim); }
+.btn-ghost { background: transparent; color: var(--text-2); padding: 8px 12px; }
+.btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+.btn-lg { padding: 14px 28px; font-size: 16px; border-radius: 14px; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+/* Kártyák és Grid elrendezés (Asztali verzió) */
+.container { max-width: 1060px; margin: 0 auto; padding: 24px 16px; }
+.card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 18px; box-shadow: var(--shadow); }
+.card-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 14px; display: flex; align-items: center; gap: 7px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.dashboard-grid { display: grid; grid-template-columns: 190px 1fr 215px; gap: 16px; align-items: start; }
+
+/* Mini Stats (Oldalsáv) */
+.mini-stat-list { display: flex; flex-direction: column; gap: 10px; }
+.mini-stat { display: flex; align-items: center; gap: 9px; }
+.mini-stat-icon { font-size: 18px; width: 26px; text-align: center; flex-shrink: 0; }
+.mini-stat-val { font-size: 15px; font-weight: 900; color: var(--primary); font-family: 'Lora', serif; line-height: 1; }
+.mini-stat-lbl { font-size: 10px; color: var(--text-3); margin-top: 1px; line-height: 1.2; }
+
+/* Heti aktivitás */
+.week-tracker { display: flex; gap: 5px; margin-bottom: 10px; }
+.week-day { flex: 1; text-align: center; }
+.week-day-label { font-size: 9px; color: var(--text-3); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+.week-day-dot { width: 100%; aspect-ratio: 1; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.week-day-dot.studied { background: var(--primary-dim); color: var(--primary); }
+.week-day-dot.not-studied { background: var(--surface-2); color: var(--text-3); font-size: 9px; }
+.week-day-dot.today-studied { background: var(--primary); color: #fff; box-shadow: 0 2px 8px rgba(45,106,79,0.4); }
+.week-day-dot.today-not { background: var(--surface-2); border: 2px dashed var(--border); color: var(--text-3); font-size: 9px; }
+.streak-info { text-align: center; font-size: 12px; color: var(--text-2); font-weight: 700; padding-top: 6px; border-top: 1px solid var(--border); }
+.streak-big { font-size: 22px; font-weight: 900; color: var(--accent); font-family: 'Lora', serif; display: block; }
+
+/* Szűrők */
+.filter-group { margin-bottom: 14px; }
+.filter-label { font-size: 10px; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; display: block; }
+.search-wrap { position: relative; }
+.search-input { width: 100%; padding: 9px 12px 9px 12px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 14px; background: var(--bg); color: var(--text); transition: border-color 0.2s; }
+.search-input:focus { outline: none; border-color: var(--primary); }
+.topic-search-input { padding: 6px 10px; font-size: 12px; margin-bottom: 8px; }
+
+/* Címkék */
+.tag-filters { display: flex; flex-wrap: wrap; gap: 4px; max-height: 160px; overflow-y: auto; padding-right: 2px; }
+.tag-btn { padding: 4px 9px; border-radius: 20px; border: 2px solid var(--border); background: white; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--text-2); transition: all 0.15s; white-space: nowrap; }
+.tag-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+
+/* Nehézségi szint és Rendezés */
+.diff-btns { display: flex; gap: 5px; }
+.diff-btn { flex: 1; height: 32px; border-radius: 8px; border: 2px solid var(--border); background: white; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 800; cursor: pointer; color: var(--text-2); display: flex; align-items: center; justify-content: center; }
+.diff-btn[data-diff="B1"].active { background: #d8f3dc; border-color: #52b788; color: #1e5038; }
+.diff-btn[data-diff="B2"].active { background: #e3f0ff; border-color: #58a6ff; color: #1a54c2; }
+.diff-btn[data-diff="C1"].active { background: #fff3e0; border-color: #f4a261; color: #b35c00; }
+.diff-btn[data-diff="C2"].active { background: #fde8e8; border-color: #f85149; color: #b5272a; }
+.sort-select { width: 100%; padding: 8px 10px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); background: var(--bg); cursor: pointer; }
+
+/* Irány választó */
+.dir-toggle { display: flex; background: var(--surface-2); border-radius: var(--radius-sm); padding: 3px; gap: 3px; }
+.dir-btn { flex: 1; padding: 6px 6px; border: none; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700; cursor: pointer; color: var(--text-2); background: transparent; transition: all 0.2s; }
+.dir-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+/* Nézetek és Szólista */
+.view-tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--border); margin-bottom: 12px; }
+.view-tab { padding: 7px 14px; border: none; background: transparent; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.18s; }
+.view-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.word-list-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+.select-actions { display: flex; gap: 6px; }
+
+.word-list, .sentence-list { display: flex; flex-direction: column; gap: 5px; max-height: 420px; overflow-y: auto; padding-right: 2px; }
+.word-item { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: var(--radius-sm); border: 2px solid transparent; background: var(--bg); cursor: pointer; transition: all 0.15s; user-select: none; }
+.word-item:hover { background: var(--primary-dim); border-color: var(--primary-light); }
+.word-item.selected { background: var(--primary-dim); border-color: var(--primary); }
+.word-checkbox { width: 17px; height: 17px; border-radius: 5px; border: 2px solid var(--border); background: white; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 11px; }
+.word-item.selected .word-checkbox { background: var(--primary); border-color: var(--primary); }
+
+.word-info { flex: 1; min-width: 0; }
+.word-en { font-family: 'Lora', serif; font-weight: 600; font-size: 13px; color: var(--text); }
+.word-hu { font-size: 11px; color: var(--text-2); margin-top: 1px; }
+.word-meta { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.word-streak { font-size: 11px; color: var(--text-3); }
+
+/* Nehézségi pöttyök */
+.diff-pip { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dB1 { background: #52b788; } .dB2 { background: #58a6ff; } .dC1 { background: #f4a261; } .dC2 { background: #f85149; }
+.diff-pill { padding: 2px 6px; border-radius: 7px; font-size: 10px; font-weight: 800; display: inline-block; }
+.diff-pill.dB1 { background: #d8f3dc; color: #1e5038; } .diff-pill.dB2 { background: #e3f0ff; color: #1a54c2; } .diff-pill.dC1 { background: #fff3e0; color: #b35c00; } .diff-pill.dC2 { background: #fde8e8; color: #b5272a; }
+
+/* Mondatos nézet */
+.sentence-card { background: var(--bg); border-radius: var(--radius-sm); border: 2px solid transparent; padding: 11px 13px; }
+.sc-sentence { font-size: 13px; color: var(--text); line-height: 1.6; margin-bottom: 6px; }
+.en-highlight { color: var(--primary); font-family: 'Lora', serif; font-weight: 700; }
+.sc-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.sc-hu { font-size: 12px; color: var(--text-2); font-weight: 600; }
+.sc-tags { font-size: 10px; color: var(--text-3); }
+
+/* Start Panel */
+.start-panel { position: sticky; top: 76px; }
+.selected-big { font-size: 38px; font-weight: 900; color: var(--primary); font-family: 'Lora', serif; line-height: 1; }
+.selected-label { color: var(--text-2); font-size: 13px; margin-bottom: 18px; margin-top: 2px; }
+.count-input-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.count-input-wrap label { font-size: 12px; color: var(--text-2); font-weight: 600; }
+.count-input { width: 65px; padding: 6px 10px; border: 2px solid var(--border); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); text-align: center; }
+
+/* Gyakorló felület */
+.practice-top { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 14px; }
+.round-badge, .error-badge { padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 800; flex-shrink: 0; }
+.round-badge { background: var(--primary-dim); color: var(--primary); }
+.error-badge { background: var(--error-bg); color: var(--error); }
+.prog-wrap { flex: 1; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.prog-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 4px; transition: width 0.5s ease; }
+.prog-label { font-size: 12px; color: var(--text-2); font-weight: 700; flex-shrink: 0; }
+.question-area { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: calc(100vh - 60px - 53px); padding: 28px 16px; }
+.q-card { background: var(--surface); border-radius: 24px; padding: 44px 36px 36px; text-align: center; max-width: 580px; width: 100%; box-shadow: var(--shadow-lg); border: 1px solid var(--border); }
+.q-hint { font-size: 11px; font-weight: 800; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 22px; }
+.q-word { font-family: 'Lora', serif; font-size: 40px; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 6px; }
+.q-tags { margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
+.q-tag { background: var(--surface-2); color: var(--text-3); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+.speak-btn { background: var(--primary-dim); color: var(--primary); border: none; border-radius: 50%; width: 42px; height: 42px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin: 14px auto 28px; transition: all 0.2s; }
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.opt-btn { padding: 15px 10px; border-radius: 13px; border: 2px solid var(--border); background: var(--bg); font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; color: var(--text); transition: all 0.18s; text-align: center; }
+.opt-btn.correct { background: var(--success-bg); border-color: var(--success); color: var(--success); }
+.opt-btn.wrong { background: var(--error-bg); border-color: var(--error); color: var(--error); }
+.dont-know { color: var(--text-3); font-size: 13px; font-weight: 600; background: transparent; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; width: 100%; }
+
+/* Kör vége */
+.round-end-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px 16px; background: var(--bg); }
+.round-end-card { background: var(--surface); border-radius: 24px; padding: 44px 36px; max-width: 560px; width: 100%; box-shadow: var(--shadow-lg); text-align: center; }
+.re-title { font-family: 'Lora', serif; font-size: 30px; font-weight: 700; margin-bottom: 4px; }
+.re-subtitle { color: var(--text-2); font-size: 14px; margin-bottom: 30px; }
+.donut-wrap { position: relative; width: 150px; height: 150px; margin: 0 auto 28px; }
+.donut-wrap svg { transform: rotate(-90deg); }
+.donut-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-pct { font-size: 30px; font-weight: 900; color: var(--text); font-family: 'Lora', serif; }
+.donut-sub { font-size: 11px; color: var(--text-3); }
+
+/* Visszakapott színek a statisztikákhoz! */
+.stats-row { display: flex; gap: 12px; margin-bottom: 22px; }
+.stat-box { flex: 1; padding: 14px 10px; border-radius: 12px; text-align: center; }
+.stat-box.g { background: var(--success-bg); } .stat-box.g .sb-val { color: var(--success); }
+.stat-box.r { background: var(--error-bg); }   .stat-box.r .sb-val { color: var(--error); }
+.stat-box.b { background: var(--info-bg); }    .stat-box.b .sb-val { color: var(--info); }
+.sb-val { font-size: 24px; font-weight: 900; font-family: 'Lora', serif; }
+.sb-lbl { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+
+.error-list-section { text-align: left; margin-bottom: 22px; max-height: 220px; overflow-y: auto; }
+.err-title { font-size: 12px; font-weight: 800; color: var(--error); text-transform: uppercase; margin-bottom: 8px; }
+.err-item { padding: 9px 12px; background: var(--error-bg); border-radius: 8px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+.err-en { font-family: 'Lora', serif; font-weight: 600; font-size: 14px; }
+.err-hu { font-size: 12px; color: var(--text-2); }
+.re-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.re-actions .btn { flex: 1; justify-content: center; }
+
+/* Statisztika Nézet */
+.stats-screen { background: var(--bg); min-height: 100vh; }
+.stats-hero { padding: 32px 0 8px; }
+.stats-kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.kpi-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 18px 20px; box-shadow: var(--shadow); }
+.kpi-icon { font-size: 26px; margin-bottom: 6px; }
+.kpi-val { font-size: 26px; font-weight: 900; color: var(--primary); font-family: 'Lora', serif; }
+.kpi-lbl { font-size: 12px; color: var(--text-2); margin-top: 3px; }
+.section-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+.nav-tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
+.nav-tab { padding: 9px 16px; border: none; background: transparent; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.18s; }
+.nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.tag-perf-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.tp-label { font-size: 13px; font-weight: 700; min-width: 100px; color: var(--text); }
+.tp-bar-wrap { flex: 1; height: 9px; background: var(--border); border-radius: 5px; overflow: hidden; }
+.tp-bar { height: 100%; background: linear-gradient(90deg, var(--primary), var(--primary-light)); border-radius: 5px; transition: width 1s ease; }
+.tp-pct { font-size: 12px; color: var(--text-2); font-weight: 700; min-width: 38px; text-align: right; }
+.word-table-wrap { overflow-x: auto; }
+.wtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+.wtable th { font-size: 11px; color: var(--text-3); text-transform: uppercase; padding: 8px 12px; text-align: left; border-bottom: 2px solid var(--border); }
+.wtable td { padding: 9px 12px; border-bottom: 1px solid var(--border); }
+
+/* Modals */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 300; padding: 16px; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal { background: var(--surface); border-radius: 20px; padding: 28px; max-width: 460px; width: 100%; box-shadow: var(--shadow-lg); transform: scale(0.96); transition: transform 0.2s; max-height: 90vh; overflow-y: auto; }
+.modal-overlay.open .modal { transform: scale(1); }
+.modal-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; margin-bottom: 14px; }
+.modal-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+.modal-actions .btn { flex: 1; justify-content: center; }
+textarea.import-area { width: 100%; height: 160px; border: 2px solid var(--border); border-radius: 10px; padding: 12px; font-family: 'Courier New', monospace; font-size: 12px; color: var(--text); background: var(--bg); resize: vertical; margin-bottom: 10px; }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a2e; color: white; padding: 11px 22px; border-radius: 12px; font-size: 13px; font-weight: 700; z-index: 500; transition: transform 0.28s ease; white-space: nowrap; box-shadow: 0 4px 24px rgba(0,0,0,0.2); pointer-events: none; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.form-field input, .form-field select { width: 100%; padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 14px; color: var(--text); background: var(--bg); }
+.form-field input:focus, .form-field select:focus { outline: none; border-color: var(--primary); }
+.form-field label { font-size: 11px; font-weight: 800; color: var(--text-3); text-transform: uppercase; display: block; margin-bottom: 5px; }
+.form-full { grid-column: 1 / -1; }
+
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.animate-in { animation: fadeSlideUp 0.35s ease forwards; }
+@keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-7px); } 80% { transform: translateX(7px); } }
+.shake { animation: shake 0.38s ease; }
+@keyframes bounce-in { 0% { transform: scale(0.95); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+.bounce { animation: bounce-in 0.3s ease; }
+
+/* ══════════════════════════════════════════════════════
+   ÚJ, TÖKÉLETES MOBIL RESZPONZIVITÁS
+══════════════════════════════════════════════════════ */
+
+/* Közepes kijelzők / Tablet */
+@media (max-width: 960px) {
+  .dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  /* Az elemek zseniális újrarendezése, hogy a Statisztika a mobilokon legalulra kerüljön, ne tűnjön el! */
+  .dashboard-grid > div:nth-child(2) { order: 1; } /* Középső oszlop: Szűrők és Szavak mennek felülre */
+  .dashboard-grid > div:nth-child(3) { order: 2; } /* Jobb oszlop: Gyakorlás indítása alájuk */
+  .dashboard-grid > div:nth-child(1) { order: 3; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; } /* Bal oszlop: Statisztikák legalulra! */
+  
+  .stats-sidebar-col .card { margin-bottom: 0 !important; }
+}
+
+/* Mobiltelefonok (iPhone, Android stb.) */
+@media (max-width: 680px) {
+  /* Fejléc ikonossá alakítása */
+  .hide-text-mobile { display: none; }
+  .app-header { padding: 0 12px; }
+  .logo { font-size: 18px; }
+  .header-actions { gap: 4px; }
+  .btn-ghost.btn-sm { padding: 10px; } /* Nagyobb érintőfelület az ujjaknak */
+
+  /* Statisztika kártyák egy oszlopba a lista alatt */
+  .dashboard-grid > div:nth-child(1) { grid-template-columns: 1fr; }
+  
+  /* Modális ablakok optimalizálása */
+  .modal { padding: 20px; max-height: 85vh; overflow-y: auto; }
+  .modal-actions { flex-direction: column; }
+  .modal-actions .btn { width: 100%; }
+  .add-form { grid-template-columns: 1fr; } /* Az új szó form egy oszlopos lesz */
+
+  /* Gyakorló (Quiz) felület mobilra szabása */
+  .options-grid { grid-template-columns: 1fr; } /* Gombok egymás alá kerülnek a hosszú szavak miatt */
+  .q-card { padding: 32px 16px 24px; border-radius: 18px; }
+  .q-word { font-size: 30px; }
+
+  /* Görgethető Statisztika Fülek */
+  .nav-tabs { overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+}
