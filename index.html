@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>LexiLearn – Angol Szótanuló</title>
+<title>LexiLearn – Többnyelvű Szótanuló</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -12,6 +12,19 @@
 <div id="screen-dashboard" class="screen active">
   <header class="app-header">
     <div class="logo" onclick="showScreen('dashboard')">🌿 Lexi<em>Learn</em></div>
+    
+    <div class="mode-switcher">
+      <button class="mode-btn active" id="mode-english" onclick="setMode('english')">
+        <img src="https://flagcdn.com/w20/gb.png" width="16" alt="GB" style="border-radius:2px; vertical-align:middle; margin-right:4px; margin-bottom: 2px;"> Angol
+      </button>
+      <button class="mode-btn" id="mode-japanese" onclick="setMode('japanese')">
+        <img src="https://flagcdn.com/w20/jp.png" width="16" alt="JP" style="border-radius:2px; vertical-align:middle; margin-right:4px; margin-bottom: 2px;"> Japán
+      </button>
+      <button class="mode-btn" id="mode-kanji" onclick="setMode('kanji')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; margin-right:4px; margin-bottom: 2px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Kandzsi
+      </button>
+    </div>
+
     <div class="header-actions">
       <button class="btn btn-ghost btn-sm" onclick="openImportModal()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -34,7 +47,7 @@
         <div class="card animate-in" style="margin-bottom:14px">
           <div class="card-title">📈 Haladás</div>
           <div class="mini-stat-list" id="mini-stat-list">
-            <div class="mini-stat"><span class="mini-stat-icon">🔥</span><div><div class="mini-stat-val" id="ms-streak">0</div><div class="mini-stat-lbl">Aktív streak (nap)</div></div></div>
+            <div class="mini-stat"><span class="mini-stat-icon">🔥</span><div><div class="mini-stat-val" id="ms-streak">0</div><div class="mini-stat-lbl" id="lbl-streak">Angol streak (nap)</div></div></div>
             <div class="mini-stat"><span class="mini-stat-icon">🏆</span><div><div class="mini-stat-val" id="ms-record">0</div><div class="mini-stat-lbl">Rekord streak</div></div></div>
             <div class="mini-stat"><span class="mini-stat-icon">🎯</span><div><div class="mini-stat-val" id="ms-avg">—</div><div class="mini-stat-lbl">Átlag pontosság</div></div></div>
             <div class="mini-stat"><span class="mini-stat-icon">📚</span><div><div class="mini-stat-val" id="ms-learned">0</div><div class="mini-stat-lbl">Megtanult szó</div></div></div>
@@ -60,13 +73,14 @@
             Szűrők
           </div>
           <div class="filter-group">
-            <span class="filter-label">Szókeresés</span>
+            <span class="filter-label">Keresés</span>
             <div class="search-wrap">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input class="search-input" id="search-input" type="text" placeholder="Keress szavakat..." oninput="applyFilters()" style="padding-left: 34px;">
+              <input class="search-input" id="search-input" type="text" placeholder="Keress..." oninput="applyFilters()" style="padding-left: 34px;">
             </div>
           </div>
-          <div class="filter-group">
+          
+          <div class="filter-group" id="topic-filter-group">
             <span class="filter-label">Témakör</span>
             <div class="search-wrap">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -74,15 +88,33 @@
             </div>
             <div class="tag-filters" id="tag-filter-list"></div>
           </div>
+
+          <div class="filter-group" id="lesson-filter-group" style="display:none;">
+            <span class="filter-label">Lecke (Lesson)</span>
+            <select class="sort-select" id="lesson-select" onchange="applyFilters()">
+              <option value="all">Minden Lecke</option>
+            </select>
+          </div>
+
           <div class="filter-group">
             <span class="filter-label">Nehézségi szint</span>
-            <div class="diff-btns" id="diff-filter-list">
+            
+            <div class="diff-btns" id="diff-filter-list-en">
               <button class="diff-btn" data-diff="B1" onclick="toggleDiff('B1')">B1</button>
               <button class="diff-btn" data-diff="B2" onclick="toggleDiff('B2')">B2</button>
               <button class="diff-btn" data-diff="C1" onclick="toggleDiff('C1')">C1</button>
               <button class="diff-btn" data-diff="C2" onclick="toggleDiff('C2')">C2</button>
             </div>
+            
+            <div class="diff-btns" id="diff-filter-list-jp" style="display:none;">
+              <button class="diff-btn diff-jp" data-diff="N5" onclick="toggleDiff('N5')">N5</button>
+              <button class="diff-btn diff-jp" data-diff="N4" onclick="toggleDiff('N4')">N4</button>
+              <button class="diff-btn diff-jp" data-diff="N3" onclick="toggleDiff('N3')">N3</button>
+              <button class="diff-btn diff-jp" data-diff="N2" onclick="toggleDiff('N2')">N2</button>
+              <button class="diff-btn diff-jp" data-diff="N1" onclick="toggleDiff('N1')">N1</button>
+            </div>
           </div>
+
           <div class="filter-group" style="margin-bottom:0">
             <span class="filter-label">Rendezés</span>
             <select class="sort-select" id="sort-select" onchange="setSort(this.value)">
@@ -103,13 +135,14 @@
               <span id="word-count-label">Szólista</span>
             </div>
             <div class="select-actions">
+              <button class="btn btn-outline btn-sm" id="btn-save-list" onclick="openPlaylistModal()" disabled>Mentés</button>
               <button class="btn btn-outline btn-sm" onclick="selectAll()">Mind</button>
               <button class="btn btn-outline btn-sm" onclick="selectNone()">Törlés</button>
             </div>
           </div>
           <div class="view-tabs">
-            <button class="view-tab active" id="vtab-words" onclick="switchViewTab('words')">📚 Szavak</button>
-            <button class="view-tab" id="vtab-sentences" onclick="switchViewTab('sentences')">💬 Mondatok</button>
+            <button class="view-tab active" id="vtab-words" onclick="switchViewTab('words')">📚 Lista</button>
+            <button class="view-tab" id="vtab-sentences" onclick="switchViewTab('sentences')">💬 Mondatok / Részletek</button>
           </div>
           <div id="word-list-view"><div class="word-list" id="word-list"></div></div>
           <div id="sentence-list-view" style="display:none"><div class="sentence-list" id="sentence-list"></div></div>
@@ -117,27 +150,49 @@
       </div>
 
       <div>
+        <div class="card animate-in" style="margin-bottom:14px; background: var(--surface-2); border-color: var(--primary-light);">
+          <div class="card-title" style="color: var(--primary-h);">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+            Saját Listáim
+          </div>
+          <div id="playlists-container" class="playlists-wrap"></div>
+        </div>
+
         <div class="card animate-in" style="animation-delay:0.04s; margin-bottom:14px">
           <div class="card-title">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
             Fordítás iránya
           </div>
           <div class="dir-toggle">
-            <button class="dir-btn active" id="dir-en-hu" onclick="setDirection('en-hu')">GB→HU</button>
-            <button class="dir-btn" id="dir-hu-en" onclick="setDirection('hu-en')">HU→GB</button>
+            <button class="dir-btn active" id="dir-en-hu" onclick="setDirection('en-hu')"><span id="lbl-dir-1">GB→HU</span></button>
+            <button class="dir-btn" id="dir-hu-en" onclick="setDirection('hu-en')"><span id="lbl-dir-2">HU→GB</span></button>
           </div>
         </div>
+        
         <div class="card start-panel animate-in" style="animation-delay:0.1s">
           <div class="card-title">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Gyakorlás
           </div>
           <div class="selected-big" id="selected-count-big">0</div>
-          <div class="selected-label" id="selected-label-text">szó kijelölve</div>
+          <div class="selected-label" id="selected-label-text">kijelölve</div>
+          
           <div class="count-input-wrap">
             <label for="q-count">Kérdések száma:</label>
             <input type="number" id="q-count" class="count-input" value="20" min="1" max="999">
           </div>
+
+          <div style="margin-bottom: 20px; text-align: left;">
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-3); text-transform: uppercase; display:block; margin-bottom:6px;">Kérdések sorrendje</label>
+            <select id="practice-order" style="width: 100%; padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); background: var(--bg); appearance: auto; cursor: pointer;">
+              <option value="random" selected>🔀 Véletlenszerű</option>
+              <option value="az">🔠 A → Z</option>
+              <option value="za">🔡 Z → A</option>
+              <option value="diff-asc">📉 Könnyebb elöl</option>
+              <option value="diff-desc">📈 Nehezebb elöl</option>
+            </select>
+          </div>
+
           <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" id="start-btn" onclick="startPractice()" disabled>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             Gyakorlás indítása
@@ -181,7 +236,7 @@
         <div class="stat-box b"><div class="sb-val" id="re-time">0s</div><div class="sb-lbl">⏱ Idő</div></div>
       </div>
       <div class="error-list-section" id="error-list-section" style="display:none">
-        <div class="err-title">Hibás szavak – következő körbe kerülnek:</div>
+        <div class="err-title">Hibás elemek – következő körbe kerülnek:</div>
         <div id="error-list-items"></div>
       </div>
       <div class="re-actions">
@@ -214,12 +269,26 @@
       </div>
       <div class="nav-tabs">
         <button class="nav-tab active" onclick="switchStatsTab('topics')">Témakörök</button>
-        <button class="nav-tab" onclick="switchStatsTab('words')">Szavak</button>
+        <button class="nav-tab" onclick="switchStatsTab('words')">Elemek Listája</button>
         <button class="nav-tab" onclick="switchStatsTab('history')">Előzmények</button>
       </div>
       <div id="stats-topics-tab"><div class="card" style="margin-bottom:20px"><div class="section-title">Teljesítmény témakörönként</div><div id="tag-perf-list"></div></div></div>
-      <div id="stats-words-tab" style="display:none"><div class="card"><div class="section-title">Szavak részletesen</div><div class="word-table-wrap"><table class="wtable"><thead><tr><th>Angol</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>Szint</th></tr></thead><tbody id="word-stats-tbody"></tbody></table></div></div></div>
+      <div id="stats-words-tab" style="display:none"><div class="card"><div class="section-title">Részletesen</div><div class="word-table-wrap"><table class="wtable"><thead><tr id="stats-table-header"><th>Eredeti</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>Szint</th></tr></thead><tbody id="word-stats-tbody"></tbody></table></div></div></div>
       <div id="stats-history-tab" style="display:none"><div class="card"><div class="section-title">Gyakorlási előzmények</div><div id="history-list"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="playlist-modal">
+  <div class="modal" style="max-width: 380px;">
+    <div class="modal-title">💾 Lista mentése</div>
+    <div class="form-field">
+      <label>Kijelölt szavak mentése ezen a néven:</label>
+      <input type="text" id="playlist-name-input" placeholder="pl. Keddi vizsga, Nehéz igék...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="savePlaylist()">Mentés</button>
+      <button class="btn btn-outline" onclick="closeModal('playlist-modal')">Mégse</button>
     </div>
   </div>
 </div>
@@ -227,8 +296,8 @@
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
     <div class="modal-title">📥 Importálás</div>
-    <p class="import-hint">CSV formátum (fejléc nélkül):<br><code style="font-size:11px;background:var(--surface-2);padding:2px 6px;border-radius:4px">angol,magyar,témakörök,nehézség</code></p>
-    <textarea class="import-area" id="import-textarea" placeholder="apple,alma,gyümölcs,B1"></textarea>
+    <p class="import-hint">Angol mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">angol,magyar,téma,nehézség</code><br>Japán mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">kana,magyar,romaji,téma,JLPT</code></p>
+    <textarea class="import-area" id="import-textarea" placeholder=""></textarea>
     <div class="modal-actions">
       <button class="btn btn-primary" onclick="doImport()">Importálás</button>
       <button class="btn btn-outline" onclick="closeModal('import-modal')">Mégse</button>
@@ -236,27 +305,12 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="add-modal">
-  <div class="modal">
-    <div class="modal-title">➕ Új szó hozzáadása</div>
-    <div class="add-form" id="add-form">
-      <div class="form-field"><label>Angol</label><input type="text" id="add-en" placeholder="apple"></div>
-      <div class="form-field"><label>Magyar</label><input type="text" id="add-hu" placeholder="alma"></div>
-      <div class="form-field form-full"><label>Témakörök (vesszővel elválasztva)</label><input type="text" id="add-tags" placeholder="gyümölcs, ételek"></div>
-      <div class="form-field"><label>Nehézségi szint</label><select id="add-diff"><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option><option value="C2">C2</option></select></div>
-      <div class="form-field"><label>Szinonima csoport (opcionális)</label><input type="text" id="add-syn"></div>
-      <div class="form-field form-full"><label>Példamondat angolul (opcionális)</label><input type="text" id="add-sentence"></div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" onclick="doAddWord()">Hozzáadás</button>
-      <button class="btn btn-outline" onclick="closeModal('add-modal')">Mégse</button>
-    </div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script src="data.js"></script>
+<script src="japanese_words.js"></script>
+<script src="kanji_data.js"></script>
+
 <script src="app.js"></script>
 
 </body>

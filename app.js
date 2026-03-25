@@ -1,102 +1,234 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js betöltése elindult...");
+console.log("[LexiLearn] App.js V5 (Multi-Language + Smart Memory + Zászlók) indítása...");
 
-if (typeof SAMPLE_WORDS === 'undefined') {
-    console.error("[LexiLearn HIBA] A data.js nem töltődött be!");
-    alert("Kritikus hiba: A szavakat tartalmazó adatfájl (data.js) nem található!");
-    window.SAMPLE_WORDS = [];
-}
+if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
+if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
+if (typeof KANJI_DATA === 'undefined') window.KANJI_DATA = [];
 
 /* ══════════════════════════════════════════════════════
-   TAG EMOJI MAP (KIBŐVÍTETT)
+   TAG EMOJI MAP
 ══════════════════════════════════════════════════════ */
 const TAG_EMOJIS = {
-  // Eredeti kategóriák
+  // Angol
   'gyümölcs': '🍎', 'ételek': '🍕', 'italok': '🥤', 'állatok': '🐾', 'háziállatok': '🐶',
   'közlekedés': '🚗', 'utazás': '🧳', 'otthon': '🏠', 'természet': '🌿', 'munka': '💼',
   'egészség': '🧪', 'iskola': '🎒', 'érzelmek': '💛', 'haladó': '🎓',
+  'fantázia': '🐉', 'nyomozás': '🔎', 'vallás': '🙏', 'politika': '🏛️', 'gazdaság': '📈',
+  'tudomány': '🔬', 'pszichológia': '🧠', 'mindennapi élet': '☕', 'hadászat': '⚔️',
+  'történelem': '📜', 'mitológia': '🏺', 'kommunikáció': '💬', 'földrajz': '🌍',
+  'veszély': '⚠️', 'kultúra': '🎭', 'erőforrások': '💎', 'tárgyak': '📦',
   
-  // ÚJ KATEGÓRIÁK (Lefordítva magyarra)
-  'fantázia': '🐉',         // Fantasy
-  'nyomozás': '🔎',         // Investigation
-  'vallás': '🙏',           // Religion
-  'politika': '🏛️',         // Politics
-  'gazdaság': '📈',         // Economy
-  'tudomány': '🔬',         // Science
-  'pszichológia': '🧠',     // Psychology
-  'mindennapi élet': '☕',  // Everyday Life
-  'hadászat': '⚔️',         // Warfare
-  'történelem': '📜',       // History
-  'mitológia': '🏺',        // Mythology
-  'kommunikáció': '💬',     // Communication
-  'földrajz': '🌍',         // Geography
-  'veszély': '⚠️',          // Danger
-  'kultúra': '🎭',          // Culture
-  'erőforrások': '💎',      // Resources
-  'tárgyak': '📦'           // Objects
+  // Új angol témák
+  'család': '👪', 'filozófia': '🦉', 'képesség': '⚡', 'művészet': '🎨', 
+  'technológia': '💻', 'társadalom': '🏙️',
+  
+  // Japán Alapok
+  'alapszavak': '⭐', 'udvariasság': '🙇', 'köszönések': '👋', 'szórakozás': '🎮', 'kapcsolatok': '🤝',
+  'helyek': '📍', 'időjárás': '🌤️'
 };
 
 function tagLabel(tag) {
-  const emoji = TAG_EMOJIS[tag] || '';
+  const t = tag.toLowerCase().trim();
+  if (t.startsWith('lesson')) return '📖 ' + tag; 
+  const emoji = TAG_EMOJIS[t] || '';
   return emoji ? emoji + ' ' + tag : tag;
 }
 
 /* ══════════════════════════════════════════════════════
-   STATE (ÁLLAPOT)
+   MULTI-LANGUAGE ÁLLAPOTTÉR (V5)
 ══════════════════════════════════════════════════════ */
-let state = {
-  words: [],
-  selectedIds: new Set(),
-  filters: { search: '', topicSearch: '', tags: [], diff: new Set(), sort: 'az' },
-  direction: 'en-hu',
-  activeViewTab: 'words',
-  practice: { roundNumber: 0, roundWords: [], currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: 0, sessionHistory: [] },
-  globalStats: { totalSessions: 0, totalCorrect: 0, totalWrong: 0, sessionHistory: [], studyDays: {}, recordStreak: 0, lastStudiedTopic: null }
-};
-
-function migrateDiff(d) {
-  if (['B1','B2','C1','C2'].includes(d)) return d;
-  const map = {1:'B1',2:'B1',3:'B2',4:'C1',5:'C2'};
-  if (typeof d === 'number' && map[d]) return map[d];
-  return map[parseInt(d)] || 'B2';
+function createEmptyState() {
+  return {
+    words: [], playlists: [], selectedIds: new Set(),
+    filters: { search: '', topicSearch: '', tags: [], diff: new Set(), lesson: 'all', sort: 'az' },
+    direction: 'en-hu', activeViewTab: 'words',
+    practice: { roundNumber: 0, roundWords: [], currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: 0, sessionStartTime: 0, sessionCorrect: 0, sessionWrong: 0 },
+    globalStats: { totalSessions: 0, totalCorrect: 0, totalWrong: 0, sessionHistory: [], studyDays: {}, recordStreak: 0, lastStudiedTopic: null }
+  };
 }
 
-function diffOrder(d) { return {B1:0,B2:1,C1:2,C2:3}[d] ?? 1; }
+let appData = {
+  english: createEmptyState(),
+  japanese: createEmptyState(),
+  kanji: createEmptyState()
+};
+
+let currentMode = 'english'; 
+let state = appData[currentMode]; 
+
+function diffOrder(d) {
+  const map = {B1:1, B2:2, C1:3, C2:4, N5:1, N4:2, N3:3, N2:4, N1:5};
+  return map[d] ?? 0;
+}
 
 /* ══════════════════════════════════════════════════════
-   STORAGE & INIT (TISZTA LAP - V4)
+   STORAGE & INIT
 ══════════════════════════════════════════════════════ */
 function saveState() {
-  const toSave = { words: state.words, direction: state.direction, globalStats: state.globalStats };
-  try { localStorage.setItem('lexilearn_v4', JSON.stringify(toSave)); } catch(e) {}
+  const toSave = {
+    lastMode: currentMode,
+    english:  { words: appData.english.words,  playlists: appData.english.playlists,  globalStats: appData.english.globalStats,  direction: appData.english.direction,  filters: { ...appData.english.filters, diff: Array.from(appData.english.filters.diff) },  selectedIds: Array.from(appData.english.selectedIds) },
+    japanese: { words: appData.japanese.words, playlists: appData.japanese.playlists, globalStats: appData.japanese.globalStats, direction: appData.japanese.direction, filters: { ...appData.japanese.filters, diff: Array.from(appData.japanese.filters.diff) }, selectedIds: Array.from(appData.japanese.selectedIds) },
+    kanji:    { words: appData.kanji.words,    playlists: appData.kanji.playlists,    globalStats: appData.kanji.globalStats,    direction: appData.kanji.direction,    filters: { ...appData.kanji.filters, diff: Array.from(appData.kanji.filters.diff) },       selectedIds: Array.from(appData.kanji.selectedIds) }
+  };
+  try { localStorage.setItem('lexilearn_v5', JSON.stringify(toSave)); } catch(e) {}
 }
 
 function loadState() {
+  let savedMode = 'english';
   try {
-    // Csak a V4-et keressük, a régebbi mentéseket ignoráljuk a statisztika reset miatt!
-    const raw = localStorage.getItem('lexilearn_v4');
-    if (raw) {
-      const saved = JSON.parse(raw);
-      if (saved.words && saved.words.length > 0) {
-        state.words = saved.words.map(w => ({ ...w, diff: migrateDiff(w.diff), sentence: w.sentence || '' }));
-      } else { initWords(); }
-      if (saved.direction) state.direction = saved.direction;
-      if (saved.globalStats) {
-        state.globalStats = { ...state.globalStats, ...saved.globalStats };
-        if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
+    const rawV5 = localStorage.getItem('lexilearn_v5');
+    if (rawV5) {
+      const parsed = JSON.parse(rawV5);
+      savedMode = parsed.lastMode || 'english';
+      
+      ['english', 'japanese', 'kanji'].forEach(lang => {
+        if(parsed[lang]) {
+          appData[lang].words = parsed[lang].words || [];
+          appData[lang].playlists = parsed[lang].playlists || [];
+          appData[lang].globalStats = parsed[lang].globalStats || createEmptyState().globalStats;
+          appData[lang].direction = parsed[lang].direction || 'en-hu';
+          
+          if (parsed[lang].filters) {
+            appData[lang].filters = parsed[lang].filters;
+            appData[lang].filters.diff = new Set(parsed[lang].filters.diff || []);
+          }
+          if (parsed[lang].selectedIds) {
+            appData[lang].selectedIds = new Set(parsed[lang].selectedIds);
+          }
+        }
+      });
+      syncNewWords();
+    } else {
+      const rawV4 = localStorage.getItem('lexilearn_v4');
+      if (rawV4) {
+        const v4 = JSON.parse(rawV4);
+        appData.english.words = v4.words || [];
+        appData.english.playlists = v4.playlists || [];
+        appData.english.globalStats = v4.globalStats || createEmptyState().globalStats;
+        appData.english.direction = v4.direction || 'en-hu';
       }
-    } else { initWords(); }
-  } catch(e) { initWords(); }
+      syncNewWords();
+    }
+  } catch(e) { syncNewWords(); }
+  
+  cleanTags();
+  
+  setMode(savedMode, true); 
+  updateDirectionUI();
+  renderDashboard(); 
 }
 
-function initWords() {
-  state.words = SAMPLE_WORDS.map((w, i) => ({
-    id: 'w' + Date.now() + i,
-    en: w.en, hu: w.hu, tags: w.tags, diff: w.diff, syn: w.syn || '', sentence: w.sentence || '',
-    stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
-  }));
+function cleanTags() {
+  let needsSave = false;
+  ['english', 'japanese', 'kanji'].forEach(lang => {
+    appData[lang].words.forEach(w => {
+      let originalTags = JSON.stringify(w.tags);
+      w.tags = w.tags.map(t => {
+        let clean = t.trim().toLowerCase();
+        if (clean === 'psziog' || clean === 'pszichológ') return 'pszichológia';
+        if (clean === 'filosz') return 'filozófia';
+        return clean;
+      });
+      w.tags = [...new Set(w.tags)];
+      if (originalTags !== JSON.stringify(w.tags)) needsSave = true;
+    });
+  });
+  if (needsSave) saveState();
+}
+
+function syncNewWords() {
+  if (appData.english.words.length === 0 && SAMPLE_WORDS.length > 0) {
+    appData.english.words = SAMPLE_WORDS.map((w,i) => ({
+      id: 'en_' + i, en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
+      stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
+    }));
+  }
+  
+  const existingJpIds = new Set(appData.japanese.words.map(w => w.en)); 
+  JAPANESE_WORDS.forEach((w,i) => {
+    if (!existingJpIds.has(w.kana)) {
+      appData.japanese.words.push({
+        id: 'ja_' + i + '_' + Date.now(),
+        en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5', sentence: '',
+        stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
+      });
+    }
+  });
+
+  const existingKjIds = new Set(appData.kanji.words.map(w => w.en));
+  KANJI_DATA.forEach((w,i) => {
+    if (!existingKjIds.has(w.kanji)) {
+      appData.kanji.words.push({
+        id: 'kj_' + i + '_' + Date.now(),
+        en: w.kanji, hu: w.meaning, romaji: w.romaji, onyomi: w.onyomi, kunyomi: w.kunyomi,
+        tags: ['Lesson ' + w.lesson], lesson: w.lesson, diff: w.jlpt || 'N5', sentence: '',
+        stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
+      });
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   MÓD VÁLTÁSA ÉS ZÁSZLÓK CSERÉJE
+══════════════════════════════════════════════════════ */
+function setMode(mode, isInit = false) {
+  currentMode = mode;
+  state = appData[currentMode];
+  
+  document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+  const activeBtn = document.getElementById('mode-' + mode);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  const isJp = mode !== 'english';
+  document.getElementById('diff-filter-list-en').style.display = isJp ? 'none' : 'flex';
+  document.getElementById('diff-filter-list-jp').style.display = isJp ? 'flex' : 'none';
+  document.getElementById('lesson-filter-group').style.display = mode === 'kanji' ? 'block' : 'none';
+  
+  if (mode === 'kanji') {
+    const lessons = new Set(state.words.map(w => w.lesson).filter(Boolean));
+    const sel = document.getElementById('lesson-select');
+    sel.innerHTML = '<option value="all">Minden Lecke</option>' + 
+      Array.from(lessons).sort((a,b)=>a-b).map(l => `<option value="${l}">Lesson ${l}</option>`).join('');
+  }
+
+  // --- ÚJ: FORDÍTÁS IRÁNYA GOMBOK FRISSÍTÉSE (Zászlók beillesztése) ---
+  const gb = '<img src="https://flagcdn.com/w20/gb.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
+  const hu = '<img src="https://flagcdn.com/w20/hu.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
+  const jp = '<img src="https://flagcdn.com/w20/jp.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
+  const kj = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-bottom:2px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
+
+  if (mode === 'english') {
+    document.getElementById('lbl-dir-1').innerHTML = `${gb} &rarr; ${hu}`;
+    document.getElementById('lbl-dir-2').innerHTML = `${hu} &rarr; ${gb}`;
+  } else if (mode === 'japanese') {
+    document.getElementById('lbl-dir-1').innerHTML = `${jp} Kana &rarr; ${hu}`;
+    document.getElementById('lbl-dir-2').innerHTML = `${hu} &rarr; ${jp} Kana`;
+  } else {
+    document.getElementById('lbl-dir-1').innerHTML = `${kj} Kanji &rarr; ${hu}`;
+    document.getElementById('lbl-dir-2').innerHTML = `${hu} &rarr; ${kj} Kanji`;
+  }
+
+  const streakLabels = { 'english': 'Angol', 'japanese': 'Japán', 'kanji': 'Kandzsi' };
+  document.getElementById('lbl-streak').innerText = `${streakLabels[mode]} streak (nap)`;
+
+  document.getElementById('search-input').value = state.filters.search || '';
+  document.getElementById('topic-search').value = state.filters.topicSearch || '';
+  document.getElementById('sort-select').value = state.filters.sort || 'az';
+  if (mode === 'kanji' && document.getElementById('lesson-select')) {
+    document.getElementById('lesson-select').value = state.filters.lesson || 'all';
+  }
+  document.querySelectorAll('.diff-btn').forEach(b => {
+    b.classList.toggle('active', state.filters.diff.has(b.dataset.diff));
+  });
+
+  if (!isInit) {
+    saveState();
+    updateDirectionUI();
+    renderDashboard();
+  }
 }
 
 /* ══════════════════════════════════════════════════════
@@ -146,8 +278,9 @@ function showScreen(name) {
    DASHBOARD & FILTERS
 ══════════════════════════════════════════════════════ */
 function renderDashboard() {
+  renderPlaylists(); 
   renderTagFilters();
-  applyFilters();
+  applyFilters(); 
   updateStartPanel();
   updateDirectionUI();
   renderSidebar();
@@ -164,7 +297,7 @@ function renderSidebar() {
   document.getElementById('ms-record').textContent = state.globalStats.recordStreak || 0;
   document.getElementById('ms-avg').textContent = totalAttempts > 0 ? Math.round(totalCorrect/totalAttempts*100)+'%' : '—';
   document.getElementById('ms-learned').textContent = words.filter(w=>w.stats.streak>=3).length;
-  document.getElementById('ms-last-topic').textContent = state.globalStats.lastStudiedTopic ? (TAG_EMOJIS[state.globalStats.lastStudiedTopic]||'') + ' ' + state.globalStats.lastStudiedTopic : '—';
+  document.getElementById('ms-last-topic').textContent = state.globalStats.lastStudiedTopic ? tagLabel(state.globalStats.lastStudiedTopic) : '—';
   const mostWrong = [...words].sort((a,b)=>b.stats.totalWrong-a.stats.totalWrong).find(w=>w.stats.totalWrong>0);
   document.getElementById('ms-worst').textContent = mostWrong ? mostWrong.en : '—';
 
@@ -225,11 +358,18 @@ function updateDirectionUI() {
 }
 
 function applyFilters() {
-  const search = document.getElementById('search-input').value.toLowerCase().trim();
+  state.filters.search = document.getElementById('search-input').value.toLowerCase().trim();
+  state.filters.topicSearch = document.getElementById('topic-search').value.toLowerCase().trim();
+  
+  if(currentMode === 'kanji') {
+    state.filters.lesson = document.getElementById('lesson-select').value;
+  }
+
   let filtered = state.words.filter(w => {
-    if (search && !w.en.toLowerCase().includes(search) && !w.hu.toLowerCase().includes(search)) return false;
+    if (state.filters.search && !w.en.toLowerCase().includes(state.filters.search) && !w.hu.toLowerCase().includes(state.filters.search)) return false;
     if (state.filters.tags.length > 0 && !state.filters.tags.some(t => w.tags.includes(t))) return false;
     if (state.filters.diff.size > 0 && !state.filters.diff.has(w.diff)) return false;
+    if (currentMode === 'kanji' && state.filters.lesson !== 'all' && w.lesson != state.filters.lesson) return false;
     return true;
   });
 
@@ -241,25 +381,32 @@ function applyFilters() {
   else if (sort === 'unlearned')  filtered.sort((a,b) => a.stats.streak - b.stats.streak);
   else if (sort === 'mastered')   filtered.sort((a,b) => b.stats.streak - a.stats.streak);
 
-  document.getElementById('word-count-label').innerHTML = `Szólista <span style="color:var(--text-3);font-weight:500;text-transform:none;letter-spacing:0;font-size:12px;margin-left:4px">(${filtered.length} szó)</span>`;
+  document.getElementById('word-count-label').innerHTML = `Szólista <span style="color:var(--text-3);font-weight:500;text-transform:none;letter-spacing:0;font-size:12px;margin-left:4px">(${filtered.length} elem)</span>`;
   renderWordList(filtered);
   renderSentenceList(filtered);
+  
+  saveState(); 
 }
 
 function renderWordList(words) {
   const container = document.getElementById('word-list');
-  if (words.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px">Nincs találat.</div>'; return; }
+  if (words.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3)">Nincs találat.</div>'; return; }
+  
   container.innerHTML = words.map(w => {
     const selected = state.selectedIds.has(w.id);
     const pct = w.stats.totalCorrect+w.stats.totalWrong>0 ? Math.round(w.stats.totalCorrect/(w.stats.totalCorrect+w.stats.totalWrong)*100) : null;
+    
+    let subText = w.hu;
+    if(currentMode === 'kanji') subText = `${w.hu} | ${w.onyomi} / ${w.kunyomi}`;
+
     return `
       <div class="word-item ${selected?'selected':''}" data-id="${w.id}" onclick="toggleWordSelection('${w.id}')">
         <div class="word-checkbox">${selected?'✓':''}</div>
-        <div class="word-info"><div class="word-en">${escHtml(w.en)}</div><div class="word-hu">${escHtml(w.hu)}</div></div>
+        <div class="word-info"><div class="word-en">${escHtml(w.en)}</div><div class="word-hu" style="font-size:10px">${escHtml(subText)}</div></div>
         <div class="word-meta">
           ${w.stats.streak > 0 ? `<span class="word-streak">🔥${w.stats.streak}</span>` : ''}
           ${pct !== null ? `<span class="word-streak">${pct}%</span>` : ''}
-          <div class="diff-pip d${w.diff}" title="${w.diff}"></div>
+          <div class="diff-pill d${w.diff}" title="${w.diff}">${w.diff}</div>
         </div>
       </div>`;
   }).join('');
@@ -267,9 +414,12 @@ function renderWordList(words) {
 
 function renderSentenceList(words) {
   const container = document.getElementById('sentence-list');
-  if (words.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px">Nincs találat.</div>'; return; }
+  if (words.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3)">Nincs találat.</div>'; return; }
+  
   container.innerHTML = words.map(w => {
-    let displayed = w.sentence ? escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<strong class="en-highlight">${m}</strong>`) : `<em>Nincs példamondat.</em>`;
+    let displayed = w.sentence ? escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<strong class="en-highlight">${m}</strong>`) : `<em>Nincs részlet / mondat.</em>`;
+    if(currentMode !== 'english' && w.romaji) displayed = `Romaji: <strong style="color:var(--primary)">${w.romaji}</strong>`;
+
     return `
       <div class="sentence-card">
         <div class="sc-sentence">${displayed}</div>
@@ -295,25 +445,147 @@ function toggleWordSelection(id) {
     el.querySelector('.word-checkbox').textContent = sel ? '✓' : '';
   }
   updateStartPanel();
+  saveState(); 
 }
-function selectAll() { document.querySelectorAll('.word-item[data-id]').forEach(el=>{ state.selectedIds.add(el.dataset.id); el.classList.add('selected'); el.querySelector('.word-checkbox').textContent = '✓'; }); updateStartPanel(); }
-function selectNone() { state.selectedIds.clear(); document.querySelectorAll('.word-item.selected').forEach(el=>{ el.classList.remove('selected'); el.querySelector('.word-checkbox').textContent = ''; }); updateStartPanel(); }
+
+function selectAll() { 
+  document.querySelectorAll('.word-item[data-id]').forEach(el=>{ 
+    state.selectedIds.add(el.dataset.id); 
+    el.classList.add('selected'); 
+    el.querySelector('.word-checkbox').textContent = '✓'; 
+  }); 
+  updateStartPanel(); 
+  saveState(); 
+}
+
+function selectNone() { 
+  state.selectedIds.clear(); 
+  document.querySelectorAll('.word-item.selected').forEach(el=>{ 
+    el.classList.remove('selected'); 
+    el.querySelector('.word-checkbox').textContent = ''; 
+  }); 
+  updateStartPanel(); 
+  saveState(); 
+}
+
 function updateStartPanel() {
   const cnt = state.selectedIds.size;
   document.getElementById('selected-count-big').textContent = cnt;
   document.getElementById('start-btn').disabled = cnt === 0;
+  const saveBtn = document.getElementById('btn-save-list');
+  if (saveBtn) saveBtn.disabled = cnt === 0;
 }
 
 /* ══════════════════════════════════════════════════════
-   PRACTICE LOGIC
+   SAJÁT LISTÁK LOGIKÁJA
 ══════════════════════════════════════════════════════ */
+function renderPlaylists() {
+  const cont = document.getElementById('playlists-container');
+  if (!state.playlists || state.playlists.length === 0) {
+    cont.innerHTML = '<div class="empty-lists">Még nincsenek elmentett listáid ebben a nyelvben.</div>';
+    return;
+  }
+  
+  cont.innerHTML = state.playlists.map(p => {
+    const plWordsHTML = p.wordIds.map(id => {
+      const w = state.words.find(x => x.id === id);
+      return w ? `<b>${escHtml(w.en)}</b> - ${escHtml(w.hu)}` : '';
+    }).filter(Boolean).join('<br>');
+
+    return `
+      <div class="playlist-card-item">
+        <div class="playlist-header" onclick="togglePlaylist('${p.id}')">
+          <div style="display:flex; align-items:center; gap:6px;">
+            📁 ${escHtml(p.name)} <span style="color:var(--text-3);font-size:11px">(${p.wordIds.length})</span>
+          </div>
+          <div class="pl-chevron" id="chevron-${p.id}">▼</div>
+        </div>
+        <div class="playlist-body" id="body-${p.id}">
+          <div class="playlist-word-list">${plWordsHTML}</div>
+          <div class="playlist-actions-row">
+            <button class="btn btn-primary" onclick="loadPlaylist('${p.id}')">➕ Hozzáadás</button>
+            <button class="btn btn-outline" style="color:var(--error); border-color:var(--error-bg);" onclick="deletePlaylist('${p.id}')">Törlés</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function togglePlaylist(id) {
+  const body = document.getElementById('body-' + id);
+  const chevron = document.getElementById('chevron-' + id);
+  if (body.classList.contains('open')) {
+    body.classList.remove('open'); chevron.classList.remove('open');
+  } else {
+    document.querySelectorAll('.playlist-body').forEach(b => b.classList.remove('open'));
+    document.querySelectorAll('.pl-chevron').forEach(c => c.classList.remove('open'));
+    body.classList.add('open'); chevron.classList.add('open');
+  }
+}
+
+function openPlaylistModal() {
+  if (state.selectedIds.size === 0) return;
+  document.getElementById('playlist-name-input').value = '';
+  document.getElementById('playlist-modal').classList.add('open');
+}
+
+function savePlaylist() {
+  const name = document.getElementById('playlist-name-input').value.trim();
+  if (!name) { showToast('Kérlek adj meg egy nevet a listának!'); return; }
+  if (!state.playlists) state.playlists = [];
+  const isDuplicate = state.playlists.some(p => p.name.toLowerCase() === name.toLowerCase());
+  if (isDuplicate) { showToast('Már létezik ilyen nevű lista!'); return; }
+
+  state.playlists.push({ id: 'pl_' + Date.now(), name: name, wordIds: Array.from(state.selectedIds) });
+  saveState(); closeModal('playlist-modal'); renderPlaylists(); showToast('Lista sikeresen elmentve!');
+}
+
+function loadPlaylist(id) {
+  const pl = state.playlists.find(p => p.id === id);
+  if (!pl) return;
+  pl.wordIds.forEach(wId => state.selectedIds.add(wId));
+  
+  document.getElementById('search-input').value = '';
+  document.getElementById('topic-search').value = '';
+  if (document.getElementById('lesson-select')) document.getElementById('lesson-select').value = 'all';
+  
+  state.filters.search = ''; state.filters.topicSearch = ''; state.filters.tags = []; state.filters.diff = new Set(); state.filters.lesson = 'all';
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+  
+  applyFilters(); 
+  updateStartPanel();
+  saveState();
+  showToast('📂 ' + pl.name + ' hozzáadva!');
+}
+
+function deletePlaylist(id) {
+  if(!confirm('Biztosan törlöd ezt a listát?')) return;
+  state.playlists = state.playlists.filter(p => p.id !== id);
+  saveState(); renderPlaylists();
+}
+
+/* ══════════════════════════════════════════════════════
+   PRACTICE LOGIC (SZEM IKON & ZÁSZLÓK A ROUND-BAN)
+══════════════════════════════════════════════════════ */
+let eyeState = 0; 
+
 function startPractice() {
   const selectedWords = state.words.filter(w => state.selectedIds.has(w.id));
   if (selectedWords.length === 0) return;
   const qCount = Math.min(parseInt(document.getElementById('q-count').value) || 20, selectedWords.length);
 
+  const order = document.getElementById('practice-order').value;
+  let orderedWords = [...selectedWords];
+
+  if (order === 'random') orderedWords = shuffle(orderedWords);
+  else if (order === 'az') orderedWords.sort((a,b) => a.en.localeCompare(b.en));
+  else if (order === 'za') orderedWords.sort((a,b) => b.en.localeCompare(a.en));
+  else if (order === 'diff-asc') orderedWords.sort((a,b) => diffOrder(a.diff) - diffOrder(b.diff));
+  else if (order === 'diff-desc') orderedWords.sort((a,b) => diffOrder(b.diff) - diffOrder(a.diff));
+
   state.practice = {
-    roundNumber: 1, roundWords: shuffle([...selectedWords]).slice(0, qCount).map(w => w.id),
+    roundNumber: 1, roundWords: orderedWords.slice(0, qCount).map(w => w.id),
     currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0,
     roundStartTime: Date.now(), sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0
   };
@@ -342,28 +614,41 @@ function showQuestion() {
   const correct  = isEnHu ? word.hu : word.en;
   const options = shuffle([correct, ...shuffle(state.words.filter(w=>w.id!==word.id)).slice(0, 3).map(w=>isEnHu?w.hu:w.en)]);
 
+  const isJapanMode = currentMode !== 'english';
+  eyeState = 0; 
+
+  // --- ÚJ: Zászlók generálása a Kérdés feliratához is! ---
+  const gbFlag = '<img src="https://flagcdn.com/w20/gb.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
+  const huFlag = '<img src="https://flagcdn.com/w20/hu.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
+  const jpFlag = '<img src="https://flagcdn.com/w20/jp.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
+  const kjIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-bottom:2px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
+
+  let hintText = isEnHu ? `${gbFlag} ANGOL &rarr; ${huFlag} MAGYAR` : `${huFlag} MAGYAR &rarr; ${gbFlag} ANGOL`;
+  if(currentMode === 'japanese') hintText = isEnHu ? `${jpFlag} KANA &rarr; ${huFlag} MAGYAR` : `${huFlag} MAGYAR &rarr; ${jpFlag} KANA`;
+  if(currentMode === 'kanji') hintText = isEnHu ? `${kjIcon} KANJI &rarr; ${huFlag} MAGYAR` : `${huFlag} MAGYAR &rarr; ${kjIcon} KANJI`;
+
   document.getElementById('question-area').innerHTML = `
     <div class="q-card" id="q-card">
       <div class="q-hint" style="display:flex; justify-content:center; align-items:center; margin-bottom:14px;">
-        <span style="letter-spacing:0.1em; color:var(--text-3); font-weight:800; font-size:11px; text-transform:uppercase;">
-          ${isEnHu ? '🇬🇧 ANGOL → MAGYAR' : '🇭🇺 MAGYAR → ANGOL'}
-        </span>
+        <span style="letter-spacing:0.1em; color:var(--text-3); font-weight:800; font-size:11px; text-transform:uppercase;">${hintText}</span>
         <span style="margin: 0 8px; color: var(--border);">|</span>
         <span class="diff-pill d${word.diff}" style="font-size:11px; padding:2px 8px;">${word.diff}</span>
       </div>
 
-      <div class="q-word" style="margin-bottom:6px;">${escHtml(question)}</div>
+      <div class="q-word ${currentMode === 'kanji' && isEnHu ? 'kanji-display' : ''}" style="margin-bottom:6px;">${escHtml(question)}</div>
 
-      <div class="q-tags" style="margin-bottom:18px; display:flex; justify-content:center; gap:6px;">
-        ${word.tags.map(t => `<span class="q-tag" style="background:var(--surface-2); color:var(--text-3); padding:4px 12px; border-radius:12px; font-size:11px; font-weight:700;">${tagLabel(t)}</span>`).join('')}
-      </div>
+      ${isJapanMode && isEnHu ? `
+        <button class="eye-btn" onclick="toggleEye('${word.id}')" title="Olvasat felfedése">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+        <div id="reveal-text" class="reveal-text"></div>
+      ` : ''}
 
       <button class="speak-btn" id="speak-btn" onclick="speakWord('${escHtml(isEnHu ? word.en : word.hu)}')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-        </svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
       </button>
 
       <div class="options-grid">
@@ -374,9 +659,25 @@ function showQuestion() {
     </div>
   `;
 
-  setTimeout(() => {
-    speakWord(isEnHu ? word.en : word.hu);
-  }, 300);
+  setTimeout(() => { speakWord(isEnHu ? word.en : word.hu); }, 300);
+}
+
+function toggleEye(wordId) {
+  const word = state.words.find(w => w.id === wordId);
+  if(!word) return;
+  
+  const rt = document.getElementById('reveal-text');
+  eyeState++;
+  
+  if (currentMode === 'japanese') {
+    if (eyeState > 1) eyeState = 0;
+    rt.innerHTML = eyeState === 1 ? `<span style="color:var(--primary)">${word.romaji}</span>` : '';
+  } else if (currentMode === 'kanji') {
+    if (eyeState > 2) eyeState = 0;
+    if (eyeState === 0) rt.innerHTML = '';
+    if (eyeState === 1) rt.innerHTML = `<span style="color:var(--primary)">On: ${word.onyomi} | Kun: ${word.kunyomi}</span>`;
+    if (eyeState === 2) rt.innerHTML = `<span style="color:var(--primary)">On: ${word.onyomi} | Kun: ${word.kunyomi}</span><br><span style="font-size:13px;color:var(--text-3)">${word.romaji}</span>`;
+  }
 }
 
 function checkAnswer(btn, chosen, correct) {
@@ -389,6 +690,10 @@ function checkAnswer(btn, chosen, correct) {
     if (btn) btn.classList.add('wrong');
     document.querySelectorAll('.opt-btn').forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
     document.getElementById('q-card').classList.add('shake');
+    if(currentMode !== 'english' && state.direction === 'en-hu') {
+      eyeState = currentMode === 'kanji' ? 1 : 0; 
+      toggleEye(word.id);
+    }
   }
 
   if (word) {
@@ -400,13 +705,18 @@ function checkAnswer(btn, chosen, correct) {
   setTimeout(() => {
     p.currentIdx++;
     if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-  }, isCorrect ? 700 : 1400);
+  }, isCorrect ? 800 : 1800); 
 }
 
 function speakWord(text) {
   window.speechSynthesis?.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = state.direction === 'en-hu' ? 'en-US' : 'hu-HU';
+  if (currentMode !== 'english' && state.direction === 'en-hu') {
+    u.lang = 'ja-JP';
+  } else {
+    u.lang = state.direction === 'en-hu' ? 'en-US' : 'hu-HU';
+  }
+  u.onerror = function(e) { console.log("TTS Hiba vagy nem támogatott nyelv: ", e); };
   window.speechSynthesis?.speak(u);
 }
 
@@ -453,15 +763,30 @@ function startNextRound() {
 
 function finishSession() {
   const p = state.practice;
+  const duration = Math.round((Date.now() - p.sessionStartTime) / 1000);
+
   state.globalStats.studyDays[todayKey()] = true;
-  state.globalStats.totalSessions++; state.globalStats.totalCorrect += p.sessionCorrect; state.globalStats.totalWrong += p.sessionWrong;
+  state.globalStats.totalSessions++; 
+  state.globalStats.totalCorrect += p.sessionCorrect; 
+  state.globalStats.totalWrong += p.sessionWrong;
+  
+  if (!state.globalStats.sessionHistory) state.globalStats.sessionHistory = [];
+  
+  state.globalStats.sessionHistory.push({
+    date: new Date().toLocaleString('hu-HU'),
+    correct: p.sessionCorrect,
+    wrong: p.sessionWrong,
+    rounds: p.roundNumber,
+    duration: duration
+  });
+
   saveState(); showScreen('dashboard'); showToast('Gyakorlás befejezve!');
 }
 
 function confirmQuit() { if (confirm('Biztosan ki szeretnél lépni?')) showScreen('dashboard'); }
 
 /* ══════════════════════════════════════════════════════
-   STATS, MODALS & UTILS
+   STATS & MODALS
 ══════════════════════════════════════════════════════ */
 function renderStats() {
   const gs = state.globalStats;
@@ -478,7 +803,7 @@ function renderStats() {
     <div class="kpi-card"><div class="kpi-icon">📚</div><div class="kpi-val">${learnedWords}</div><div class="kpi-lbl">Megtanult szó (streak≥3)</div></div>
     <div class="kpi-card"><div class="kpi-icon">🏋️</div><div class="kpi-val">${gs.totalSessions||0}</div><div class="kpi-lbl">Összes gyakorlás</div></div>
     <div class="kpi-card"><div class="kpi-icon">✅</div><div class="kpi-val">${gs.totalCorrect||0}</div><div class="kpi-lbl">Összes helyes válasz</div></div>
-    <div class="kpi-card"><div class="kpi-icon">📖</div><div class="kpi-val">${words.length}</div><div class="kpi-lbl">Szótárban szereplő szavak</div></div>
+    <div class="kpi-card"><div class="kpi-icon">📖</div><div class="kpi-val">${words.length}</div><div class="kpi-lbl">Szótárban lévő elemek</div></div>
   `;
 
   const tags = new Set();
@@ -500,6 +825,11 @@ function renderStats() {
       </div>`).join('');
 
   const sorted = [...words].sort((a,b)=>(b.stats.totalCorrect+b.stats.totalWrong)-(a.stats.totalCorrect+a.stats.totalWrong));
+  
+  document.getElementById('stats-table-header').innerHTML = currentMode === 'english' 
+    ? `<th>Angol</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>Szint</th>`
+    : `<th>${currentMode === 'kanji' ? 'Kandzsi' : 'Kana'}</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>JLPT</th>`;
+
   document.getElementById('word-stats-tbody').innerHTML = sorted.map(w=>{
     const tot = w.stats.totalCorrect+w.stats.totalWrong;
     const pct = tot>0 ? Math.round(w.stats.totalCorrect/tot*100):null;
@@ -517,17 +847,24 @@ function renderStats() {
   const hist = (state.globalStats.sessionHistory||[]).slice().reverse();
   document.getElementById('history-list').innerHTML = hist.length===0
     ? '<div style="color:var(--text-3);font-size:14px">Még nincs befejezett gyakorlás.</div>'
-    : hist.map(h=>`
+    : hist.map(h=> {
+        const mins = Math.floor(h.duration / 60);
+        const secs = h.duration % 60;
+        const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+        return `
       <div style="padding:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
         <div>
           <div style="font-size:13px;color:var(--text-2)">${h.date}</div>
-          <div style="font-size:14px;font-weight:700">${h.correct} helyes / ${h.wrong} hibás</div>
+          <div style="font-size:14px;font-weight:700">
+            <span style="color:var(--success)">${h.correct} helyes</span> / <span style="color:var(--error)">${h.wrong} hibás</span>
+          </div>
         </div>
-        <div style="display:flex;gap:10px;font-size:12px;color:var(--text-3)">
-          <span>${h.rounds} kör</span>
-          <span>${h.duration<60?h.duration+'s':Math.floor(h.duration/60)+'m'}</span>
+        <div style="display:flex;gap:10px;font-size:12px;color:var(--text-3);font-weight:700;background:var(--surface-2);padding:4px 10px;border-radius:8px">
+          <span>🔄 ${h.rounds} kör</span>
+          <span>⏱ ${timeStr}</span>
         </div>
-      </div>`).join('');
+      </div>`
+    }).join('');
 }
 
 function switchStatsTab(tab) { 
@@ -544,60 +881,36 @@ function doImport() {
   text.split('\n').filter(l=>l.trim()).forEach(line=>{
     const parts = line.split(',').map(p=>p.trim().replace(/^"|"$/g,''));
     if (parts.length < 2) return;
-    const [en, hu, tagsStr, diffStr] = parts;
-    if (!en||!hu) return;
-    const tags = tagsStr ? tagsStr.split(/[,;]/).map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
-    const diff = migrateDiff(diffStr || 'B2');
-    if (state.words.some(w=>w.en.toLowerCase()===en.toLowerCase())) return;
-    state.words.push({
-      id:'w'+Date.now()+Math.random(), en, hu, tags, diff, syn:'', sentence:'',
-      stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null}
-    });
+    
+    if (currentMode === 'english') {
+      const [en, hu, tagsStr, diffStr] = parts;
+      if (!en||!hu) return;
+      const tags = tagsStr ? tagsStr.split(/[,;]/).map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
+      if (state.words.some(w=>w.en.toLowerCase()===en.toLowerCase())) return;
+      state.words.push({ id:'en_imp_'+Date.now()+Math.random(), en, hu, tags, diff: migrateDiff(diffStr || 'B2'), syn:'', sentence:'', stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+    } else {
+      const [en, hu, romaji, tagsStr, diffStr] = parts;
+      if (!en||!hu) return;
+      const tags = tagsStr ? tagsStr.split(/[,;]/).map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
+      if (state.words.some(w=>w.en.toLowerCase()===en.toLowerCase())) return;
+      state.words.push({ id:'jp_imp_'+Date.now()+Math.random(), en, hu, romaji: romaji || '', tags, diff: migrateDiff(diffStr || 'N5'), sentence:'', stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+    }
     added++;
   });
-  saveState();
-  closeModal('import-modal');
-  renderDashboard();
-  showToast(added+' szó importálva!');
+  saveState(); closeModal('import-modal'); renderDashboard(); showToast(added+' elem importálva!');
 }
 
 function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
-
-function doAddWord() {
-  const en = document.getElementById('add-en').value.trim();
-  const hu = document.getElementById('add-hu').value.trim();
-  if (!en||!hu) { showToast('Az angol és magyar mező kötelező!'); return; }
-
-  const tagsRaw = document.getElementById('add-tags').value.trim();
-  const tags = tagsRaw ? tagsRaw.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
-  const diff = document.getElementById('add-diff').value || 'B2';
-  const syn  = document.getElementById('add-syn').value.trim();
-  const sentence = document.getElementById('add-sentence').value.trim();
-
-  if (state.words.some(w=>w.en.toLowerCase()===en.toLowerCase())) {
-    showToast('Ez a szó már szerepel az adatbázisban!'); return;
-  }
-
-  state.words.push({ id:'w'+Date.now(), en, hu, tags, diff, syn, sentence, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
-  saveState();
-
-  ['add-en','add-hu','add-tags','add-syn','add-sentence'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('add-diff').value='B2';
-
-  closeModal('add-modal');
-  renderDashboard();
-  showToast('Szó hozzáadva: '+en);
-}
-
+function doAddWord() { showToast('A manuális hozzáadást a Japán nyelvnél az Importálással javasolt használni!'); closeModal('add-modal'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 let toastTimer;
 function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),3000); }
-
 function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escRegex(str) { return String(str).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 
-// --- Inicializálás indítása ---
+/* ══════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════ */
 loadState();
-renderDashboard();
