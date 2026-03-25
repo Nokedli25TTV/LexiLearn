@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LexiLearn – Többnyelvű Szótanuló</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=5.1">
 </head>
 <body>
 
@@ -98,14 +98,12 @@
 
           <div class="filter-group">
             <span class="filter-label">Nehézségi szint</span>
-            
             <div class="diff-btns" id="diff-filter-list-en">
               <button class="diff-btn" data-diff="B1" onclick="toggleDiff('B1')">B1</button>
               <button class="diff-btn" data-diff="B2" onclick="toggleDiff('B2')">B2</button>
               <button class="diff-btn" data-diff="C1" onclick="toggleDiff('C1')">C1</button>
               <button class="diff-btn" data-diff="C2" onclick="toggleDiff('C2')">C2</button>
             </div>
-            
             <div class="diff-btns" id="diff-filter-list-jp" style="display:none;">
               <button class="diff-btn diff-jp" data-diff="N5" onclick="toggleDiff('N5')">N5</button>
               <button class="diff-btn diff-jp" data-diff="N4" onclick="toggleDiff('N4')">N4</button>
@@ -267,6 +265,20 @@
         <h1 style="font-family:'Lora',serif;font-size:28px;font-weight:700;margin-bottom:20px">📊 Statisztikák</h1>
         <div class="stats-kpi-grid" id="kpi-grid"></div>
       </div>
+
+      <div class="card" style="margin-bottom:24px; background: var(--surface-2); border-color: var(--primary-light);">
+        <div class="card-title" style="color: var(--primary-h);">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Adatok Biztonsági Mentése
+        </div>
+        <p style="font-size: 13px; color: var(--text-2); margin-bottom: 14px;">Mentsd le a statisztikáidat, saját listáidat és a felvett szavaidat egy fájlba, így telefoncsere (vagy ikon törlés) esetén egy kattintással vissza tudsz mindent állítani!</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button class="btn btn-primary btn-sm" onclick="exportData()">💾 Mentés letöltése</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('file-import').click()">📂 Visszaállítás fájlból</button>
+          <input type="file" id="file-import" style="display:none" accept=".json" onchange="importData(event)">
+        </div>
+      </div>
+
       <div class="nav-tabs">
         <button class="nav-tab active" onclick="switchStatsTab('topics')">Témakörök</button>
         <button class="nav-tab" onclick="switchStatsTab('words')">Elemek Listája</button>
@@ -293,6 +305,18 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="import-modal">
+  <div class="modal">
+    <div class="modal-title">📥 Importálás</div>
+    <p class="import-hint">Angol mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">angol,magyar,téma,nehézség</code><br>Japán mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">kana,magyar,romaji,téma,JLPT</code></p>
+    <textarea class="import-area" id="import-textarea" placeholder="apple,alma,gyümölcs,B2"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="doImport()">Importálás</button>
+      <button class="btn btn-outline" onclick="closeModal('import-modal')">Mégse</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="add-modal">
   <div class="modal">
     <div class="modal-title" id="add-modal-title">➕ Új szó hozzáadása</div>
@@ -313,11 +337,11 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="data.js"></script>
-<script src="japanese_words.js"></script>
-<script src="kanji_data.js"></script>
+<script src="data.js?v=5.1"></script>
+<script src="japanese_words.js?v=5.1"></script>
+<script src="kanji_data.js?v=5.1"></script>
 
-<script src="app.js"></script>
+<script src="app.js?v=5.1"></script>
 
 </body>
 </html>

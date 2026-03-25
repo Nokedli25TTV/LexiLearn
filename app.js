@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V5 (Multi-Language + Smart Memory + Zászlók) indítása...");
+console.log("[LexiLearn] App.js V5.1 (Backup + Fixes) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
@@ -11,7 +11,6 @@ if (typeof KANJI_DATA === 'undefined') window.KANJI_DATA = [];
    TAG EMOJI MAP
 ══════════════════════════════════════════════════════ */
 const TAG_EMOJIS = {
-  // Angol
   'gyümölcs': '🍎', 'ételek': '🍕', 'italok': '🥤', 'állatok': '🐾', 'háziállatok': '🐶',
   'közlekedés': '🚗', 'utazás': '🧳', 'otthon': '🏠', 'természet': '🌿', 'munka': '💼',
   'egészség': '🧪', 'iskola': '🎒', 'érzelmek': '💛', 'haladó': '🎓',
@@ -19,12 +18,8 @@ const TAG_EMOJIS = {
   'tudomány': '🔬', 'pszichológia': '🧠', 'mindennapi élet': '☕', 'hadászat': '⚔️',
   'történelem': '📜', 'mitológia': '🏺', 'kommunikáció': '💬', 'földrajz': '🌍',
   'veszély': '⚠️', 'kultúra': '🎭', 'erőforrások': '💎', 'tárgyak': '📦',
-  
-  // Új angol témák
   'család': '👪', 'filozófia': '🦉', 'képesség': '⚡', 'művészet': '🎨', 
   'technológia': '💻', 'társadalom': '🏙️',
-  
-  // Japán Alapok
   'alapszavak': '⭐', 'udvariasság': '🙇', 'köszönések': '👋', 'szórakozás': '🎮', 'kapcsolatok': '🤝',
   'helyek': '📍', 'időjárás': '🌤️'
 };
@@ -115,7 +110,6 @@ function loadState() {
   } catch(e) { syncNewWords(); }
   
   cleanTags();
-  
   setMode(savedMode, true); 
   updateDirectionUI();
   renderDashboard(); 
@@ -870,10 +864,54 @@ function switchStatsTab(tab) {
   document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.toggle('active', btn.getAttribute('onclick').includes(tab)));
 }
 
-/* --- Import Modal Logika --- */
-function openImportModal() { 
-  document.getElementById('import-textarea').value=''; 
-  document.getElementById('import-modal').classList.add('open'); 
+/* ══════════════════════════════════════════════════════
+   BIZTONSÁGI MENTÉS & IMPORT / EXPORT LOGIKA
+══════════════════════════════════════════════════════ */
+
+// 1. Mentés Letöltése
+function exportData() {
+  const dataStr = localStorage.getItem('lexilearn_v5');
+  if (!dataStr) { showToast('Nincs mit menteni!'); return; }
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `LexiLearn_Mentes_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Biztonsági mentés letöltve!');
+}
+
+// 2. Mentés Visszatöltése
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const content = e.target.result;
+      JSON.parse(content); // Ellenőrizzük, hogy érvényes JSON
+      localStorage.setItem('lexilearn_v5', content);
+      showToast('Adatok betöltve! Újraindítás...');
+      setTimeout(() => location.reload(), 1500);
+    } catch(err) {
+      showToast('Hiba: Érvénytelen mentés fájl!');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = ''; // Reset
+}
+
+// 3. JAVÍTOTT Szó-Import Modal
+function openImportModal() {
+  const ta = document.getElementById('import-textarea');
+  const mod = document.getElementById('import-modal');
+  if(ta && mod) {
+    ta.value = '';
+    mod.classList.add('open');
+  } else {
+    showToast("Hiba: Az Import ablak nem található!");
+  }
 }
 
 function doImport() {
@@ -966,12 +1004,11 @@ function doAddWord() {
   showToast('Sikeresen hozzáadva: ' + en);
 }
 
-/* --- Közös bezáró parancs a "Mégse" gombokhoz --- */
 function closeModal(id) { 
   document.getElementById(id).classList.remove('open'); 
 }
 
-/* --- Eszközök és Segédek --- */
+/* --- Eszközök --- */
 let toastTimer;
 function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),3000); }
 function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
