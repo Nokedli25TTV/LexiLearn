@@ -20,6 +20,11 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
 .logo em { color: var(--accent); font-style: normal; }
 .header-actions { display: flex; gap: 8px; align-items: center; }
 
+/* Nyelvválasztó Kapcsoló */
+.mode-switcher { display: flex; background: var(--surface-2); border-radius: 12px; padding: 4px; gap: 4px; }
+.mode-btn { border: none; background: transparent; padding: 6px 14px; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text-2); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; }
+.mode-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
 .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: var(--radius-sm); border: none; font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.18s ease; text-decoration: none; white-space: nowrap; }
 .btn-primary { background: var(--primary); color: #fff; }
 .btn-primary:hover { background: var(--primary-h); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(45,106,79,0.3); }
@@ -77,6 +82,15 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
 .diff-btn[data-diff="B2"].active { background: #e3f0ff; border-color: #58a6ff; color: #1a54c2; }
 .diff-btn[data-diff="C1"].active { background: #fff3e0; border-color: #f4a261; color: #b35c00; }
 .diff-btn[data-diff="C2"].active { background: #fde8e8; border-color: #f85149; color: #b5272a; }
+
+/* JLPT Nehézségi gombok színei */
+.diff-jp { border-color: var(--border); }
+.diff-jp[data-diff="N5"].active { background: #e3f2fd; border-color: #29b6f6; color: #0277bd; }
+.diff-jp[data-diff="N4"].active { background: #e8f5e9; border-color: #66bb6a; color: #2e7d32; }
+.diff-jp[data-diff="N3"].active { background: #fff9c4; border-color: #ffee58; color: #f57f17; }
+.diff-jp[data-diff="N2"].active { background: #ffe0b2; border-color: #ffa726; color: #e65100; }
+.diff-jp[data-diff="N1"].active { background: #ffcdd2; border-color: #ef5350; color: #c62828; }
+
 .sort-select { width: 100%; padding: 8px 10px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); background: var(--bg); cursor: pointer; }
 
 /* Irány választó */
@@ -107,8 +121,11 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
 /* Nehézségi pöttyök */
 .diff-pip { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .dB1 { background: #52b788; } .dB2 { background: #58a6ff; } .dC1 { background: #f4a261; } .dC2 { background: #f85149; }
+.dN5 { background: #29b6f6; } .dN4 { background: #66bb6a; } .dN3 { background: #ffee58; } .dN2 { background: #ffa726; } .dN1 { background: #ef5350; }
+
 .diff-pill { padding: 2px 6px; border-radius: 7px; font-size: 10px; font-weight: 800; display: inline-block; }
 .diff-pill.dB1 { background: #d8f3dc; color: #1e5038; } .diff-pill.dB2 { background: #e3f0ff; color: #1a54c2; } .diff-pill.dC1 { background: #fff3e0; color: #b35c00; } .diff-pill.dC2 { background: #fde8e8; color: #b5272a; }
+.diff-pill.dN5 { background: #e3f2fd; color: #0277bd; } .diff-pill.dN4 { background: #e8f5e9; color: #2e7d32; } .diff-pill.dN3 { background: #fff9c4; color: #f57f17; } .diff-pill.dN2 { background: #ffe0b2; color: #e65100; } .diff-pill.dN1 { background: #ffcdd2; color: #c62828; }
 
 /* Mondatos nézet */
 .sentence-card { background: var(--bg); border-radius: var(--radius-sm); border: 2px solid transparent; padding: 11px 13px; }
@@ -117,6 +134,20 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
 .sc-bottom { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
 .sc-hu { font-size: 12px; color: var(--text-2); font-weight: 600; }
 .sc-tags { font-size: 10px; color: var(--text-3); }
+
+/* Saját Listák (Playlists) Stílusai - LENYÍLHATÓ VERZIÓ */
+.playlists-wrap { display: flex; flex-direction: column; gap: 8px; }
+.playlist-card-item { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+.playlist-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--text); transition: background 0.2s; }
+.playlist-header:hover { background: var(--primary-dim); color: var(--primary); }
+.playlist-body { border-top: 1px solid var(--border); padding: 12px 14px; background: var(--bg); display: none; }
+.playlist-body.open { display: block; animation: fadeSlideUp 0.2s ease forwards; }
+.playlist-word-list { font-size: 12px; color: var(--text-2); max-height: 180px; overflow-y: auto; margin-bottom: 12px; line-height: 1.6; padding-right: 4px; }
+.playlist-actions-row { display: flex; gap: 8px; }
+.playlist-actions-row .btn { flex: 1; justify-content: center; font-size: 12px; padding: 8px; }
+.pl-chevron { transition: transform 0.3s; font-size: 10px; color: var(--text-3); }
+.pl-chevron.open { transform: rotate(180deg); color: var(--primary); }
+.empty-lists { font-size: 12px; color: var(--text-3); font-style: italic; padding: 4px; }
 
 /* Start Panel */
 .start-panel { position: sticky; top: 76px; }
@@ -141,6 +172,13 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
 .q-tags { margin-bottom: 8px; display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; }
 .q-tag { background: var(--surface-2); color: var(--text-3); padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
 .speak-btn { background: var(--primary-dim); color: var(--primary); border: none; border-radius: 50%; width: 42px; height: 42px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; margin: 14px auto 28px; transition: all 0.2s; }
+
+/* Szem Ikon és Progresszív Felfedés */
+.eye-btn { background: var(--surface-2); color: var(--text-2); border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; margin-bottom: 12px; }
+.eye-btn:hover { background: var(--border); color: var(--primary); }
+.reveal-text { min-height: 24px; font-weight: 700; font-size: 16px; margin-bottom: 20px; transition: opacity 0.3s ease; }
+.kanji-display { font-size: 64px !important; margin-bottom: 0 !important; }
+
 .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
 .opt-btn { padding: 15px 10px; border-radius: 13px; border: 2px solid var(--border); background: var(--bg); font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; color: var(--text); transition: all 0.18s; text-align: center; }
 .opt-btn.correct { background: var(--success-bg); border-color: var(--success); color: var(--success); }
@@ -158,7 +196,6 @@ body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--te
 .donut-pct { font-size: 30px; font-weight: 900; color: var(--text); font-family: 'Lora', serif; }
 .donut-sub { font-size: 11px; color: var(--text-3); }
 
-/* Visszakapott színek a statisztikákhoz! */
 .stats-row { display: flex; gap: 12px; margin-bottom: 22px; }
 .stat-box { flex: 1; padding: 14px 10px; border-radius: 12px; text-align: center; }
 .stat-box.g { background: var(--success-bg); } .stat-box.g .sb-val { color: var(--success); }
@@ -232,83 +269,48 @@ textarea.import-area { width: 100%; height: 160px; border: 2px solid var(--borde
     flex-direction: column;
     gap: 16px;
   }
-  /* Az elemek zseniális újrarendezése, hogy a Statisztika a mobilokon legalulra kerüljön, ne tűnjön el! */
-  .dashboard-grid > div:nth-child(2) { order: 1; } /* Középső oszlop: Szűrők és Szavak mennek felülre */
-  .dashboard-grid > div:nth-child(3) { order: 2; } /* Jobb oszlop: Gyakorlás indítása alájuk */
-  .dashboard-grid > div:nth-child(1) { order: 3; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; } /* Bal oszlop: Statisztikák legalulra! */
+  .dashboard-grid > div:nth-child(2) { order: 1; } 
+  .dashboard-grid > div:nth-child(3) { order: 2; } 
+  .dashboard-grid > div:nth-child(1) { order: 3; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; } 
   
   .stats-sidebar-col .card { margin-bottom: 0 !important; }
 }
 
 /* Mobiltelefonok (iPhone, Android stb.) */
 @media (max-width: 680px) {
-  /* Fejléc ikonossá alakítása */
   .hide-text-mobile { display: none; }
-  .app-header { padding: 0 12px; }
-  .logo { font-size: 18px; }
-  .header-actions { gap: 4px; }
-  .btn-ghost.btn-sm { padding: 10px; } /* Nagyobb érintőfelület az ujjaknak */
+  
+  /* --- JAVÍTVA: Fejléc okos átrendezése 2 sorba --- */
+  .app-header { height: auto; flex-wrap: wrap; padding: 12px 14px; gap: 10px; }
+  .logo { width: auto; font-size: 18px; }
+  .header-actions { flex: 1; justify-content: flex-end; gap: 4px; }
+  
+  /* A nyelvválasztó megkapja a teljes második sort! */
+  .mode-switcher { width: 100%; order: 3; justify-content: center; display: flex; margin-top: 4px; }
+  .mode-btn { flex: 1; text-align: center; justify-content: center; font-size: 12px; padding: 8px 4px; }
 
-  /* Statisztika kártyák egy oszlopba a lista alatt */
+  .btn-ghost.btn-sm { padding: 10px; } 
+
+  /* Statisztika kártyák egy oszlopba */
   .dashboard-grid > div:nth-child(1) { grid-template-columns: 1fr; }
   
+  /* Szűrő gombok tördelése (hogy az 5 db JLPT is elférjen) */
+  .diff-btns { flex-wrap: wrap; }
+  .diff-btn { font-size: 11px; padding: 6px 2px; }
+
   /* Modális ablakok optimalizálása */
   .modal { padding: 20px; max-height: 85vh; overflow-y: auto; }
   .modal-actions { flex-direction: column; }
   .modal-actions .btn { width: 100%; }
-  .add-form { grid-template-columns: 1fr; } /* Az új szó form egy oszlopos lesz */
+  .add-form { grid-template-columns: 1fr; } 
 
   /* Gyakorló (Quiz) felület mobilra szabása */
-  .options-grid { grid-template-columns: 1fr; } /* Gombok egymás alá kerülnek a hosszú szavak miatt */
+  .options-grid { grid-template-columns: 1fr; } 
   .q-card { padding: 32px 16px 24px; border-radius: 18px; }
   .q-word { font-size: 30px; }
+  .kanji-display { font-size: 50px !important; } /* Ne lógjon ki a hatalmas kandzsi */
 
   /* Görgethető Statisztika Fülek */
   .nav-tabs { overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
   .nav-tabs::-webkit-scrollbar { display: none; }
 }
-/* ─── Saját Listák (Playlists) Stílusai - LENYÍLHATÓ VERZIÓ ─── */
-.playlists-wrap { display: flex; flex-direction: column; gap: 8px; }
-.playlist-card-item { background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
-.playlist-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px; cursor: pointer; font-size: 13px; font-weight: 700; color: var(--text); transition: background 0.2s; }
-.playlist-header:hover { background: var(--primary-dim); color: var(--primary); }
-.playlist-body { border-top: 1px solid var(--border); padding: 12px 14px; background: var(--bg); display: none; }
-.playlist-body.open { display: block; animation: fadeSlideUp 0.2s ease forwards; }
-.playlist-word-list { font-size: 12px; color: var(--text-2); max-height: 180px; overflow-y: auto; margin-bottom: 12px; line-height: 1.6; padding-right: 4px; }
-.playlist-actions-row { display: flex; gap: 8px; }
-.playlist-actions-row .btn { flex: 1; justify-content: center; font-size: 12px; padding: 8px; }
-.pl-chevron { transition: transform 0.3s; font-size: 10px; color: var(--text-3); }
-.pl-chevron.open { transform: rotate(180deg); color: var(--primary); }
-.empty-lists { font-size: 12px; color: var(--text-3); font-style: italic; padding: 4px; }
-/* ─── Nyelvválasztó Kapcsoló ─── */
-.mode-switcher { display: flex; background: var(--surface-2); border-radius: 12px; padding: 4px; gap: 4px; }
-.mode-btn { border: none; background: transparent; padding: 6px 14px; border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; color: var(--text-2); cursor: pointer; transition: all 0.2s; }
-.mode-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-@media (max-width: 680px) { .mode-switcher { display: none; } /* Kisebb kijelzőn elrejtjük a headerből, helyette a menüből lenne jó, de most belezsúfoljuk */ }
-@media (max-width: 800px) { .mode-btn { font-size: 11px; padding: 6px 8px; } }
-
-/* ─── JLPT Nehézségi gombok színei ─── */
-.diff-jp { border-color: var(--border); }
-.diff-jp[data-diff="N5"].active { background: #e3f2fd; border-color: #29b6f6; color: #0277bd; }
-.diff-jp[data-diff="N4"].active { background: #e8f5e9; border-color: #66bb6a; color: #2e7d32; }
-.diff-jp[data-diff="N3"].active { background: #fff9c4; border-color: #ffee58; color: #f57f17; }
-.diff-jp[data-diff="N2"].active { background: #ffe0b2; border-color: #ffa726; color: #e65100; }
-.diff-jp[data-diff="N1"].active { background: #ffcdd2; border-color: #ef5350; color: #c62828; }
-
-.dN5 { background: #29b6f6; }
-.dN4 { background: #66bb6a; }
-.dN3 { background: #ffee58; }
-.dN2 { background: #ffa726; }
-.dN1 { background: #ef5350; }
-
-.diff-pill.dN5 { background: #e3f2fd; color: #0277bd; }
-.diff-jp.dN4 { background: #e8f5e9; color: #2e7d32; }
-.diff-pill.dN3 { background: #fff9c4; color: #f57f17; }
-.diff-pill.dN2 { background: #ffe0b2; color: #e65100; }
-.diff-pill.dN1 { background: #ffcdd2; color: #c62828; }
-
-/* ─── Szem Ikon és Progresszív Felfedés ─── */
-.eye-btn { background: var(--surface-2); color: var(--text-2); border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s; margin-bottom: 12px; }
-.eye-btn:hover { background: var(--border); color: var(--primary); }
-.reveal-text { min-height: 24px; font-weight: 700; font-size: 16px; margin-bottom: 20px; transition: opacity 0.3s ease; }
-.kanji-display { font-size: 64px !important; margin-bottom: 0 !important; }
