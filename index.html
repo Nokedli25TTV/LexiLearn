@@ -293,14 +293,20 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="import-modal">
+<div class="modal-overlay" id="add-modal">
   <div class="modal">
-    <div class="modal-title">📥 Importálás</div>
-    <p class="import-hint">Angol mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">angol,magyar,téma,nehézség</code><br>Japán mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">kana,magyar,romaji,téma,JLPT</code></p>
-    <textarea class="import-area" id="import-textarea" placeholder=""></textarea>
+    <div class="modal-title" id="add-modal-title">➕ Új szó hozzáadása</div>
+    <div class="add-form" id="add-form">
+      <div class="form-field"><label id="lbl-add-en">Angol</label><input type="text" id="add-en" placeholder="apple / 食べる / 食"></div>
+      <div class="form-field"><label>Magyar</label><input type="text" id="add-hu" placeholder="alma / eszik"></div>
+      <div class="form-field form-full"><label>Témakörök (vesszővel elválasztva)</label><input type="text" id="add-tags" placeholder="gyümölcs, ételek"></div>
+      <div class="form-field"><label>Nehézségi szint</label><select id="add-diff"><option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option><option value="C2">C2</option></select></div>
+      <div class="form-field"><label id="lbl-add-syn">Szinonima csoport (opcionális)</label><input type="text" id="add-syn"></div>
+      <div class="form-field form-full"><label>Példamondat / Jegyzet</label><input type="text" id="add-sentence"></div>
+    </div>
     <div class="modal-actions">
-      <button class="btn btn-primary" onclick="doImport()">Importálás</button>
-      <button class="btn btn-outline" onclick="closeModal('import-modal')">Mégse</button>
+      <button class="btn btn-primary" onclick="doAddWord()">Hozzáadás</button>
+      <button class="btn btn-outline" onclick="closeModal('add-modal')">Mégse</button>
     </div>
   </div>
 </div>

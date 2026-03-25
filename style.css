@@ -277,40 +277,33 @@ textarea.import-area { width: 100%; height: 160px; border: 2px solid var(--borde
 }
 
 /* Mobiltelefonok (iPhone, Android stb.) */
+/* Mobiltelefonok (iPhone, Android stb.) */
 @media (max-width: 680px) {
   .hide-text-mobile { display: none; }
   
-  /* --- JAVÍTVA: Fejléc okos átrendezése 2 sorba --- */
   .app-header { height: auto; flex-wrap: wrap; padding: 12px 14px; gap: 10px; }
   .logo { width: auto; font-size: 18px; }
   .header-actions { flex: 1; justify-content: flex-end; gap: 4px; }
   
-  /* A nyelvválasztó megkapja a teljes második sort! */
-  .mode-switcher { width: 100%; order: 3; justify-content: center; display: flex; margin-top: 4px; }
+  /* ITT AZ !IMPORTANT KÉNYSZERÍTÉS: */
+  .mode-switcher { display: flex !important; width: 100%; order: 3; justify-content: center; margin-top: 4px; }
   .mode-btn { flex: 1; text-align: center; justify-content: center; font-size: 12px; padding: 8px 4px; }
 
   .btn-ghost.btn-sm { padding: 10px; } 
-
-  /* Statisztika kártyák egy oszlopba */
   .dashboard-grid > div:nth-child(1) { grid-template-columns: 1fr; }
-  
-  /* Szűrő gombok tördelése (hogy az 5 db JLPT is elférjen) */
   .diff-btns { flex-wrap: wrap; }
   .diff-btn { font-size: 11px; padding: 6px 2px; }
 
-  /* Modális ablakok optimalizálása */
   .modal { padding: 20px; max-height: 85vh; overflow-y: auto; }
   .modal-actions { flex-direction: column; }
   .modal-actions .btn { width: 100%; }
   .add-form { grid-template-columns: 1fr; } 
 
-  /* Gyakorló (Quiz) felület mobilra szabása */
   .options-grid { grid-template-columns: 1fr; } 
   .q-card { padding: 32px 16px 24px; border-radius: 18px; }
   .q-word { font-size: 30px; }
-  .kanji-display { font-size: 50px !important; } /* Ne lógjon ki a hatalmas kandzsi */
+  .kanji-display { font-size: 50px !important; }
 
-  /* Görgethető Statisztika Fülek */
   .nav-tabs { overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
   .nav-tabs::-webkit-scrollbar { display: none; }
 }

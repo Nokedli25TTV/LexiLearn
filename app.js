@@ -194,7 +194,6 @@ function setMode(mode, isInit = false) {
       Array.from(lessons).sort((a,b)=>a-b).map(l => `<option value="${l}">Lesson ${l}</option>`).join('');
   }
 
-  // --- ÚJ: FORDÍTÁS IRÁNYA GOMBOK FRISSÍTÉSE (Zászlók beillesztése) ---
   const gb = '<img src="https://flagcdn.com/w20/gb.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
   const hu = '<img src="https://flagcdn.com/w20/hu.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
   const jp = '<img src="https://flagcdn.com/w20/jp.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
@@ -566,7 +565,7 @@ function deletePlaylist(id) {
 }
 
 /* ══════════════════════════════════════════════════════
-   PRACTICE LOGIC (SZEM IKON & ZÁSZLÓK A ROUND-BAN)
+   PRACTICE LOGIC 
 ══════════════════════════════════════════════════════ */
 let eyeState = 0; 
 
@@ -617,7 +616,6 @@ function showQuestion() {
   const isJapanMode = currentMode !== 'english';
   eyeState = 0; 
 
-  // --- ÚJ: Zászlók generálása a Kérdés feliratához is! ---
   const gbFlag = '<img src="https://flagcdn.com/w20/gb.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
   const huFlag = '<img src="https://flagcdn.com/w20/hu.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
   const jpFlag = '<img src="https://flagcdn.com/w20/jp.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
@@ -872,7 +870,11 @@ function switchStatsTab(tab) {
   document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.toggle('active', btn.getAttribute('onclick').includes(tab)));
 }
 
-function openImportModal() { document.getElementById('import-textarea').value=''; document.getElementById('import-modal').classList.add('open'); }
+/* --- Import Modal Logika --- */
+function openImportModal() { 
+  document.getElementById('import-textarea').value=''; 
+  document.getElementById('import-modal').classList.add('open'); 
+}
 
 function doImport() {
   const text = document.getElementById('import-textarea').value.trim();
@@ -900,10 +902,76 @@ function doImport() {
   saveState(); closeModal('import-modal'); renderDashboard(); showToast(added+' elem importálva!');
 }
 
-function openAddModal() { document.getElementById('add-modal').classList.add('open'); }
-function doAddWord() { showToast('A manuális hozzáadást a Japán nyelvnél az Importálással javasolt használni!'); closeModal('add-modal'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+/* --- Új Szó Modal Logika (Okos Ablak) --- */
+function openAddModal() {
+  document.getElementById('add-en').value = '';
+  document.getElementById('add-hu').value = '';
+  document.getElementById('add-tags').value = '';
+  document.getElementById('add-syn').value = '';
+  document.getElementById('add-sentence').value = '';
 
+  const lblEn = document.getElementById('lbl-add-en');
+  const lblSyn = document.getElementById('lbl-add-syn');
+  const diffSelect = document.getElementById('add-diff');
+  const title = document.getElementById('add-modal-title');
+
+  if (currentMode === 'english') {
+    title.innerText = '➕ Új angol szó';
+    lblEn.innerText = 'Angol szó';
+    lblSyn.innerText = 'Szinonima (opcionális)';
+    diffSelect.innerHTML = '<option value="B1">B1</option><option value="B2" selected>B2</option><option value="C1">C1</option><option value="C2">C2</option>';
+  } else if (currentMode === 'japanese') {
+    title.innerText = '➕ Új japán szó';
+    lblEn.innerText = 'Kana (Japán szó)';
+    lblSyn.innerText = 'Romaji (Kötelező!)';
+    diffSelect.innerHTML = '<option value="N5" selected>N5</option><option value="N4">N4</option><option value="N3">N3</option><option value="N2">N2</option><option value="N1">N1</option>';
+  } else if (currentMode === 'kanji') {
+    title.innerText = '➕ Új kandzsi';
+    lblEn.innerText = 'Kandzsi (Jel)';
+    lblSyn.innerText = 'On / Kun olvasat (vagy Romaji)';
+    diffSelect.innerHTML = '<option value="N5" selected>N5</option><option value="N4">N4</option><option value="N3">N3</option><option value="N2">N2</option><option value="N1">N1</option>';
+  }
+
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function doAddWord() {
+  const en = document.getElementById('add-en').value.trim();
+  const hu = document.getElementById('add-hu').value.trim();
+  const tagsRaw = document.getElementById('add-tags').value.trim();
+  const diff = document.getElementById('add-diff').value;
+  const synOrRomaji = document.getElementById('add-syn').value.trim();
+  const sentence = document.getElementById('add-sentence').value.trim();
+
+  if (!en || !hu) { showToast('Az első két mező kitöltése kötelező!'); return; }
+
+  const tags = tagsRaw ? tagsRaw.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
+
+  if (state.words.some(w => w.en.toLowerCase() === en.toLowerCase())) {
+    showToast('Ez a szó már szerepel a szótáradban!'); return;
+  }
+
+  if (currentMode === 'english') {
+    state.words.push({ id:'en_man_'+Date.now(), en, hu, tags, diff, syn: synOrRomaji, sentence, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+  } else if (currentMode === 'japanese') {
+    if (!synOrRomaji) { showToast('A Romaji megadása kötelező japán szónál!'); return; }
+    state.words.push({ id:'jp_man_'+Date.now(), en, hu, romaji: synOrRomaji, tags, diff, sentence, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+  } else if (currentMode === 'kanji') {
+    state.words.push({ id:'kj_man_'+Date.now(), en, hu, romaji: synOrRomaji, onyomi: '', kunyomi: '', lesson: 'Egyéb', tags, diff, sentence, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+  }
+
+  saveState();
+  closeModal('add-modal');
+  applyFilters(); 
+  showToast('Sikeresen hozzáadva: ' + en);
+}
+
+/* --- Közös bezáró parancs a "Mégse" gombokhoz --- */
+function closeModal(id) { 
+  document.getElementById(id).classList.remove('open'); 
+}
+
+/* --- Eszközök és Segédek --- */
 let toastTimer;
 function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),3000); }
 function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
