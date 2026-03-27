@@ -1,11 +1,30 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V5.3 (Dekiru Lesson Filter + Retroactive Fix) indítása...");
+console.log("[LexiLearn] App.js V6.0 (Dark Mode Update) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
 if (typeof KANJI_DATA === 'undefined') window.KANJI_DATA = [];
+
+/* ══════════════════════════════════════════════════════
+   SÖTÉT MÓD LOGIKA (Theme Toggle)
+══════════════════════════════════════════════════════ */
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const moon = document.getElementById('icon-moon');
+  const sun = document.getElementById('icon-sun');
+  if (moon && sun) {
+    moon.style.display = theme === 'dark' ? 'none' : 'block';
+    sun.style.display = theme === 'dark' ? 'block' : 'none';
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  applyTheme(current);
+  saveState();
+}
 
 /* ══════════════════════════════════════════════════════
    TAG EMOJI MAP
@@ -35,7 +54,7 @@ function tagLabel(tag) {
 }
 
 /* ══════════════════════════════════════════════════════
-   MULTI-LANGUAGE ÁLLAPOTTÉR (V5)
+   MULTI-LANGUAGE ÁLLAPOTTÉR
 ══════════════════════════════════════════════════════ */
 function createEmptyState() {
   return {
@@ -67,6 +86,7 @@ function diffOrder(d) {
 function saveState() {
   const toSave = {
     lastMode: currentMode,
+    theme: document.documentElement.getAttribute('data-theme') || 'light', // Itt mentjük a témát!
     english:  { words: appData.english.words,  playlists: appData.english.playlists,  globalStats: appData.english.globalStats,  direction: appData.english.direction,  filters: { ...appData.english.filters, diff: Array.from(appData.english.filters.diff) },  selectedIds: Array.from(appData.english.selectedIds) },
     japanese: { words: appData.japanese.words, playlists: appData.japanese.playlists, globalStats: appData.japanese.globalStats, direction: appData.japanese.direction, filters: { ...appData.japanese.filters, diff: Array.from(appData.japanese.filters.diff) }, selectedIds: Array.from(appData.japanese.selectedIds) },
     kanji:    { words: appData.kanji.words,    playlists: appData.kanji.playlists,    globalStats: appData.kanji.globalStats,    direction: appData.kanji.direction,    filters: { ...appData.kanji.filters, diff: Array.from(appData.kanji.filters.diff) },       selectedIds: Array.from(appData.kanji.selectedIds) }
@@ -76,11 +96,14 @@ function saveState() {
 
 function loadState() {
   let savedMode = 'english';
+  let savedTheme = 'light'; // Alapértelmezett téma
+  
   try {
     const rawV5 = localStorage.getItem('lexilearn_v5');
     if (rawV5) {
       const parsed = JSON.parse(rawV5);
       savedMode = parsed.lastMode || 'english';
+      savedTheme = parsed.theme || 'light';
       
       ['english', 'japanese', 'kanji'].forEach(lang => {
         if(parsed[lang]) {
@@ -113,6 +136,7 @@ function loadState() {
   } catch(e) { syncNewWords(); }
   
   cleanTags();
+  applyTheme(savedTheme); // Itt töltjük be a mentett sötét/világos módot!
   setMode(savedMode, true); 
   updateDirectionUI();
   renderDashboard(); 
@@ -137,7 +161,6 @@ function cleanTags() {
 }
 
 function syncNewWords() {
-  // 1. Angol szavak
   if (appData.english.words.length === 0 && SAMPLE_WORDS.length > 0) {
     appData.english.words = SAMPLE_WORDS.map((w,i) => ({
       id: 'en_' + i, en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
@@ -145,10 +168,8 @@ function syncNewWords() {
     }));
   }
   
-  // 2. Japán szavak
   const existingJpIds = new Set(appData.japanese.words.map(w => w.en)); 
   
-  // Dekiru leckék kigyűjtése
   const DEKIRU_WORDS = [];
   for (let i = 1; i <= 100; i++) {
     try {
@@ -157,9 +178,7 @@ function syncNewWords() {
     } catch(e) { }
   }
 
-  // Dekiru szavak betöltése / visszamenőleges frissítése
   DEKIRU_WORDS.forEach((w, i) => {
-    // Lecke kinyerése (ha tömb, akkor az első elem, különben szám)
     let lessonVal = w.lesson ? (Array.isArray(w.lesson) ? w.lesson[0] : w.lesson) : null;
 
     if (!existingJpIds.has(w.kana)) {
@@ -173,7 +192,6 @@ function syncNewWords() {
       });
       existingJpIds.add(w.kana); 
     } else {
-      // RETROAKTÍV JAVÍTÁS: Ha a szó már a memóriában van (régi importból), rácsatoljuk a leckét!
       let existingWord = appData.japanese.words.find(x => x.en === w.kana);
       if (existingWord) {
         existingWord.lesson = lessonVal;
@@ -185,7 +203,6 @@ function syncNewWords() {
     }
   });
 
-  // Alap japán szótár betöltése
   JAPANESE_WORDS.forEach((w, i) => {
     if (!existingJpIds.has(w.kana)) {
       appData.japanese.words.push({
@@ -197,7 +214,6 @@ function syncNewWords() {
     }
   });
 
-  // 3. Kandzsik
   const existingKjIds = new Set(appData.kanji.words.map(w => w.en));
   KANJI_DATA.forEach((w,i) => {
     if (!existingKjIds.has(w.kanji)) {
@@ -226,7 +242,6 @@ function setMode(mode, isInit = false) {
   document.getElementById('diff-filter-list-en').style.display = isJp ? 'none' : 'flex';
   document.getElementById('diff-filter-list-jp').style.display = isJp ? 'flex' : 'none';
   
-  // LECKE SZŰRŐ MEGJELENÍTÉSE KANJI ÉS JAPÁN MÓDBAN IS
   if (mode === 'kanji' || mode === 'japanese') {
     const lessons = new Set(state.words.map(w => w.lesson).filter(l => l !== undefined && l !== null && l !== ''));
     const sel = document.getElementById('lesson-select');
@@ -418,7 +433,6 @@ function applyFilters() {
     if (state.filters.search && !w.en.toLowerCase().includes(state.filters.search) && !w.hu.toLowerCase().includes(state.filters.search)) return false;
     if (state.filters.tags.length > 0 && !state.filters.tags.some(t => w.tags.includes(t))) return false;
     if (state.filters.diff.size > 0 && !state.filters.diff.has(w.diff)) return false;
-    // LECKE SZŰRŐ:
     if ((currentMode === 'kanji' || currentMode === 'japanese') && state.filters.lesson !== 'all' && w.lesson != state.filters.lesson) return false;
     return true;
   });
