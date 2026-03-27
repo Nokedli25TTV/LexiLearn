@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V5.1 (Backup + Fixes) indítása...");
+console.log("[LexiLearn] App.js V5.3 (Dekiru Lesson Filter + Retroactive Fix) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
@@ -11,8 +11,8 @@ if (typeof KANJI_DATA === 'undefined') window.KANJI_DATA = [];
    TAG EMOJI MAP
 ══════════════════════════════════════════════════════ */
 const TAG_EMOJIS = {
-  'gyümölcs': '🍎', 'ételek': '🍕', 'italok': '🥤', 'állatok': '🐾', 'háziállatok': '🐶',
-  'közlekedés': '🚗', 'utazás': '🧳', 'otthon': '🏠', 'természet': '🌿', 'munka': '💼',
+  'gyümölcs': '🍎', 'állatok': '🐾', 'háziállatok': '🐶',
+  'közlekedés': '🚗', 'utazás': '🧳', 'otthon': '🏠', 'munka': '💼',
   'egészség': '🧪', 'iskola': '🎒', 'érzelmek': '💛', 'haladó': '🎓',
   'fantázia': '🐉', 'nyomozás': '🔎', 'vallás': '🙏', 'politika': '🏛️', 'gazdaság': '📈',
   'tudomány': '🔬', 'pszichológia': '🧠', 'mindennapi élet': '☕', 'hadászat': '⚔️',
@@ -20,15 +20,18 @@ const TAG_EMOJIS = {
   'veszély': '⚠️', 'kultúra': '🎭', 'erőforrások': '💎', 'tárgyak': '📦',
   'család': '👪', 'filozófia': '🦉', 'képesség': '⚡', 'művészet': '🎨', 
   'technológia': '💻', 'társadalom': '🏙️',
-  'alapszavak': '⭐', 'udvariasság': '🙇', 'köszönések': '👋', 'szórakozás': '🎮', 'kapcsolatok': '🤝',
-  'helyek': '📍', 'időjárás': '🌤️'
+  'alapszavak': '⭐', 'udvariasság': '🙇', 'köszönések': '👋', 'szórakozás': '🎭', 'kapcsolatok': '👪',
+  'helyek': '🏙️', 'időjárás': '🌤️', 'országok': '🌍', 'sport': '🏅', 
+  'ételek': '🍱', 'italok': '🍵', 'kérdőszavak': '❓', 'számlálószavak': '🔢', 'irányok': '🧭',
+  'természet': '🌿'
 };
 
 function tagLabel(tag) {
   const t = tag.toLowerCase().trim();
   if (t.startsWith('lesson')) return '📖 ' + tag; 
-  const emoji = TAG_EMOJIS[t] || '';
-  return emoji ? emoji + ' ' + tag : tag;
+  let emoji = TAG_EMOJIS[t];
+  if (!emoji) emoji = '🏷️'; 
+  return emoji + ' ' + tag;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -134,6 +137,7 @@ function cleanTags() {
 }
 
 function syncNewWords() {
+  // 1. Angol szavak
   if (appData.english.words.length === 0 && SAMPLE_WORDS.length > 0) {
     appData.english.words = SAMPLE_WORDS.map((w,i) => ({
       id: 'en_' + i, en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
@@ -141,17 +145,59 @@ function syncNewWords() {
     }));
   }
   
+  // 2. Japán szavak
   const existingJpIds = new Set(appData.japanese.words.map(w => w.en)); 
-  JAPANESE_WORDS.forEach((w,i) => {
+  
+  // Dekiru leckék kigyűjtése
+  const DEKIRU_WORDS = [];
+  for (let i = 1; i <= 100; i++) {
+    try {
+      const list = eval('DEKIRU_L' + i);
+      if (list) DEKIRU_WORDS.push(...list);
+    } catch(e) { }
+  }
+
+  // Dekiru szavak betöltése / visszamenőleges frissítése
+  DEKIRU_WORDS.forEach((w, i) => {
+    // Lecke kinyerése (ha tömb, akkor az első elem, különben szám)
+    let lessonVal = w.lesson ? (Array.isArray(w.lesson) ? w.lesson[0] : w.lesson) : null;
+
+    if (!existingJpIds.has(w.kana)) {
+      appData.japanese.words.push({
+        id: 'ja_dek_' + i + '_' + Date.now(),
+        en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
+        lesson: lessonVal, 
+        source: 'dekiru',
+        sentence: '',
+        stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
+      });
+      existingJpIds.add(w.kana); 
+    } else {
+      // RETROAKTÍV JAVÍTÁS: Ha a szó már a memóriában van (régi importból), rácsatoljuk a leckét!
+      let existingWord = appData.japanese.words.find(x => x.en === w.kana);
+      if (existingWord) {
+        existingWord.lesson = lessonVal;
+        existingWord.source = 'dekiru';
+        if (w.tags) {
+          w.tags.forEach(t => { if (!existingWord.tags.includes(t)) existingWord.tags.push(t); });
+        }
+      }
+    }
+  });
+
+  // Alap japán szótár betöltése
+  JAPANESE_WORDS.forEach((w, i) => {
     if (!existingJpIds.has(w.kana)) {
       appData.japanese.words.push({
         id: 'ja_' + i + '_' + Date.now(),
         en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5', sentence: '',
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
+      existingJpIds.add(w.kana);
     }
   });
 
+  // 3. Kandzsik
   const existingKjIds = new Set(appData.kanji.words.map(w => w.en));
   KANJI_DATA.forEach((w,i) => {
     if (!existingKjIds.has(w.kanji)) {
@@ -179,13 +225,22 @@ function setMode(mode, isInit = false) {
   const isJp = mode !== 'english';
   document.getElementById('diff-filter-list-en').style.display = isJp ? 'none' : 'flex';
   document.getElementById('diff-filter-list-jp').style.display = isJp ? 'flex' : 'none';
-  document.getElementById('lesson-filter-group').style.display = mode === 'kanji' ? 'block' : 'none';
   
-  if (mode === 'kanji') {
-    const lessons = new Set(state.words.map(w => w.lesson).filter(Boolean));
+  // LECKE SZŰRŐ MEGJELENÍTÉSE KANJI ÉS JAPÁN MÓDBAN IS
+  if (mode === 'kanji' || mode === 'japanese') {
+    const lessons = new Set(state.words.map(w => w.lesson).filter(l => l !== undefined && l !== null && l !== ''));
     const sel = document.getElementById('lesson-select');
-    sel.innerHTML = '<option value="all">Minden Lecke</option>' + 
-      Array.from(lessons).sort((a,b)=>a-b).map(l => `<option value="${l}">Lesson ${l}</option>`).join('');
+    const prefix = mode === 'kanji' ? 'Kanji' : 'Dekiru';
+    
+    if (lessons.size > 0) {
+      document.getElementById('lesson-filter-group').style.display = 'block';
+      sel.innerHTML = '<option value="all">Minden Lecke</option>' + 
+        Array.from(lessons).sort((a,b)=>a-b).map(l => `<option value="${l}">${prefix} Lecke ${l}</option>`).join('');
+    } else {
+      document.getElementById('lesson-filter-group').style.display = 'none';
+    }
+  } else {
+    document.getElementById('lesson-filter-group').style.display = 'none';
   }
 
   const gb = '<img src="https://flagcdn.com/w20/gb.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
@@ -210,7 +265,7 @@ function setMode(mode, isInit = false) {
   document.getElementById('search-input').value = state.filters.search || '';
   document.getElementById('topic-search').value = state.filters.topicSearch || '';
   document.getElementById('sort-select').value = state.filters.sort || 'az';
-  if (mode === 'kanji' && document.getElementById('lesson-select')) {
+  if ((mode === 'kanji' || mode === 'japanese') && document.getElementById('lesson-select')) {
     document.getElementById('lesson-select').value = state.filters.lesson || 'all';
   }
   document.querySelectorAll('.diff-btn').forEach(b => {
@@ -354,15 +409,17 @@ function applyFilters() {
   state.filters.search = document.getElementById('search-input').value.toLowerCase().trim();
   state.filters.topicSearch = document.getElementById('topic-search').value.toLowerCase().trim();
   
-  if(currentMode === 'kanji') {
-    state.filters.lesson = document.getElementById('lesson-select').value;
+  if (currentMode === 'kanji' || currentMode === 'japanese') {
+    const ls = document.getElementById('lesson-select');
+    if (ls) state.filters.lesson = ls.value;
   }
 
   let filtered = state.words.filter(w => {
     if (state.filters.search && !w.en.toLowerCase().includes(state.filters.search) && !w.hu.toLowerCase().includes(state.filters.search)) return false;
     if (state.filters.tags.length > 0 && !state.filters.tags.some(t => w.tags.includes(t))) return false;
     if (state.filters.diff.size > 0 && !state.filters.diff.has(w.diff)) return false;
-    if (currentMode === 'kanji' && state.filters.lesson !== 'all' && w.lesson != state.filters.lesson) return false;
+    // LECKE SZŰRŐ:
+    if ((currentMode === 'kanji' || currentMode === 'japanese') && state.filters.lesson !== 'all' && w.lesson != state.filters.lesson) return false;
     return true;
   });
 
@@ -868,7 +925,6 @@ function switchStatsTab(tab) {
    BIZTONSÁGI MENTÉS & IMPORT / EXPORT LOGIKA
 ══════════════════════════════════════════════════════ */
 
-// 1. Mentés Letöltése
 function exportData() {
   const dataStr = localStorage.getItem('lexilearn_v5');
   if (!dataStr) { showToast('Nincs mit menteni!'); return; }
@@ -882,7 +938,6 @@ function exportData() {
   showToast('Biztonsági mentés letöltve!');
 }
 
-// 2. Mentés Visszatöltése
 function importData(event) {
   const file = event.target.files[0];
   if (!file) return;
@@ -890,7 +945,7 @@ function importData(event) {
   reader.onload = function(e) {
     try {
       const content = e.target.result;
-      JSON.parse(content); // Ellenőrizzük, hogy érvényes JSON
+      JSON.parse(content); 
       localStorage.setItem('lexilearn_v5', content);
       showToast('Adatok betöltve! Újraindítás...');
       setTimeout(() => location.reload(), 1500);
@@ -899,10 +954,9 @@ function importData(event) {
     }
   };
   reader.readAsText(file);
-  event.target.value = ''; // Reset
+  event.target.value = ''; 
 }
 
-// 3. JAVÍTOTT Szó-Import Modal
 function openImportModal() {
   const ta = document.getElementById('import-textarea');
   const mod = document.getElementById('import-modal');
@@ -940,7 +994,6 @@ function doImport() {
   saveState(); closeModal('import-modal'); renderDashboard(); showToast(added+' elem importálva!');
 }
 
-/* --- Új Szó Modal Logika (Okos Ablak) --- */
 function openAddModal() {
   document.getElementById('add-en').value = '';
   document.getElementById('add-hu').value = '';
