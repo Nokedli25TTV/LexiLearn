@@ -355,3 +355,112 @@ textarea.import-area { width: 100%; height: 160px; border: 2px solid var(--borde
   .nav-tabs { overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; padding-bottom: 5px; }
   .nav-tabs::-webkit-scrollbar { display: none; }
 }
+/* ══════════════════════════════════════════════════════
+   GAMIFICATION ÉS HŐTÉRKÉP STÍLUSOK (V6)
+══════════════════════════════════════════════════════ */
+/* Napi Küldetések */
+.quest-item {
+  margin-bottom: 12px;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+.quest-item.completed {
+  opacity: 0.6;
+}
+.quest-item.completed .quest-title {
+  text-decoration: line-through;
+  color: var(--success);
+}
+.quest-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-2);
+}
+.quest-bar-bg {
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.quest-bar-fill {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 4px;
+  transition: width 0.5s ease-out;
+}
+.quest-item.completed .quest-bar-fill {
+  background: var(--success);
+}
+
+/* Hőtérkép */
+.heatmap-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.heatmap-cell {
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  cursor: help;
+  transition: transform 0.2s;
+}
+.heatmap-cell:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+.heatmap-cell.empty {
+  color: var(--text-3);
+  text-shadow: none;
+}
+/* ══════════════════════════════════════════════════════
+   V6.6 PÉLDAMONDAT MÓD STÍLUSOK (Furigana & Blank)
+══════════════════════════════════════════════════════ */
+ruby { 
+  font-family: 'Nunito', sans-serif; 
+  ruby-position: over; 
+}
+rt { 
+  font-size: 0.55em; 
+  color: var(--primary); 
+  font-weight: 800; 
+  letter-spacing: 0;
+}
+.blank-space { 
+  display: inline-block; 
+  min-width: 60px; 
+  border-bottom: 3px solid var(--primary-light); 
+  margin: 0 4px; 
+  color: var(--text-3); 
+  text-align: center; 
+  padding: 0 8px;
+  font-weight: 800;
+  transition: all 0.3s;
+}
+.blank-space.filled {
+  border-bottom-color: var(--success);
+  color: var(--success);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes popIn {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.sentence-mode-hu {
+  font-size: 13px;
+  color: var(--text-2);
+  margin-top: 15px;
+  border-top: 1px dashed var(--border);
+  padding-top: 10px;
+}

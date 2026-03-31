@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LexiLearn – Többnyelvű Szótanuló</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.0">
+<link rel="stylesheet" href="style.css?v=6.6">
 </head>
 <body>
 
@@ -69,6 +69,12 @@
             napos sorozat
           </div>
         </div>
+
+        <div class="card animate-in" style="animation-delay:0.07s; margin-top: 14px;">
+          <div class="card-title">🎯 Napi Küldetések</div>
+          <div id="daily-quests-container"></div>
+        </div>
+
       </div>
 
       <div>
@@ -185,14 +191,23 @@
             <input type="number" id="q-count" class="count-input" value="20" min="1" max="999">
           </div>
 
-          <div style="margin-bottom: 20px; text-align: left;">
+          <div style="margin-bottom: 12px; text-align: left;">
             <label style="font-size: 11px; font-weight: 800; color: var(--text-3); text-transform: uppercase; display:block; margin-bottom:6px;">Kérdések sorrendje</label>
-            <select id="practice-order" style="width: 100%; padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px; font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; color: var(--text); background: var(--bg); appearance: auto; cursor: pointer;">
+            <select id="practice-order" class="sort-select">
               <option value="random" selected>🔀 Véletlenszerű</option>
               <option value="az">🔠 A → Z</option>
               <option value="za">🔡 Z → A</option>
               <option value="diff-asc">📉 Könnyebb elöl</option>
               <option value="diff-desc">📈 Nehezebb elöl</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom: 20px; text-align: left;">
+            <label style="font-size: 11px; font-weight: 800; color: var(--text-3); text-transform: uppercase; display:block; margin-bottom:6px;">Gyakorlás típusa</label>
+            <select id="practice-type" class="sort-select" style="border-color: var(--primary-light);">
+              <option value="classic" selected>🎯 Klasszikus (Kiválasztós)</option>
+              <option value="hardcore">⌨️ Hardcore (Gépelős)</option>
+              <option value="sentenceFill">📝 Mondat-kiegészítő (Új!)</option>
             </select>
           </div>
 
@@ -288,10 +303,21 @@
         <button class="nav-tab active" onclick="switchStatsTab('topics')">Témakörök</button>
         <button class="nav-tab" onclick="switchStatsTab('words')">Elemek Listája</button>
         <button class="nav-tab" onclick="switchStatsTab('history')">Előzmények</button>
+        <button class="nav-tab" onclick="switchStatsTab('heatmap')">🗺️ Hőtérkép</button>
       </div>
+      
       <div id="stats-topics-tab"><div class="card" style="margin-bottom:20px"><div class="section-title">Teljesítmény témakörönként</div><div id="tag-perf-list"></div></div></div>
       <div id="stats-words-tab" style="display:none"><div class="card"><div class="section-title">Részletesen</div><div class="word-table-wrap"><table class="wtable"><thead><tr id="stats-table-header"><th>Eredeti</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>Szint</th></tr></thead><tbody id="word-stats-tbody"></tbody></table></div></div></div>
       <div id="stats-history-tab" style="display:none"><div class="card"><div class="section-title">Gyakorlási előzmények</div><div id="history-list"></div></div></div>
+      
+      <div id="stats-heatmap-tab" style="display:none">
+        <div class="card">
+          <div class="section-title">Tudásszint Hőtérkép</div>
+          <p style="color: var(--text-3); font-size: 13px; margin-bottom: 20px;">Ez a térkép vizuálisan mutatja, mely szinteken és témákban vagy a legerősebb. Minél zöldebb egy cella, annál nagyobb a szavak helyes aránya.</p>
+          <div id="heatmap-container"></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -342,12 +368,13 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="data.js?v=6.0"></script>
-<script src="japanese_words.js?v=6.0"></script>
-<script src="dekiru.js?v=6.0"></script>
-<script src="kanji_data.js?v=6.0"></script>
+<script src="data.js?v=6.6"></script>
+<script src="japanese_words.js?v=6.6"></script>
+<script src="dekiru.js?v=6.6"></script>
+<script src="kanji_data.js?v=6.6"></script>
+<script src="japanese_sentences.js?v=6.6"></script>
 
-<script src="app.js?v=6.0"></script>
+<script src="app.js?v=6.6"></script>
 
 </body>
 </html>
