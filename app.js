@@ -1,12 +1,30 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V6.6 (Sentence Fill Mode) indítása...");
+console.log("[LexiLearn] App.js V6.7 (Smart Sentences & Eye Toggle) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
 if (typeof KANJI_DATA === 'undefined') window.KANJI_DATA = [];
 if (typeof JAPANESE_SENTENCES === 'undefined') window.JAPANESE_SENTENCES = [];
+
+/* ══════════════════════════════════════════════════════
+   AUTOMATIKUS MONDAT BETÖLTŐ (Auto-Loader javítva)
+══════════════════════════════════════════════════════ */
+function loadJapaneseSentences() {
+  for (let i = 1; i <= 30; i++) {
+    try {
+      const lessonData = eval(`JAPANESE_SENTENCES_L${i}`);
+      if (lessonData && Array.isArray(lessonData)) {
+        JAPANESE_SENTENCES.push(...lessonData);
+      }
+    } catch (error) {
+      // Ha nincs ilyen lecke, simán átugorja
+    }
+  }
+  console.log(`[LexiLearn] ÖSSZES mondat betöltve: ${JAPANESE_SENTENCES.length} db`);
+}
+loadJapaneseSentences();
 
 /* ══════════════════════════════════════════════════════
    V6.5 AUTOMATIKUS UI INJEKTOR (Gamification + Heatmap)
@@ -201,7 +219,7 @@ function syncNewWords() {
   const existingJpIds = new Set(appData.japanese.words.map(w => w.en)); 
   
   const DEKIRU_WORDS = [];
-  for (let i = 1; i <= 100; i++) {
+  for (let i = 1; i <= 30; i++) {
     try {
       const list = eval('DEKIRU_L' + i);
       if (list) DEKIRU_WORDS.push(...list);
@@ -585,20 +603,79 @@ function renderWordList(words) {
   }).join('');
 }
 
+/* ══════════════════════════════════════════════════════
+   OKOS MONDAT SZÍNEZŐ (V6.7 ÚJDONSÁG)
+══════════════════════════════════════════════════════ */
 function renderSentenceList(words) {
   const container = document.getElementById('sentence-list');
   if (!container) return;
   if (words.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3)">Nincs találat.</div>'; return; }
   
-  container.innerHTML = words.map(w => {
-    let displayed = w.sentence ? escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<strong class="en-highlight">${m}</strong>`) : `<em>Nincs részlet / mondat.</em>`;
-    if(currentMode !== 'english' && w.romaji) displayed = `Romaji: <strong style="color:var(--primary)">${w.romaji}</strong>`;
+  // Kigyűjtjük az összes ismert japán szót a kék színezéshez, hossz szerint csökkenőben (hogy a hosszabbakat találja meg előbb)
+  let otherKnownWords = [];
+  if (currentMode !== 'english') {
+    otherKnownWords = appData.japanese.words.concat(appData.kanji.words)
+      .map(w => w.en)
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length);
+  }
 
-    return `
-      <div class="sentence-card">
-        <div class="sc-sentence">${displayed}</div>
-        <div class="sc-bottom"><span class="sc-hu">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
-      </div>`;
+  container.innerHTML = words.map(w => {
+    if (currentMode === 'english') {
+      let displayed = w.sentence ? escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<strong class="en-highlight">${m}</strong>`) : `<em>Nincs részlet / mondat.</em>`;
+      return `
+        <div class="sentence-card">
+          <div class="sc-sentence">${displayed}</div>
+          <div class="sc-bottom"><span class="sc-hu">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
+        </div>`;
+    } else {
+      // JAPÁN MÓD: Végigmegyünk az adatbázison
+      const sentences = typeof JAPANESE_SENTENCES !== 'undefined' ? JAPANESE_SENTENCES.filter(s => s.baseWord === w.en) : [];
+
+      if (sentences.length === 0) {
+        return `
+          <div class="sentence-card">
+            <div class="sc-sentence" style="color:var(--text-3); font-size: 0.9em;"><em>Nincs még példamondat ehhez a szóhoz: ${escHtml(w.en)}</em></div>
+            <div class="sc-bottom" style="margin-top:10px;"><span class="sc-hu">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
+          </div>`;
+      }
+
+      const sHtml = sentences.map(s => {
+        let highlightedHTML = s.fullSentenceHTML;
+
+        // Fő szó kiemelése zöldre
+        if (s.correctAnswer) {
+          const baseWordRegex = new RegExp(`(${escRegex(s.correctAnswer)})`, 'g');
+          highlightedHTML = highlightedHTML.replace(baseWordRegex, `<span style="color: #4CAF50; font-weight: bold;">$1</span>`);
+        }
+
+        // Többi ismert szó kiemelése kékre
+        const filteredKnownWords = otherKnownWords.filter(kw => kw !== w.en && kw !== s.correctAnswer);
+        filteredKnownWords.forEach(knownWord => {
+          if (highlightedHTML.includes(knownWord)) {
+            const knownRegex = new RegExp(`(?![^<]*>)${escRegex(knownWord)}`, 'g');
+            highlightedHTML = highlightedHTML.replace(knownRegex, `<span style="color: #2196F3; cursor: help;" title="Ismert szó a szótárból">${knownWord}</span>`);
+          }
+        });
+
+        return `
+          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border);">
+            <div style="font-size: 1.1em; margin-bottom: 6px; line-height: 1.5;">${highlightedHTML}</div>
+            <div style="font-size: 0.9em; color: var(--text-2); font-style: italic;">${escHtml(s.hungarian)}</div>
+          </div>`;
+      }).join('');
+
+      return `
+        <div class="sentence-card" style="border-left: 4px solid #4CAF50;">
+          <div style="font-weight:bold; font-size:1.2em; display:flex; justify-content:space-between;">
+            <span>${escHtml(w.en)}</span>
+            <span style="font-size:0.7em; font-weight:normal; color:var(--text-3); background:var(--surface-2); padding: 2px 6px; border-radius: 4px;">${sentences.length} mondat</span>
+          </div>
+          <div style="color:var(--primary); font-size: 0.9em; margin-bottom: 8px;">${escHtml(w.romaji || '')}</div>
+          ${sHtml}
+          <div class="sc-bottom" style="margin-top:12px;"><span class="sc-hu" style="font-weight:bold;">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
+        </div>`;
+    }
   }).join('');
 }
 
@@ -756,7 +833,7 @@ function deletePlaylist(id) {
 }
 
 /* ══════════════════════════════════════════════════════
-   PRACTICE LOGIC (V6.6: MONDAT KIEGÉSZÍTŐ MOTOR)
+   PRACTICE LOGIC (V6.7: SZEM IKON + MONDAT MOTOR)
 ══════════════════════════════════════════════════════ */
 let eyeState = 0; 
 
@@ -774,7 +851,6 @@ function startPractice() {
   
   let orderedWords = [...selectedWords];
 
-  // 👇 ÚJ: Ha Mondat-kiegészítő módban vagyunk, szűrjük ki a mondat nélküli szavakat!
   if (type === 'sentenceFill') {
     if (currentMode === 'english') {
       showToast('A Példamondat mód jelenleg csak japánul érhető el!');
@@ -846,26 +922,34 @@ function showQuestion() {
   const correctText  = isEnHu ? word.hu : word.en;
   let contentHtml = '';
 
-  // 👇 V6.6: ÚJ MONDAT KIEGÉSZÍTŐ (SENTENCE FILL) MÓD UI 👇
   if (p.type === 'sentenceFill') {
     hintText = `💬 MONDAT-KIEGÉSZÍTŐ (${isEnHu ? 'Olvasás' : 'Írás'})`;
     
-    // Keresünk egy mondatot az adatbázisból ehhez a szóhoz
     const matchingSentences = JAPANESE_SENTENCES.filter(s => s.baseWord === word.en);
     const sObj = matchingSentences[Math.floor(Math.random() * matchingSentences.length)];
-    p.currentSentenceObj = sObj; // Eltároljuk, hogy ellenőrzésnél tudjuk használni
+    p.currentSentenceObj = sObj;
 
-    // Kicseréljük a ___BLANK___ részt a HTML animálható dobozára
     const sentenceDisplay = sObj.sentenceWithBlank.replace('___BLANK___', `<span class="blank-space" id="blank-space">...</span>`);
     
-    // Megtévesztő opciók generálása a japán szótárból
     const allJpWords = appData.japanese.words.concat(appData.kanji.words);
     const fakeOptions = shuffle(allJpWords.filter(w => w.en !== sObj.correctAnswer)).slice(0, 3).map(w => isEnHu ? w.en : w.hu);
     const options = shuffle([isEnHu ? sObj.correctAnswer : word.hu, ...fakeOptions]);
 
     contentHtml = `
       <div class="q-word" style="font-size: 22px; margin-bottom:15px; line-height: 1.6;">${sentenceDisplay}</div>
-      <div class="sentence-mode-hu">${escHtml(sObj.hungarian)}</div>
+      <div class="translation-container" style="margin-top: 15px; color: var(--text-2); font-size: 14px; display:flex; align-items:center; justify-content:center; gap: 8px;">
+        
+        <button class="eye-btn" onclick="toggleSentenceTranslation(this)" title="Magyar fordítás mutatása/elrejtése">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+
+        <span class="hidden-translation" style="display: none; font-style: italic;">
+          ${escHtml(sObj.hungarian)}
+        </span>
+      </div>
       
       <div class="options-grid" style="margin-top: 25px;">
         ${options.map(opt => `<button class="opt-btn" onclick="checkSentenceAnswer(this, '${escHtml(opt)}')">${escHtml(opt)}</button>`).join('')}
@@ -873,8 +957,6 @@ function showQuestion() {
       <button class="dont-know" style="margin-top:10px;" onclick="checkSentenceAnswer(null, null)">Nem tudom :(</button>
     `;
   } 
-  // 👆 VÉGE A MONDAT MÓDNAK 👆
-
   else if (p.type === 'classic') { 
     const options = shuffle([correctText, ...shuffle(state.words.filter(w=>w.id!==word.id)).slice(0, 3).map(w=>isEnHu?w.hu:w.en)]);
     
@@ -915,6 +997,15 @@ function showQuestion() {
         </div>
         ${contentHtml}
       </div>
+      <div id="next-btn-container" style="display: none; text-align: center; margin-top: 20px; animation: popIn 0.3s;">
+        <button class="eye-btn" onclick="manualNextQuestion()" title="Tovább a következőre" style="width: auto; padding: 8px 20px; border-radius: 20px; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; background: var(--surface-2); border: 1px solid var(--border);">
+          Tovább
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+      </div>
     `;
   }
 
@@ -934,8 +1025,25 @@ function showQuestion() {
     setTimeout(() => { speakWord(questionText, false); }, 300);
   }
 }
+// Kézi továbbléptetés rontás után
+function manualNextQuestion() {
+  const p = state.practice;
+  p.currentIdx++;
+  if (p.currentIdx >= p.roundWords.length) showRoundEnd(); 
+  else showQuestion();
+}
+// A 👁️ IKON LOGIKÁJA
+function toggleSentenceTranslation(btnElement) {
+  const translationSpan = btnElement.nextElementSibling;
+  if (translationSpan.style.display === "none") {
+    translationSpan.style.display = "inline";
+    btnElement.style.opacity = "0.5";
+  } else {
+    translationSpan.style.display = "none";
+    btnElement.style.opacity = "1";
+  }
+}
 
-// 👇 V6.6: ÚJ MONDAT ELLENŐRZŐ MOTOR 👇
 function checkSentenceAnswer(btn, chosen) {
   const p = state.practice; 
   const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
@@ -970,14 +1078,11 @@ function checkSentenceAnswer(btn, chosen) {
     }
   }
 
-  // Statisztika mentése a szóhoz
   if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
   else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
   word.stats.lastAttempt = Date.now();
 
-  // Felolvassa a *teljes japán mondatot*
   setTimeout(() => {
-    // Animálva betöltjük a teljes Furiganás HTML-t, hogy lássa is a helyes alakot!
     if (isEnHu && sObj.fullSentenceHTML) {
       const sentenceContainer = document.querySelector('.q-word');
       if(sentenceContainer) {
@@ -988,13 +1093,19 @@ function checkSentenceAnswer(btn, chosen) {
     speakWord(sObj.ttsSentence, false);
   }, 100);
 
-  setTimeout(() => {
-    p.currentIdx++;
-    if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-  }, isCorrect ? 2500 : 3500); // Több időt hagyunk a mondat elolvasására!
+if (isCorrect) {
+    setTimeout(() => {
+      p.currentIdx++;
+      if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
+    }, 2000); // Helyesnél automatikusan továbblép
+  } else {
+    // Hibásnál megáll és felugrik a Tovább gomb
+    setTimeout(() => {
+      const nextBtn = document.getElementById('next-btn-container');
+      if (nextBtn) nextBtn.style.display = 'block';
+    }, 500);
+  }
 }
-// 👆 VÉGE A MONDAT ELLENŐRZŐNEK 👆
-
 
 function normalizeRomaji(str) {
   if (!str) return "";
@@ -1060,10 +1171,17 @@ function checkHardcoreAnswer(wordId) {
   speakWord(word.en, false);
   word.stats.lastAttempt = Date.now();
 
-  setTimeout(() => {
-    p.currentIdx++;
-    if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-  }, isCorrect ? 1200 : 2500);
+if (isCorrect) {
+    setTimeout(() => {
+      p.currentIdx++;
+      if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
+    }, 1200); 
+  } else {
+    setTimeout(() => {
+      const nextBtn = document.getElementById('next-btn-container');
+      if (nextBtn) nextBtn.style.display = 'block';
+    }, 500);
+  }
 }
 
 function revealHardcoreAnswer(wordId) {
@@ -1126,10 +1244,17 @@ function checkAnswer(btn, chosen, correct) {
       speakWord(word.en, false);
   }
 
-  setTimeout(() => {
-    p.currentIdx++;
-    if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-  }, isCorrect ? 800 : 1800); 
+  if (isCorrect) {
+    setTimeout(() => {
+      p.currentIdx++;
+      if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
+    }, 1000); 
+  } else {
+    setTimeout(() => {
+      const nextBtn = document.getElementById('next-btn-container');
+      if (nextBtn) nextBtn.style.display = 'block';
+    }, 500);
+  }
 }
 
 /* ══════════════════════════════════════════════════════
