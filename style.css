@@ -464,3 +464,79 @@ rt {
   border-top: 1px dashed var(--border);
   padding-top: 10px;
 }
+.collections-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Mobilon 2 oszlop */
+  gap: 12px;
+  padding: 10px;
+}
+
+@media (min-width: 768px) {
+  .collections-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /* PC-n több oszlop */
+  }
+}
+
+.collection-card {
+  background: var(--surface);
+  padding: 20px;
+  border-radius: var(--radius);
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+}
+
+.collection-card:active { transform: scale(0.95); }
+
+.collection-card:hover {
+  border-color: var(--primary);
+  background: var(--primary-dim);
+}
+
+.collection-card .icon {
+  font-size: 1.8rem;
+  margin-bottom: 8px;
+}
+
+.collection-card .name {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+/* ══════════════════════════════════════════════════════
+   V6.7 – SAJÁT LISTÁK bővítések
+══════════════════════════════════════════════════════ */
+.playlist-card-item.playlist-active {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-dim);
+}
+.playlist-card-item.playlist-active .playlist-header {
+  color: var(--primary);
+  background: var(--primary-dim);
+}
+.playlist-actions-row .btn {
+  flex: 1;
+  justify-content: center;
+  font-size: 11px;
+  padding: 7px 4px;
+}
+
+/* ── Saját lista szekció címkék ───────────────────────── */
+.playlist-section-label {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 2px;
+  margin-bottom: 4px;
+}
+.playlist-from-file {
+  border-left: 3px solid var(--primary-light);
+}

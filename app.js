@@ -7,7 +7,7 @@ if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
 if (typeof KANJI_DATA === 'undefined') window.KANJI_DATA = [];
 if (typeof JAPANESE_SENTENCES === 'undefined') window.JAPANESE_SENTENCES = [];
-
+if (typeof english_sentences2 === 'undefined') window.english_sentences2 = [];
 /* ══════════════════════════════════════════════════════
    AUTOMATIKUS MONDAT BETÖLTŐ (Auto-Loader javítva)
 ══════════════════════════════════════════════════════ */
@@ -113,7 +113,7 @@ function getEmojisForTags(tags) {
 function createEmptyState() {
   return {
     words: [], playlists: [], selectedIds: new Set(),
-    filters: { search: '', topicSearch: '', tags: [], diff: new Set(), lesson: 'all', sort: 'az' },
+    filters: { search: '', topicSearch: '', tags: [], diff: new Set(), lesson: 'all', sort: 'az', list: 'all' },
     direction: 'en-hu', activeViewTab: 'words',
     practice: { roundNumber: 0, roundWords: [], currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: 0, sessionStartTime: 0, sessionCorrect: 0, sessionWrong: 0, type: 'classic', currentSentenceObj: null },
     globalStats: { totalSessions: 0, totalCorrect: 0, totalWrong: 0, sessionHistory: [], studyDays: {}, recordStreak: 0, lastStudiedTopic: null },
@@ -178,10 +178,12 @@ function loadState() {
         }
       });
       syncNewWords();
+      syncCustomLists();
     } else {
       syncNewWords();
+      syncCustomLists();
     }
-  } catch(e) { syncNewWords(); }
+  } catch(e) { syncNewWords(); syncCustomLists(); }
   
   cleanTags();
   applyTheme(savedTheme); 
@@ -209,11 +211,36 @@ function cleanTags() {
 }
 
 function syncNewWords() {
-  if (appData.english.words.length === 0 && SAMPLE_WORDS.length > 0) {
-    appData.english.words = SAMPLE_WORDS.map((w,i) => ({
-      id: 'en_' + i, en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
-      stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
-    }));
+  if (SAMPLE_WORDS.length > 0) {
+    if (appData.english.words.length === 0) {
+      // Első betöltés: minden szót létrehozunk
+      appData.english.words = SAMPLE_WORDS.map((w, i) => ({
+        id: 'en_' + i, en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
+        stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
+      }));
+    } else {
+      // Visszatérő betöltés: data.js változásait (tag, diff, hu, sentence) mindig frissítjük,
+      // de a statisztikákat (streak, helyes/hibás) megőrizzük.
+      SAMPLE_WORDS.forEach((srcWord, i) => {
+        const existing = appData.english.words.find(w => w.en === srcWord.en);
+        if (existing) {
+          // Meglévő szó: csak a szerkeszthető mezőket frissítjük data.js-ből
+          existing.hu       = srcWord.hu;
+          existing.tags     = srcWord.tags;
+          existing.diff     = srcWord.diff || 'B2';
+          existing.syn      = srcWord.syn || '';
+          existing.sentence = srcWord.sentence || '';
+        } else {
+          // Új szó a data.js-ben: hozzáadjuk
+          appData.english.words.push({
+            id: 'en_new_' + i + '_' + Date.now(),
+            en: srcWord.en, hu: srcWord.hu, tags: srcWord.tags,
+            diff: srcWord.diff || 'B2', syn: srcWord.syn || '', sentence: srcWord.sentence || '',
+            stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
+          });
+        }
+      });
+    }
   }
   
   const existingJpIds = new Set(appData.japanese.words.map(w => w.en)); 
@@ -272,6 +299,36 @@ function syncNewWords() {
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
     }
+  });
+}
+
+/* ══════════════════════════════════════════════════════
+   MY_CUSTOM_LISTS BEOLVASÓ (data.js → playlists)
+   Ha a data.js-ben definiálsz MY_CUSTOM_LISTS tömböt,
+   ez a függvény automatikusan betölti őket mint saját listákat.
+   Mindig szinkronizál, tehát ha módosítod a data.js-t, az 
+   app is frissül a következő betöltéskor.
+══════════════════════════════════════════════════════ */
+function syncCustomLists() {
+  // Először töröljük az összes korábban data.js-ből betöltött listát.
+  // Így ha törölsz egyet a data.js-ből, a localStorage-ból is eltűnik.
+  appData.english.playlists = appData.english.playlists.filter(p => p.source !== 'data_js');
+
+  if (typeof MY_CUSTOM_LISTS === 'undefined' || !Array.isArray(MY_CUSTOM_LISTS)) return;
+
+  MY_CUSTOM_LISTS.forEach(list => {
+    if (!list.id || !list.name || !Array.isArray(list.words)) return;
+    const wordIds = list.words
+      .map(enWord => appData.english.words.find(w => w.en === enWord))
+      .filter(Boolean)
+      .map(w => w.id);
+    appData.english.playlists.push({
+      id: list.id,
+      name: list.name,
+      icon: list.icon || '📋',
+      wordIds: wordIds,
+      source: 'data_js'
+    });
   });
 }
 
@@ -557,6 +614,15 @@ function applyFilters() {
     if (state.filters.tags.length > 0 && !state.filters.tags.some(t => w.tags.includes(t))) return false;
     if (state.filters.diff.size > 0 && !state.filters.diff.has(w.diff)) return false;
     if ((currentMode === 'kanji' || currentMode === 'japanese') && state.filters.lesson !== 'all' && w.lesson != state.filters.lesson) return false;
+    
+    // Lista (playlist) szerinti szűrés – FIX #4
+    // Hiba volt: w.lists-et vizsgált, ami soha nincs a szavakon.
+    // Javítva: a playlist wordIds tömbben keresi az adott szót.
+    if (state.filters.list && state.filters.list !== 'all') {
+      const pl = state.playlists ? state.playlists.find(p => p.id === state.filters.list) : null;
+      if (!pl || !pl.wordIds.includes(w.id)) return false;
+    }
+
     return true;
   });
 
@@ -622,11 +688,44 @@ function renderSentenceList(words) {
 
   container.innerHTML = words.map(w => {
     if (currentMode === 'english') {
-      let displayed = w.sentence ? escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<strong class="en-highlight">${m}</strong>`) : `<em>Nincs részlet / mondat.</em>`;
+      const enSentences = typeof english_sentences2 !== 'undefined'
+        ? english_sentences2.filter(s => s.baseWord === w.en)
+        : [];
+
+      if (enSentences.length === 0) {
+        // Ha nincs adat, egyszerű kártya a szó saját sentence mezőjével
+        let displayed = w.sentence
+          ? escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<span style="color:#4CAF50;font-weight:bold;">${m}</span>`)
+          : `<em style="color:var(--text-3)">Nincs még példamondat ehhez a szóhoz: ${escHtml(w.en)}</em>`;
+        return `
+          <div class="sentence-card">
+            <div class="sc-sentence" style="font-size:1.05em; line-height:1.5;">${displayed}</div>
+            <div class="sc-bottom" style="margin-top:10px;"><span class="sc-hu">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
+          </div>`;
+      }
+
+      // Mondatok renderelése – ugyanolyan stílusban mint a japán
+      const sHtml = enSentences.map(s => {
+        // A fullSentenceHTML-ben <strong>szó</strong> van – azt kicseréljük zöld spanre
+        let highlightedHTML = s.fullSentenceHTML.replace(
+          /<strong>(.*?)<\/strong>/g,
+          `<span style="color:#4CAF50;font-weight:bold;">$1</span>`
+        );
+        return `
+          <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);">
+            <div style="font-size:1.1em; margin-bottom:6px; line-height:1.5;">${highlightedHTML}</div>
+            <div style="font-size:0.9em; color:var(--text-2); font-style:italic;">${escHtml(s.hungarian)}</div>
+          </div>`;
+      }).join('');
+
       return `
-        <div class="sentence-card">
-          <div class="sc-sentence">${displayed}</div>
-          <div class="sc-bottom"><span class="sc-hu">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
+        <div class="sentence-card" style="border-left:4px solid #4CAF50;">
+          <div style="font-weight:bold; font-size:1.2em; display:flex; justify-content:space-between;">
+            <span>${escHtml(w.en)}</span>
+            <span style="font-size:0.7em; font-weight:normal; color:var(--text-3); background:var(--surface-2); padding:2px 6px; border-radius:4px;">${enSentences.length} mondat</span>
+          </div>
+          ${sHtml}
+          <div class="sc-bottom" style="margin-top:12px;"><span class="sc-hu" style="font-weight:bold;">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
         </div>`;
     } else {
       // JAPÁN MÓD: Végigmegyünk az adatbázison
@@ -744,34 +843,70 @@ function updateStartPanel() {
 function renderPlaylists() {
   const cont = document.getElementById('playlists-container');
   if (!cont) return;
+
   if (!state.playlists || state.playlists.length === 0) {
-    cont.innerHTML = '<div class="empty-lists">Még nincsenek elmentett listáid ebben a nyelvben.</div>';
+    cont.innerHTML = '<div class="empty-lists">Még nincsenek elmentett listáid ebben a nyelvben.<br><small style="color:var(--text-3)">Jelölj ki szavakat, majd kattints a 💾 Mentés gombra.</small></div>';
     return;
   }
-  cont.innerHTML = state.playlists.map(p => {
+
+  // Szétválasztjuk: data.js-ből jövők és kézzel mentett listák
+  const fileLists   = state.playlists.filter(p => p.source === 'data_js');
+  const savedLists  = state.playlists.filter(p => p.source !== 'data_js');
+
+  function renderCard(p) {
+    const isFromFile = p.source === 'data_js';
+    const isActive   = state.filters.list === p.id;
+    const icon       = isFromFile ? (p.icon || '📋') : '📁';
+
     const plWordsHTML = p.wordIds.map(id => {
       const w = state.words.find(x => x.id === id);
-      return w ? `<b>${escHtml(w.en)}</b> - ${escHtml(w.hu)}` : '';
+      return w ? `<b>${escHtml(w.en)}</b> – ${escHtml(w.hu)}` : '';
     }).filter(Boolean).join('<br>');
 
+    const actionBtns = isFromFile
+      ? /* Fájlból jövő: csak szűrés + kijelölés, nincs törlés */ `
+          <button class="btn btn-primary" onclick="filterByPlaylist('${p.id}')">🔍 Szűrés</button>
+          <button class="btn btn-outline" onclick="loadPlaylist('${p.id}')" title="Lista szavait hozzáadja a kijelöléshez">✔ Kijelöl</button>
+        `
+      : /* Kézzel mentett: összes gomb */ `
+          <button class="btn btn-primary" onclick="filterByPlaylist('${p.id}')">🔍 Szűrés</button>
+          <button class="btn btn-outline" onclick="expandPlaylist('${p.id}')" title="Kijelölt szavak hozzáadása">➕ Bővítés</button>
+          <button class="btn btn-outline" onclick="loadPlaylist('${p.id}')" title="Szavak kijelölése">✔ Kijelöl</button>
+          <button class="btn btn-outline" style="color:var(--error);border-color:var(--error-bg);" onclick="deletePlaylist('${p.id}')">🗑</button>
+        `;
+
     return `
-      <div class="playlist-card-item">
+      <div class="playlist-card-item${isActive ? ' playlist-active' : ''}${isFromFile ? ' playlist-from-file' : ''}">
         <div class="playlist-header" onclick="togglePlaylist('${p.id}')">
-          <div style="display:flex; align-items:center; gap:6px;">
-            📁 ${escHtml(p.name)} <span style="color:var(--text-3);font-size:11px">(${p.wordIds.length})</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            ${icon} ${escHtml(p.name)}
+            <span style="color:var(--text-3);font-size:11px">(${p.wordIds.length} szó)</span>
+            ${isFromFile ? '<span style="font-size:10px;background:var(--primary-dim);color:var(--primary);padding:1px 6px;border-radius:10px;border:1px solid var(--primary-light)">data.js</span>' : ''}
+            ${isActive ? '<span style="font-size:10px;background:var(--primary);color:#fff;padding:1px 6px;border-radius:10px;">aktív</span>' : ''}
           </div>
           <div class="pl-chevron" id="chevron-${p.id}">▼</div>
         </div>
         <div class="playlist-body" id="body-${p.id}">
-          <div class="playlist-word-list">${plWordsHTML}</div>
-          <div class="playlist-actions-row">
-            <button class="btn btn-primary" onclick="loadPlaylist('${p.id}')">➕ Hozzáadás</button>
-            <button class="btn btn-outline" style="color:var(--error); border-color:var(--error-bg);" onclick="deletePlaylist('${p.id}')">Törlés</button>
-          </div>
+          <div class="playlist-word-list">${plWordsHTML || '<em style="color:var(--text-3)">Üres lista</em>'}</div>
+          <div class="playlist-actions-row">${actionBtns}</div>
         </div>
       </div>
     `;
-  }).join('');
+  }
+
+  let html = '';
+
+  if (fileLists.length > 0) {
+    html += `<div class="playlist-section-label">📄 Saját listák (data.js)</div>`;
+    html += fileLists.map(renderCard).join('');
+  }
+
+  if (savedLists.length > 0) {
+    html += `<div class="playlist-section-label" style="margin-top:10px;">💾 Elmentett listák</div>`;
+    html += savedLists.map(renderCard).join('');
+  }
+
+  cont.innerHTML = html;
 }
 
 function togglePlaylist(id) {
@@ -805,7 +940,7 @@ function savePlaylist() {
   if (isDuplicate) { showToast('Már létezik ilyen nevű lista!'); return; }
 
   state.playlists.push({ id: 'pl_' + Date.now(), name: name, wordIds: Array.from(state.selectedIds) });
-  saveState(); closeModal('playlist-modal'); renderPlaylists(); showToast('Lista sikeresen elmentve!');
+  saveState(); closeModal('playlist-modal'); renderPlaylists(); showToast('✅ Lista sikeresen elmentve: ' + name);
 }
 
 function loadPlaylist(id) {
@@ -823,13 +958,32 @@ function loadPlaylist(id) {
   state.filters.search = ''; state.filters.topicSearch = ''; state.filters.tags = []; state.filters.diff = new Set(); state.filters.lesson = 'all';
   document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
   
-  applyFilters(); updateStartPanel(); saveState(); showToast('📂 ' + pl.name + ' hozzáadva!');
+  applyFilters(); updateStartPanel(); saveState(); showToast('📂 ' + pl.name + ' szavai kijelölve!');
+}
+
+/* ÚJ: Lista alapján szűrés (csak a lista szavait mutatja a szólistában) */
+function filterByPlaylist(id) {
+  const pl = state.playlists ? state.playlists.find(p => p.id === id) : null;
+  if (!pl) return;
+  // Ha már ez a szűrő aktív, visszaállítás összes megjelenítésére
+  if (state.filters.list === id) {
+    applyListFilter('all');
+    showToast('🔓 Szűrő eltávolítva – összes szó látható');
+  } else {
+    applyListFilter(id);
+    showToast(`🔍 Szűrés: „${pl.name}" (${pl.wordIds.length} szó)`);
+  }
+  renderPlaylists(); // Aktív jelölő frissítése
 }
 
 function deletePlaylist(id) {
   if(!confirm('Biztosan törlöd ezt a listát?')) return;
+  // Ha ez az aktív szűrő, visszaállítás
+  if (state.filters.list === id) {
+    state.filters.list = 'all';
+  }
   state.playlists = state.playlists.filter(p => p.id !== id);
-  saveState(); renderPlaylists();
+  saveState(); renderPlaylists(); applyFilters();
 }
 
 /* ══════════════════════════════════════════════════════
@@ -852,15 +1006,13 @@ function startPractice() {
   let orderedWords = [...selectedWords];
 
   if (type === 'sentenceFill') {
-    if (currentMode === 'english') {
-      showToast('A Példamondat mód jelenleg csak japánul érhető el!');
-      return;
-    }
-    
-    orderedWords = orderedWords.filter(w => 
-      JAPANESE_SENTENCES && JAPANESE_SENTENCES.some(s => s.baseWord === w.en)
+    // BUG #1 JAVÍTVA: Angol mód most már támogatott – english_sentences2-t használja
+    const sentenceDB = currentMode === 'english' ? english_sentences2 : JAPANESE_SENTENCES;
+
+    orderedWords = orderedWords.filter(w =>
+      sentenceDB && sentenceDB.some(s => s.baseWord === w.en)
     );
-    
+
     if (orderedWords.length === 0) {
       showToast('A kiválasztott szavakhoz még nem tartozik példamondat az adatbázisban!');
       return;
@@ -922,17 +1074,36 @@ function showQuestion() {
   const correctText  = isEnHu ? word.hu : word.en;
   let contentHtml = '';
 
-  if (p.type === 'sentenceFill') {
+ if (p.type === 'sentenceFill') {
     hintText = `💬 MONDAT-KIEGÉSZÍTŐ (${isEnHu ? 'Olvasás' : 'Írás'})`;
     
-    const matchingSentences = JAPANESE_SENTENCES.filter(s => s.baseWord === word.en);
+    // 1. Dinamikusan kiválasztjuk, hogy angol vagy japán mondatokat használunk
+    const sentencesDB = currentMode === 'english' ? english_sentences2 : JAPANESE_SENTENCES;
+    
+    // 2. Kikeressük az adott szóhoz tartozó mondatokat
+    const matchingSentences = sentencesDB.filter(s => s.baseWord === word.en);
+    
+    // BIZTONSÁGI VONAL: Ha a szóhoz (még) nem generáltunk mondatot, 
+    // átvált sima feleletválasztós módra, hogy ne fagyjon le az app!
+    if (matchingSentences.length === 0) {
+      console.warn("Nincs mondat ehhez a szóhoz: " + word.en);
+      p.type = 'classic';
+      // BUG #2 JAVÍTVA: return nélkül az sObj undefined lenne → crash
+      showQuestion();
+      return;
+    }
+
     const sObj = matchingSentences[Math.floor(Math.random() * matchingSentences.length)];
     p.currentSentenceObj = sObj;
 
     const sentenceDisplay = sObj.sentenceWithBlank.replace('___BLANK___', `<span class="blank-space" id="blank-space">...</span>`);
     
-    const allJpWords = appData.japanese.words.concat(appData.kanji.words);
-    const fakeOptions = shuffle(allJpWords.filter(w => w.en !== sObj.correctAnswer)).slice(0, 3).map(w => isEnHu ? w.en : w.hu);
+    // 3. Hamis opciók (fake options) kiválasztása a megfelelő szótárból
+    let allWordsPool = currentMode === 'english' 
+      ? appData.english.words 
+      : appData.japanese.words.concat(appData.kanji.words);
+    
+    const fakeOptions = shuffle(allWordsPool.filter(w => w.en !== sObj.correctAnswer)).slice(0, 3).map(w => isEnHu ? w.en : w.hu);
     const options = shuffle([isEnHu ? sObj.correctAnswer : word.hu, ...fakeOptions]);
 
     contentHtml = `
@@ -956,7 +1127,7 @@ function showQuestion() {
       </div>
       <button class="dont-know" style="margin-top:10px;" onclick="checkSentenceAnswer(null, null)">Nem tudom :(</button>
     `;
-  } 
+  }
   else if (p.type === 'classic') { 
     const options = shuffle([correctText, ...shuffle(state.words.filter(w=>w.id!==word.id)).slice(0, 3).map(w=>isEnHu?w.hu:w.en)]);
     
@@ -1256,7 +1427,6 @@ function checkAnswer(btn, chosen, correct) {
     }, 500);
   }
 }
-
 /* ══════════════════════════════════════════════════════
    PRÉMIUM TTS HANG FELOLVASÓ
 ══════════════════════════════════════════════════════ */
@@ -1717,6 +1887,60 @@ function showToast(msg) {
 function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escRegex(str) { return String(str).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+/* ══════════════════════════════════════════════════════
+   HIÁNYZÓ FÜGGVÉNY: migrateDiff (FIX #1)
+   Hiba: doImport() meghívta, de soha nem volt definiálva → ReferenceError
+══════════════════════════════════════════════════════ */
+function migrateDiff(d) {
+  const enValid = ['B1','B2','C1','C2'];
+  const jpValid = ['N5','N4','N3','N2','N1'];
+  if (currentMode === 'english') {
+    return enValid.includes(d) ? d : 'B2';
+  } else {
+    return jpValid.includes(d) ? d : 'N5';
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   FIX #2: renderCollections – COLLECTIONS globális nem létezik.
+   Átírva: a gyors lista-választó gombokat rendereli a saját listákból.
+══════════════════════════════════════════════════════ */
+function renderCollections() {
+  renderPlaylists();
+}
+
+function applyListFilter(listId) {
+  state.filters.list = listId || 'all';
+  renderPlaylists();
+  applyFilters();
+}
+
+/* ══════════════════════════════════════════════════════
+   Lista bővítése – kijelölt szavak hozzáadása meglévő listához
+══════════════════════════════════════════════════════ */
+function expandPlaylist(id) {
+  const pl = state.playlists ? state.playlists.find(p => p.id === id) : null;
+  if (!pl) return;
+  if (state.selectedIds.size === 0) {
+    showToast('Először jelölj ki szavakat a szólistából!');
+    return;
+  }
+  let added = 0;
+  state.selectedIds.forEach(wId => {
+    if (!pl.wordIds.includes(wId)) {
+      pl.wordIds.push(wId);
+      added++;
+    }
+  });
+  if (added === 0) {
+    showToast('A kijelölt szavak már mind szerepelnek ebben a listában.');
+  } else {
+    showToast(`✅ ${added} szó hozzáadva a(z) „${pl.name}" listához!`);
+  }
+  saveState();
+  renderPlaylists();
+}
 
 /* ══════════════════════════════════════════════════════
    INIT

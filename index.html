@@ -5,14 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LexiLearn – Többnyelvű Szótanuló</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.6">
+<link rel="stylesheet" href="style.css?v=6.7">
 </head>
 <body>
 
+<!-- ══════════════════════════════════════════════════════
+     DASHBOARD KÉPERNYŐ
+══════════════════════════════════════════════════════ -->
 <div id="screen-dashboard" class="screen active">
   <header class="app-header">
     <div class="logo" onclick="showScreen('dashboard')">🌿 Lexi<em>Learn</em></div>
-    
+
     <div class="mode-switcher">
       <button class="mode-btn active" id="mode-english" onclick="setMode('english')">
         <img src="https://flagcdn.com/w20/gb.png" width="16" alt="GB" style="border-radius:2px; vertical-align:middle; margin-right:4px; margin-bottom: 2px;"> Angol
@@ -48,6 +51,8 @@
 
   <div class="container">
     <div class="dashboard-grid">
+
+      <!-- BAL OLDALSÁV: Haladás, Heti, Napi -->
       <div class="stats-sidebar-col">
         <div class="card animate-in" style="margin-bottom:14px">
           <div class="card-title">📈 Haladás</div>
@@ -74,15 +79,17 @@
           <div class="card-title">🎯 Napi Küldetések</div>
           <div id="daily-quests-container"></div>
         </div>
-
       </div>
 
+      <!-- KÖZÉP: Szűrők + Szólista -->
       <div>
         <div class="card animate-in" style="margin-bottom:14px">
           <div class="card-title">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             Szűrők
           </div>
+
+          <!-- Keresés -->
           <div class="filter-group">
             <span class="filter-label">Keresés</span>
             <div class="search-wrap">
@@ -90,7 +97,7 @@
               <input class="search-input" id="search-input" type="text" placeholder="Keress..." oninput="applyFilters()" style="padding-left: 34px;">
             </div>
           </div>
-          
+
           <div class="filter-group" id="topic-filter-group">
             <span class="filter-label">Témakör</span>
             <div class="search-wrap">
@@ -144,7 +151,7 @@
               <span id="word-count-label">Szólista</span>
             </div>
             <div class="select-actions">
-              <button class="btn btn-outline btn-sm" id="btn-save-list" onclick="openPlaylistModal()" disabled>Mentés</button>
+              <button class="btn btn-outline btn-sm" id="btn-save-list" onclick="openPlaylistModal()" disabled>💾 Mentés</button>
               <button class="btn btn-outline btn-sm" onclick="selectAll()">Mind</button>
               <button class="btn btn-outline btn-sm" onclick="selectNone()">Törlés</button>
             </div>
@@ -158,6 +165,7 @@
         </div>
       </div>
 
+      <!-- JOBB OLDAL: Saját Listák + Irány + Gyakorlás -->
       <div>
         <div class="card animate-in" style="margin-bottom:14px; background: var(--surface-2); border-color: var(--primary-light);">
           <div class="card-title" style="color: var(--primary-h);">
@@ -177,7 +185,7 @@
             <button class="dir-btn" id="dir-hu-en" onclick="setDirection('hu-en')"><span id="lbl-dir-2">HU→GB</span></button>
           </div>
         </div>
-        
+
         <div class="card start-panel animate-in" style="animation-delay:0.1s">
           <div class="card-title">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -185,7 +193,7 @@
           </div>
           <div class="selected-big" id="selected-count-big">0</div>
           <div class="selected-label" id="selected-label-text">kijelölve</div>
-          
+
           <div class="count-input-wrap">
             <label for="q-count">Kérdések száma:</label>
             <input type="number" id="q-count" class="count-input" value="20" min="1" max="999">
@@ -217,10 +225,15 @@
           </button>
         </div>
       </div>
+
     </div>
   </div>
 </div>
+<!-- /screen-dashboard -->
 
+<!-- ══════════════════════════════════════════════════════
+     GYAKORLÁS KÉPERNYŐ
+══════════════════════════════════════════════════════ -->
 <div id="screen-practice" class="screen">
   <div class="practice-top">
     <div class="round-badge" id="round-badge">Round 1</div>
@@ -232,6 +245,9 @@
   <div class="question-area" id="question-area"></div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════
+     KÖR VÉGE KÉPERNYŐ
+══════════════════════════════════════════════════════ -->
 <div id="screen-round-end" class="screen">
   <div class="round-end-wrap">
     <div class="round-end-card animate-in">
@@ -271,6 +287,9 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════
+     STATISZTIKA KÉPERNYŐ
+══════════════════════════════════════════════════════ -->
 <div id="screen-stats" class="screen">
   <header class="app-header">
     <div class="logo" onclick="showScreen('dashboard')">🌿 Lexi<em>Learn</em></div>
@@ -305,11 +324,10 @@
         <button class="nav-tab" onclick="switchStatsTab('history')">Előzmények</button>
         <button class="nav-tab" onclick="switchStatsTab('heatmap')">🗺️ Hőtérkép</button>
       </div>
-      
+
       <div id="stats-topics-tab"><div class="card" style="margin-bottom:20px"><div class="section-title">Teljesítmény témakörönként</div><div id="tag-perf-list"></div></div></div>
       <div id="stats-words-tab" style="display:none"><div class="card"><div class="section-title">Részletesen</div><div class="word-table-wrap"><table class="wtable"><thead><tr id="stats-table-header"><th>Eredeti</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>Szint</th></tr></thead><tbody id="word-stats-tbody"></tbody></table></div></div></div>
       <div id="stats-history-tab" style="display:none"><div class="card"><div class="section-title">Gyakorlási előzmények</div><div id="history-list"></div></div></div>
-      
       <div id="stats-heatmap-tab" style="display:none">
         <div class="card">
           <div class="section-title">Tudásszint Hőtérkép</div>
@@ -317,11 +335,15 @@
           <div id="heatmap-container"></div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════
+     MODÁLIS ABLAKOK
+══════════════════════════════════════════════════════ -->
+
+<!-- Lista mentése modal -->
 <div class="modal-overlay" id="playlist-modal">
   <div class="modal" style="max-width: 380px;">
     <div class="modal-title">💾 Lista mentése</div>
@@ -336,6 +358,7 @@
   </div>
 </div>
 
+<!-- Importálás modal -->
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
     <div class="modal-title">📥 Importálás</div>
@@ -348,6 +371,7 @@
   </div>
 </div>
 
+<!-- Új szó hozzáadása modal -->
 <div class="modal-overlay" id="add-modal">
   <div class="modal">
     <div class="modal-title" id="add-modal-title">➕ Új szó hozzáadása</div>
@@ -368,13 +392,13 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="data.js?v=6.6"></script>
-<script src="japanese_words.js?v=6.6"></script>
-<script src="dekiru.js?v=6.6"></script>
-<script src="kanji_data.js?v=6.6"></script>
-<script src="japanese_sentences.js?v=6.6"></script>
-
-<script src="app.js?v=6.6"></script>
+<script src="data.js?v=6.7"></script>
+<script src="japanese_words.js?v=6.7"></script>
+<script src="dekiru.js?v=6.7"></script>
+<script src="kanji_data.js?v=6.7"></script>
+<script src="japanese_sentences.js?v=6.7"></script>
+<script src="english_sentences2.js"></script>
+<script src="app.js?v=6.7"></script>
 
 </body>
 </html>
