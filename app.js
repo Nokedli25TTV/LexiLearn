@@ -211,40 +211,52 @@ function cleanTags() {
 }
 
 function syncNewWords() {
+  // --- ANGOL SZINKRONIZÁLÁS ÉS TÖRLÉS ---
   if (SAMPLE_WORDS.length > 0) {
+    const sampleEnSet = new Set(SAMPLE_WORDS.map(w => w.en));
+    
+    // MIGRÁCIÓ: A régi system szavak megjelölése az ID alapján
+    appData.english.words.forEach(w => {
+      if (w.id && (w.id.startsWith('en_') || w.id.startsWith('en_new_'))) {
+        if (!w.source) w.source = 'data_js';
+      }
+    });
+
     if (appData.english.words.length === 0) {
-      // Első betöltés: minden szót létrehozunk
       appData.english.words = SAMPLE_WORDS.map((w, i) => ({
         id: 'en_' + i, en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
+        source: 'data_js',
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       }));
     } else {
-      // Visszatérő betöltés: data.js változásait (tag, diff, hu, sentence) mindig frissítjük,
-      // de a statisztikákat (streak, helyes/hibás) megőrizzük.
       SAMPLE_WORDS.forEach((srcWord, i) => {
         const existing = appData.english.words.find(w => w.en === srcWord.en);
         if (existing) {
-          // Meglévő szó: csak a szerkeszthető mezőket frissítjük data.js-ből
           existing.hu       = srcWord.hu;
           existing.tags     = srcWord.tags;
           existing.diff     = srcWord.diff || 'B2';
           existing.syn      = srcWord.syn || '';
           existing.sentence = srcWord.sentence || '';
+          existing.source   = 'data_js';
         } else {
-          // Új szó a data.js-ben: hozzáadjuk
           appData.english.words.push({
             id: 'en_new_' + i + '_' + Date.now(),
             en: srcWord.en, hu: srcWord.hu, tags: srcWord.tags,
             diff: srcWord.diff || 'B2', syn: srcWord.syn || '', sentence: srcWord.sentence || '',
+            source: 'data_js',
             stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
           });
         }
       });
+      // TÖRLÉS: Most már a "pherhaps" is törlődni fog, mert a fenti migráció megjelölte
+      appData.english.words = appData.english.words.filter(w =>
+        w.source !== 'data_js' || sampleEnSet.has(w.en)
+      );
     }
   }
   
+  // --- JAPÁN ÉS KANDZSI SZINKRONIZÁLÁS (Javítva) ---
   const existingJpIds = new Set(appData.japanese.words.map(w => w.en)); 
-  
   const DEKIRU_WORDS = [];
   for (let i = 1; i <= 30; i++) {
     try {
@@ -253,53 +265,80 @@ function syncNewWords() {
     } catch(e) { }
   }
 
+  // Megjelöljük a régi japán/kandzsi szavakat is a törléshez
+  appData.japanese.words.forEach(w => {
+    if (w.id && (w.id.startsWith('ja_') || w.id.startsWith('ja_dek_'))) {
+      if (!w.source) w.source = w.id.includes('dek') ? 'dekiru' : 'data_js';
+    }
+  });
+
   DEKIRU_WORDS.forEach((w, i) => {
     let lessonVal = w.lesson ? (Array.isArray(w.lesson) ? w.lesson[0] : w.lesson) : null;
-
-    if (!existingJpIds.has(w.kana)) {
+    let existingWord = appData.japanese.words.find(x => x.en === w.kana);
+    if (!existingWord) {
       appData.japanese.words.push({
         id: 'ja_dek_' + i + '_' + Date.now(),
         en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
-        lesson: lessonVal, 
-        source: 'dekiru',
-        sentence: '',
+        lesson: lessonVal, source: 'dekiru', sentence: '',
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
-      existingJpIds.add(w.kana); 
     } else {
-      let existingWord = appData.japanese.words.find(x => x.en === w.kana);
-      if (existingWord) {
-        existingWord.lesson = lessonVal;
-        existingWord.source = 'dekiru';
-        if (w.tags) {
-          w.tags.forEach(t => { if (!existingWord.tags.includes(t)) existingWord.tags.push(t); });
-        }
-      }
+      existingWord.lesson = lessonVal;
+      existingWord.source = 'dekiru';
+      existingWord.hu = w.hu; // Frissítjük a fordítást is
     }
   });
 
   JAPANESE_WORDS.forEach((w, i) => {
-    if (!existingJpIds.has(w.kana)) {
+    let existingWord = appData.japanese.words.find(x => x.en === w.kana);
+    if (!existingWord) {
       appData.japanese.words.push({
         id: 'ja_' + i + '_' + Date.now(),
-        en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5', sentence: '',
+        en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
+        source: 'data_js', sentence: '',
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
-      existingJpIds.add(w.kana);
+    } else {
+      existingWord.hu = w.hu;
+      existingWord.source = 'data_js';
     }
   });
 
-  const existingKjIds = new Set(appData.kanji.words.map(w => w.en));
-  KANJI_DATA.forEach((w,i) => {
-    if (!existingKjIds.has(w.kanji)) {
+  // Japán törlési logika
+  const sampleJpSet = new Set(JAPANESE_WORDS.map(w => w.kana));
+  const dekiruSet = new Set(DEKIRU_WORDS.map(w => w.kana));
+  appData.japanese.words = appData.japanese.words.filter(w => 
+    (w.source !== 'data_js' && w.source !== 'dekiru') || 
+    (w.source === 'data_js' && sampleJpSet.has(w.en)) ||
+    (w.source === 'dekiru' && dekiruSet.has(w.en))
+  );
+
+  // Kandzsi frissítés és törlés
+  const sampleKjSet = new Set(KANJI_DATA.map(w => w.kanji));
+  appData.kanji.words.forEach(w => {
+    if (w.id && w.id.startsWith('kj_') && !w.source) w.source = 'data_js';
+  });
+
+  KANJI_DATA.forEach((w, i) => {
+    let existingWord = appData.kanji.words.find(x => x.en === w.kanji);
+    if (!existingWord) {
       appData.kanji.words.push({
         id: 'kj_' + i + '_' + Date.now(),
         en: w.kanji, hu: w.meaning, romaji: w.romaji, onyomi: w.onyomi, kunyomi: w.kunyomi,
-        tags: ['Lesson ' + w.lesson], lesson: w.lesson, diff: w.jlpt || 'N5', sentence: '',
+        tags: ['Lesson ' + w.lesson], lesson: w.lesson, diff: w.jlpt || 'N5',
+        source: 'data_js', sentence: '',
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
+    } else {
+      existingWord.hu = w.meaning;
+      existingWord.lesson = w.lesson;
+      existingWord.source = 'data_js';
     }
   });
+
+  appData.kanji.words = appData.kanji.words.filter(w => 
+    w.source !== 'data_js' || sampleKjSet.has(w.en)
+  );
 }
 
 /* ══════════════════════════════════════════════════════
