@@ -117,7 +117,7 @@ function createEmptyState() {
     direction: 'en-hu', activeViewTab: 'words',
     practice: { roundNumber: 0, roundWords: [], currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: 0, sessionStartTime: 0, sessionCorrect: 0, sessionWrong: 0, type: 'classic', currentSentenceObj: null },
     globalStats: { totalSessions: 0, totalCorrect: 0, totalWrong: 0, sessionHistory: [], studyDays: {}, recordStreak: 0, lastStudiedTopic: null },
-    dailyQuests: { date: '', wordsPracticed: 0, perfectRounds: 0, practiceTimeSeconds: 0 }
+    dailyQuests: { date: '', list: [] }
   };
 }
 
@@ -165,7 +165,7 @@ function loadState() {
           appData[lang].words = parsed[lang].words || [];
           appData[lang].playlists = parsed[lang].playlists || [];
           appData[lang].globalStats = parsed[lang].globalStats || createEmptyState().globalStats;
-          appData[lang].dailyQuests = parsed[lang].dailyQuests || { date: '', wordsPracticed: 0, perfectRounds: 0, practiceTimeSeconds: 0 };
+          appData[lang].dailyQuests = parsed[lang].dailyQuests || { date: '', list: [] };
           appData[lang].direction = parsed[lang].direction || 'en-hu';
           
           if (parsed[lang].filters) {
@@ -483,42 +483,260 @@ function getWeekDays() {
   });
 }
 
+/* ══════════════════════════════════════════════════════
+   V8: DAILY QUEST ENGINE 2.0
+══════════════════════════════════════════════════════ */
+
+const QUEST_STYLES = {
+  LearnWords:     { icon: '📚', color: '#2d6a4f', bg: '#d8f3dc' },
+  PerfectRound:   { icon: '⭐', color: '#e0a800', bg: '#fff8dc' },
+  PracticeTime:   { icon: '⏱️', color: '#1a73e8', bg: '#e3f0ff' },
+  GhostHunter:    { icon: '👻', color: '#7b2d8b', bg: '#f3e5f5' },
+  StrictPerfect:  { icon: '🎯', color: '#b5272a', bg: '#fde8e8' },
+  Speed5in30:     { icon: '⚡', color: '#e76f51', bg: '#fceae4' },
+  TagMaster:      { icon: '🏷️', color: '#0277bd', bg: '#e3f2fd' },
+  MistakeCleanup: { icon: '🔧', color: '#5a5470', bg: '#ede7f6' },
+  DailyWord:      { icon: '💡', color: '#f57f17', bg: '#fff9c4' },
+  Combo5:         { icon: '🔥', color: '#e76f51', bg: '#fceae4' },
+  KanaMaster:     { icon: '🇯🇵', color: '#c62828', bg: '#ffcdd2' },
+  KanjiMaster:    { icon: '⛩️', color: '#4a148c', bg: '#ede7f6' },
+};
+
+function generateDailyQuests() {
+  const words = state.words;
+  const today = todayKey();
+  const mode = currentMode;
+  const pool = [];
+
+  // 1. LearnWords
+  const lwTarget = shuffle([5, 10, 15, 20])[0];
+  pool.push({ type: 'LearnWords', target: lwTarget, progress: 0, completed: false,
+    label: `Gyakorolj ${lwTarget} szót`, params: {} });
+
+  // 2. PerfectRound
+  pool.push({ type: 'PerfectRound', target: 1, progress: 0, completed: false,
+    label: 'Csinálj egy hibátlan kört', params: {} });
+
+  // 3. PracticeTime
+  const ptMin = shuffle([5, 10, 15])[0];
+  pool.push({ type: 'PracticeTime', target: ptMin * 60, progress: 0, completed: false,
+    label: `Gyakorolj ${ptMin} percet`, params: {} });
+
+  // 4. GhostHunter – szavak amiket 7+ napja nem láttál
+  const sevenDaysAgo = Date.now() - 7 * 86400000;
+  const ghostWords = words.filter(w => !w.stats.lastAttempt || w.stats.lastAttempt < sevenDaysAgo);
+  if (ghostWords.length >= 3) {
+    const ghostTarget = Math.min(5, ghostWords.length);
+    pool.push({ type: 'GhostHunter', target: ghostTarget, progress: 0, completed: false,
+      label: `Vadássz ${ghostTarget} szellemszóra`, params: { ghostIds: ghostWords.map(w => w.id) } });
+  }
+
+  // 5. StrictPerfect – 10+ szavas hibátlan kör
+  if (words.length >= 10) {
+    pool.push({ type: 'StrictPerfect', target: 1, progress: 0, completed: false,
+      label: 'Teljesíts hibátlanul egy 10+ szavas kört', params: {} });
+  }
+
+  // 6. Speed5in30 – 5 helyes válasz 30 mp alatt
+  pool.push({ type: 'Speed5in30', target: 5, progress: 0, completed: false,
+    label: '5 helyes válasz 30 mp alatt', params: { windowStart: null } });
+
+  // 7. TagMaster – véletlen tag, legalább 5 szóval
+  const tagMap = {};
+  words.forEach(w => w.tags.forEach(t => { tagMap[t] = (tagMap[t] || 0) + 1; }));
+  const validTags = Object.entries(tagMap).filter(([, c]) => c >= 5);
+  if (validTags.length > 0) {
+    const [chosenTag, tagCount] = shuffle(validTags)[0];
+    const tagTarget = Math.min(10, tagCount);
+    pool.push({ type: 'TagMaster', target: tagTarget, progress: 0, completed: false,
+      label: `Tematikus nap: "${chosenTag}"`, params: { tag: chosenTag } });
+  }
+
+  // 8. MistakeCleanup – legtöbb hibás szavak
+  const topWrong = [...words]
+    .filter(w => w.stats.totalWrong > 0)
+    .sort((a, b) => b.stats.totalWrong - a.stats.totalWrong)
+    .slice(0, 5);
+  if (topWrong.length >= 3) {
+    pool.push({ type: 'MistakeCleanup', target: topWrong.length, progress: 0, completed: false,
+      label: `Javítsd a ${topWrong.length} legtöbb hibás szót`, params: { wordIds: topWrong.map(w => w.id) } });
+  }
+
+  // 9. DailyWord – nap szava (ID alapján mentve, nem index)
+  if (words.length > 0) {
+    const dateHash = parseInt(today.replace(/-/g, '')) % words.length;
+    const dw = words[dateHash];
+    pool.push({ type: 'DailyWord', target: 1, progress: 0, completed: false,
+      label: `Nap szava: "${dw.en}"`, params: { wordId: dw.id, wordEn: dw.en, wordHu: dw.hu } });
+  }
+
+  // 10. Combo5 – 5 helyes egymás után
+  pool.push({ type: 'Combo5', target: 5, progress: 0, completed: false,
+    label: '5 helyes válasz egymás után', params: {} });
+
+  // 11. Módspecifikus
+  if (mode === 'japanese') {
+    pool.push({ type: 'KanaMaster', target: 10, progress: 0, completed: false,
+      label: 'Gyakorolj 10 kana szót', params: {} });
+  }
+  if (mode === 'kanji') {
+    pool.push({ type: 'KanjiMaster', target: 10, progress: 0, completed: false,
+      label: 'Gyakorolj 10 kandzsit', params: {} });
+  }
+
+  // 3 véletlenszerű küldetés kiválasztása
+  const picked = shuffle(pool).slice(0, 3);
+  picked.forEach((q, i) => { q.id = 'q' + i; });
+
+  return { date: today, list: picked };
+}
+
 function checkDailyReset() {
   const today = todayKey();
-  if (state.dailyQuests.date !== today) {
-    state.dailyQuests = { date: today, wordsPracticed: 0, perfectRounds: 0, practiceTimeSeconds: 0 };
+  // Régi formátum migrálása
+  const isOldFormat = !state.dailyQuests.list;
+  if (isOldFormat || state.dailyQuests.date !== today) {
+    state.dailyQuests = generateDailyQuests();
     saveState();
   }
 }
 
+/* ══════════════════════════════════════════════════════
+   V8: EVENT BUS – updateQuestProgress
+   Hívva minden helyes/hibás válasznál és kör végén.
+══════════════════════════════════════════════════════ */
+function updateQuestProgress(eventType, data) {
+  const q = state.dailyQuests;
+  if (!q || !q.list) return;
+  let changed = false;
+
+  q.list.forEach(quest => {
+    if (quest.completed) return;
+    const prev = quest.progress;
+
+    if (eventType === 'wordAnswered') {
+      const { word, isCorrect } = data;
+
+      if (!isCorrect) {
+        // Hibás válasz: combo és speed ablak reset
+        if (quest.type === 'Combo5') { state.practice._combo = 0; }
+        if (quest.type === 'Speed5in30') { quest.params.windowStart = null; quest.progress = 0; }
+      } else {
+        // Helyes válasz
+        if (quest.type === 'LearnWords') quest.progress++;
+        if (quest.type === 'KanaMaster' && currentMode === 'japanese') quest.progress++;
+        if (quest.type === 'KanjiMaster' && currentMode === 'kanji') quest.progress++;
+
+        if (quest.type === 'GhostHunter' && quest.params.ghostIds && quest.params.ghostIds.includes(word.id))
+          quest.progress++;
+
+        if (quest.type === 'TagMaster' && word.tags &&
+            word.tags.map(t => t.toLowerCase()).includes(quest.params.tag.toLowerCase()))
+          quest.progress++;
+
+        if (quest.type === 'MistakeCleanup' && quest.params.wordIds && quest.params.wordIds.includes(word.id))
+          quest.progress++;
+
+        if (quest.type === 'DailyWord' && word.id === quest.params.wordId)
+          quest.progress = 1;
+
+        if (quest.type === 'Combo5') {
+          state.practice._combo = (state.practice._combo || 0) + 1;
+          quest.progress = Math.max(quest.progress, state.practice._combo);
+        }
+
+        if (quest.type === 'Speed5in30') {
+          const now = Date.now();
+          if (!quest.params.windowStart) {
+            quest.params.windowStart = now;
+            quest.progress = 1;
+          } else if (now - quest.params.windowStart <= 30000) {
+            quest.progress++;
+          } else {
+            // 30 mp lejárt, új ablak
+            quest.params.windowStart = now;
+            quest.progress = 1;
+          }
+        }
+      }
+    }
+
+    if (eventType === 'roundEnd') {
+      const { roundCorrect, roundWrong, roundLength, elapsed } = data;
+
+      if (quest.type === 'PerfectRound' && roundWrong === 0 && roundLength > 0)
+        quest.progress = 1;
+
+      if (quest.type === 'StrictPerfect' && roundWrong === 0 && roundLength >= 10)
+        quest.progress = 1;
+
+      if (quest.type === 'PracticeTime')
+        quest.progress = Math.min(quest.target, (quest.progress || 0) + elapsed);
+    }
+
+    // Teljesítve?
+    if (!quest.completed && quest.progress >= quest.target) {
+      quest.completed = true;
+    }
+
+    if (quest.progress !== prev) changed = true;
+  });
+
+  if (changed) {
+    saveState();
+    renderDailyQuests();
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   V8: QUEST UI RENDERER
+══════════════════════════════════════════════════════ */
 function renderDailyQuests() {
   checkDailyReset();
-  const q = state.dailyQuests;
   const cont = document.getElementById('daily-quests-container');
   if (!cont) return;
+  const q = state.dailyQuests;
+  if (!q || !q.list || q.list.length === 0) return;
 
-  const wTarget = 10;
-  const pTarget = 1;
-  const tTarget = 300; 
+  cont.innerHTML = q.list.map(quest => {
+    const style = QUEST_STYLES[quest.type] || { icon: '🏷️', color: '#5a5470', bg: '#f0ede6' };
+    const done = quest.completed;
+    const pct = Math.min(100, Math.round((quest.progress / quest.target) * 100));
 
-  const wPct = Math.min(100, Math.round((q.wordsPracticed / wTarget) * 100));
-  const pPct = Math.min(100, Math.round((q.perfectRounds / pTarget) * 100));
-  const tPct = Math.min(100, Math.round((q.practiceTimeSeconds / tTarget) * 100));
+    let progressText;
+    if (quest.type === 'PracticeTime') {
+      const doneMins = Math.floor(Math.min(quest.progress, quest.target) / 60);
+      const totalMins = quest.target / 60;
+      progressText = `${doneMins}/${totalMins} perc`;
+    } else {
+      progressText = `${Math.min(quest.progress, quest.target)}/${quest.target}`;
+    }
 
-  cont.innerHTML = `
-    <div class="quest-item ${wPct >= 100 ? 'completed' : ''}">
-      <div class="quest-info"><span class="quest-title">Tanulj ${wTarget} új szót</span><span class="quest-prog">${Math.min(q.wordsPracticed, wTarget)}/${wTarget}</span></div>
-      <div class="quest-bar-bg"><div class="quest-bar-fill" style="width:${wPct}%"></div></div>
-    </div>
-    <div class="quest-item ${pPct >= 100 ? 'completed' : ''}">
-      <div class="quest-info"><span class="quest-title">Csinálj egy hibátlan kört</span><span class="quest-prog">${Math.min(q.perfectRounds, pTarget)}/${pTarget}</span></div>
-      <div class="quest-bar-bg"><div class="quest-bar-fill" style="width:${pPct}%"></div></div>
-    </div>
-    <div class="quest-item ${tPct >= 100 ? 'completed' : ''}">
-      <div class="quest-info"><span class="quest-title">Gyakorolj 5 percet</span><span class="quest-prog">${Math.floor(Math.min(q.practiceTimeSeconds, tTarget)/60)}/5m</span></div>
-      <div class="quest-bar-bg"><div class="quest-bar-fill" style="width:${tPct}%"></div></div>
-    </div>
-  `;
+    // DailyWord extra info
+    const extraBadge = quest.type === 'DailyWord' && !done
+      ? `<span class="quest-daily-word">${quest.params.wordEn} = ${quest.params.wordHu}</span>`
+      : '';
+
+    // TagMaster badge
+    const tagBadge = quest.type === 'TagMaster' && !done
+      ? `<span class="quest-tag-badge" style="background:${style.bg};color:${style.color}">🏷️ ${quest.params.tag}</span>`
+      : '';
+
+    return `
+      <div class="quest-item ${done ? 'completed' : ''}" style="border-left: 3px solid ${style.color}">
+        <div class="quest-info">
+          <span class="quest-title">
+            <span style="margin-right:5px">${style.icon}</span>${quest.label}
+          </span>
+          <span class="quest-prog" style="color:${done ? 'var(--success)' : style.color}">${done ? '✓' : progressText}</span>
+        </div>
+        ${extraBadge}${tagBadge}
+        <div class="quest-bar-bg">
+          <div class="quest-bar-fill" style="width:${pct}%; background:${style.color}"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1068,7 +1286,7 @@ function startPractice() {
     roundNumber: 1, roundWords: orderedWords.slice(0, qCount).map(w => w.id),
     currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0,
     roundStartTime: Date.now(), sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0,
-    type: type, currentSentenceObj: null
+    type: type, currentSentenceObj: null, _combo: 0
   };
 
   if (selectedWords.length > 0) {
@@ -1260,9 +1478,8 @@ function checkSentenceAnswer(btn, chosen) {
   const sObj = p.currentSentenceObj;
   
   document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-  
+
   checkDailyReset();
-  state.dailyQuests.wordsPracticed++;
 
   const isEnHu = state.direction === 'en-hu';
   const correctOptionText = isEnHu ? sObj.correctAnswer : word.hu;
@@ -1291,6 +1508,7 @@ function checkSentenceAnswer(btn, chosen) {
   if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
   else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
   word.stats.lastAttempt = Date.now();
+  updateQuestProgress('wordAnswered', { word, isCorrect });
 
   setTimeout(() => {
     if (isEnHu && sObj.fullSentenceHTML) {
@@ -1338,8 +1556,6 @@ function checkHardcoreAnswer(wordId) {
   inputEl.disabled = true;
 
   checkDailyReset();
-  state.dailyQuests.wordsPracticed++;
-
   const isEnHu = state.direction === 'en-hu';
   const correctText = isEnHu ? word.hu : word.en;
   
@@ -1380,12 +1596,13 @@ function checkHardcoreAnswer(wordId) {
   
   speakWord(word.en, false);
   word.stats.lastAttempt = Date.now();
+  updateQuestProgress('wordAnswered', { word, isCorrect });
 
-if (isCorrect) {
+  if (isCorrect) {
     setTimeout(() => {
       p.currentIdx++;
       if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-    }, 1200); 
+    }, 1200);
   } else {
     setTimeout(() => {
       const nextBtn = document.getElementById('next-btn-container');
@@ -1423,10 +1640,7 @@ function toggleEye(wordId) {
 function checkAnswer(btn, chosen, correct) {
   const p = state.practice; const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
   document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-  
   checkDailyReset();
-  state.dailyQuests.wordsPracticed++;
-
   const isCorrect = chosen === correct;
   const qCard = document.getElementById('q-card');
 
@@ -1448,6 +1662,7 @@ function checkAnswer(btn, chosen, correct) {
     if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
     else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
     word.stats.lastAttempt = Date.now();
+    updateQuestProgress('wordAnswered', { word, isCorrect });
   }
 
   if (!isCorrect && state.direction === 'hu-en') {
@@ -1502,10 +1717,12 @@ function showRoundEnd() {
   const elapsed = Math.round((Date.now() - p.roundStartTime) / 1000);
   
   checkDailyReset();
-  state.dailyQuests.practiceTimeSeconds += elapsed;
-  if (p.roundWrong === 0 && total > 0) {
-    state.dailyQuests.perfectRounds++;
-  }
+  updateQuestProgress('roundEnd', {
+    roundCorrect: p.roundCorrect,
+    roundWrong: p.roundWrong,
+    roundLength: total,
+    elapsed: elapsed
+  });
   saveState();
   renderDailyQuests();
 

@@ -356,16 +356,19 @@ textarea.import-area { width: 100%; height: 160px; border: 2px solid var(--borde
   .nav-tabs::-webkit-scrollbar { display: none; }
 }
 /* ══════════════════════════════════════════════════════
-   GAMIFICATION ÉS HŐTÉRKÉP STÍLUSOK (V6)
+   V8: NAPI KÜLDETÉSEK (Daily Quest Engine 2.0)
 ══════════════════════════════════════════════════════ */
-/* Napi Küldetések */
 .quest-item {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border-left: 3px solid var(--border);
+  background: var(--bg);
   opacity: 1;
-  transition: opacity 0.3s;
+  transition: opacity 0.3s, border-color 0.3s;
 }
 .quest-item.completed {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 .quest-item.completed .quest-title {
   text-decoration: line-through;
@@ -374,25 +377,56 @@ textarea.import-area { width: 100%; height: 160px; border: 2px solid var(--borde
 .quest-info {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 6px;
-  color: var(--text-2);
+  gap: 6px;
+}
+.quest-title {
+  color: var(--text);
+  line-height: 1.35;
+  flex: 1;
+}
+.quest-prog {
+  font-weight: 800;
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 .quest-bar-bg {
-  height: 8px;
+  height: 6px;
   background: var(--surface-2);
   border-radius: 4px;
   overflow: hidden;
 }
 .quest-bar-fill {
   height: 100%;
-  background: var(--primary);
   border-radius: 4px;
   transition: width 0.5s ease-out;
 }
-.quest-item.completed .quest-bar-fill {
-  background: var(--success);
+.quest-daily-word {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: #f57f17;
+  background: #fff9c4;
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-bottom: 5px;
+  width: fit-content;
+}
+[data-theme="dark"] .quest-daily-word {
+  background: rgba(245, 127, 23, 0.15);
+  color: #ffcc02;
+}
+.quest-tag-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-bottom: 5px;
 }
 
 /* Hőtérkép */
