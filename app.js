@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V6.7 (Smart Sentences & Eye Toggle) indítása...");
+console.log("[LexiLearn] App.js V9 (Smart Distractors + Google TTS + Audio Blocking) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
@@ -1296,6 +1296,53 @@ function startPractice() {
   showScreen('practice'); showQuestion();
 }
 
+/* ══════════════════════════════════════════════════════
+   V9: OKOS HAMIS VÁLASZ GENERÁTOR (Smart Distractors)
+   Prioritás: 1) Azonos témakör (tags) → 2) Azonos nehézség → 3) Véletlen
+══════════════════════════════════════════════════════ */
+function getSmartDistractors(targetWord, count, isEnHu) {
+  const allWords = state.words.filter(w => w.id !== targetWord.id);
+  const distractors = [];
+  const usedIds = new Set();
+
+  // 1. Elsődleges szűrés: azonos témakör/tag egyezés
+  if (targetWord.tags && targetWord.tags.length > 0) {
+    const targetTagsLower = targetWord.tags.map(t => t.toLowerCase());
+    const sameTagPool = shuffle(allWords.filter(w =>
+      w.tags && w.tags.some(t => targetTagsLower.includes(t.toLowerCase()))
+    ));
+    for (const w of sameTagPool) {
+      if (distractors.length >= count) break;
+      if (!usedIds.has(w.id)) {
+        distractors.push(isEnHu ? w.hu : w.en);
+        usedIds.add(w.id);
+      }
+    }
+  }
+
+  // 2. Másodlagos szűrés: azonos nehézségi szint (fallback)
+  if (distractors.length < count) {
+    const sameDiffPool = shuffle(allWords.filter(w => w.diff === targetWord.diff && !usedIds.has(w.id)));
+    for (const w of sameDiffPool) {
+      if (distractors.length >= count) break;
+      distractors.push(isEnHu ? w.hu : w.en);
+      usedIds.add(w.id);
+    }
+  }
+
+  // 3. Végső védelem: teljesen véletlenszerű szótár
+  if (distractors.length < count) {
+    const randomPool = shuffle(allWords.filter(w => !usedIds.has(w.id)));
+    for (const w of randomPool) {
+      if (distractors.length >= count) break;
+      distractors.push(isEnHu ? w.hu : w.en);
+      usedIds.add(w.id);
+    }
+  }
+
+  return distractors.slice(0, count);
+}
+
 function showQuestion() {
   const p = state.practice;
   const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
@@ -1355,12 +1402,8 @@ function showQuestion() {
 
     const sentenceDisplay = sObj.sentenceWithBlank.replace('___BLANK___', `<span class="blank-space" id="blank-space">...</span>`);
     
-    // 3. Hamis opciók (fake options) kiválasztása a megfelelő szótárból
-    let allWordsPool = currentMode === 'english' 
-      ? appData.english.words 
-      : appData.japanese.words.concat(appData.kanji.words);
-    
-    const fakeOptions = shuffle(allWordsPool.filter(w => w.en !== sObj.correctAnswer)).slice(0, 3).map(w => isEnHu ? w.en : w.hu);
+    // V9: Okos hamis opciók – azonos témakör/nehézség alapján (!isEnHu: mondat kitöltésénél a forrás mezőt kell distraktornak)
+    const fakeOptions = getSmartDistractors(word, 3, !isEnHu);
     const options = shuffle([isEnHu ? sObj.correctAnswer : word.hu, ...fakeOptions]);
 
     contentHtml = `
@@ -1386,7 +1429,7 @@ function showQuestion() {
     `;
   }
   else if (p.type === 'classic') { 
-    const options = shuffle([correctText, ...shuffle(state.words.filter(w=>w.id!==word.id)).slice(0, 3).map(w=>isEnHu?w.hu:w.en)]);
+    const options = shuffle([correctText, ...getSmartDistractors(word, 3, isEnHu)]);
     
     contentHtml = `
       <div class="q-word ${currentMode === 'kanji' && isEnHu ? 'kanji-display' : ''}" style="margin-bottom:6px;">${escHtml(questionText)}</div>
@@ -1521,11 +1564,19 @@ function checkSentenceAnswer(btn, chosen) {
     speakWord(sObj.ttsSentence, false);
   }, 100);
 
-if (isCorrect) {
-    setTimeout(() => {
+  if (isCorrect) {
+    // V9: A mondat felolvasása fusson végig, utána lépünk tovább
+    let hasAdvanced = false;
+    const doAdvance = () => {
+      if (hasAdvanced) return;
+      hasAdvanced = true;
+      _ttsOnEnd = null;
       p.currentIdx++;
       if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-    }, 2000); // Helyesnél automatikusan továbblép
+    };
+    // A speakWord 100ms múlva indul → _ttsOnEnd-et ráhagyjuk, hogy az onend-et elkapja
+    _ttsOnEnd = () => setTimeout(doAdvance, 400);
+    setTimeout(doAdvance, 6000); // Biztonsági timeout (hosszú mondatoknál is elég)
   } else {
     // Hibásnál megáll és felugrik a Tovább gomb
     setTimeout(() => {
@@ -1599,10 +1650,17 @@ function checkHardcoreAnswer(wordId) {
   updateQuestProgress('wordAnswered', { word, isCorrect });
 
   if (isCorrect) {
-    setTimeout(() => {
+    // V9: Bevárjuk a hang végét
+    let hasAdvanced = false;
+    const doAdvance = () => {
+      if (hasAdvanced) return;
+      hasAdvanced = true;
+      _ttsOnEnd = null;
       p.currentIdx++;
       if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-    }, 1200);
+    };
+    _ttsOnEnd = () => setTimeout(doAdvance, 400);
+    setTimeout(doAdvance, 5000); // Biztonsági timeout
   } else {
     setTimeout(() => {
       const nextBtn = document.getElementById('next-btn-container');
@@ -1670,10 +1728,24 @@ function checkAnswer(btn, chosen, correct) {
   }
 
   if (isCorrect) {
-    setTimeout(() => {
+    // V9: Bevárjuk a szó hangjának végét, mielőtt továbblépünk
+    let hasAdvanced = false;
+    const doAdvance = () => {
+      if (hasAdvanced) return;
+      hasAdvanced = true;
+      _ttsOnEnd = null;
       p.currentIdx++;
       if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-    }, 1000); 
+    };
+    // Ellenőrizzük, hogy fut-e még hang (az auto-speak-ből showQuestion-ban)
+    const isAudioPlaying = (_currentTTSAudio && !_currentTTSAudio.ended && !_currentTTSAudio.paused)
+                        || (window.speechSynthesis && window.speechSynthesis.speaking);
+    if (isAudioPlaying) {
+      _ttsOnEnd = () => setTimeout(doAdvance, 350); // Hang végén + kis szünet
+      setTimeout(doAdvance, 5000);                  // Biztonsági max. várakozás
+    } else {
+      setTimeout(doAdvance, 800);
+    }
   } else {
     setTimeout(() => {
       const nextBtn = document.getElementById('next-btn-container');
@@ -1682,31 +1754,76 @@ function checkAnswer(btn, chosen, correct) {
   }
 }
 /* ══════════════════════════════════════════════════════
-   PRÉMIUM TTS HANG FELOLVASÓ
+   V9: PRÉMIUM TTS HANG FELOLVASÓ
+   - Google Translate TTS japánhoz (kanji-mentes, precíz kiejtés)
+   - Kana prioritás: word.en = kana japán módban → automatikusan helyes
+   - Audio blokkolás: helyes válasz után bevárja a hang végét
 ══════════════════════════════════════════════════════ */
-function speakWord(text, forceHungarian = false) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  
-  const u = new SpeechSynthesisUtterance(text);
-  const voices = window.speechSynthesis.getVoices();
-  
-  if (currentMode !== 'english' && (state.direction === 'en-hu' || !forceHungarian)) {
-    u.lang = 'ja-JP';
-    const jpVoice = voices.find(v => v.lang.includes('ja') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Premium'))) 
-                 || voices.find(v => v.lang.includes('ja'));
-    if (jpVoice) u.voice = jpVoice;
-    u.rate = 0.9; 
-  } else {
-    u.lang = (state.direction === 'en-hu' && forceHungarian) ? 'hu-HU' : 'en-US';
-    u.rate = 1.0;
-  }
-  
-  u.onerror = function(e) { console.log("TTS Hiba vagy nem támogatott nyelv: ", e); };
-  window.speechSynthesis.speak(u);
+let _currentTTSAudio = null; // Aktuális Google TTS Audio elem referenciája
+let _ttsVersion = 0;          // Race condition védelem verziószámlálóval
+let _ttsOnEnd = null;         // Hang befejezésekor futó callback (advance logika)
+
+function _onTTSFinished(version) {
+  if (_ttsVersion !== version) return; // Elavult esemény → figyelmen kívül
+  _currentTTSAudio = null;
+  const cb = _ttsOnEnd;
+  _ttsOnEnd = null;
+  if (cb) cb();
 }
 
-if (speechSynthesis.onvoiceschanged !== undefined) {
+function speakWord(text, forceHungarian = false) {
+  _ttsVersion++;
+  const ver = _ttsVersion;
+
+  // Előző hang azonnali leállítása
+  if (_currentTTSAudio) {
+    try { _currentTTSAudio.pause(); _currentTTSAudio.src = ''; } catch(e) {}
+    _currentTTSAudio = null;
+  }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+
+  if (!text || typeof text !== 'string' || !text.trim()) {
+    _onTTSFinished(ver); return;
+  }
+
+  // Japán módban (en-hu irányban): kana prioritás – word.en IS kana az adatstruktúrában
+  const isJapanese = currentMode !== 'english' && !forceHungarian;
+
+  // Fallback: böngésző beépített SpeechSynthesis
+  function useSpeechSynthesis() {
+    if (!window.speechSynthesis) { _onTTSFinished(ver); return; }
+    const u = new SpeechSynthesisUtterance(text);
+    const voices = window.speechSynthesis.getVoices();
+    if (isJapanese) {
+      u.lang = 'ja-JP';
+      const jpVoice = voices.find(v => v.lang.includes('ja') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Premium')))
+                   || voices.find(v => v.lang.includes('ja'));
+      if (jpVoice) u.voice = jpVoice;
+      u.rate = 0.9;
+    } else {
+      u.lang = forceHungarian ? 'hu-HU' : 'en-US';
+      u.rate = 1.0;
+    }
+    u.onend  = () => _onTTSFinished(ver);
+    u.onerror = (e) => { console.log('[TTS] SpeechSynthesis hiba:', e); _onTTSFinished(ver); };
+    window.speechSynthesis.speak(u);
+  }
+
+  if (isJapanese) {
+    // Google Translate TTS – pontosabb japán kiejtés, kana alapú, on/kun keveredés nélkül
+    const audio = new Audio();
+    const encoded = encodeURIComponent(text);
+    audio.src = `https://translate.googleapis.com/translate_tts?ie=UTF-8&q=${encoded}&tl=ja&client=gtx&ttsspeed=0.85`;
+    _currentTTSAudio = audio;
+    audio.onended = () => _onTTSFinished(ver);
+    audio.onerror = () => { _currentTTSAudio = null; useSpeechSynthesis(); };
+    audio.play().catch(() => { _currentTTSAudio = null; useSpeechSynthesis(); });
+  } else {
+    useSpeechSynthesis();
+  }
+}
+
+if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !== undefined) {
   speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 }
 
