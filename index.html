@@ -4,8 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>LexiLearn – Többnyelvű Szótanuló</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1a3d2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="LexiLearn">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+
+<!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6.7">
+
+<!-- IndexedDB könyvtár (localForage) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+
+<link rel="stylesheet" href="style.css?v=10.0">
 </head>
 <body>
 
@@ -316,6 +332,7 @@
           <button class="btn btn-outline btn-sm" onclick="document.getElementById('file-import').click()">📂 Visszaállítás fájlból</button>
           <input type="file" id="file-import" style="display:none" accept=".json" onchange="importData(event)">
         </div>
+        <div id="storage-info"></div>
       </div>
 
       <div class="nav-tabs">
@@ -392,13 +409,13 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="data.js?v=6.7"></script>
-<script src="japanese_words.js?v=6.7"></script>
-<script src="dekiru.js?v=6.7"></script>
-<script src="kanji_data.js?v=6.7"></script>
-<script src="japanese_sentences.js?v=6.7"></script>
-<script src="english_sentences2.js"></script>
-<script src="app.js?v=6.7"></script>
+<script src="data.js?v=10.0"></script>
+<script src="japanese_words.js?v=10.0"></script>
+<script src="dekiru.js?v=10.0"></script>
+<script src="kanji_data.js?v=10.0"></script>
+<script src="japanese_sentences.js?v=10.0"></script>
+<script src="english_sentences2.js?v=10.0"></script>
+<script src="app.js?v=10.0"></script>
 
 </body>
 </html>

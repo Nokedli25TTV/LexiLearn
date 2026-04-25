@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V9 (Smart Distractors + Google TTS + Audio Blocking) indítása...");
+console.log("[LexiLearn] App.js V10.5 (Split-DB + PWA Upgrade) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
@@ -67,7 +67,7 @@ function applyTheme(theme) {
 function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
   applyTheme(current);
-  saveState();
+  saveSettings(); // Csak a beállításokat kell menteni, nem a teljes DB-t
 }
 
 /* ══════════════════════════════════════════════════════
@@ -136,60 +136,184 @@ function diffOrder(d) {
 }
 
 /* ══════════════════════════════════════════════════════
-   STORAGE & INIT
+   STORAGE & INIT  –  V10.5 SPLIT-DB ARCHITEKTÚRA
+   4 külön IndexedDB kulcs a gyors, célzott mentésekhez:
+     lexi_words     → szótár (csak ritkán változik)
+     lexi_stats     → pontszámok, streakek, küldetések
+     lexi_playlists → saját listák
+     lexi_settings  → mód, téma, szűrők, irányok
 ══════════════════════════════════════════════════════ */
-function saveState() {
-  const toSave = {
-    lastMode: currentMode,
-    theme: document.documentElement.getAttribute('data-theme') || 'light',
-    english:  { words: appData.english.words,  playlists: appData.english.playlists,  globalStats: appData.english.globalStats, dailyQuests: appData.english.dailyQuests, direction: appData.english.direction,  filters: { ...appData.english.filters, diff: Array.from(appData.english.filters.diff) },  selectedIds: Array.from(appData.english.selectedIds) },
-    japanese: { words: appData.japanese.words, playlists: appData.japanese.playlists, globalStats: appData.japanese.globalStats, dailyQuests: appData.japanese.dailyQuests, direction: appData.japanese.direction, filters: { ...appData.japanese.filters, diff: Array.from(appData.japanese.filters.diff) }, selectedIds: Array.from(appData.japanese.selectedIds) },
-    kanji:    { words: appData.kanji.words,    playlists: appData.kanji.playlists,    globalStats: appData.kanji.globalStats, dailyQuests: appData.kanji.dailyQuests,   direction: appData.kanji.direction,    filters: { ...appData.kanji.filters, diff: Array.from(appData.kanji.filters.diff) },       selectedIds: Array.from(appData.kanji.selectedIds) }
-  };
-  try { localStorage.setItem('lexilearn_v5', JSON.stringify(toSave)); } catch(e) {}
+
+// ── Belső segéd: aktuális állapot → 4 mentési objektum ──────────
+function _buildSaveObjects() {
+  const words = {}, stats = {}, playlists = {}, settings = { lastMode: currentMode, theme: document.documentElement.getAttribute('data-theme') || 'light' };
+  ['english', 'japanese', 'kanji'].forEach(lang => {
+    words[lang]     = appData[lang].words;
+    stats[lang]     = { globalStats: appData[lang].globalStats, dailyQuests: appData[lang].dailyQuests };
+    playlists[lang] = appData[lang].playlists;
+    settings[lang]  = {
+      direction:   appData[lang].direction,
+      filters:     { ...appData[lang].filters, diff: Array.from(appData[lang].filters.diff) },
+      selectedIds: Array.from(appData[lang].selectedIds)
+    };
+  });
+  return { words, stats, playlists, settings };
 }
 
-function loadState() {
-  let savedMode = 'english';
-  let savedTheme = 'light'; 
-  
+// ── Célzott mentő függvények (processzorkímélő) ──────────────────
+async function saveWords()     { try { const {words}     = _buildSaveObjects(); await localforage.setItem('lexi_words',     words);     } catch(e) { console.warn('[LexiLearn] saveWords hiba:', e); } }
+async function saveStats()     { try { const {stats}     = _buildSaveObjects(); await localforage.setItem('lexi_stats',     stats);     } catch(e) { console.warn('[LexiLearn] saveStats hiba:', e); } }
+async function savePlaylists() { try { const {playlists} = _buildSaveObjects(); await localforage.setItem('lexi_playlists', playlists); } catch(e) { console.warn('[LexiLearn] savePlaylists hiba:', e); } }
+async function saveSettings()  { try { const {settings}  = _buildSaveObjects(); await localforage.setItem('lexi_settings',  settings);  } catch(e) { console.warn('[LexiLearn] saveSettings hiba:', e); } }
+
+// ── Teljes mentés (párhuzamos) – pl. import/export előtt ────────
+async function saveState() {
+  const { words, stats, playlists, settings } = _buildSaveObjects();
   try {
-    const rawV5 = localStorage.getItem('lexilearn_v5');
-    if (rawV5) {
-      const parsed = JSON.parse(rawV5);
-      savedMode = parsed.lastMode || 'english';
-      savedTheme = parsed.theme || 'light';
-      
-      ['english', 'japanese', 'kanji'].forEach(lang => {
-        if(parsed[lang]) {
-          appData[lang].words = parsed[lang].words || [];
-          appData[lang].playlists = parsed[lang].playlists || [];
-          appData[lang].globalStats = parsed[lang].globalStats || createEmptyState().globalStats;
-          appData[lang].dailyQuests = parsed[lang].dailyQuests || { date: '', list: [] };
-          appData[lang].direction = parsed[lang].direction || 'en-hu';
-          
-          if (parsed[lang].filters) {
-            appData[lang].filters = parsed[lang].filters;
-            appData[lang].filters.diff = new Set(parsed[lang].filters.diff || []);
-          }
-          if (parsed[lang].selectedIds) {
-            appData[lang].selectedIds = new Set(parsed[lang].selectedIds);
+    await Promise.all([
+      localforage.setItem('lexi_words',     words),
+      localforage.setItem('lexi_stats',     stats),
+      localforage.setItem('lexi_playlists', playlists),
+      localforage.setItem('lexi_settings',  settings)
+    ]);
+  } catch(e) { console.warn('[LexiLearn] saveState hiba:', e); }
+}
+
+// ── Betöltő segéd: parsed objektumból appData feltöltése ────────
+function _applyParsedData(words, stats, playlists, settings) {
+  ['english', 'japanese', 'kanji'].forEach(lang => {
+    if (words?.[lang])     appData[lang].words = words[lang];
+    if (playlists?.[lang]) appData[lang].playlists = playlists[lang];
+    if (stats?.[lang]) {
+      appData[lang].globalStats  = stats[lang].globalStats  || createEmptyState().globalStats;
+      appData[lang].dailyQuests  = stats[lang].dailyQuests  || { date: '', list: [] };
+    }
+    if (settings?.[lang]) {
+      appData[lang].direction = settings[lang].direction || 'en-hu';
+      if (settings[lang].filters) {
+        appData[lang].filters = settings[lang].filters;
+        appData[lang].filters.diff = new Set(settings[lang].filters.diff || []);
+      }
+      if (settings[lang].selectedIds) {
+        appData[lang].selectedIds = new Set(settings[lang].selectedIds);
+      }
+    }
+  });
+}
+
+// ── Migrációs lépés: régi monolit objektum → 4 kulcs ────────────
+async function _migrateMonolithToSplit(monolit) {
+  console.log('[LexiLearn] Migráció: monolit → 4 split kulcs...');
+  const words = {}, stats = {}, playlists = {}, settings = {
+    lastMode: monolit.lastMode || 'english',
+    theme:    monolit.theme    || 'light'
+  };
+  ['english', 'japanese', 'kanji'].forEach(lang => {
+    const d = monolit[lang] || {};
+    words[lang]     = d.words     || [];
+    playlists[lang] = d.playlists || [];
+    stats[lang]     = { globalStats: d.globalStats || createEmptyState().globalStats, dailyQuests: d.dailyQuests || { date: '', list: [] } };
+    settings[lang]  = {
+      direction:   d.direction   || 'en-hu',
+      filters:     { ...(d.filters || createEmptyState().filters), diff: Array.isArray(d.filters?.diff) ? d.filters.diff : [] },
+      selectedIds: d.selectedIds || []
+    };
+  });
+  await Promise.all([
+    localforage.setItem('lexi_words',     words),
+    localforage.setItem('lexi_stats',     stats),
+    localforage.setItem('lexi_playlists', playlists),
+    localforage.setItem('lexi_settings',  settings)
+  ]);
+  // Régi monolit kulcs törlése
+  await localforage.removeItem('lexilearn_v5');
+  console.log('[LexiLearn] Migráció kész, lexilearn_v5 törölve.');
+  return { words, stats, playlists, settings };
+}
+
+// ── Fő betöltő ──────────────────────────────────────────────────
+async function loadState() {
+  let savedMode = 'english';
+  let savedTheme = 'light';
+
+  try {
+    // ═══ 1. LÉPÉS: már split-DB-ben van? (V10.5 formátum) ═══════
+    let lexiWords = await localforage.getItem('lexi_words');
+
+    if (!lexiWords) {
+      // ═══ 2. LÉPÉS: V10 monolit localForage kulcs? ═══════════
+      const monolitIDB = await localforage.getItem('lexilearn_v5');
+      if (monolitIDB) {
+        const split = await _migrateMonolithToSplit(monolitIDB);
+        lexiWords = split.words;
+      } else {
+        // ═══ 3. LÉPÉS: V9 localStorage JSON? ═══════════════════
+        const monolitLS = localStorage.getItem('lexilearn_v5');
+        if (monolitLS) {
+          console.log('[LexiLearn] Migráció: localStorage (V9) → split IndexedDB...');
+          try {
+            const oldParsed = JSON.parse(monolitLS);
+            const split = await _migrateMonolithToSplit(oldParsed);
+            lexiWords = split.words;
+            localStorage.removeItem('lexilearn_v5');
+            console.log('[LexiLearn] localStorage törölve.');
+          } catch(migErr) {
+            console.warn('[LexiLearn] V9 migrációs hiba:', migErr);
           }
         }
-      });
-      syncNewWords();
-      syncCustomLists();
-    } else {
-      syncNewWords();
-      syncCustomLists();
+      }
     }
-  } catch(e) { syncNewWords(); syncCustomLists(); }
-  
+
+    // ═══ ADATOK BETÖLTÉSE (ha van mit) ══════════════════════════
+    if (lexiWords) {
+      const [lexiStats, lexiPlaylists, lexiSettings] = await Promise.all([
+        localforage.getItem('lexi_stats'),
+        localforage.getItem('lexi_playlists'),
+        localforage.getItem('lexi_settings')
+      ]);
+      savedMode  = lexiSettings?.lastMode || 'english';
+      savedTheme = lexiSettings?.theme    || 'light';
+      _applyParsedData(lexiWords, lexiStats, lexiPlaylists, lexiSettings);
+    }
+
+    syncNewWords();
+    syncCustomLists();
+  } catch(e) {
+    console.warn('[LexiLearn] Betöltési hiba:', e);
+    syncNewWords();
+    syncCustomLists();
+  }
+
   cleanTags();
-  applyTheme(savedTheme); 
-  setMode(savedMode, true); 
+  applyTheme(savedTheme);
+  setMode(savedMode, true);
   updateDirectionUI();
-  renderDashboard(); 
+  renderDashboard();
+  renderStorageInfo(); // Tárhely kijelző frissítése
+}
+
+// ── Tárhely méret kijelző ────────────────────────────────────────
+async function renderStorageInfo() {
+  const el = document.getElementById('storage-info');
+  if (!el) return;
+  try {
+    if (navigator.storage && navigator.storage.estimate) {
+      const { usage, quota } = await navigator.storage.estimate();
+      const usedMB  = (usage  / 1024 / 1024).toFixed(2);
+      const quotaMB = (quota  / 1024 / 1024).toFixed(0);
+      const pct     = Math.round((usage / quota) * 100);
+      el.innerHTML = `
+        <div style="margin-top:10px; padding:10px 0; border-top:1px solid var(--border);">
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-2); margin-bottom:6px;">
+            <span>💾 IndexedDB foglalás</span>
+            <strong>${usedMB} MB / ${quotaMB} MB (${pct}%)</strong>
+          </div>
+          <div style="height:6px; background:var(--surface-2); border-radius:3px; overflow:hidden;">
+            <div style="width:${pct}%; height:100%; background:${pct > 80 ? 'var(--accent)' : 'var(--primary)'}; border-radius:3px; transition:width 0.5s;"></div>
+          </div>
+        </div>`;
+    }
+  } catch(e) { /* storage API nem elérhető */ }
 }
 
 function cleanTags() {
@@ -207,7 +331,7 @@ function cleanTags() {
       if (originalTags !== JSON.stringify(w.tags)) needsSave = true;
     });
   });
-  if (needsSave) saveState();
+  if (needsSave) saveWords();
 }
 
 function syncNewWords() {
@@ -445,7 +569,7 @@ function setMode(mode, isInit = false) {
   });
 
   if (!isInit) {
-    saveState();
+    saveSettings(); // Módváltás csak beállítást érint
     updateDirectionUI();
     renderDashboard();
   }
@@ -597,7 +721,7 @@ function checkDailyReset() {
   const isOldFormat = !state.dailyQuests.list;
   if (isOldFormat || state.dailyQuests.date !== today) {
     state.dailyQuests = generateDailyQuests();
-    saveState();
+    saveStats(); // Napi reset csak statot érint
   }
 }
 
@@ -683,7 +807,7 @@ function updateQuestProgress(eventType, data) {
   });
 
   if (changed) {
-    saveState();
+    saveStats(); // Küldetés haladás csak statot érint
     renderDailyQuests();
   }
 }
@@ -837,7 +961,7 @@ function toggleDiff(d) {
 
 function setSort(s) { state.filters.sort = s; applyFilters(); }
 
-function setDirection(dir) { state.direction = dir; updateDirectionUI(); saveState(); }
+function setDirection(dir) { state.direction = dir; updateDirectionUI(); saveSettings(); }
 
 function updateDirectionUI() {
   const dir1 = document.getElementById('dir-en-hu');
@@ -898,7 +1022,7 @@ function applyFilters() {
   
   renderWordList(filtered);
   renderSentenceList(filtered);
-  saveState(); 
+  saveSettings(); // Szűrő változás csak beállítást érint 
 }
 
 function renderWordList(words) {
@@ -1058,7 +1182,7 @@ function toggleWordSelection(id) {
     if (cb) cb.textContent = sel ? '✓' : '';
   }
   updateStartPanel();
-  saveState(); 
+  saveSettings(); // Tag szűrő 
 }
 
 function selectAll() { 
@@ -1069,7 +1193,7 @@ function selectAll() {
     if(cb) cb.textContent = '✓'; 
   }); 
   updateStartPanel(); 
-  saveState(); 
+  saveSettings(); // Diff szűrő 
 }
 
 function selectNone() { 
@@ -1080,7 +1204,7 @@ function selectNone() {
     if(cb) cb.textContent = ''; 
   }); 
   updateStartPanel(); 
-  saveState(); 
+  saveSettings(); // Sort szűrő 
 }
 
 function updateStartPanel() {
@@ -1197,7 +1321,7 @@ function savePlaylist() {
   if (isDuplicate) { showToast('Már létezik ilyen nevű lista!'); return; }
 
   state.playlists.push({ id: 'pl_' + Date.now(), name: name, wordIds: Array.from(state.selectedIds) });
-  saveState(); closeModal('playlist-modal'); renderPlaylists(); showToast('✅ Lista sikeresen elmentve: ' + name);
+  savePlaylists(); closeModal('playlist-modal'); renderPlaylists(); showToast('✅ Lista sikeresen elmentve: ' + name);
 }
 
 function loadPlaylist(id) {
@@ -1215,7 +1339,7 @@ function loadPlaylist(id) {
   state.filters.search = ''; state.filters.topicSearch = ''; state.filters.tags = []; state.filters.diff = new Set(); state.filters.lesson = 'all';
   document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
   
-  applyFilters(); updateStartPanel(); saveState(); showToast('📂 ' + pl.name + ' szavai kijelölve!');
+  applyFilters(); updateStartPanel(); saveSettings(); // Lista betöltés: selectedIds+filters változik showToast('📂 ' + pl.name + ' szavai kijelölve!');
 }
 
 /* ÚJ: Lista alapján szűrés (csak a lista szavait mutatja a szólistában) */
@@ -1240,7 +1364,7 @@ function deletePlaylist(id) {
     state.filters.list = 'all';
   }
   state.playlists = state.playlists.filter(p => p.id !== id);
-  saveState(); renderPlaylists(); applyFilters();
+  savePlaylists(); renderPlaylists(); applyFilters();
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1840,7 +1964,7 @@ function showRoundEnd() {
     roundLength: total,
     elapsed: elapsed
   });
-  saveState();
+  saveStats(); // Csak a statisztikát kell menteni kör végén
   renderDailyQuests();
 
   const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
@@ -1906,7 +2030,7 @@ function finishSession() {
     duration: duration
   });
 
-  saveState(); showScreen('dashboard'); showToast('Gyakorlás befejezve!');
+  saveStats(); saveWords(); showScreen('dashboard'); showToast('Gyakorlás befejezve!'); // Statisztika + szó streak mentése
 }
 
 function confirmQuit() { if (confirm('Biztosan ki szeretnél lépni?')) showScreen('dashboard'); }
@@ -2095,28 +2219,51 @@ function switchStatsTab(tab) {
 /* ══════════════════════════════════════════════════════
    IMPORT / EXPORT
 ══════════════════════════════════════════════════════ */
-function exportData() {
-  const dataStr = localStorage.getItem('lexilearn_v5');
-  if (!dataStr) { showToast('Nincs mit menteni!'); return; }
-  const blob = new Blob([dataStr], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `LexiLearn_Mentes_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('Biztonsági mentés letöltve!');
+async function exportData() {
+  try {
+    // Mind a 4 kulcs tartalmát összegyűjtjük, és egyetlen JSON-ba csomagoljuk
+    const [words, stats, playlists, settings] = await Promise.all([
+      localforage.getItem('lexi_words'),
+      localforage.getItem('lexi_stats'),
+      localforage.getItem('lexi_playlists'),
+      localforage.getItem('lexi_settings')
+    ]);
+    if (!words && !stats) { showToast('Nincs mit menteni!'); return; }
+    // Visszafelé kompatibilis export formátum (egyetlen JSON)
+    const exportObj = { _format: 'lexilearn_v10_5', words, stats, playlists, settings };
+    const blob = new Blob([JSON.stringify(exportObj)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `LexiLearn_Mentes_${new Date().toISOString().split('T')[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('Biztonsági mentés letöltve!');
+  } catch(e) {
+    showToast('Hiba a mentés során!');
+    console.warn('[LexiLearn] Export hiba:', e);
+  }
 }
 
 function importData(event) {
   const file = event.target.files[0];
   if (!file) return;
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = async function(e) {
     try {
-      const content = e.target.result;
-      JSON.parse(content); 
-      localStorage.setItem('lexilearn_v5', content);
+      const parsed = JSON.parse(e.target.result);
+      if (parsed._format === 'lexilearn_v10_5') {
+        // Új split-formátum: közvetlen visszaírás a 4 kulcsba
+        await Promise.all([
+          parsed.words     ? localforage.setItem('lexi_words',     parsed.words)     : Promise.resolve(),
+          parsed.stats     ? localforage.setItem('lexi_stats',     parsed.stats)     : Promise.resolve(),
+          parsed.playlists ? localforage.setItem('lexi_playlists', parsed.playlists) : Promise.resolve(),
+          parsed.settings  ? localforage.setItem('lexi_settings',  parsed.settings)  : Promise.resolve()
+        ]);
+      } else {
+        // Régi monolit formátum: migráció menet közben
+        await _migrateMonolithToSplit(parsed);
+      }
       showToast('Adatok betöltve! Újraindítás...');
       setTimeout(() => location.reload(), 1500);
     } catch(err) {
@@ -2124,7 +2271,7 @@ function importData(event) {
     }
   };
   reader.readAsText(file);
-  event.target.value = ''; 
+  event.target.value = '';
 }
 
 function openImportModal() {
@@ -2161,7 +2308,7 @@ function doImport() {
     }
     added++;
   });
-  saveState(); closeModal('import-modal'); renderDashboard(); showToast(added+' elem importálva!');
+  saveWords(); closeModal('import-modal'); renderDashboard(); showToast(added+' elem importálva!');
 }
 
 function openAddModal() {
@@ -2237,7 +2384,7 @@ function doAddWord() {
     state.words.push({ id:'kj_man_'+Date.now(), en, hu, romaji: synOrRomaji, onyomi: '', kunyomi: '', lesson: 'Egyéb', tags, diff, sentence, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
   }
 
-  saveState();
+  saveWords();
   closeModal('add-modal');
   applyFilters(); 
   showToast('Sikeresen hozzáadva: ' + en);
@@ -2311,11 +2458,55 @@ function expandPlaylist(id) {
   } else {
     showToast(`✅ ${added} szó hozzáadva a(z) „${pl.name}" listához!`);
   }
-  saveState();
+  savePlaylists();
   renderPlaylists();
 }
 
 /* ══════════════════════════════════════════════════════
    INIT
 ══════════════════════════════════════════════════════ */
-loadState();
+(async () => { await loadState(); })();
+
+/* ══════════════════════════════════════════════════════
+   SERVICE WORKER REGISZTRÁCIÓ (PWA) + FRISSÍTÉSI ÉRTESÍTŐ
+══════════════════════════════════════════════════════ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('[LexiLearn] Service Worker regisztrálva:', reg.scope);
+
+      // Figyeli, ha új SW vár aktiválásra (frissítés letöltve)
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (!newWorker) return;
+        newWorker.addEventListener('statechange', () => {
+          // Az új SW települt és vár – de csak ha volt már aktív SW (nem első betöltés)
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            showUpdateToast(reg);
+          }
+        });
+      });
+    }).catch(err => console.warn('[LexiLearn] Service Worker hiba:', err));
+
+    // Ha az aktív SW cserélődött (felhasználó kattintott a frissítés toastra)
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      window.location.reload();
+    });
+  });
+}
+
+function showUpdateToast(reg) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.innerHTML = '🆕 Új verzió érhető el! <a href="#" style="color:#fff;text-decoration:underline;margin-left:6px;" onclick="activateNewSW(event)">Frissítés</a>';
+  toast.classList.add('show');
+  window._pendingSWReg = reg;
+}
+
+function activateNewSW(e) {
+  e.preventDefault();
+  const reg = window._pendingSWReg;
+  if (reg && reg.waiting) {
+    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+  }
+}
