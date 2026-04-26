@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexiLearn – Adat Visszaállítás</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0d1117; color: #e6edf3; padding: 20px; }
+  h1 { color: #58a6ff; margin-bottom: 6px; }
+  .subtitle { color: #8b949e; font-size: 14px; margin-bottom: 24px; }
+  .card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 15px; margin-bottom: 12px; color: #79c0ff; }
+  .key-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #0d1117; border-radius: 8px; margin-bottom: 8px; gap: 12px; flex-wrap: wrap; }
+  .key-name { font-weight: 700; font-size: 13px; color: #d2a8ff; }
+  .key-info { font-size: 12px; color: #8b949e; flex: 1; }
+  .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .badge-ok { background: rgba(63,185,80,.2); color: #3fb950; border: 1px solid #3fb950; }
+  .badge-empty { background: rgba(248,81,73,.2); color: #f85149; border: 1px solid #f85149; }
+  .badge-old { background: rgba(210,153,34,.2); color: #d2a822; border: 1px solid #d2a822; }
+  button { padding: 10px 20px; border-radius: 8px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; margin: 4px; }
+  .btn-blue { background: #1f6feb; color: #fff; }
+  .btn-green { background: #238636; color: #fff; }
+  .btn-red { background: #da3633; color: #fff; }
+  .btn-gray { background: #30363d; color: #e6edf3; }
+  .log { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 14px; font-family: monospace; font-size: 12px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; color: #8b949e; margin-top: 12px; }
+  .log .ok { color: #3fb950; }
+  .log .warn { color: #d2a822; }
+  .log .err { color: #f85149; }
+  .log .info { color: #58a6ff; }
+  #json-preview { display: none; }
+</style>
+</head>
+<body>
+
+<h1>🔧 LexiLearn – Adat Diagnosztika & Visszaállítás</h1>
+<p class="subtitle">Ez az eszköz megmutatja mi van az adatbázisban, és megpróbálja visszahozni az elveszett adatokat.</p>
+
+<div class="card">
+  <h2>📊 Jelenlegi adatbázis állapot</h2>
+  <div id="status-list"><em style="color:#8b949e">Betöltés...</em></div>
+</div>
+
+<div class="card">
+  <h2>🛠️ Műveletek</h2>
+  <button class="btn-blue" onclick="runDiagnostic()">🔄 Újra ellenőrzés</button>
+  <button class="btn-green" onclick="exportAll()">💾 Minden adat exportálása (JSON)</button>
+  <button class="btn-gray" onclick="document.getElementById('file-import').click()">📂 Visszaállítás fájlból</button>
+  <input type="file" id="file-import" style="display:none" accept=".json" onchange="importFromFile(event)">
+  <div class="log" id="log">Diagnosztika indítása...</div>
+</div>
+
+<div class="card" id="json-preview">
+  <h2>📋 Adat előnézet</h2>
+  <pre id="preview-content" style="font-size:11px;color:#8b949e;overflow-x:auto;max-height:400px;"></pre>
+</div>
+
+<script>
+const KEYS = ['lexi_words','lexi_stats','lexi_playlists','lexi_settings','lexilearn_v5'];
+const log = document.getElementById('log');
+
+function addLog(msg, type='') {
+  const span = document.createElement('span');
+  span.className = type;
+  span.textContent = msg + '\n';
+  log.appendChild(span);
+  log.scrollTop = log.scrollHeight;
+}
+
+function bytesOf(obj) {
+  try {
+    const s = JSON.stringify(obj);
+    return (new Blob([s]).size / 1024).toFixed(1) + ' KB';
+  } catch(e) { return '?'; }
+}
+
+function wordCount(obj, key) {
+  try {
+    let total = 0;
+    ['english','japanese','kanji'].forEach(lang => {
+      if (obj[lang] && Array.isArray(obj[lang])) total += obj[lang].length;
+      else if (obj[lang]?.[key]) total += obj[lang][key].length;
+    });
+    return total;
+  } catch(e) { return '?'; }
+}
+
+async function runDiagnostic() {
+  log.innerHTML = '';
+  addLog('=== LexiLearn Diagnosztika ===', 'info');
+
+  const list = document.getElementById('status-list');
+  list.innerHTML = '';
+
+  // localStorage ellenőrzés
+  const lsRaw = localStorage.getItem('lexilearn_v5');
+  const lsRow = document.createElement('div');
+  lsRow.className = 'key-row';
+  if (lsRaw) {
+    try {
+      const parsed = JSON.parse(lsRaw);
+      const wc = countWordsInMonolit(parsed);
+      lsRow.innerHTML = `<span class="key-name">localStorage: lexilearn_v5</span><span class="key-info">⚠️ RÉGI ADAT TALÁLHATÓ ITT – ${bytesOf(lsRaw)} – kb. ${wc} szó</span><span class="badge badge-old">RÉGI</span>`;
+      addLog(`⚠️  localStorage: lexilearn_v5 → ${bytesOf(lsRaw)}, ~${wc} szó`, 'warn');
+    } catch(e) { lsRow.innerHTML = `<span class="key-name">localStorage: lexilearn_v5</span><span class="badge badge-empty">HIBÁS JSON</span>`; }
+  } else {
+    lsRow.innerHTML = `<span class="key-name">localStorage: lexilearn_v5</span><span class="key-info">Üres (normális)</span><span class="badge badge-ok">OK</span>`;
+    addLog('✅ localStorage üres (rendben)', 'ok');
+  }
+  list.appendChild(lsRow);
+
+  // IndexedDB kulcsok
+  for (const key of KEYS) {
+    try {
+      const val = await localforage.getItem(key);
+      const row = document.createElement('div');
+      row.className = 'key-row';
+
+      if (val) {
+        let info = bytesOf(val);
+        let extra = '';
+
+        if (key === 'lexi_words') {
+          const wc = wordCount(val, null);
+          extra = ` · ${wc} szó összesen`;
+          // Ellenőrizzük van-e streak adat
+          let hasStreak = false;
+          ['english','japanese','kanji'].forEach(lang => {
+            if (val[lang]) val[lang].forEach(w => { if (w.stats?.streak > 0) hasStreak = true; });
+          });
+          extra += hasStreak ? ' · ✅ streak adatok megvannak' : ' · ⚠️ nincs streak adat';
+          addLog(`✅ lexi_words → ${info}${extra}`, 'ok');
+        }
+        if (key === 'lexi_stats') {
+          ['english','japanese','kanji'].forEach(lang => {
+            if (val[lang]) {
+              const sessions = val[lang].globalStats?.sessionHistory?.length || 0;
+              const days = Object.keys(val[lang].globalStats?.studyDays || {}).length;
+              extra += ` [${lang}: ${sessions} session, ${days} tanult nap]`;
+            }
+          });
+          addLog(`✅ lexi_stats → ${info} ${extra}`, 'ok');
+        }
+        if (key === 'lexilearn_v5') {
+          const wc = countWordsInMonolit(val);
+          extra = ` · RÉGI MONOLIT! ~${wc} szó`;
+          addLog(`⚠️  lexilearn_v5 (régi formátum) → ${info}${extra}`, 'warn');
+        }
+
+        row.innerHTML = `<span class="key-name">IndexedDB: ${key}</span><span class="key-info">${info}${extra}</span><span class="badge badge-ok">VAN ADAT</span>`;
+      } else {
+        row.innerHTML = `<span class="key-name">IndexedDB: ${key}</span><span class="key-info">Üres</span><span class="badge badge-empty">ÜRES</span>`;
+        addLog(`❌ ${key} → ÜRES`, 'err');
+      }
+      list.appendChild(row);
+    } catch(e) {
+      addLog(`❌ ${key} olvasási hiba: ${e.message}`, 'err');
+    }
+  }
+
+  addLog('=== Diagnosztika kész ===', 'info');
+}
+
+function countWordsInMonolit(obj) {
+  let total = 0;
+  try {
+    ['english','japanese','kanji'].forEach(lang => {
+      if (obj[lang]?.words) total += obj[lang].words.length;
+    });
+  } catch(e) {}
+  return total;
+}
+
+async function exportAll() {
+  addLog('Export indítása...', 'info');
+  const out = { _format: 'lexilearn_recovery', _date: new Date().toISOString() };
+
+  for (const key of KEYS) {
+    try {
+      const val = await localforage.getItem(key);
+      out[key] = val;
+      addLog(`  ${key}: ${val ? bytesOf(val) : 'üres'}`, val ? 'ok' : 'warn');
+    } catch(e) { addLog(`  ${key}: hiba`, 'err'); }
+  }
+
+  const lsRaw = localStorage.getItem('lexilearn_v5');
+  if (lsRaw) { try { out['localStorage_v5'] = JSON.parse(lsRaw); addLog('  localStorage_v5: megvan', 'ok'); } catch(e) {} }
+
+  const blob = new Blob([JSON.stringify(out, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `LexiLearn_Recovery_${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  addLog('✅ Recovery fájl letöltve!', 'ok');
+}
+
+async function importFromFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  addLog(`Fájl beolvasása: ${file.name}`, 'info');
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      addLog('JSON feldolgozva. Formátum: ' + (data._format || 'ismeretlen'), 'info');
+
+      if (data._format === 'lexilearn_recovery') {
+        // Recovery formátum – a legjobb elérhető adatból állítunk vissza
+        addLog('Recovery formátum észlelve – visszaállítás...', 'info');
+        await restoreFromRecovery(data);
+      } else if (data._format === 'lexilearn_v10_5') {
+        addLog('V10.5 split formátum – visszaírás...', 'info');
+        await writeSplitKeys(data.words, data.stats, data.playlists, data.settings);
+      } else {
+        // Régi monolit formátum
+        addLog('Régi/monolit formátum – migrálás...', 'info');
+        await migrateAndWrite(data);
+      }
+
+      addLog('✅ Visszaállítás sikeres! Visszatérés az apphoz...', 'ok');
+      setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+    } catch(err) {
+      addLog('❌ Hiba: ' + err.message, 'err');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+async function restoreFromRecovery(data) {
+  // Prioritás: lexi_* kulcsok (ha van bennük adat), különben monolit fallback
+  const hasNewData = data['lexi_words'] && data['lexi_stats'];
+
+  if (hasNewData) {
+    addLog('Split kulcsok visszaírása...', 'info');
+    await writeSplitKeys(data['lexi_words'], data['lexi_stats'], data['lexi_playlists'], data['lexi_settings']);
+  } else if (data['lexilearn_v5'] || data['localStorage_v5']) {
+    const monolit = data['lexilearn_v5'] || data['localStorage_v5'];
+    addLog(`Monolit adatból visszaállítás (${countWordsInMonolit(monolit)} szó)...`, 'warn');
+    await migrateAndWrite(monolit);
+  } else {
+    throw new Error('Nincs visszaállítható adat a fájlban!');
+  }
+}
+
+async function writeSplitKeys(words, stats, playlists, settings) {
+  const ops = [];
+  if (words)     ops.push(localforage.setItem('lexi_words',     words));
+  if (stats)     ops.push(localforage.setItem('lexi_stats',     stats));
+  if (playlists) ops.push(localforage.setItem('lexi_playlists', playlists));
+  if (settings)  ops.push(localforage.setItem('lexi_settings',  settings));
+  await Promise.all(ops);
+  addLog(`✅ ${ops.length} kulcs visszaírva`, 'ok');
+}
+
+async function migrateAndWrite(monolit) {
+  const words = {}, stats = {}, playlists = {}, settings = {
+    lastMode: monolit.lastMode || 'english',
+    theme: monolit.theme || 'light'
+  };
+  ['english','japanese','kanji'].forEach(lang => {
+    const d = monolit[lang] || {};
+    words[lang]     = d.words     || [];
+    playlists[lang] = d.playlists || [];
+    stats[lang]     = { globalStats: d.globalStats || {}, dailyQuests: d.dailyQuests || { date:'', list:[] } };
+    settings[lang]  = { direction: d.direction || 'en-hu', filters: d.filters || {}, selectedIds: d.selectedIds || [] };
+
+    addLog(`  ${lang}: ${words[lang].length} szó, ${stats[lang].globalStats?.sessionHistory?.length || 0} session`, 'ok');
+  });
+  await writeSplitKeys(words, stats, playlists, settings);
+}
+
+// Oldal betöltésekor automatikus diagnosztika
+runDiagnostic();
+</script>
+</body>
+</html>

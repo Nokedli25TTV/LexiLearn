@@ -340,6 +340,7 @@
         <button class="nav-tab" onclick="switchStatsTab('words')">Elemek Listája</button>
         <button class="nav-tab" onclick="switchStatsTab('history')">Előzmények</button>
         <button class="nav-tab" onclick="switchStatsTab('heatmap')">🗺️ Hőtérkép</button>
+        <button class="nav-tab" id="dekiru-tab-btn" style="display:none" onclick="switchStatsTab('dekiru')">📘 Dekiru Leckék</button>
       </div>
 
       <div id="stats-topics-tab"><div class="card" style="margin-bottom:20px"><div class="section-title">Teljesítmény témakörönként</div><div id="tag-perf-list"></div></div></div>
@@ -350,6 +351,23 @@
           <div class="section-title">Tudásszint Hőtérkép</div>
           <p style="color: var(--text-3); font-size: 13px; margin-bottom: 20px;">Ez a térkép vizuálisan mutatja, mely szinteken és témákban vagy a legerősebb. Minél zöldebb egy cella, annál nagyobb a szavak helyes aránya.</p>
           <div id="heatmap-container"></div>
+        </div>
+      </div>
+      <div id="stats-dekiru-tab" style="display:none">
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+            <div class="section-title" style="margin-bottom:0">📘 Dekiru – Teljesítmény Leckénként</div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:12px; font-weight:700; color:var(--text-3);">Sorrend:</span>
+              <select id="dekiru-sort" class="sort-select" style="width:auto; font-size:13px; padding:6px 10px;" onchange="renderDekiruLessonStats()">
+                <option value="best">Legjobb elöl</option>
+                <option value="worst">Legrosszabb elöl</option>
+                <option value="lesson-asc">Lecke ↑ növekvő</option>
+                <option value="lesson-desc">Lecke ↓ csökkenő</option>
+              </select>
+            </div>
+          </div>
+          <div id="dekiru-lesson-list"></div>
         </div>
       </div>
     </div>

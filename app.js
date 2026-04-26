@@ -2061,6 +2061,10 @@ function renderStats() {
 
   renderHeatmap();
 
+  // Dekiru tab láthatósága: csak japán módban
+  const dekiruTabBtn = document.getElementById('dekiru-tab-btn');
+  if (dekiruTabBtn) dekiruTabBtn.style.display = currentMode === 'japanese' ? '' : 'none';
+
   const tags = new Set();
   words.forEach(w => w.tags.forEach(t => tags.add(t)));
   const tagStats = Array.from(tags).map(tag => {
@@ -2200,20 +2204,95 @@ function renderHeatmap() {
   }
 }
 
-function switchStatsTab(tab) { 
-  ['topics','words','history', 'heatmap'].forEach(t => {
+function renderDekiruLessonStats() {
+  const container = document.getElementById('dekiru-lesson-list');
+  if (!container) return;
+
+  // Csak dekiru szavak, amiknek van lesson száma
+  const dekiruWords = appData.japanese.words.filter(w =>
+    w.source === 'dekiru' && w.lesson !== null && w.lesson !== undefined && w.lesson !== ''
+  );
+
+  if (dekiruWords.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-3);font-size:14px;padding:10px 0">Még nincs Dekiru szó az adatbázisban.</div>';
+    return;
+  }
+
+  // Leckénkénti csoportosítás
+  const lessonMap = {};
+  dekiruWords.forEach(w => {
+    const l = String(w.lesson);
+    if (!lessonMap[l]) lessonMap[l] = { lesson: Number(w.lesson), words: [] };
+    lessonMap[l].words.push(w);
+  });
+
+  // Statisztikák kiszámítása leckénként
+  let lessonStats = Object.values(lessonMap).map(entry => {
+    const correct = entry.words.reduce((s, w) => s + w.stats.totalCorrect, 0);
+    const total   = entry.words.reduce((s, w) => s + w.stats.totalCorrect + w.stats.totalWrong, 0);
+    const pct     = total > 0 ? Math.round(correct / total * 100) : null;
+    const learned = entry.words.filter(w => w.stats.streak >= 3).length;
+    return { lesson: entry.lesson, wordCount: entry.words.length, correct, total, pct, learned };
+  });
+
+  // Rendezés a szűrő szerint
+  const sort = document.getElementById('dekiru-sort')?.value || 'lesson-asc';
+  if      (sort === 'best')       lessonStats.sort((a, b) => (b.pct ?? -1) - (a.pct ?? -1));
+  else if (sort === 'worst')      lessonStats.sort((a, b) => (a.pct ?? 101) - (b.pct ?? 101));
+  else if (sort === 'lesson-asc') lessonStats.sort((a, b) => a.lesson - b.lesson);
+  else if (sort === 'lesson-desc')lessonStats.sort((a, b) => b.lesson - a.lesson);
+
+  // Szín a % alapján
+  function pctColor(pct) {
+    if (pct === null) return 'var(--text-3)';
+    if (pct >= 80)   return 'var(--success)';
+    if (pct >= 50)   return 'var(--yellow)';
+    return 'var(--error)';
+  }
+  function barColor(pct) {
+    if (pct === null) return 'var(--surface-2)';
+    if (pct >= 80)   return 'var(--primary)';
+    if (pct >= 50)   return 'var(--yellow)';
+    return 'var(--accent)';
+  }
+
+  container.innerHTML = lessonStats.map(s => {
+    const barW    = s.pct !== null ? s.pct : 0;
+    const pctText = s.pct !== null ? `${s.pct}%` : '—';
+    const badge   = s.pct === null
+      ? `<span style="font-size:11px;color:var(--text-3);font-weight:700">Nem gyakorolt</span>`
+      : `<span style="font-size:15px;font-weight:900;color:${pctColor(s.pct)}">${pctText}</span>`;
+
+    return `
+      <div style="display:grid; grid-template-columns:90px 1fr 54px; align-items:center; gap:12px; padding:10px 4px; border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-weight:800; font-size:13px; color:var(--text)">📘 Lecke ${s.lesson}</div>
+          <div style="font-size:11px; color:var(--text-3); margin-top:2px">${s.wordCount} szó · ${s.learned} megtanult</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <div style="height:10px; background:var(--surface-2); border-radius:5px; overflow:hidden;">
+            <div style="width:${barW}%; height:100%; background:${barColor(s.pct)}; border-radius:5px; transition:width 0.5s ease;"></div>
+          </div>
+          <div style="font-size:10px; color:var(--text-3)">${s.total > 0 ? `${s.correct} helyes / ${s.total} kísérlet` : 'Még nem volt kérdés erről a leckéről'}</div>
+        </div>
+        <div style="text-align:right">${badge}</div>
+      </div>`;
+  }).join('');
+}
+
+
+function switchStatsTab(tab) {
+  ['topics','words','history','heatmap','dekiru'].forEach(t => {
     const el = document.getElementById(`stats-${t}-tab`);
     if(el) el.style.display = t === tab ? 'block' : 'none';
   }); 
   
   document.querySelectorAll('#screen-stats .nav-tab').forEach(btn => {
     const onclickAttr = btn.getAttribute('onclick') || '';
-    if (onclickAttr.includes(`'${tab}'`)) {
-      btn.classList.add('active');
-    } else {
-      btn.classList.remove('active');
-    }
+    btn.classList.toggle('active', onclickAttr.includes(`'${tab}'`));
   });
+
+  if (tab === 'dekiru') renderDekiruLessonStats();
 }
 
 /* ══════════════════════════════════════════════════════
