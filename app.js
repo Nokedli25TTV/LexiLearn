@@ -81,12 +81,17 @@ const TAG_EMOJIS = {
   'tudomány': '🔬', 'pszichológia': '🧠', 'mindennapi élet': '☕', 'hadászat': '⚔️',
   'történelem': '📜', 'mitológia': '🏺', 'kommunikáció': '💬', 'földrajz': '🌍',
   'veszély': '⚠️', 'kultúra': '🎭', 'erőforrások': '💎', 'tárgyak': '📦',
-  'család': '👪', 'filozófia': '🦉', 'képesség': '⚡', 'művészet': '🎨', 
+  'család': '👪', 'filozófia': '🦉', 'filozofia': '🦉', 'képesség': '⚡', 'művészet': '🎨', 
   'technológia': '💻', 'társadalom': '🏙️',
   'alapszavak': '⭐', 'udvariasság': '🙇', 'köszönések': '👋', 'szórakozás': '🎭', 'kapcsolatok': '👪',
   'helyek': '🏙️', 'időjárás': '🌤️', 'országok': '🌍', 'sport': '🏅', 
   'ételek': '🍱', 'italok': '🍵', 'kérdőszavak': '❓', 'számlálószavak': '🔢', 'irányok': '🧭',
-  'természet': '🌿'
+  'természet': '🌿',
+  // Kanji témák
+  'számok és mennyiségek': '🔢', 'idő és dátum': '📅',
+  'emberi test és egészség': '🫀', 'melléknevek kanjival': '✨',
+  'igék kanji alakban': '🏃', 'épületek és város': '🏯',
+  'növények': '🌸', 'nevek': '🏮'
 };
 
 function tagLabel(tag) {
@@ -449,13 +454,14 @@ function syncNewWords() {
       appData.kanji.words.push({
         id: 'kj_' + i + '_' + Date.now(),
         en: w.kanji, hu: w.meaning, romaji: w.romaji, onyomi: w.onyomi, kunyomi: w.kunyomi,
-        tags: ['Lesson ' + w.lesson], lesson: w.lesson, diff: w.jlpt || 'N5',
+        tags: w.tags || [], lesson: w.lesson, diff: w.jlpt || 'N5',
         source: 'data_js', sentence: '',
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
     } else {
       existingWord.hu = w.meaning;
       existingWord.lesson = w.lesson;
+      existingWord.tags = w.tags || []; // tags szinkronizálása az adatbázisból
       existingWord.source = 'data_js';
     }
   });
