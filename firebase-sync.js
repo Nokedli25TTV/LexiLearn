@@ -29,7 +29,7 @@ import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 import {
-  getFirestore, doc, getDoc, setDoc, serverTimestamp
+  getFirestore, doc, getDoc, setDoc, serverTimestamp, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 // ─── 3. ÁLLAPOT ───
@@ -40,6 +40,11 @@ let _currentUser = null;
 let _isConfigured = false;
 let _pushDebounceTimer = null;
 let _syncInProgress = false;
+
+// V12.2: race condition + real-time sync javítás
+let _initialSyncDone    = false; // amíg false, a triggerPush nem küld semmit (megelőzi az indulási felülírást)
+let _lastPushTimestamp  = null;  // a saját push timestamp-je → echo elnyomáshoz a snapshot listener-ben
+let _snapshotUnsubscribe = null; // Firestore real-time listener leiratkozási függvénye
 
 const PUSH_DEBOUNCE_MS = 3000;
 const META_KEY = 'lexi_cloudsync_meta'; // localForage kulcs
@@ -70,11 +75,16 @@ function initFirebase() {
     // Auth állapot figyelés
     onAuthStateChanged(_auth, async (user) => {
       _currentUser = user;
+      _initialSyncDone = false; // reset minden auth state változásnál
+      stopCloudListener();      // előző listener leiratkozás (ha volt)
+
       if (user) {
         console.log('[FirebaseSync] Bejelentkezve:', user.email || user.displayName);
         window.dispatchEvent(new CustomEvent('lexi:authChanged', { detail: { user } }));
-        // Auto-pull bejelentkezéskor (ha cloud frissebb)
+        // 1. Auto-pull bejelentkezéskor (mindig pulljunk, ha van cloud snapshot)
         await initialSyncFromCloud();
+        // 2. Real-time listener indítása a másik eszközökről érkező változásokhoz
+        startCloudListener();
       } else {
         console.log('[FirebaseSync] Kijelentkezve.');
         window.dispatchEvent(new CustomEvent('lexi:authChanged', { detail: { user: null } }));
@@ -247,13 +257,14 @@ async function pushToCloud() {
   try {
     const snap = buildCloudSnapshot();
     if (!snap) { _syncInProgress = false; return false; }
+    _lastPushTimestamp = snap.updatedAt; // mentjük, hogy az onSnapshot listener felismerje a saját echo-t
     const ref = doc(_db, 'users', _currentUser.uid, 'data', 'snapshot');
     await setDoc(ref, { ...snap, serverUpdatedAt: serverTimestamp() });
     const meta = await getMeta();
     meta.lastSyncAt = Date.now();
     await setMeta(meta);
     setSyncStatus('synced');
-    console.log('[FirebaseSync] Push kész.');
+    console.log('[FirebaseSync] Push kész. updatedAt:', snap.updatedAt);
     return true;
   } catch (err) {
     console.error('[FirebaseSync] Push hiba:', err);
@@ -265,58 +276,110 @@ async function pushToCloud() {
 }
 
 // ─── 11. BEJELENTKEZÉSI INIT SYNC ───
-// Cloud frissebb? → pull + lokális mentés. Lokális frissebb? → push.
+// V12.2: MINDIG pulljunk, ha van cloud snapshot. A timestamp-összehasonlítás
+// hibás volt, mert az indulási saveWords-ek frissítették a lastLocalChangeAt-ot.
+// Push csak akkor, ha nincs cloud (vendég → első push).
 async function initialSyncFromCloud() {
   if (!_currentUser) return;
   setSyncStatus('syncing');
   try {
     const cloudSnap = await pullFromCloud();
-    const meta = await getMeta();
 
     if (!cloudSnap) {
-      // Még nincs cloud snapshot → push az egész lokálist
+      // Még nincs cloud snapshot → első push (a vendég adatok felfelé)
       console.log('[FirebaseSync] Üres cloud → első push.');
+      _initialSyncDone = true; // engedjük a push-okat
       await pushToCloud();
       return;
     }
 
-    const cloudTs = cloudSnap.updatedAt || 0;
-    const localTs = meta.lastLocalChangeAt || 0;
+    // Van cloud snapshot → MINDIG pulljuk (legfrissebb-nyer szerint a felhő képet vesszük át)
+    console.log('[FirebaseSync] Cloud snapshot megtalálva → pull. cloudTs:', cloudSnap.updatedAt);
+    applyCloudSnapshot(cloudSnap);
+    _lastPushTimestamp = cloudSnap.updatedAt; // ami most a cloud-ban van, az a kiindulás
 
-    if (cloudTs > localTs) {
-      // Cloud frissebb → pull
-      console.log('[FirebaseSync] Cloud frissebb → pull (cloud:', cloudTs, 'vs local:', localTs, ')');
-      applyCloudSnapshot(cloudSnap);
-      // Lokális mentés a 4 split kulcsba (app.js függvényei)
-      if (window.saveWords)     await window.saveWords();
-      if (window.saveStats)     await window.saveStats();
-      if (window.savePlaylists) await window.savePlaylists();
-      // UI újrarajzolás
-      if (window.renderDashboard) window.renderDashboard();
-      meta.lastSyncAt = Date.now();
-      await setMeta(meta);
-      setSyncStatus('synced');
-      if (window.showToast) window.showToast('☁️ Felhőből szinkronizálva');
-    } else if (localTs > cloudTs) {
-      // Lokális frissebb → push
-      console.log('[FirebaseSync] Lokális frissebb → push.');
-      await pushToCloud();
-    } else {
-      // Egyformák
-      setSyncStatus('synced');
-      console.log('[FirebaseSync] Cloud és local szinkronban.');
+    // Lokális mentés a 4 split kulcsba (app.js függvényei)
+    if (window.saveWords)     await window.saveWords();
+    if (window.saveStats)     await window.saveStats();
+    if (window.savePlaylists) await window.savePlaylists();
+
+    // UI újrarajzolás
+    if (window.renderDashboard) window.renderDashboard();
+    if (window.renderStats && document.getElementById('screen-stats')?.classList.contains('active')) {
+      window.renderStats();
     }
+
+    const meta = await getMeta();
+    meta.lastSyncAt = Date.now();
+    await setMeta(meta);
+    setSyncStatus('synced');
+    if (window.showToast) window.showToast('☁️ Felhőből szinkronizálva');
+
+    _initialSyncDone = true; // most már engedjük a push-okat
   } catch (err) {
     console.error('[FirebaseSync] Initial sync hiba:', err);
     setSyncStatus('error');
+    _initialSyncDone = true; // hibánál is engedjük (különben mindig blokkolt lenne)
+  }
+}
+
+// ─── 11.5. REAL-TIME LISTENER (másik eszközökről érkező változások) ───
+function startCloudListener() {
+  if (!_currentUser || !_db) return;
+  if (_snapshotUnsubscribe) _snapshotUnsubscribe();
+
+  const ref = doc(_db, 'users', _currentUser.uid, 'data', 'snapshot');
+  _snapshotUnsubscribe = onSnapshot(ref, (snapDoc) => {
+    if (!snapDoc.exists()) return;
+    const cloudData = snapDoc.data();
+    if (!cloudData || !cloudData.updatedAt) return;
+
+    // Saját push echo-ja → ignoráljuk
+    if (cloudData.updatedAt === _lastPushTimestamp) {
+      console.log('[FirebaseSync] Saját push echo, ignorálva.');
+      return;
+    }
+
+    // Idegen eszközről érkezett változás → pull + UI frissítés
+    console.log('[FirebaseSync] 🔔 Másik eszközről érkezett változás, pull...');
+    _lastPushTimestamp = cloudData.updatedAt; // most már ezt ismerjük
+    applyCloudSnapshot(cloudData);
+
+    if (window.saveWords)     window.saveWords();
+    if (window.saveStats)     window.saveStats();
+    if (window.savePlaylists) window.savePlaylists();
+    if (window.renderDashboard) window.renderDashboard();
+    if (window.renderStats && document.getElementById('screen-stats')?.classList.contains('active')) {
+      window.renderStats();
+    }
+    setSyncStatus('synced');
+    if (window.showToast) window.showToast('🔄 Frissítve a másik eszközről');
+  }, (err) => {
+    console.error('[FirebaseSync] Snapshot listener hiba:', err);
+    setSyncStatus('error');
+  });
+  console.log('[FirebaseSync] Real-time listener elindítva.');
+}
+
+function stopCloudListener() {
+  if (_snapshotUnsubscribe) {
+    _snapshotUnsubscribe();
+    _snapshotUnsubscribe = null;
+    console.log('[FirebaseSync] Real-time listener leállítva.');
   }
 }
 
 // ─── 12. DEBOUNCED PUSH (a app.js savexxx() függvényeiből hívható) ───
 async function triggerCloudPush() {
-  // Lokális változás jelölése (akkor is, ha nem vagy bejelentkezve – majd ha bejelentkezel)
+  // Lokális változás jelölése (debug-ra hasznos)
   await markLocalChange();
   if (!_currentUser) return;
+  // V12.2 FIX: amíg az initial sync nincs kész, NE küldjünk push-t.
+  // Ez megelőzi, hogy az indulási saveWords/Stats felülírják a cloud-ot.
+  if (!_initialSyncDone) {
+    console.log('[FirebaseSync] Push elnyomva – initial sync még nincs kész.');
+    return;
+  }
   clearTimeout(_pushDebounceTimer);
   setSyncStatus('pending');
   _pushDebounceTimer = setTimeout(() => { pushToCloud(); }, PUSH_DEBOUNCE_MS);

@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V12.0 (Smart Library + 3D Flashcard + Firebase Cloud Sync) indítása...");
+console.log("[LexiLearn] App.js V12.2 (Smart Library + 3D Flashcard + Firebase Cloud Sync + Real-time) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
@@ -2987,12 +2987,19 @@ async function signOutCloud() {
   showToast('Kijelentkeztél');
 }
 
-function manualCloudSync() {
+async function manualCloudSync() {
   if (!window.LexiFirebase) return;
   closeUserMenu();
-  window.LexiFirebase.forcePush().then(ok => {
-    showToast(ok ? '☁️ Szinkronizálva' : 'Sync sikertelen');
-  });
+  showToast('🔄 Szinkronizálás...');
+  // 1. Pull a cloud-ról (másik eszközről érkezett változások letöltése)
+  // 2. Push a frissített lokálisat (saját változások felfelé)
+  try {
+    await window.LexiFirebase.forcePull();
+    await window.LexiFirebase.forcePush();
+    showToast('☁️ Szinkronizálva');
+  } catch (err) {
+    showToast('Sync sikertelen');
+  }
 }
 
 function toggleUserMenu() {
