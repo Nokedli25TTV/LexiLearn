@@ -6,12 +6,13 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v10-5';
+const CACHE_NAME = 'lexilearn-v12-0';
 
 const STATIC_ASSETS = [
   './index.html',
   './style.css',
   './app.js',
+  './firebase-sync.js',
   './data.js',
   './japanese_words.js',
   './dekiru.js',

@@ -574,3 +574,628 @@ rt {
 .playlist-from-file {
   border-left: 3px solid var(--primary-light);
 }
+
+/* ══════════════════════════════════════════════════════
+   V11: SMART LIBRARY (Fókusz Lista)
+══════════════════════════════════════════════════════ */
+
+/* --- Fókusz Lista kártya a dashboardon --- */
+.focus-list-card {
+  background: linear-gradient(135deg, #fff8dc 0%, #fff3b0 100%);
+  border: 1px solid #f4c430;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(244,196,48,0.15);
+  margin-bottom: 8px;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.focus-list-card.playlist-active {
+  border-color: #d4a017;
+  box-shadow: 0 0 0 2px rgba(244,196,48,0.3), 0 2px 8px rgba(244,196,48,0.25);
+}
+[data-theme="dark"] .focus-list-card {
+  background: linear-gradient(135deg, rgba(244,196,48,0.12) 0%, rgba(244,196,48,0.06) 100%);
+  border-color: rgba(244,196,48,0.45);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+[data-theme="dark"] .focus-list-card.playlist-active {
+  border-color: #f4c430;
+  box-shadow: 0 0 0 2px rgba(244,196,48,0.25), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.focus-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  color: #7c5d00;
+}
+[data-theme="dark"] .focus-list-header {
+  color: #f4c430;
+}
+.focus-list-header:hover {
+  background: rgba(244,196,48,0.12);
+}
+.focus-list-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.focus-star {
+  font-size: 16px;
+  animation: focusStarPulse 2.4s ease-in-out infinite;
+  display: inline-block;
+}
+@keyframes focusStarPulse {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50%      { transform: scale(1.12) rotate(-8deg); }
+}
+.focus-list-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 7px;
+  background: #d4a017;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 900;
+}
+[data-theme="dark"] .focus-list-count {
+  background: #f4c430;
+  color: #1e1e1e;
+}
+.focus-list-active-pill {
+  font-size: 10px;
+  background: #2d6a4f;
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 800;
+}
+.focus-list-body {
+  border-top: 1px solid rgba(244,196,48,0.4);
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.45);
+  display: none;
+}
+[data-theme="dark"] .focus-list-body {
+  background: rgba(0,0,0,0.15);
+}
+.focus-list-body.open {
+  display: block;
+  animation: fadeSlideUp 0.2s ease forwards;
+}
+.focus-list-empty {
+  font-size: 12px;
+  color: var(--text-2);
+  font-style: italic;
+  line-height: 1.5;
+}
+.focus-list-empty small {
+  color: var(--text-3);
+  font-style: normal;
+}
+
+/* --- Csillag gomb a gyakorlási q-card sarkában --- */
+.q-card { position: relative; }
+.bookmark-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-3);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease, background-color 0.2s, color 0.2s;
+  z-index: 5;
+}
+.bookmark-btn:hover {
+  background: rgba(244,196,48,0.22);
+  color: #d4a017;
+  transform: scale(1.1);
+}
+.bookmark-btn.bookmarked {
+  background: rgba(244,196,48,0.25);
+  color: #f4c430;
+  animation: bookmarkPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.bookmark-btn.bookmarked:hover {
+  background: rgba(244,196,48,0.4);
+  color: #d4a017;
+}
+[data-theme="dark"] .bookmark-btn.bookmarked {
+  background: rgba(244,196,48,0.18);
+  color: #f4c430;
+}
+@keyframes bookmarkPop {
+  0%   { transform: scale(0.6) rotate(-15deg); }
+  60%  { transform: scale(1.25) rotate(8deg); }
+  100% { transform: scale(1)    rotate(0deg); }
+}
+
+/* --- Mini csillag a szólista (word-item) sorában --- */
+.word-bookmark {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  color: var(--text-3);
+  transition: transform 0.15s ease, background-color 0.15s;
+}
+.word-bookmark:hover {
+  background: rgba(244,196,48,0.15);
+  color: #d4a017;
+  transform: scale(1.2);
+}
+.word-bookmark.bookmarked {
+  color: #f4c430;
+}
+.word-bookmark-empty {
+  font-size: 14px;
+  opacity: 0.4;
+}
+.word-bookmark:hover .word-bookmark-empty {
+  opacity: 1;
+}
+
+/* ══════════════════════════════════════════════════════
+   V11: 3D FLASHCARD MÓD
+══════════════════════════════════════════════════════ */
+.flashcard-3d {
+  perspective: 1400px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 22px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+.flashcard-3d-inner {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.flashcard-3d.flipped .flashcard-3d-inner {
+  transform: rotateY(180deg);
+}
+.flashcard-3d-front,
+.flashcard-3d-back {
+  position: absolute;
+  inset: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 22px;
+  padding: 28px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(45,26,90,0.18), 0 2px 6px rgba(0,0,0,0.08);
+  border: 1px solid var(--border);
+}
+.flashcard-3d-front {
+  background: linear-gradient(150deg, var(--surface) 0%, var(--primary-dim) 100%);
+}
+.flashcard-3d-back {
+  background: linear-gradient(150deg, #fff8dc 0%, #ffe5b4 100%);
+  transform: rotateY(180deg);
+}
+[data-theme="dark"] .flashcard-3d-front {
+  background: linear-gradient(150deg, var(--surface) 0%, rgba(82,183,136,0.12) 100%);
+}
+[data-theme="dark"] .flashcard-3d-back {
+  background: linear-gradient(150deg, #2c2620 0%, rgba(244,196,48,0.12) 100%);
+}
+
+/* Rating állapot színes felvillanás */
+.flashcard-3d.fc-rated-correct .flashcard-3d-back {
+  box-shadow: 0 0 0 4px var(--success), 0 10px 40px rgba(45,106,79,0.4);
+  transition: box-shadow 0.3s ease;
+}
+.flashcard-3d.fc-rated-wrong .flashcard-3d-back {
+  box-shadow: 0 0 0 4px var(--error), 0 10px 40px rgba(181,39,42,0.4);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Kis "Forrás / Magyar" jelölő a kártya sarkában */
+.fc-corner-hint {
+  position: absolute;
+  top: 14px;
+  left: 16px;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 3px 8px;
+  background: rgba(0,0,0,0.04);
+  border-radius: 8px;
+}
+[data-theme="dark"] .fc-corner-hint {
+  background: rgba(255,255,255,0.06);
+}
+
+/* A főszöveg középen, nagy betűkkel */
+.fc-main {
+  font-family: 'Lora', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+.fc-main-back {
+  color: #7c5d00;
+}
+[data-theme="dark"] .fc-main-back {
+  color: #f4c430;
+}
+.fc-reading {
+  font-size: 16px;
+  color: var(--primary);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Példamondat doboz a hátlapon */
+.fc-example {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: rgba(255,255,255,0.55);
+  border-left: 3px solid var(--primary);
+  border-radius: 8px;
+  width: 100%;
+  text-align: left;
+}
+[data-theme="dark"] .fc-example {
+  background: rgba(0,0,0,0.25);
+}
+.fc-example-sentence {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+  font-style: italic;
+}
+.fc-example-sentence .fc-highlight {
+  color: var(--primary);
+  font-weight: 800;
+  font-style: normal;
+}
+[data-theme="dark"] .fc-example-sentence .fc-highlight {
+  color: var(--primary-h);
+}
+.fc-example-hu {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+}
+.fc-no-example {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-3);
+  font-style: italic;
+}
+
+/* Alulra: kis hint a flip-hez */
+.fc-bottom-hint {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-3);
+  font-weight: 700;
+  opacity: 0.7;
+}
+
+/* Nav sor: Vissza gomb + Rating gombok */
+.flashcard-3d-nav {
+  display: flex;
+  gap: 10px;
+  max-width: 480px;
+  margin: 0 auto;
+  align-items: stretch;
+}
+
+/* Vissza gomb – mindig látható, kivéve az első kártyánál disabled */
+.flashcard-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  border-radius: 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s, color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.flashcard-back-btn:hover:not(:disabled) {
+  background: var(--primary-dim);
+  color: var(--primary);
+  border-color: var(--primary);
+  transform: translateX(-2px);
+}
+.flashcard-back-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Rating gombok (Tudtam / Nem tudtam) – csak flip után láthatóak */
+.flashcard-3d-actions {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.flashcard-3d-actions.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+.flashcard-rating {
+  flex: 1;
+  justify-content: center;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 14px;
+  border: 2px solid;
+  transition: transform 0.15s ease, background-color 0.2s, color 0.2s;
+}
+.flashcard-wrong {
+  background: var(--error-bg);
+  color: var(--error);
+  border-color: var(--error);
+}
+.flashcard-wrong:hover {
+  background: var(--error);
+  color: #fff;
+  transform: translateY(-2px);
+}
+.flashcard-correct {
+  background: var(--success-bg);
+  color: var(--success);
+  border-color: var(--success);
+}
+.flashcard-correct:hover {
+  background: var(--success);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+/* A q-card-nak ne legyen extra padding a flashcard3d-nél (mert a kártya saját maga jól néz ki) */
+.q-card:has(.flashcard-3d) {
+  padding: 24px 20px 20px;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+/* Mobil */
+@media (max-width: 680px) {
+  .flashcard-3d-inner { min-height: 260px; }
+  .fc-main { font-size: 32px; }
+  .flashcard-3d-front, .flashcard-3d-back { padding: 24px 16px 22px; }
+  .fc-example-sentence { font-size: 13px; }
+}
+
+/* ══════════════════════════════════════════════════════
+   V12: FIREBASE AUTH + CLOUD SYNC UI
+══════════════════════════════════════════════════════ */
+
+/* Header auth zóna */
+.auth-zone {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+}
+.auth-user-block {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+
+/* Sync státusz kis ikon */
+.sync-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-3);
+  flex-shrink: 0;
+  transition: color 0.3s, background-color 0.3s;
+}
+.sync-status.sync-synced  { color: var(--success); background: var(--success-bg); }
+.sync-status.sync-pending { color: var(--yellow); background: var(--yellow-dim); }
+.sync-status.sync-syncing { color: var(--info); background: var(--info-bg); animation: syncSpin 1.2s linear infinite; }
+.sync-status.sync-error   { color: var(--error); background: var(--error-bg); }
+@keyframes syncSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* User avatar gomb */
+.user-avatar-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, transform 0.15s;
+  position: relative;
+}
+.user-avatar-btn:hover {
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.user-avatar-fallback {
+  font-size: 14px;
+}
+
+/* User dropdown menü */
+.user-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 240px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  padding: 6px;
+  z-index: 200;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.18s, transform 0.18s;
+}
+.user-menu.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+.user-menu-header {
+  padding: 10px 12px 8px;
+}
+.user-menu-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+.user-menu-email {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+  word-break: break-all;
+}
+.user-menu-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+.user-menu-sync-info {
+  font-size: 11px;
+  color: var(--text-3);
+  padding: 6px 12px;
+  font-style: italic;
+}
+.user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.15s, color 0.15s;
+}
+.user-menu-item:hover {
+  background: var(--primary-dim);
+  color: var(--primary);
+}
+.user-menu-signout {
+  color: var(--error);
+}
+.user-menu-signout:hover {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+/* Google Sign-in gomb */
+.google-signin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 18px;
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-family: 'Nunito', 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: box-shadow 0.2s, background-color 0.2s, transform 0.15s;
+}
+.google-signin-btn:hover {
+  background: #f8f9fa;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+[data-theme="dark"] .google-signin-btn {
+  background: #1e1e1e;
+  color: #e0e0e0;
+  border-color: #555;
+}
+[data-theme="dark"] .google-signin-btn:hover {
+  background: #2a2a2a;
+}
+
+/* Mobil */
+@media (max-width: 680px) {
+  .auth-login-btn span { display: none; }
+  .auth-login-btn { padding: 8px 10px; }
+  .user-menu { right: -8px; min-width: 220px; }
+}
