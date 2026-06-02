@@ -2,38 +2,28 @@
    LexiLearn V12.0 – Firebase Sync (Auth + Cloud Sync)
    Stratégia:
      - Google Auth (popup)
-     - Cloud-doc: users/{uid}/snapshot
+     - Cloud-doc: users/{uid}/data/snapshot
      - Konfliktus: legfrissebb nyer (timestamp alapú)
      - Sync hatókör: words + stats + playlists (settings NEM)
      - Auto-push: minden lokális mentés után, debounced (3s)
      - Auto-pull: bejelentkezéskor, ha cloud frissebb mint lokális
 ══════════════════════════════════════════════════════ */
 
-// ─── 1. FIREBASE CONFIG (CSERÉLD KI a saját értékeidre) ───
-// Firebase Console → Project Settings → Your apps → SDK setup → Config
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyA86EgV9ueBswDu9KY0K30BJnq9Z-mNAEc",
-  authDomain: "weboldal1-961a3.firebaseapp.com",
-  projectId: "weboldal1-961a3",
-  storageBucket: "weboldal1-961a3.firebasestorage.app",
+// ─── 1. FIREBASE CONFIG ─────────────────────────────────
+// A Firebase Console-ról másolt értékek. Browser-modul-friendly formátum.
+const FIREBASE_CONFIG = {
+  apiKey:            "AIzaSyA86EgV9ueBswDu9KY0K30BJnq9Z-mNAEc",
+  authDomain:        "weboldal1-961a3.firebaseapp.com",
+  projectId:         "weboldal1-961a3",
+  storageBucket:     "weboldal1-961a3.firebasestorage.app",
   messagingSenderId: "912488756591",
-  appId: "1:912488756591:web:f8ed3c5d1afbd96efa249a",
-  measurementId: "G-EK25R4LQ0J"
+  appId:             "1:912488756591:web:f8ed3c5d1afbd96efa249a",
+  measurementId:     "G-EK25R4LQ0J"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-// ─── 2. SDK IMPORTOK (Firebase v10 modular CDN) ───
+// ─── 2. SDK IMPORTOK (Firebase v10 modular CDN — böngészőbarát) ───
+// FONTOS: bare specifier-ek ("firebase/app") csak Node/bundler-rel mennek.
+// Böngészőben a teljes gstatic.com URL kell, type="module" script-ben.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 import {
   getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged
@@ -56,7 +46,12 @@ const META_KEY = 'lexi_cloudsync_meta'; // localForage kulcs
 
 // ─── 4. INIT ───
 function isConfigValid() {
-  return Object.values(FIREBASE_CONFIG).every(v => v && !v.startsWith('REPLACE_'));
+  // Minden mezőnek ki kell legyen töltve és nem placeholder
+  const required = ['apiKey', 'authDomain', 'projectId', 'appId'];
+  return required.every(k => {
+    const v = FIREBASE_CONFIG[k];
+    return v && typeof v === 'string' && !v.startsWith('REPLACE_');
+  });
 }
 
 function initFirebase() {
@@ -70,7 +65,7 @@ function initFirebase() {
     _auth = getAuth(_firebaseApp);
     _db   = getFirestore(_firebaseApp);
     _isConfigured = true;
-    console.log('[FirebaseSync] Inicializálva.');
+    console.log('[FirebaseSync] Inicializálva. Project:', FIREBASE_CONFIG.projectId);
 
     // Auth állapot figyelés
     onAuthStateChanged(_auth, async (user) => {

@@ -6,7 +6,7 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v12-0';
+const CACHE_NAME = 'lexilearn-v12-1';
 
 const STATIC_ASSETS = [
   './index.html',
