@@ -238,10 +238,15 @@ function applyCloudSnapshot(snap) {
     // ── WORDS ──
     if (snap.words?.[lang]) {
       const cloudById = new Map(snap.words[lang].map(w => [w.id, w]));
+      // V12.4: Fallback index 'en' mező alapján — átmeneti védelem a régi
+      // Date.now-os ID-jű cloud snapshot-okra (a stabil ID migráció előtti adat)
+      const cloudByEn = new Map();
+      snap.words[lang].forEach(w => { if (w.en) cloudByEn.set(w.en, w); });
 
       // Frissítjük a lokális szavakat
       appData[lang].words.forEach(localW => {
-        const cw = cloudById.get(localW.id);
+        let cw = cloudById.get(localW.id);
+        if (!cw) cw = cloudByEn.get(localW.en); // fallback by en
         if (!cw) return;
         // stats + bookmarked mindig átvesszük
         if (cw.stats)      localW.stats = cw.stats;
@@ -257,9 +262,9 @@ function applyCloudSnapshot(snap) {
       snap.words[lang].forEach(cw => {
         const isBuiltIn = (cw.source === 'data_js' || cw.source === 'dekiru');
         if (isBuiltIn) return; // beépítettek a data.js-ből jönnek
-        if (!appData[lang].words.some(lw => lw.id === cw.id)) {
-          appData[lang].words.push(cw);
-        }
+        // Match a lokálissal mind ID, mind 'en' alapján
+        const exists = appData[lang].words.some(lw => lw.id === cw.id || (cw.en && lw.en === cw.en));
+        if (!exists) appData[lang].words.push(cw);
       });
     }
 
@@ -354,6 +359,11 @@ async function initialSyncFromCloud() {
     if (window.showToast) window.showToast('☁️ Felhőből szinkronizálva');
 
     _initialSyncDone = true; // most már engedjük a push-okat
+
+    // V12.4: RECONCILIATION PUSH — a stabil ID migráció utáni átállás miatt
+    // a lokális adatok (új ID-kkel + a cloudból átvett régi stats-ekkel) felülírják
+    // a cloud snapshot-ot, hogy a másik eszköz is megkapja a stabil ID-ket.
+    setTimeout(() => { pushToCloud(); }, 500);
   } catch (err) {
     console.error('[FirebaseSync] Initial sync hiba:', err);
     setSyncStatus('error');

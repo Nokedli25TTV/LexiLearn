@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V12.3 (Smart Library + 3D Flashcard + Firebase Cloud Sync + méretoptimalizálás) indítása...");
+console.log("[LexiLearn] App.js V12.4 (Stabil szó ID-k, eszközfüggetlen sync) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
@@ -140,6 +140,92 @@ let state = appData[currentMode];
 function diffOrder(d) {
   const map = {B1:1, B2:2, C1:3, C2:4, N5:1, N4:2, N3:3, N2:4, N1:5};
   return map[d] ?? 0;
+}
+
+/* ══════════════════════════════════════════════════════
+   V12.4: STABIL SZÓ ID GENERÁTOR (cloud sync alapfeltétele)
+   A korábbi 'en_5_1717...' Date.now-os ID-k miatt a két eszköz
+   közötti szó-párosítás nem működött. Mostantól a szó ID-je
+   stabilan az en/kana/kanji érték alapján generálódik.
+══════════════════════════════════════════════════════ */
+function stableWordId(prefix, srcStr) {
+  // Firestore-friendly + URL-safe: veszélyes karaktereket cseréljük
+  const safe = String(srcStr || '')
+    .replace(/[\/.#$\[\]\s]/g, '_')  // Firestore tiltott + space
+    .slice(0, 200);                   // doc field max 1500 byte, biztosra megyek
+  return prefix + '_' + safe;
+}
+
+// Egyszeri migráció: régi Date.now-os ID-ket cseréli stabil ID-re,
+// frissíti a hozzájuk tartozó referenciákat (selectedIds, playlists, dailyQuests).
+function migrateToStableIds() {
+  const oldToNew = new Map();
+  const _isOldId = (id) => id && /_\d{13}/.test(id); // 13 jegyű timestamp benne
+
+  // ── ANGOL ──
+  appData.english.words.forEach(w => {
+    if (w.source === 'data_js' && _isOldId(w.id)) {
+      const newId = stableWordId('en', w.en);
+      oldToNew.set(w.id, newId);
+      w.id = newId;
+    }
+  });
+
+  // ── JAPÁN (data_js + dekiru egyaránt 'ja_' prefix-szel) ──
+  appData.japanese.words.forEach(w => {
+    if ((w.source === 'data_js' || w.source === 'dekiru') && _isOldId(w.id)) {
+      const newId = stableWordId('ja', w.en);
+      oldToNew.set(w.id, newId);
+      w.id = newId;
+    }
+  });
+
+  // ── KANJI ──
+  appData.kanji.words.forEach(w => {
+    if (w.source === 'data_js' && _isOldId(w.id)) {
+      const newId = stableWordId('kj', w.en);
+      oldToNew.set(w.id, newId);
+      w.id = newId;
+    }
+  });
+
+  if (oldToNew.size === 0) return false;
+
+  console.log(`[LexiLearn] V12.4 ID migráció: ${oldToNew.size} szó ID-je stabil ID-re cserélve.`);
+
+  // Hivatkozások frissítése
+  ['english', 'japanese', 'kanji'].forEach(lang => {
+    // selectedIds (Set)
+    if (appData[lang].selectedIds) {
+      const newSelected = new Set();
+      appData[lang].selectedIds.forEach(id => newSelected.add(oldToNew.get(id) || id));
+      appData[lang].selectedIds = newSelected;
+    }
+    // playlists.wordIds
+    (appData[lang].playlists || []).forEach(p => {
+      if (Array.isArray(p.wordIds)) {
+        p.wordIds = p.wordIds.map(id => oldToNew.get(id) || id);
+      }
+    });
+    // dailyQuests params (DailyWord, MistakeCleanup, GhostHunter)
+    const q = appData[lang].dailyQuests;
+    if (q && Array.isArray(q.list)) {
+      q.list.forEach(quest => {
+        if (!quest.params) return;
+        if (quest.params.wordId) {
+          quest.params.wordId = oldToNew.get(quest.params.wordId) || quest.params.wordId;
+        }
+        if (Array.isArray(quest.params.wordIds)) {
+          quest.params.wordIds = quest.params.wordIds.map(id => oldToNew.get(id) || id);
+        }
+        if (Array.isArray(quest.params.ghostIds)) {
+          quest.params.ghostIds = quest.params.ghostIds.map(id => oldToNew.get(id) || id);
+        }
+      });
+    }
+  });
+
+  return true;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -366,10 +452,14 @@ async function loadState() {
       _applyParsedData(lexiWords, lexiStats, lexiPlaylists, lexiSettings);
     }
 
+    // V12.4: stabil ID migráció ELŐSZÖR (mielőtt a syncNewWords új szavakat ad hozzá)
+    const migrated = migrateToStableIds();
     syncNewWords();
     syncCustomLists();
+    if (migrated) await saveWords(); // mentsük a migrált ID-ket
   } catch(e) {
     console.warn('[LexiLearn] Betöltési hiba:', e);
+    migrateToStableIds();
     syncNewWords();
     syncCustomLists();
   }
@@ -438,7 +528,7 @@ function syncNewWords() {
 
     if (appData.english.words.length === 0) {
       appData.english.words = SAMPLE_WORDS.map((w, i) => ({
-        id: 'en_' + i, en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
+        id: stableWordId('en', w.en), en: w.en, hu: w.hu, tags: w.tags, diff: w.diff || 'B2', syn: w.syn || '', sentence: w.sentence || '',
         source: 'data_js',
         bookmarked: false,
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
@@ -456,7 +546,7 @@ function syncNewWords() {
           if (existing.bookmarked === undefined) existing.bookmarked = false;
         } else {
           appData.english.words.push({
-            id: 'en_new_' + i + '_' + Date.now(),
+            id: stableWordId('en', srcWord.en),
             en: srcWord.en, hu: srcWord.hu, tags: srcWord.tags,
             diff: srcWord.diff || 'B2', syn: srcWord.syn || '', sentence: srcWord.sentence || '',
             source: 'data_js',
@@ -494,7 +584,7 @@ function syncNewWords() {
     let existingWord = appData.japanese.words.find(x => x.en === w.kana);
     if (!existingWord) {
       appData.japanese.words.push({
-        id: 'ja_dek_' + i + '_' + Date.now(),
+        id: stableWordId('ja', w.kana),
         en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
         lesson: lessonVal, source: 'dekiru', sentence: '',
         bookmarked: false,
@@ -512,7 +602,7 @@ function syncNewWords() {
     let existingWord = appData.japanese.words.find(x => x.en === w.kana);
     if (!existingWord) {
       appData.japanese.words.push({
-        id: 'ja_' + i + '_' + Date.now(),
+        id: stableWordId('ja', w.kana),
         en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
         source: 'data_js', sentence: '',
         bookmarked: false,
@@ -544,7 +634,7 @@ function syncNewWords() {
     let existingWord = appData.kanji.words.find(x => x.en === w.kanji);
     if (!existingWord) {
       appData.kanji.words.push({
-        id: 'kj_' + i + '_' + Date.now(),
+        id: stableWordId('kj', w.kanji),
         en: w.kanji, hu: w.meaning, romaji: w.romaji, onyomi: w.onyomi, kunyomi: w.kunyomi,
         tags: w.tags || [], lesson: w.lesson, diff: w.jlpt || 'N5',
         source: 'data_js', sentence: '',
@@ -2734,13 +2824,13 @@ function doImport() {
       if (!en||!hu) return;
       const tags = tagsStr ? tagsStr.split(/[,;]/).map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
       if (state.words.some(w=>w.en.toLowerCase()===en.toLowerCase())) return;
-      state.words.push({ id:'en_imp_'+Date.now()+Math.random(), en, hu, tags, diff: migrateDiff(diffStr || 'B2'), syn:'', sentence:'', bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+      state.words.push({ id: stableWordId('en_imp', en), en, hu, tags, diff: migrateDiff(diffStr || 'B2'), syn:'', sentence:'', bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
     } else {
       const [en, hu, romaji, tagsStr, diffStr] = parts;
       if (!en||!hu) return;
       const tags = tagsStr ? tagsStr.split(/[,;]/).map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
       if (state.words.some(w=>w.en.toLowerCase()===en.toLowerCase())) return;
-      state.words.push({ id:'jp_imp_'+Date.now()+Math.random(), en, hu, romaji: romaji || '', tags, diff: migrateDiff(diffStr || 'N5'), sentence:'', bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+      state.words.push({ id: stableWordId('jp_imp', en), en, hu, romaji: romaji || '', tags, diff: migrateDiff(diffStr || 'N5'), sentence:'', bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
     }
     added++;
   });
@@ -2812,12 +2902,12 @@ function doAddWord() {
   }
 
   if (currentMode === 'english') {
-    state.words.push({ id:'en_man_'+Date.now(), en, hu, tags, diff, syn: synOrRomaji, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+    state.words.push({ id: stableWordId('en_man', en), en, hu, tags, diff, syn: synOrRomaji, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
   } else if (currentMode === 'japanese') {
     if (!synOrRomaji) { showToast('A Romaji megadása kötelező japán szónál!'); return; }
-    state.words.push({ id:'jp_man_'+Date.now(), en, hu, romaji: synOrRomaji, tags, diff, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+    state.words.push({ id: stableWordId('jp_man', en), en, hu, romaji: synOrRomaji, tags, diff, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
   } else if (currentMode === 'kanji') {
-    state.words.push({ id:'kj_man_'+Date.now(), en, hu, romaji: synOrRomaji, onyomi: '', kunyomi: '', lesson: 'Egyéb', tags, diff, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
+    state.words.push({ id: stableWordId('kj_man', en), en, hu, romaji: synOrRomaji, onyomi: '', kunyomi: '', lesson: 'Egyéb', tags, diff, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
   }
 
   saveWords();
