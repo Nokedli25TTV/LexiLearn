@@ -142,8 +142,21 @@ async function markLocalChange() {
 }
 
 // ─── 7. SNAPSHOT BUILDER ───
-// data.js-ből származó szavakra csak az állapot mezőket (stats, bookmarked) csomagoljuk.
-// Manuálisan hozzáadott szavakra a teljes objektumot.
+// V12.3: a Firestore doc limit 1 MiB. Az alkalmazás 4000+ szót tartalmaz,
+// így MINDEN szó mentése ~700 KB-ot eredményez, ami már veszélyesen közel van.
+// Optimalizáció: csak azokat a BEÉPÍTETT szavakat mentjük, amiket módosítottál
+// (gyakoroltál vagy csillagoztál). A többi szó a data.js-ből úgyis előáll.
+// Plus: sessionHistory-t utolsó 100-ra trimeljük.
+
+const MAX_SESSION_HISTORY = 100;
+
+function _isWordModified(w) {
+  if (!w) return false;
+  if (w.bookmarked) return true;
+  const s = w.stats || {};
+  return (s.totalCorrect > 0) || (s.totalWrong > 0) || (s.streak > 0) || (s.lastAttempt > 0);
+}
+
 function buildCloudSnapshot() {
   const appData = window.appData;
   if (!appData) return null;
@@ -156,32 +169,57 @@ function buildCloudSnapshot() {
   };
 
   ['english', 'japanese', 'kanji'].forEach(lang => {
-    // ── WORDS ──
-    snap.words[lang] = (appData[lang].words || []).map(w => {
-      const isBuiltIn = (w.source === 'data_js' || w.source === 'dekiru');
-      if (isBuiltIn) {
-        // Beépített szó: csak ID + a felhasználó által módosítható mezők
-        return {
-          id: w.id,
-          en: w.en,
-          source: w.source,
-          stats: w.stats,
-          bookmarked: !!w.bookmarked
-        };
-      }
-      // Manuális/importált szó: teljes objektum
-      return { ...w, bookmarked: !!w.bookmarked };
-    });
+    // ── WORDS ── (méret-tudatos)
+    const words = appData[lang].words || [];
+    snap.words[lang] = words
+      .filter(w => {
+        const isBuiltIn = (w.source === 'data_js' || w.source === 'dekiru');
+        // Manuális szó: MINDIG (a felhasználó hozzáadta vagy importálta)
+        if (!isBuiltIn) return true;
+        // Beépített szó: csak ha módosult
+        return _isWordModified(w);
+      })
+      .map(w => {
+        const isBuiltIn = (w.source === 'data_js' || w.source === 'dekiru');
+        if (isBuiltIn) {
+          // Beépített: csak az állapot mezők
+          return {
+            id: w.id,
+            en: w.en,
+            source: w.source,
+            stats: w.stats,
+            bookmarked: !!w.bookmarked
+          };
+        }
+        // Manuális/importált: teljes objektum
+        return { ...w, bookmarked: !!w.bookmarked };
+      });
 
-    // ── STATS (globalStats + dailyQuests) ──
+    // ── STATS (globalStats + dailyQuests) ── sessionHistory limit
+    const gs = appData[lang].globalStats || {};
+    const trimmedGs = { ...gs };
+    if (Array.isArray(gs.sessionHistory) && gs.sessionHistory.length > MAX_SESSION_HISTORY) {
+      trimmedGs.sessionHistory = gs.sessionHistory.slice(-MAX_SESSION_HISTORY);
+    }
     snap.stats[lang] = {
-      globalStats: appData[lang].globalStats || {},
+      globalStats: trimmedGs,
       dailyQuests: appData[lang].dailyQuests || { date: '', list: [] }
     };
 
     // ── PLAYLISTS (csak nem data.js eredetűek) ──
     snap.playlists[lang] = (appData[lang].playlists || []).filter(p => p.source !== 'data_js');
   });
+
+  // Debug: snapshot méret a console-ba
+  try {
+    const sizeKB = (JSON.stringify(snap).length / 1024).toFixed(1);
+    const wordCounts = ['english','japanese','kanji']
+      .map(l => `${l}=${snap.words[l].length}`).join(', ');
+    console.log(`[FirebaseSync] Snapshot méret: ${sizeKB} KB (mentett szavak: ${wordCounts})`);
+    if (sizeKB > 900) {
+      console.warn(`[FirebaseSync] ⚠️ Snapshot mérete (${sizeKB} KB) közel az 1024 KB Firestore limithez!`);
+    }
+  } catch (e) { /* noop */ }
 
   return snap;
 }

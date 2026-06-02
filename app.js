@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V12.2 (Smart Library + 3D Flashcard + Firebase Cloud Sync + Real-time) indítása...");
+console.log("[LexiLearn] App.js V12.3 (Smart Library + 3D Flashcard + Firebase Cloud Sync + méretoptimalizálás) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
