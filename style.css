@@ -815,11 +815,13 @@ rt {
   background: linear-gradient(155deg, var(--surface) 0%, rgba(231,111,81,0.14) 100%);
 }
 
-/* Rating állapot színes felvillanás */
+/* Rating állapot színes felvillanás – mindkét oldalra (előlapról is rátehetek értékelést) */
+.flashcard-3d.fc-rated-correct .flashcard-3d-front,
 .flashcard-3d.fc-rated-correct .flashcard-3d-back {
   box-shadow: 0 0 0 4px var(--success), 0 10px 40px rgba(45,106,79,0.4);
   transition: box-shadow 0.3s ease;
 }
+.flashcard-3d.fc-rated-wrong .flashcard-3d-front,
 .flashcard-3d.fc-rated-wrong .flashcard-3d-back {
   box-shadow: 0 0 0 4px var(--error), 0 10px 40px rgba(181,39,42,0.4);
   transition: box-shadow 0.3s ease;
@@ -860,32 +862,6 @@ rt {
   color: var(--accent-h);
 }
 
-/* Hang ikon a kártyán – jobb felső, a bookmarktól balra (hogy ne ütközzön) */
-.fc-speak-btn {
-  position: absolute;
-  top: 14px;
-  right: 60px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0,0,0,0.05);
-  color: var(--primary);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
-  z-index: 2;
-}
-.fc-speak-btn:hover {
-  background: var(--primary-dim);
-  transform: scale(1.08);
-}
-.fc-speak-btn:active { transform: scale(0.95); }
-.flashcard-3d-back .fc-speak-btn { color: var(--accent); }
-.flashcard-3d-back .fc-speak-btn:hover { background: var(--accent-dim); }
-[data-theme="dark"] .fc-speak-btn { background: rgba(255,255,255,0.07); }
 .fc-reading {
   font-size: 16px;
   color: var(--primary);
@@ -988,20 +964,41 @@ rt {
   cursor: not-allowed;
 }
 
-/* Rating gombok (Tudtam / Nem tudtam) – csak flip után láthatóak */
+/* Rating gombok (Tudtam / Nem tudtam) – mindig láthatóak, előlapról is rátehetek értékelést */
 .flashcard-3d-actions {
   display: flex;
   gap: 12px;
   flex: 1;
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
 }
-.flashcard-3d-actions.visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: all;
+
+/* Külső hang gomb – a nav sorban, az Előző és az értékelő gombok között */
+.flashcard-speak-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  padding: 0;
+  border: 2px solid var(--border);
+  background: var(--surface);
+  color: var(--primary);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.2s, color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.flashcard-speak-btn:hover {
+  background: var(--primary-dim);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+.flashcard-speak-btn:active { transform: translateY(0) scale(0.96); }
+.flashcard-3d.flipped ~ .flashcard-3d-nav .flashcard-speak-btn,
+.flashcard-3d.flipped + .flashcard-3d-nav .flashcard-speak-btn {
+  color: var(--accent);
+}
+.flashcard-3d.flipped + .flashcard-3d-nav .flashcard-speak-btn:hover {
+  background: var(--accent-dim);
+  border-color: var(--accent);
 }
 .flashcard-rating {
   flex: 1;
@@ -1049,7 +1046,10 @@ rt {
   .flashcard-3d-front, .flashcard-3d-back { padding: 26px 18px 22px; }
   .fc-example { margin-top: 14px; padding: 13px 14px; }
   .fc-example-sentence { font-size: 16px; line-height: 1.45; }
-  .fc-speak-btn { width: 34px; height: 34px; top: 12px; right: 58px; }
+  .flashcard-speak-btn { width: 42px; }
+  .flashcard-back-btn { padding: 10px 12px; font-size: 12px; }
+  .flashcard-rating { padding: 12px 14px; font-size: 14px; }
+  .flashcard-3d-nav { gap: 8px; }
 }
 
 /* ══════════════════════════════════════════════════════

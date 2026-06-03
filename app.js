@@ -1870,16 +1870,11 @@ function showQuestion() {
     const isKanjiFront = currentMode === 'kanji' && isEnHu;
     const isKanjiBack  = currentMode === 'kanji' && !isEnHu;
 
-    const speakerSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
-    const frontForceHu = !isEnHu;
-    const backForceHu  = isEnHu;
-
     contentHtml = `
       <div class="flashcard-3d" id="flashcard-3d" onclick="flipFlashcard3D()">
         <div class="flashcard-3d-inner">
           <div class="flashcard-3d-front">
             <div class="fc-corner-hint">${isEnHu ? 'Forrás' : 'Magyar'}</div>
-            <button class="fc-speak-btn" title="Kiejtés" onclick="event.stopPropagation(); speakWord('${escHtml(frontMain)}', ${frontForceHu})">${speakerSvg}</button>
             <div class="fc-main ${isKanjiFront ? 'kanji-display' : ''}">${escHtml(frontMain)}</div>
             ${frontReading ? `<div class="fc-reading">${escHtml(frontReading)}</div>` : ''}
             <div class="fc-bottom-hint">
@@ -1889,7 +1884,6 @@ function showQuestion() {
           </div>
           <div class="flashcard-3d-back">
             <div class="fc-corner-hint">${isEnHu ? 'Magyar' : 'Forrás'}</div>
-            <button class="fc-speak-btn" title="Kiejtés" onclick="event.stopPropagation(); speakWord('${escHtml(backMain)}', ${backForceHu})">${speakerSvg}</button>
             <div class="fc-main fc-main-back ${isKanjiBack ? 'kanji-display' : ''}">${escHtml(backMain)}</div>
             ${backReading ? `<div class="fc-reading">${escHtml(backReading)}</div>` : ''}
             ${exampleSentenceHTML ? `
@@ -1906,6 +1900,9 @@ function showQuestion() {
         <button class="flashcard-back-btn" onclick="prevFlashcard3D()" ${p.currentIdx === 0 ? 'disabled' : ''} title="${p.currentIdx === 0 ? 'Ez az első kártya' : 'Előző kártya'}">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
           Előző
+        </button>
+        <button class="flashcard-speak-btn" onclick="speakFlashcard3D()" title="Kiejtés (előlap: szó, hátlap: példamondat forrásnyelven)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
         </button>
         <div class="flashcard-3d-actions" id="flashcard-3d-actions">
           <button class="btn flashcard-rating flashcard-wrong" onclick="rateFlashcard3D(false)">
@@ -2258,16 +2255,42 @@ function flipFlashcard3D() {
   card.classList.toggle('flipped', _flashcard3DFlipped);
 
   if (_flashcard3DFlipped) {
-    const actions = document.getElementById('flashcard-3d-actions');
-    if (actions) actions.classList.add('visible');
-
-    // Hátlap megjelenése után: cél nyelv felolvasása (en-hu irány: magyar nincs felolvasva,
-    // hu-en irány: a forrás szót olvassuk fel a flip után)
+    // Hátlap megjelenése után: hu-en irányban a forrás szót olvassuk fel
     const p = state.practice;
     const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
     if (word && state.direction === 'hu-en') {
       setTimeout(() => speakWord(word.en, false), 350);
     }
+  }
+}
+
+// Külső hang gomb: kontextus-érzékeny. Előlapon: az aktuálisan látható szó.
+// Hátlapon: a forrásnyelvű példamondat (japán/angol), fallback a forrás szó.
+function speakFlashcard3D() {
+  const p = state.practice;
+  if (!p) return;
+  const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
+  if (!word) return;
+  const isEnHu = state.direction === 'en-hu';
+
+  if (_flashcard3DFlipped) {
+    let exampleText = '';
+    if (currentMode === 'english' && typeof english_sentences2 !== 'undefined') {
+      const found = english_sentences2.find(s => s.baseWord === word.en);
+      if (found && found.fullSentenceHTML) {
+        exampleText = found.fullSentenceHTML.replace(/<[^>]+>/g, '').trim();
+      }
+    } else if ((currentMode === 'japanese' || currentMode === 'kanji') && typeof JAPANESE_SENTENCES !== 'undefined') {
+      const found = JAPANESE_SENTENCES.find(s => s.baseWord === word.en);
+      if (found && found.fullSentenceHTML) {
+        exampleText = found.fullSentenceHTML.replace(/<[^>]+>/g, '').trim();
+      }
+    }
+    if (!exampleText && word.sentence) exampleText = String(word.sentence).replace(/<[^>]+>/g, '').trim();
+    speakWord(exampleText || word.en, false);
+  } else {
+    if (isEnHu) speakWord(word.en, false);
+    else        speakWord(word.hu, true);
   }
 }
 
