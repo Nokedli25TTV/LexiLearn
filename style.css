@@ -787,28 +787,32 @@ rt {
   inset: 0;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
-  border-radius: 22px;
-  padding: 28px 22px 24px;
+  border-radius: 24px;
+  padding: 30px 24px 26px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  box-shadow: 0 10px 40px rgba(45,26,90,0.18), 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 14px rgba(45,26,90,0.06), 0 22px 50px -12px rgba(45,26,90,0.14);
   border: 1px solid var(--border);
 }
 .flashcard-3d-front {
-  background: linear-gradient(150deg, var(--surface) 0%, var(--primary-dim) 100%);
+  background: linear-gradient(155deg, var(--surface) 0%, var(--primary-dim) 100%);
 }
 .flashcard-3d-back {
-  background: linear-gradient(150deg, #fff8dc 0%, #ffe5b4 100%);
+  background: linear-gradient(155deg, var(--surface) 0%, var(--accent-dim) 100%);
   transform: rotateY(180deg);
 }
+[data-theme="dark"] .flashcard-3d-front,
+[data-theme="dark"] .flashcard-3d-back {
+  box-shadow: 0 4px 18px rgba(0,0,0,0.35), 0 22px 50px -12px rgba(0,0,0,0.5);
+}
 [data-theme="dark"] .flashcard-3d-front {
-  background: linear-gradient(150deg, var(--surface) 0%, rgba(82,183,136,0.12) 100%);
+  background: linear-gradient(155deg, var(--surface) 0%, rgba(82,183,136,0.14) 100%);
 }
 [data-theme="dark"] .flashcard-3d-back {
-  background: linear-gradient(150deg, #2c2620 0%, rgba(244,196,48,0.12) 100%);
+  background: linear-gradient(155deg, var(--surface) 0%, rgba(231,111,81,0.14) 100%);
 }
 
 /* Rating állapot színes felvillanás */
@@ -850,11 +854,38 @@ rt {
   word-break: break-word;
 }
 .fc-main-back {
-  color: #7c5d00;
+  color: var(--accent-h);
 }
 [data-theme="dark"] .fc-main-back {
-  color: #f4c430;
+  color: var(--accent-h);
 }
+
+/* Hang ikon a kártyán – jobb felső, a bookmarktól balra (hogy ne ütközzön) */
+.fc-speak-btn {
+  position: absolute;
+  top: 14px;
+  right: 60px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.05);
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease, color 0.2s ease;
+  z-index: 2;
+}
+.fc-speak-btn:hover {
+  background: var(--primary-dim);
+  transform: scale(1.08);
+}
+.fc-speak-btn:active { transform: scale(0.95); }
+.flashcard-3d-back .fc-speak-btn { color: var(--accent); }
+.flashcard-3d-back .fc-speak-btn:hover { background: var(--accent-dim); }
+[data-theme="dark"] .fc-speak-btn { background: rgba(255,255,255,0.07); }
 .fc-reading {
   font-size: 16px;
   color: var(--primary);
@@ -864,37 +895,39 @@ rt {
 
 /* Példamondat doboz a hátlapon */
 .fc-example {
-  margin-top: 14px;
-  padding: 12px 14px;
-  background: rgba(255,255,255,0.55);
-  border-left: 3px solid var(--primary);
-  border-radius: 8px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  background: rgba(255,255,255,0.6);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
   width: 100%;
   text-align: left;
 }
 [data-theme="dark"] .fc-example {
-  background: rgba(0,0,0,0.25);
+  background: rgba(255,255,255,0.04);
 }
 .fc-example-sentence {
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 19px;
+  line-height: 1.5;
   color: var(--text);
   font-style: italic;
+  font-weight: 600;
 }
 .fc-example-sentence .fc-highlight {
-  color: var(--primary);
+  color: var(--accent);
   font-weight: 800;
   font-style: normal;
 }
 [data-theme="dark"] .fc-example-sentence .fc-highlight {
-  color: var(--primary-h);
+  color: var(--accent-h);
 }
 .fc-example-hu {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-2);
-  margin-top: 6px;
-  padding-top: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px dashed var(--border);
+  line-height: 1.45;
 }
 .fc-no-example {
   margin-top: 14px;
@@ -1011,10 +1044,12 @@ rt {
 
 /* Mobil */
 @media (max-width: 680px) {
-  .flashcard-3d-inner { min-height: 260px; }
+  .flashcard-3d-inner { min-height: 270px; }
   .fc-main { font-size: 32px; }
-  .flashcard-3d-front, .flashcard-3d-back { padding: 24px 16px 22px; }
-  .fc-example-sentence { font-size: 13px; }
+  .flashcard-3d-front, .flashcard-3d-back { padding: 26px 18px 22px; }
+  .fc-example { margin-top: 14px; padding: 13px 14px; }
+  .fc-example-sentence { font-size: 16px; line-height: 1.45; }
+  .fc-speak-btn { width: 34px; height: 34px; top: 12px; right: 58px; }
 }
 
 /* ══════════════════════════════════════════════════════

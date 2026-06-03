@@ -1870,11 +1870,16 @@ function showQuestion() {
     const isKanjiFront = currentMode === 'kanji' && isEnHu;
     const isKanjiBack  = currentMode === 'kanji' && !isEnHu;
 
+    const speakerSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>`;
+    const frontForceHu = !isEnHu;
+    const backForceHu  = isEnHu;
+
     contentHtml = `
       <div class="flashcard-3d" id="flashcard-3d" onclick="flipFlashcard3D()">
         <div class="flashcard-3d-inner">
           <div class="flashcard-3d-front">
             <div class="fc-corner-hint">${isEnHu ? 'Forrás' : 'Magyar'}</div>
+            <button class="fc-speak-btn" title="Kiejtés" onclick="event.stopPropagation(); speakWord('${escHtml(frontMain)}', ${frontForceHu})">${speakerSvg}</button>
             <div class="fc-main ${isKanjiFront ? 'kanji-display' : ''}">${escHtml(frontMain)}</div>
             ${frontReading ? `<div class="fc-reading">${escHtml(frontReading)}</div>` : ''}
             <div class="fc-bottom-hint">
@@ -1884,6 +1889,7 @@ function showQuestion() {
           </div>
           <div class="flashcard-3d-back">
             <div class="fc-corner-hint">${isEnHu ? 'Magyar' : 'Forrás'}</div>
+            <button class="fc-speak-btn" title="Kiejtés" onclick="event.stopPropagation(); speakWord('${escHtml(backMain)}', ${backForceHu})">${speakerSvg}</button>
             <div class="fc-main fc-main-back ${isKanjiBack ? 'kanji-display' : ''}">${escHtml(backMain)}</div>
             ${backReading ? `<div class="fc-reading">${escHtml(backReading)}</div>` : ''}
             ${exampleSentenceHTML ? `
@@ -2320,7 +2326,13 @@ function initFlashcard3DSwipe() {
   }, { passive: true });
   card.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - _fc3dTouchStartX;
-    if (Math.abs(dx) > 50) flipFlashcard3D();
+    if (Math.abs(dx) <= 50) return;
+    // Előlapról húzás: flip. Hátlapról húzás: értékelés (jobb=tudtam, bal=nem tudtam)
+    if (!_flashcard3DFlipped) {
+      flipFlashcard3D();
+    } else if (!_flashcard3DRated) {
+      rateFlashcard3D(dx > 0);
+    }
   }, { passive: true });
 }
 
