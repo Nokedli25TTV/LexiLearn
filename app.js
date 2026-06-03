@@ -2421,9 +2421,22 @@ function speakWord(text, forceHungarian = false) {
     const encoded = encodeURIComponent(text);
     audio.src = `https://translate.googleapis.com/translate_tts?ie=UTF-8&q=${encoded}&tl=ja&client=gtx&ttsspeed=0.85`;
     _currentTTSAudio = audio;
-    audio.onended = () => _onTTSFinished(ver);
-    audio.onerror = () => { _currentTTSAudio = null; useSpeechSynthesis(); };
-    audio.play().catch(() => { _currentTTSAudio = null; useSpeechSynthesis(); });
+    // Védőkapcsoló: az onerror és a play().catch() egyszerre is elsülhet hiba esetén –
+    // enélkül a fallback kétszer fut, és a hang 2x szólalna meg.
+    let _settled = false;
+    const fallback = () => {
+      if (_settled) return;
+      _settled = true;
+      _currentTTSAudio = null;
+      useSpeechSynthesis();
+    };
+    audio.onended = () => {
+      if (_settled) return;
+      _settled = true;
+      _onTTSFinished(ver);
+    };
+    audio.onerror = fallback;
+    audio.play().catch(fallback);
   } else {
     useSpeechSynthesis();
   }
