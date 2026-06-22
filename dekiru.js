@@ -765,7 +765,7 @@ const DEKIRU_L11 = [
   { kana: 'しょくよく', romaji: 'shokuyoku', hu: 'étvágy', tags: ['egészség'], jlpt: 'N4', lesson: [11], source: 'dekiru' },
   { kana: 'かんごし', romaji: 'kangoshi', hu: 'ápoló', tags: ['munka'], jlpt: 'N4', lesson: [11], source: 'dekiru' },
   { kana: 'くすり', romaji: 'kusuri', hu: 'gyógyszer', tags: ['egészség'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
-  { kana: 'やっきょk', romaji: 'yakkyoku', hu: 'gyógyszertár', tags: ['helyek'], jlpt: 'N4', lesson: [11], source: 'dekiru' },
+  { kana: 'やっきょく', romaji: 'yakkyoku', hu: 'gyógyszertár', tags: ['helyek'], jlpt: 'N4', lesson: [11], source: 'dekiru' },
 
   // Melléknevek és egyebek
   { kana: 'つめたい', romaji: 'tsumetai', hu: 'hideg (tárgyakra)', tags: ['melléknevek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },

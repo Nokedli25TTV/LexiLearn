@@ -21,7 +21,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=12.4">
+<link rel="stylesheet" href="style.css?v=12.5">
 </head>
 <body>
 
@@ -160,6 +160,13 @@
             <span class="filter-label">Lecke (Lesson)</span>
             <select class="sort-select" id="lesson-select" onchange="applyFilters()">
               <option value="all">Minden Lecke</option>
+            </select>
+          </div>
+
+          <div class="filter-group" id="day-filter-group" style="display:none;">
+            <span class="filter-label">🧳 Úti terv – Nap</span>
+            <select class="sort-select" id="day-select" onchange="applyFilters()">
+              <option value="all">Minden nap</option>
             </select>
           </div>
 
@@ -486,15 +493,15 @@
 <div class="toast" id="toast"></div>
 
 <!-- V12: Firebase Sync modul (type=module, async load) -->
-<script type="module" src="firebase-sync.js?v=12.4"></script>
+<script type="module" src="firebase-sync.js?v=12.5"></script>
 
-<script src="data.js?v=12.4"></script>
-<script src="japanese_words.js?v=12.4"></script>
-<script src="dekiru.js?v=12.4"></script>
-<script src="kanji_data.js?v=12.4"></script>
-<script src="japanese_sentences.js?v=12.4"></script>
-<script src="english_sentences2.js?v=12.4"></script>
-<script src="app.js?v=12.4"></script>
+<script src="data.js?v=12.5"></script>
+<script src="japanese_words.js?v=12.5"></script>
+<script src="dekiru.js?v=12.5"></script>
+<script src="kanji_data.js?v=12.5"></script>
+<script src="japanese_sentences.js?v=12.5"></script>
+<script src="english_sentences2.js?v=12.5"></script>
+<script src="app.js?v=12.5"></script>
 
 </body>
 </html>

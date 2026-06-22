@@ -118,7 +118,7 @@ function getEmojisForTags(tags) {
 function createEmptyState() {
   return {
     words: [], playlists: [], selectedIds: new Set(),
-    filters: { search: '', topicSearch: '', tags: [], diff: new Set(), lesson: 'all', sort: 'az', list: 'all' },
+    filters: { search: '', topicSearch: '', tags: [], diff: new Set(), lesson: 'all', day: 'all', sort: 'az', list: 'all' },
     direction: 'en-hu', activeViewTab: 'words',
     practice: { roundNumber: 0, roundWords: [], currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: 0, sessionStartTime: 0, sessionCorrect: 0, sessionWrong: 0, type: 'classic', currentSentenceObj: null },
     globalStats: { totalSessions: 0, totalCorrect: 0, totalWrong: 0, sessionHistory: [], studyDays: {}, recordStreak: 0, lastStudiedTopic: null },
@@ -292,15 +292,18 @@ function loadFocusList() {
   const searchInput = document.getElementById('search-input');
   const topicSearch = document.getElementById('topic-search');
   const lessonSelect = document.getElementById('lesson-select');
+  const daySelect = document.getElementById('day-select');
   if (searchInput) searchInput.value = '';
   if (topicSearch) topicSearch.value = '';
   if (lessonSelect) lessonSelect.value = 'all';
+  if (daySelect) daySelect.value = 'all';
 
   state.filters.search = '';
   state.filters.topicSearch = '';
   state.filters.tags = [];
   state.filters.diff = new Set();
   state.filters.lesson = 'all';
+  state.filters.day = 'all';
   state.filters.list = 'all';
   document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
 
@@ -367,7 +370,8 @@ function _applyParsedData(words, stats, playlists, settings) {
     if (settings?.[lang]) {
       appData[lang].direction = settings[lang].direction || 'en-hu';
       if (settings[lang].filters) {
-        appData[lang].filters = settings[lang].filters;
+        // Defaultokkal merge-elünk, hogy új szűrőkulcsok (pl. day) is meglegyenek
+        appData[lang].filters = { ...createEmptyState().filters, ...settings[lang].filters };
         appData[lang].filters.diff = new Set(settings[lang].filters.diff || []);
       }
       if (settings[lang].selectedIds) {
@@ -720,6 +724,9 @@ function setMode(mode, isInit = false) {
     if (group) group.style.display = 'none';
   }
 
+  // Úti terv (Nap) legördülő feltöltése – csak Japán módban jelenik meg
+  populateDaySelect();
+
   const gb = '<img src="https://flagcdn.com/w20/gb.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
   const hu = '<img src="https://flagcdn.com/w20/hu.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
   const jp = '<img src="https://flagcdn.com/w20/jp.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
@@ -762,6 +769,62 @@ function setMode(mode, isInit = false) {
     saveSettings(); // Módváltás csak beállítást érint
     updateDirectionUI();
     renderDashboard();
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   ÚTI TERV – AKTÍV NAPI TERV
+   Japán mód  → TRAVEL_PLAN        (szavak, kana szerint)
+   Kandzsi mód → TRAVEL_PLAN_KANJI (kanjik, karakter szerint)
+   Mindkettő a japanese_words.js-ben van definiálva.
+══════════════════════════════════════════════════════ */
+function getTravelPlan() {
+  if (currentMode === 'japanese') return (typeof TRAVEL_PLAN !== 'undefined') ? TRAVEL_PLAN : null;
+  if (currentMode === 'kanji')    return (typeof TRAVEL_PLAN_KANJI !== 'undefined') ? TRAVEL_PLAN_KANJI : null;
+  return null;
+}
+
+/* ══════════════════════════════════════════════════════
+   ÚTI TERV – NAP LEGÖRDÜLŐ FELTÖLTÉSE
+   Japán ÉS Kandzsi módban jelenik meg, a megfelelő terv
+   alapján. Minden nap mellett az aznapi elemek száma.
+══════════════════════════════════════════════════════ */
+function populateDaySelect() {
+  const sel = document.getElementById('day-select');
+  const group = document.getElementById('day-filter-group');
+  if (!sel || !group) return;
+
+  const plan = getTravelPlan();
+  if (!plan) {
+    group.style.display = 'none';
+    return;
+  }
+
+  const days = Object.keys(plan)
+    .map(Number)
+    .filter(n => !Number.isNaN(n))
+    .sort((a, b) => a - b);
+
+  if (days.length === 0) {
+    group.style.display = 'none';
+    return;
+  }
+
+  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  group.style.display = 'block';
+  sel.innerHTML = '<option value="all">Minden nap</option>' +
+    days.map(d => {
+      const count = Array.isArray(plan[d]) ? plan[d].length : 0;
+      return `<option value="${d}">${d}. nap (${count} ${unit})</option>`;
+    }).join('');
+
+  // Mentett nap visszaállítása; ha már nem létezik, essünk vissza 'all'-ra
+  const saved = state.filters.day || 'all';
+  if (saved !== 'all' && !days.includes(Number(saved))) {
+    state.filters.day = 'all';
+    sel.value = 'all';
+  } else {
+    sel.value = saved;
   }
 }
 
@@ -1172,6 +1235,11 @@ function applyFilters() {
     state.filters.lesson = lessonSelect.value;
   }
 
+  const daySelect = document.getElementById('day-select');
+  if ((currentMode === 'japanese' || currentMode === 'kanji') && daySelect) {
+    state.filters.day = daySelect.value;
+  }
+
   let filtered = state.words.filter(w => {
     if (state.filters.search) {
       const s = state.filters.search;
@@ -1185,6 +1253,13 @@ function applyFilters() {
     if (state.filters.tags.length > 0 && !state.filters.tags.some(t => w.tags.includes(t))) return false;
     if (state.filters.diff.size > 0 && !state.filters.diff.has(w.diff)) return false;
     if ((currentMode === 'kanji' || currentMode === 'japanese') && state.filters.lesson !== 'all' && w.lesson != state.filters.lesson) return false;
+
+    // Úti terv (Nap) szűrő – Japán (TRAVEL_PLAN) és Kandzsi (TRAVEL_PLAN_KANJI) mód
+    if ((currentMode === 'japanese' || currentMode === 'kanji') && state.filters.day && state.filters.day !== 'all') {
+      const plan = getTravelPlan();
+      const dayItems = plan ? plan[state.filters.day] : null;
+      if (!Array.isArray(dayItems) || !dayItems.includes(w.en)) return false;
+    }
     
     // Lista (playlist) szerinti szűrés – FIX #4
     // Hiba volt: w.lists-et vizsgált, ami soha nincs a szavakon.
@@ -1588,11 +1663,13 @@ function loadPlaylist(id) {
   const searchInput = document.getElementById('search-input');
   const topicSearch = document.getElementById('topic-search');
   const lessonSelect = document.getElementById('lesson-select');
+  const daySelect = document.getElementById('day-select');
   if(searchInput) searchInput.value = '';
   if(topicSearch) topicSearch.value = '';
   if (lessonSelect) lessonSelect.value = 'all';
-  
-  state.filters.search = ''; state.filters.topicSearch = ''; state.filters.tags = []; state.filters.diff = new Set(); state.filters.lesson = 'all';
+  if (daySelect) daySelect.value = 'all';
+
+  state.filters.search = ''; state.filters.topicSearch = ''; state.filters.tags = []; state.filters.diff = new Set(); state.filters.lesson = 'all'; state.filters.day = 'all';
   document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
   
   applyFilters(); updateStartPanel(); saveSettings(); // Lista betöltés: selectedIds+filters változik showToast('📂 ' + pl.name + ' szavai kijelölve!');

@@ -1710,5 +1710,24 @@ const KANJI_DATA = [
   { kanji: '之', meaning: '-nak / ez', onyomi: 'シ', kunyomi: 'これ', romaji: 'shi / kore', jlpt: 'N1', lesson: 142 , tags: ['alapszavak','nevek'] },
   { kanji: '也', meaning: 'lenni (klasszikus)', onyomi: 'ヤ', kunyomi: 'なり', romaji: 'ya / nari', jlpt: 'N1', lesson: 142 , tags: ['nevek','alapszavak'] },
   { kanji: '於', meaning: '-ban / -nál / -ra', onyomi: 'オ', kunyomi: 'おいて', romaji: 'o / oite', jlpt: 'N1', lesson: 142 , tags: ['alapszavak'] },
-  { kanji: '只', meaning: 'csak / ingyen', onyomi: 'シ', kunyomi: 'ただ', romaji: 'shi / tada', jlpt: 'N1', lesson: 142 , tags: ['alapszavak'] }
+  { kanji: '只', meaning: 'csak / ingyen', onyomi: 'シ', kunyomi: 'ただ', romaji: 'shi / tada', jlpt: 'N1', lesson: 142 , tags: ['alapszavak'] },
+
+  // ── Úti kanjik (nap-alapú terv – lásd TRAVEL_PLAN_KANJI a japanese_words.js-ben) ──
+  { kanji: '麺', meaning: 'tészta (ramen)', onyomi: 'メン', kunyomi: '', romaji: 'men', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '丼', meaning: 'tál (rizstál, donburi)', onyomi: 'ドン', kunyomi: 'どんぶり', romaji: 'donburi / don', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '無', meaning: 'nincs / -mentes', onyomi: 'ム・ブ', kunyomi: 'な(い)', romaji: 'mu / na(i)', jlpt: 'N3', lesson: null , tags: ['úti'] },
+  { kanji: '鮪', meaning: 'tonhal (maguro)', onyomi: 'ユウ', kunyomi: 'まぐろ', romaji: 'maguro', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '鮭', meaning: 'lazac (sake)', onyomi: 'ケイ', kunyomi: 'さけ', romaji: 'sake / shake', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '蟹', meaning: 'rák (kani)', onyomi: 'カイ', kunyomi: 'かに', romaji: 'kani', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '珈', meaning: 'kávé (a 珈琲 része)', onyomi: 'カ', kunyomi: '', romaji: 'ka', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '琲', meaning: 'kávé (a 珈琲 része)', onyomi: 'ハイ', kunyomi: '', romaji: 'hi', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '葱', meaning: 'újhagyma (negi)', onyomi: 'ソウ', kunyomi: 'ねぎ', romaji: 'negi', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '蛸', meaning: 'polip (tako)', onyomi: '', kunyomi: 'たこ', romaji: 'tako', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '鰻', meaning: 'angolna (unagi)', onyomi: 'マン', kunyomi: 'うなぎ', romaji: 'unagi', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '醤', meaning: 'szósz (醤油 / szójaszósz)', onyomi: 'ショウ', kunyomi: '', romaji: 'shou', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '酢', meaning: 'ecet (su)', onyomi: 'サク', kunyomi: 'す', romaji: 'su', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '酎', meaning: 'szeszes ital (酎ハイ)', onyomi: 'チュウ', kunyomi: '', romaji: 'chuu', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '茸', meaning: 'gomba (kinoko)', onyomi: 'ジョウ', kunyomi: 'きのこ・たけ', romaji: 'kinoko / take', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '鴨', meaning: 'kacsa (kamo)', onyomi: 'オウ', kunyomi: 'かも', romaji: 'kamo', jlpt: 'N1', lesson: null , tags: ['úti'] },
+  { kanji: '鯛', meaning: 'tengeri durbincs (tai)', onyomi: 'チョウ', kunyomi: 'たい', romaji: 'tai', jlpt: 'N1', lesson: null , tags: ['úti'] },
 ];

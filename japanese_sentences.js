@@ -1424,8 +1424,8 @@ const JAPANESE_SENTENCES_L11 = [
   { baseWord: "かんごし", sentenceWithBlank: "___BLANK___ に ききました。", fullSentenceHTML: "<ruby>看護師<rt>かんごし</rt></ruby> に <ruby>聞<rt>き</rt></ruby>きました。", ttsSentence: "かんごしに ききました。", correctAnswer: "かんごし", hungarian: "Megkérdeztem az ápolót." },
   { baseWord: "くすり", sentenceWithBlank: "___BLANK___ を のみます。", fullSentenceHTML: "<ruby>薬<rt>くすり</rt></ruby> を <ruby>飲<rt>の</rt></ruby>みます。", ttsSentence: "くすりを のみます。", correctAnswer: "くすり", hungarian: "Beveszem a gyógyszert." },
   { baseWord: "くすり", sentenceWithBlank: "やっきょくで ___BLANK___ を かいます。", fullSentenceHTML: "<ruby>薬局<rt>やっきょく</rt></ruby>で <ruby>薬<rt>くすり</rt></ruby> を <ruby>買<rt>か</rt></ruby>います。", ttsSentence: "やっきょくで くすりを かいます。", correctAnswer: "くすり", hungarian: "A gyógyszertárban veszek gyógyszert." },
-  { baseWord: "やっきょk", sentenceWithBlank: "___BLANK___ は どこですか。", fullSentenceHTML: "<ruby>薬局<rt>やっきょく</rt></ruby> は どこですか。", ttsSentence: "やっきょくは どこですか。", correctAnswer: "やっきょk", hungarian: "Hol van a gyógyszertár?" },
-  { baseWord: "やっきょk", sentenceWithBlank: "___BLANK___ で くすりを かいます。", fullSentenceHTML: "<ruby>薬局<rt>やっきょく</rt></ruby> で <ruby>薬<rt>くすり</rt></ruby>を <ruby>買<rt>か</rt></ruby>います。", ttsSentence: "やっきょくで くすりを かいます。", correctAnswer: "やっきょk", hungarian: "A gyógyszertárban veszek gyógyszert." },
+  { baseWord: "やっきょく", sentenceWithBlank: "___BLANK___ は どこですか。", fullSentenceHTML: "<ruby>薬局<rt>やっきょく</rt></ruby> は どこですか。", ttsSentence: "やっきょくは どこですか。", correctAnswer: "やっきょく", hungarian: "Hol van a gyógyszertár?" },
+  { baseWord: "やっきょく", sentenceWithBlank: "___BLANK___ で くすりを かいます。", fullSentenceHTML: "<ruby>薬局<rt>やっきょく</rt></ruby> で <ruby>薬<rt>くすり</rt></ruby>を <ruby>買<rt>か</rt></ruby>います。", ttsSentence: "やっきょくで くすりを かいます。", correctAnswer: "やっきょく", hungarian: "A gyógyszertárban veszek gyógyszert." },
 
   // --- Melléknevek és Egyebek ---
   { baseWord: "つめたい", sentenceWithBlank: "___BLANK___ みずを ください。", fullSentenceHTML: "<ruby>冷<rt>つめ</rt></ruby>たい <ruby>水<rt>みず</rt></ruby>を ください。", ttsSentence: "つめたい みずを ください。", correctAnswer: "つめたい", hungarian: "Kérem, adjon hideg vizet!" },
