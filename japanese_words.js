@@ -119,5 +119,29 @@ const JAPANESE_WORDS = [
   { kana: 'めいそう', romaji: 'meisō', hu: 'meditáció', tags: ['hobbi'], jlpt: 'N3' },
   { kana: 'ヨガ', romaji: 'yoga', hu: 'jóga', tags: ['hobbi'], jlpt: 'N5' },
   { kana: 'りょうりけんきゅう', romaji: 'ryōri kenkyū', hu: 'receptek kísérletezése', tags: ['hobbi'], jlpt: 'N2' },
-  { kana: 'ディーアイワイ', romaji: 'dī ai wai', hu: 'barkácsolás (DIY)', tags: ['hobbi'], jlpt: 'N5' }
+  { kana: 'ディーアイワイ', romaji: 'dī ai wai', hu: 'barkácsolás (DIY)', tags: ['hobbi'], jlpt: 'N5' },
+
+
+// ============================
+  //         közlekedés
+  // ============================
+
+{ kana: 'ホーム', romaji: 'hoomu', hu: 'peron', tags: ['közlekedés'], jlpt: 'N5' },
+{ kana: 'つぎ', romaji: 'tsugi', hu: 'következő', tags: ['közlekedés'], jlpt: 'N5' },
+{ kana: 'のりかえ', romaji: 'norikae', hu: 'átszállás', tags: ['közlekedés'], jlpt: 'N4' },
+{ kana: 'ふつう', romaji: 'futsuu', hu: 'személyvonat', tags: ['közlekedés'], jlpt: 'N4' },
+{ kana: 'とっきゅう', romaji: 'tokkyuu', hu: 'expresszvonat', tags: ['közlekedés'], jlpt: 'N3' },
+{ kana: 'チャージ', romaji: 'chaaji', hu: 'feltöltés (kártyáé)', tags: ['közlekedés'], jlpt: 'N4' },
+
+
+
+
+
+
+
+
+
+
+
+
 ];
