@@ -2446,6 +2446,49 @@ let _currentTTSAudio = null; // Aktuális Google TTS Audio elem referenciája
 let _ttsVersion = 0;          // Race condition védelem verziószámlálóval
 let _ttsOnEnd = null;         // Hang befejezésekor futó callback (advance logika)
 
+/* ── iOS / standalone (kezdőképernyős Safari app) audio-unlock ──
+   iOS-en – főleg „Add to Home Screen" appként – a hang néma marad, amíg egy
+   VALÓDI felhasználói érintésen belül fel nem oldjuk az audiót. Ezért az ELSŐ
+   koppintáskor: (1) feloldunk egy ÚJRAHASZNÁLT <audio> elemet egy néma klippel
+   (ezt használja a Google-TTS is), (2) felébresztjük a speechSynthesis-t.
+   Enélkül az auto-lejátszás (setTimeout → kiesik a gesture-láncból) néma. */
+const _TTS_SILENCE = 'data:audio/wav;base64,UklGRiwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQgAAACAgICAgICAgA==';
+let _ttsAudioEl = null;
+let _audioUnlocked = false;
+
+function _getTTSAudio() {
+  if (!_ttsAudioEl) {
+    _ttsAudioEl = new Audio();
+    _ttsAudioEl.setAttribute('playsinline', ''); // iOS: ne ugorjon teljes képernyős lejátszóba
+    _ttsAudioEl.preload = 'auto';
+  }
+  return _ttsAudioEl;
+}
+
+function unlockAudioPlayback() {
+  if (_audioUnlocked) return;
+  _audioUnlocked = true;
+  // 1) HTMLAudio elem feloldása néma klippel
+  try {
+    const a = _getTTSAudio();
+    a.src = _TTS_SILENCE;
+    const p = a.play();
+    if (p && p.then) p.then(() => { try { a.pause(); a.currentTime = 0; } catch (e) {} }).catch(() => {});
+  } catch (e) {}
+  // 2) speechSynthesis felébresztése (standalone-ban gyakran néma a fallback enélkül)
+  try {
+    if (window.speechSynthesis) {
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+    }
+  } catch (e) {}
+  ['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev =>
+    window.removeEventListener(ev, unlockAudioPlayback, { capture: true }));
+}
+['pointerdown', 'touchend', 'click', 'keydown'].forEach(ev =>
+  window.addEventListener(ev, unlockAudioPlayback, { capture: true }));
+
 function _onTTSFinished(version) {
   if (_ttsVersion !== version) return; // Elavult esemény → figyelmen kívül
   _currentTTSAudio = null;
@@ -2458,9 +2501,10 @@ function speakWord(text, forceHungarian = false) {
   _ttsVersion++;
   const ver = _ttsVersion;
 
-  // Előző hang azonnali leállítása
+  // Előző hang azonnali leállítása (kezelők nullázása, hogy a reuse miatt ne süljön
+  // el a régi onerror/onended – különben szellem-fallback szólalna meg)
   if (_currentTTSAudio) {
-    try { _currentTTSAudio.pause(); _currentTTSAudio.src = ''; } catch(e) {}
+    try { _currentTTSAudio.onended = null; _currentTTSAudio.onerror = null; _currentTTSAudio.pause(); } catch(e) {}
     _currentTTSAudio = null;
   }
   if (window.speechSynthesis) window.speechSynthesis.cancel();
@@ -2493,8 +2537,10 @@ function speakWord(text, forceHungarian = false) {
   }
 
   if (isJapanese) {
-    // Google Translate TTS – pontosabb japán kiejtés, kana alapú, on/kun keveredés nélkül
-    const audio = new Audio();
+    // Google Translate TTS – pontosabb japán kiejtés, kana alapú, on/kun keveredés nélkül.
+    // ÚJRAHASZNÁLT (előre feloldott) elem – iOS standalone-ban csak így szól megbízhatóan.
+    const audio = _getTTSAudio();
+    audio.onended = null; audio.onerror = null; // tiszta lap a reuse miatt
     const encoded = encodeURIComponent(text);
     audio.src = `https://translate.googleapis.com/translate_tts?ie=UTF-8&q=${encoded}&tl=ja&client=gtx&ttsspeed=0.85`;
     _currentTTSAudio = audio;
@@ -2513,7 +2559,8 @@ function speakWord(text, forceHungarian = false) {
       _onTTSFinished(ver);
     };
     audio.onerror = fallback;
-    audio.play().catch(fallback);
+    const _p = audio.play();
+    if (_p && _p.then) _p.catch(fallback);
   } else {
     useSpeechSynthesis();
   }
