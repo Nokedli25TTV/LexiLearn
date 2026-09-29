@@ -24,12 +24,12 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.1">
+<link rel="stylesheet" href="style.css?v=13.2">
 </head>
 <body data-screen="home">
 
@@ -65,10 +65,10 @@
 <main id="screen-home" class="screen active">
   <div class="home">
     <section class="home-hello">
-      <p class="home-greeting" id="home-greeting">Szia!</p>
+      <p class="home-greeting" id="home-greeting">Szia</p>
       <div class="streak-line">
-        <span class="streak-flame" id="home-streak-flame" aria-hidden="true">🔥</span>
-        <span id="home-streak-text">0 napos sorozat</span>
+        <span class="streak-value" id="home-streak-text">0 nap</span>
+        <span class="streak-label">konzisztencia</span>
       </div>
       <p class="streak-hint" id="home-streak-hint"></p>
       <div class="week-tracker" id="week-tracker"></div>
@@ -76,7 +76,7 @@
 
     <section class="goal" id="home-goal" aria-labelledby="goal-label">
       <div class="goal-head">
-        <span class="goal-label" id="goal-label">Mai cél</span>
+        <span class="goal-label" id="goal-label">Napi penzum</span>
         <span class="goal-count"><strong id="goal-done">0</strong> / <span id="goal-total">10</span> <span id="goal-unit">új szó</span></span>
       </div>
       <div class="goal-bar" id="goal-bar" role="progressbar" aria-labelledby="goal-label" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
@@ -88,7 +88,7 @@
     <div class="home-actions" id="home-actions"></div>
 
     <section class="home-quests">
-      <h2 class="home-section-title">Napi küldetések</h2>
+      <h2 class="home-section-title">Napi feladatok</h2>
       <div id="daily-quests-container"></div>
     </section>
   </div>
@@ -171,7 +171,7 @@
 ══════════════════════════════════════════════════════ -->
 <div id="screen-practice" class="screen">
   <div class="practice-top">
-    <div class="round-badge" id="round-badge">Round 1</div>
+    <div class="round-badge" id="round-badge">1. kör</div>
     <div class="prog-wrap"><div class="prog-bar" id="prog-bar" style="width:0%"></div></div>
     <div class="prog-label" id="prog-label">0 / 0</div>
     <div class="error-badge" id="error-badge" style="display:none">Hiba: <span id="error-count-badge">0</span></div>
@@ -186,8 +186,8 @@
 <div id="screen-round-end" class="screen">
   <div class="round-end-wrap">
     <div class="round-end-card animate-in">
-      <div class="re-title" id="re-title">Round vége!</div>
-      <div class="re-subtitle" id="re-subtitle">Szép munka!</div>
+      <div class="re-title" id="re-title">Kör vége</div>
+      <div class="re-subtitle" id="re-subtitle"></div>
       <div class="donut-wrap">
         <svg viewBox="0 0 100 100" width="150" height="150">
           <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="12"/>
@@ -200,9 +200,9 @@
         </div>
       </div>
       <div class="stats-row">
-        <div class="stat-box g"><div class="sb-val" id="re-correct">0</div><div class="sb-lbl">✓ Helyes</div></div>
-        <div class="stat-box r"><div class="sb-val" id="re-wrong">0</div><div class="sb-lbl">✗ Hibás</div></div>
-        <div class="stat-box b"><div class="sb-val" id="re-time">0s</div><div class="sb-lbl">⏱ Idő</div></div>
+        <div class="stat-box g"><div class="sb-val" id="re-correct">0</div><div class="sb-lbl">Helyes</div></div>
+        <div class="stat-box r"><div class="sb-val" id="re-wrong">0</div><div class="sb-lbl">Hibás</div></div>
+        <div class="stat-box b"><div class="sb-val" id="re-time">0s</div><div class="sb-lbl">Idő</div></div>
       </div>
       <div class="error-list-section" id="error-list-section" style="display:none">
         <div class="err-title" id="err-title">Hibás elemek – következő körbe kerülnek:</div>
@@ -215,7 +215,7 @@
         </button>
         <button class="btn btn-outline" onclick="finishSession()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          Főmenü
+          Befejezés
         </button>
       </div>
     </div>
@@ -226,50 +226,94 @@
      STATISZTIKA KÉPERNYŐ
 ══════════════════════════════════════════════════════ -->
 <div id="screen-stats" class="screen">
-  <div class="stats-screen">
-    <div class="container">
-      <div class="stats-hero">
-        <h1 style="font-family:'Lora',serif;font-size:28px;font-weight:700;margin-bottom:20px">📊 Statisztikák</h1>
-        <div class="stats-kpi-grid" id="kpi-grid"></div>
-      </div>
+  <div class="stats">
+    <header class="stats-head">
+      <h1 class="page-title">Statisztika</h1>
+      <p class="stats-scope" id="stats-scope">Angol mód</p>
+    </header>
 
-      <div class="nav-tabs">
-        <button class="nav-tab active" onclick="switchStatsTab('topics')">Témakörök</button>
-        <button class="nav-tab" onclick="switchStatsTab('words')">Elemek Listája</button>
-        <button class="nav-tab" onclick="switchStatsTab('history')">Előzmények</button>
-        <button class="nav-tab" onclick="switchStatsTab('heatmap')">🗺️ Hőtérkép</button>
-        <button class="nav-tab" id="dekiru-tab-btn" style="display:none" onclick="switchStatsTab('dekiru')">📘 Dekiru Leckék</button>
-      </div>
+    <!-- Összefoglaló számok: nincs kártyánként doboz, egy sáv hajszálvékony elválasztókkal -->
+    <section class="kpi-strip" id="kpi-strip" aria-label="Összefoglaló"></section>
 
-      <div id="stats-topics-tab"><div class="card" style="margin-bottom:20px"><div class="section-title">Teljesítmény témakörönként</div><div id="tag-perf-list"></div></div></div>
-      <div id="stats-words-tab" style="display:none"><div class="card"><div class="section-title">Részletesen</div><div class="word-table-wrap"><table class="wtable"><thead><tr id="stats-table-header"><th>Eredeti</th><th>Magyar</th><th>Streak 🔥</th><th>Helyes</th><th>Hibás</th><th>%</th><th>Szint</th></tr></thead><tbody id="word-stats-tbody"></tbody></table></div></div></div>
-      <div id="stats-history-tab" style="display:none"><div class="card"><div class="section-title">Gyakorlási előzmények</div><div id="history-list"></div></div></div>
-      <div id="stats-heatmap-tab" style="display:none">
-        <div class="card">
-          <div class="section-title">Tudásszint Hőtérkép</div>
-          <p style="color: var(--text-3); font-size: 13px; margin-bottom: 20px;">Ez a térkép vizuálisan mutatja, mely szinteken és témákban vagy a legerősebb. Minél zöldebb egy cella, annál nagyobb a szavak helyes aránya.</p>
-          <div id="heatmap-container"></div>
+    <div class="viz-cards">
+      <section class="viz-card viz-wide" aria-labelledby="viz-cons-title">
+        <header class="viz-head">
+          <h2 class="viz-title" id="viz-cons-title">Konzisztencia</h2>
+          <p class="viz-note" id="viz-cons-note"></p>
+        </header>
+        <div class="heatmap" id="heatmap-wrap"></div>
+        <div class="scale-legend" aria-hidden="true">
+          <span>Kevesebb</span>
+          <i class="hm-sw l0"></i><i class="hm-sw l1"></i><i class="hm-sw l2"></i><i class="hm-sw l3"></i><i class="hm-sw l4"></i>
+          <span>Több</span>
         </div>
-      </div>
-      <div id="stats-dekiru-tab" style="display:none">
-        <div class="card">
-          <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
-            <div class="section-title" style="margin-bottom:0">📘 Dekiru – Teljesítmény Leckénként</div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span style="font-size:12px; font-weight:700; color:var(--text-3);">Sorrend:</span>
-              <select id="dekiru-sort" class="sort-select" style="width:auto; font-size:13px; padding:6px 10px;" onchange="renderDekiruLessonStats()">
-                <option value="best">Legjobb elöl</option>
-                <option value="worst">Legrosszabb elöl</option>
-                <option value="lesson-asc">Lecke ↑ növekvő</option>
-                <option value="lesson-desc">Lecke ↓ csökkenő</option>
-              </select>
-            </div>
-          </div>
-          <div id="dekiru-lesson-list"></div>
-        </div>
-      </div>
+        <p class="viz-caption">Egy négyzet egy nap. A napi penzum teljesítése legalább a második fokozat; a legvilágosabb 100+ válasz.</p>
+        <details class="viz-table"><summary>Adatok táblázatban (30 nap)</summary><div id="heatmap-table"></div></details>
+      </section>
+
+      <section class="viz-card" aria-labelledby="viz-mat-title">
+        <header class="viz-head">
+          <h2 class="viz-title" id="viz-mat-title">Tudás-érettség</h2>
+          <p class="viz-note" id="viz-mat-note"></p>
+        </header>
+        <div id="maturity"></div>
+        <details class="viz-table"><summary>Adatok táblázatban</summary><div id="maturity-table"></div></details>
+      </section>
+
+      <section class="viz-card" aria-labelledby="viz-acc-title">
+        <header class="viz-head">
+          <h2 class="viz-title" id="viz-acc-title">Pontosság · 14 nap</h2>
+          <p class="viz-note" id="viz-acc-note"></p>
+        </header>
+        <div class="chart" id="acc-chart"></div>
+        <details class="viz-table"><summary>Adatok táblázatban</summary><div id="acc-table"></div></details>
+      </section>
+
+      <section class="viz-card" aria-labelledby="viz-focus-title">
+        <header class="viz-head">
+          <h2 class="viz-title" id="viz-focus-title">Fókuszált idő · 14 nap</h2>
+          <p class="viz-note" id="viz-focus-note"></p>
+        </header>
+        <div class="chart" id="focus-chart"></div>
+        <details class="viz-table"><summary>Adatok táblázatban</summary><div id="focus-table"></div></details>
+      </section>
     </div>
+
+    <section class="stats-details" aria-labelledby="stats-details-title">
+      <h2 class="home-section-title" id="stats-details-title">Részletek</h2>
+      <div class="pill-row detail-tabs" role="tablist" aria-label="Részletek">
+        <button class="pill is-active" role="tab" data-tab="topics" aria-selected="true" onclick="switchStatsTab('topics')">Szintek és témakörök</button>
+        <button class="pill" role="tab" data-tab="words" aria-selected="false" onclick="switchStatsTab('words')">Szavak</button>
+        <button class="pill" role="tab" data-tab="history" aria-selected="false" onclick="switchStatsTab('history')">Előzmények</button>
+        <button class="pill" role="tab" data-tab="dekiru" id="dekiru-tab-btn" aria-selected="false" style="display:none" onclick="switchStatsTab('dekiru')">Dekiru leckék</button>
+      </div>
+
+      <div class="detail-panel" id="stats-topics-tab">
+        <h3 class="detail-title">Pontosság szintenként</h3>
+        <div id="level-perf-list"></div>
+        <h3 class="detail-title">Pontosság témakörönként</h3>
+        <div id="tag-perf-list"></div>
+      </div>
+      <div class="detail-panel" id="stats-words-tab" hidden>
+        <div id="word-stats-table"></div>
+      </div>
+      <div class="detail-panel" id="stats-history-tab" hidden>
+        <div id="history-list"></div>
+      </div>
+      <div class="detail-panel" id="stats-dekiru-tab" hidden>
+        <label class="detail-sort">Sorrend
+          <select id="dekiru-sort" class="sort-select" onchange="renderDekiruLessonStats()">
+            <option value="lesson-asc">Lecke szerint növekvő</option>
+            <option value="lesson-desc">Lecke szerint csökkenő</option>
+            <option value="best">Legjobb elöl</option>
+            <option value="worst">Leggyengébb elöl</option>
+          </select>
+        </label>
+        <div id="dekiru-lesson-list"></div>
+      </div>
+    </section>
   </div>
+  <div class="viz-tip" id="viz-tip" role="tooltip" hidden></div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════
@@ -354,8 +398,8 @@
       <h2 class="pf-title" id="pf-backup-title">Biztonsági mentés</h2>
       <p class="pf-text">Egy fájlba mentheted a statisztikáidat, a listáidat és a felvett szavaidat. Telefoncserénél egy kattintással visszaállítható.</p>
       <div class="pf-row-btns">
-        <button class="btn btn-outline" onclick="exportData()">💾 Mentés letöltése</button>
-        <button class="btn btn-outline" onclick="document.getElementById('file-import').click()">📂 Visszaállítás fájlból</button>
+        <button class="btn btn-outline" onclick="exportData()">Mentés letöltése</button>
+        <button class="btn btn-outline" onclick="document.getElementById('file-import').click()">Visszaállítás fájlból</button>
         <input type="file" id="file-import" style="display:none" accept=".json" onchange="importData(event)">
       </div>
       <div id="storage-info"></div>
@@ -393,7 +437,7 @@
 <!-- Importálás modal -->
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
-    <div class="modal-title">📥 Importálás</div>
+    <div class="modal-title">Szavak importálása</div>
     <p class="import-hint">Angol mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">angol,magyar,téma,nehézség</code><br>Japán mód: <code style="font-size:11px;background:var(--surface-2);padding:2px;border-radius:4px">kana,magyar,romaji,téma,JLPT</code></p>
     <textarea class="import-area" id="import-textarea" placeholder="apple,alma,gyümölcs,B2"></textarea>
     <div class="modal-actions">
@@ -406,7 +450,7 @@
 <!-- Új szó hozzáadása modal -->
 <div class="modal-overlay" id="add-modal">
   <div class="modal">
-    <div class="modal-title" id="add-modal-title">➕ Új szó hozzáadása</div>
+    <div class="modal-title" id="add-modal-title">Új szó hozzáadása</div>
     <div class="add-form" id="add-form">
       <div class="form-field"><label id="lbl-add-en">Angol</label><input type="text" id="add-en" placeholder="apple / 食べる / 食"></div>
       <div class="form-field"><label>Magyar</label><input type="text" id="add-hu" placeholder="alma / eszik"></div>
@@ -425,15 +469,15 @@
 <div class="toast" id="toast"></div>
 
 <!-- V12: Firebase Sync modul (type=module, async load) -->
-<script type="module" src="firebase-sync.js?v=13.1"></script>
+<script type="module" src="firebase-sync.js?v=13.2"></script>
 
-<script src="data.js?v=13.1"></script>
-<script src="japanese_words.js?v=13.1"></script>
-<script src="dekiru.js?v=13.1"></script>
-<script src="kanji_data.js?v=13.1"></script>
-<script src="japanese_sentences.js?v=13.1"></script>
-<script src="english_sentences2.js?v=13.1"></script>
-<script src="app.js?v=13.1"></script>
+<script src="data.js?v=13.2"></script>
+<script src="japanese_words.js?v=13.2"></script>
+<script src="dekiru.js?v=13.2"></script>
+<script src="kanji_data.js?v=13.2"></script>
+<script src="japanese_sentences.js?v=13.2"></script>
+<script src="english_sentences2.js?v=13.2"></script>
+<script src="app.js?v=13.2"></script>
 
 </body>
 </html>

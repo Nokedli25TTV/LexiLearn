@@ -358,7 +358,7 @@ async function initialSyncFromCloud() {
     meta.lastSyncAt = Date.now();
     await setMeta(meta);
     setSyncStatus('synced');
-    if (window.showToast) window.showToast('☁️ Felhőből szinkronizálva');
+    if (window.showToast) window.showToast('Felhőből szinkronizálva');
 
     _initialSyncDone = true; // most már engedjük a push-okat
 
@@ -404,7 +404,7 @@ function startCloudListener() {
       window.renderStats();
     }
     setSyncStatus('synced');
-    if (window.showToast) window.showToast('🔄 Frissítve a másik eszközről');
+    if (window.showToast) window.showToast('Frissítve a másik eszközről');
   }, (err) => {
     console.error('[FirebaseSync] Snapshot listener hiba:', err);
     setSyncStatus('error');

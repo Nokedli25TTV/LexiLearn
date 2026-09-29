@@ -28,6 +28,24 @@ colors:
   error-red: "#b5272a"
   info-blue: "#1a73e8"
   star-gold: "#de9300"
+  chart-line-day: "#0b764d"
+  chart-line-night: "#42a878"
+  chart-empty-day: "#e6e4e0"
+  chart-empty-night: "#292f2c"
+  heat-1-day: "#76bd97"
+  heat-2-day: "#429d72"
+  heat-3-day: "#177c52"
+  heat-4-day: "#065939"
+  heat-1-night: "#2b684b"
+  heat-2-night: "#388963"
+  heat-3-night: "#45ac7b"
+  heat-4-night: "#61d19a"
+  maturity-1-day: "#76bd97"
+  maturity-2-day: "#389469"
+  maturity-3-day: "#0c6944"
+  maturity-1-night: "#357153"
+  maturity-2-night: "#45a075"
+  maturity-3-night: "#65d49e"
 typography:
   display:
     fontFamily: "Nunito, sans-serif"
@@ -55,6 +73,12 @@ typography:
     fontSize: "12px"
     fontWeight: 800
     letterSpacing: "0.08em"
+  stat:
+    fontFamily: "Nunito, sans-serif"
+    fontSize: "32px"
+    fontWeight: 300
+    lineHeight: 1.1
+    letterSpacing: "-0.01em"
   brand:
     fontFamily: "Lora, Georgia, serif"
     fontSize: "20px"
@@ -120,6 +144,16 @@ components:
     textColor: "{colors.night-text}"
     padding: "10px 4px 10px 14px"
     height: "62px"
+  kpi-tile:
+    backgroundColor: "{colors.night-surface}"
+    textColor: "{colors.night-text}"
+    typography: "{typography.stat}"
+    padding: "16px 16px 14px"
+  next-bar-button:
+    backgroundColor: "{colors.ember-cta}"
+    textColor: "{colors.ember-ink}"
+    rounded: "{rounded.md}"
+    height: "56px"
 ---
 
 # Design System: LexiLearn
@@ -128,11 +162,12 @@ components:
 
 **Creative North Star: "A Nyugodt Dojo"**
 
-Egy japán edzőterem csendje, ahol minden nap ugyanabban az időben, ugyanazzal a figyelemmel gyakorolsz. A felület nem kiabál: tört, zöld árnyalatú sötét háttér, meleg papírszínű világos téma, és egyetlen élénk korall szín, ami mindig azt mutatja, mi a következő lépés. Az Apple iOS natív érzete (lebegő üvegvezérlők, finom, csillapított mozgás), a Duolingo jutalmazó ritmusa (napi sorozat, vastag gombok, egy ünneplés a cél elérésekor) és az Anki hatékonysága (sűrű, sallangmentes lista) egy rendszerben.
+Egy japán edzőterem csendje, ahol minden nap ugyanabban az időben, ugyanazzal a figyelemmel gyakorolsz. A felület nem kiabál: tört, zöld árnyalatú sötét háttér, meleg papírszínű világos téma, és egyetlen élénk korall szín, ami mindig azt mutatja, mi a következő lépés. Az Apple iOS natív érzete (lebegő üvegvezérlők, finom, csillapított mozgás), a Duolingo szokás-mechanikája (napi penzum, vastag gombok, egy ünneplés a cél elérésekor, gamifikált szleng nélkül) és az Anki hatékonysága (sűrű, sallangmentes lista) egy rendszerben.
 
 A sűrűség kétarcú: a Kezdőlap levegős, egy fő cselekvéssel; a Gyakorlás fül tömör, de minden beállítás lenyíló menüben vagy a lebegő dokkban van, így soha nem kell értük görgetni. A rendszer kifejezetten elutasítja a PRODUCT.md három anti-referenciáját: a túlzsúfolt, gyerekes gamifikációt, a rideg, táblázatos szótárat és a neon / cyberpunk sötét témát.
 
 **Key Characteristics:**
+- Felnőtt, emoji-mentes nyelvezet: Konzisztencia, Napi penzum, A napi limit teljesítve.
 - Sötét az alapértelmezés (esti, reggeli tanulás), meleg világos téma egy kapcsolóra.
 - Színkód: korall = cselekvés, zöld = haladás és kijelölés, piros = hiba, arany = csillag.
 - Egy kéz, egy hüvelykujj: navigáció és gyakorlás-indítás a képernyő alján, lebegve.
@@ -163,6 +198,14 @@ Visszafogott stratégia (tört semlegesek + egy élénk cselekvésszín), amit a
 
 **The Tinted Night Rule.** Sötét módban tiszta szürke tilos; minden semleges az erdőzöld árnyalat felé tört (chroma 0,008-0,012, hue 165).
 
+### Adatábrák
+- **Egy vezérszín:** minden ábra az erdőzöld egyetlen árnyalatsorából dolgozik; szivárvány, kategóriaszínek, státuszszínek (piros / sárga) az ábrákon tilosak.
+- **Hőtérkép-skála** (5 fokozat: üres + 4 zöld) és **érettség-skála** (3 zöld): ordinális, a `validate_palette.js --ordinal` mindkét témában PASS (monoton világosság, ΔL ≥ 0,06, a legvilágosabb / legsötétebb fok ≥ 2:1 a kártya felületén). Sötét módban a "több" a világosabb.
+- **Vonal / oszlop:** nappal #0b764d, éjjel #42a878 (a sötét sávban, ≥ 3:1 kontraszt).
+- Az "üres nap" cella szándékosan halk (1,26:1): a nincs-adat háttér, nem jel.
+
+**The One Hue Data Rule.** Egy ábra, egy szín. Ha valamit ki kell emelni, világosság vagy vastagság, nem új szín.
+
 ## 3. Typography
 
 **Display / Body Font:** Nunito (sans-serif tartalékkal)
@@ -171,11 +214,14 @@ Visszafogott stratégia (tört semlegesek + egy élénk cselekvésszín), amit a
 **Character:** Egyetlen kerekített, barátságos humanista sans hordozza a teljes felületet; a hierarchia súlyból (600 / 800 / 900) és méretből jön, nem betűcsaládváltásból. Japán szövegnél a rendszer CJK betűtípusa lép be.
 
 ### Hierarchy
-- **Display** (900, 28px, 1.15): képernyőcímek ("Gyakorlás", "Profil"), napi sorozat sor.
+- **Display** (900, 28px, 1.15): képernyőcímek ("Gyakorlás", "Statisztika", "Profil").
 - **Headline** (900, 26px, 1.2): eredmény-képernyők címe ("5 új szó a zsebedben!").
 - **Title** (900, 19px, 1.2): fő gombok felirata, kártyán a jelentés 32px-es változata.
 - **Body** (600, 15px, 1.5): leírások, menü-opciók (700, 15px); hosszabb szöveg legfeljebb 60-70ch.
-- **Label** (800, 12px, 0.08em, NAGYBETŰ): szekciócímek ("MAI CÉL", "LECKE"), számlálók.
+- **Label** (800, 12px, 0.08em, NAGYBETŰ): szekciócímek ("NAPI PENZUM", "LECKE"), számlálók.
+- **Stat** (300, 32-34px, 1.1, -0.01em): a nagy számok (KPI sáv, Kezdőlap konzisztencia). Vékony, nyugodt számjegyek, arányos (nem tabuláris) számokkal; mellette 15px-es 600-as mértékegység ("nap", "/ 30").
+
+**The Quiet Numbers Rule.** A nagy számok könnyű (300) súlyúak; a hangsúlyt a méret adja, nem a vastagság. Tabuláris számjegy csak oszlopba rendezett értékeknél (táblázat, tengely).
 
 ### Named Rules
 **The 16px Input Rule.** Minden szövegbeviteli mező legalább 16px, különben iOS ráközelít fókuszkor.
@@ -225,7 +271,20 @@ Hibrid rendszer: a tartalom tonális rétegekkel él (háttér → felület → 
 Lebegő üveg sáv a navigáció fölött: kijelölt szavak száma (törlés ×-szel), beállítás-összefoglaló ("Klasszikus · 20") és korall Indítás gomb. A beállítások (típus, irány, kérdésszám, sorrend) felfelé nyílnak ki a dokkból, háttér-elsötétítéssel. Asztalon ragadós oldalpanel, a beállítások mindig nyitva.
 
 ### Szólista sor (Signature Component)
-Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jelentés és olvasat, sorozat / pontosság / szint, és külön csillag gomb. Kijelölve a sor zöldes hátteret kap. Lapozva renderel (120 sor adagonként), belső görgetősáv nincs.
+Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jelentés és olvasat, egymás utáni helyes válaszok ("3×") / pontosság / szint, és külön csillag gomb. Kijelölve a sor zöldes hátteret kap. Lapozva renderel (120 sor adagonként), belső görgetősáv nincs.
+
+### Statisztika dashboard (Signature Component)
+- **KPI sáv:** egyetlen felület 1px-es elválasztókkal (nem kártyarács), mobilon 2×2, asztalon 4 oszlop: Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten. Címke 13px 700, érték a Stat stílusban, alatta 12px-es magyarázat vagy előző heti eltérés (▲ zöld / ▼ semleges, mindig nyíllal, nem csak színnel).
+- **Konzisztencia hőtérkép:** GitHub-stílusú naptárháló, 13px-es cellák 3px réssel, a hetek száma a szélességhez igazodik (mobilon ~19, asztalon ~42). Hónap- és napcímkék (H, Sz, P), a mai nap 1,5px-es kerettel. Skálajelmagyarázat: "Kevesebb … Több".
+- **Tudás-érettség:** 20px magas, 100%-os sáv három szakasszal (Ismerkedés, Gyakorlás alatt, Rögzült), 2px felületrés köztük, csak a jobb vége lekerekített; alatta jelmagyarázat darabszámmal és aránnyal.
+- **Pontosság (14 nap):** 2px-es vonal, 8px-es pontok 2px felület-gyűrűvel, kihagyott napnál megszakad (nincs terület-kitöltés), 80%-os referencia hajszálvonal, végérték-címke. Crosshair tooltip.
+- **Fókuszált idő (14 nap):** legfeljebb 24px széles oszlopok, 4px-es lekerekített tetővel, szögletes alappal; csak a csúcsérték kap címkét.
+- **Tooltip:** fordított semleges buborék, az érték elöl (15px 800), a címke utána; `textContent`-tel épül.
+- **Táblázatos nézet:** minden ábra alatt "Adatok táblázatban" nyitható `<details>`.
+
+### Rögzített alsó műveletsáv
+- Gyakorlás közben a "Tovább" (hibás válasz után) a képernyő aljára rögzül: teljes szélesség, 56px, korall.
+- A kör vége képernyő gombjai és a modálok műveletei mobilon a lap aljára ragadnak (sticky), így kis kijelzőn sem kerülnek a képernyő alá. A modálok mobilon alulról nyíló lapok.
 
 ### Tanuló kártya (Signature Component)
 28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat).
@@ -238,6 +297,9 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 - **Do** tedd a beállításokat lenyíló menübe vagy a dokkba; a pilla mutassa a kiválasztott értéket.
 - **Do** ünnepelj csak valódi eredménynél (napi cél, hibátlan kör), egyszer naponta.
 - **Do** tarts minden szöveget WCAG AA felett mindkét témában, és kapcsold ki a mozgást `prefers-reduced-motion` alatt.
+- **Do** használd a felnőtt szótárt: Konzisztencia (nap), Napi penzum, A napi limit teljesítve., Napi feladatok.
+- **Do** futtasd a `validate_palette.js`-t minden új ábraszínre (mindkét témában), és adj minden ábrának táblázatos párt.
+- **Do** ellenőrizd az új képernyőket 320×640-en és 375×667-en: semmi nem lóghat ki vízszintesen, és a fő gomb görgetés nélkül elérhető.
 
 ### Don't:
 - **Don't** legyen túlzsúfolt, gyerekes gamifikáció: nincs badge-eső, villogás, harsány szín mindenhol.
@@ -247,3 +309,6 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 - **Don't** tegyél üveget (backdrop-filter) tartalom-kártyára; csak lebegő vezérlő kaphatja.
 - **Don't** nyiss modált, ha elfér inline vagy lenyíló menüben (a lista mentése is a Lista menüben történik).
 - **Don't** animálj layout tulajdonságot (width, height, top); transform, opacity, clip-path.
+- **Don't** tegyél emojit a felületre (🔥, 🎉, 🎯, 📊): nincs emoji-díszítés és gamifikált szleng; ikon helyett egyszínű vonalikon.
+- **Don't** használj kettős tengelyt, szivárvány skálát vagy státuszszínt adatsor színeként; ne tegyél számot minden pontra.
+- **Don't** rajzolj terület-kitöltést megszakadó (hiányos napokat tartalmazó) vonal alá.
