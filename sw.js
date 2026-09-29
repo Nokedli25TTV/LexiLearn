@@ -6,12 +6,43 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-2';
+const CACHE_NAME = 'lexilearn-v13-3';
 
 const STATIC_ASSETS = [
   './index.html',
   './style.css',
-  './app.js',
+  // V13.3: ES modulok (js/) + adat-regiszter
+  './js/app/auth-ui.js',
+  './js/app/sw.js',
+  './js/core/data.js',
+  './js/core/dates.js',
+  './js/core/state.js',
+  './js/core/storage.js',
+  './js/core/util.js',
+  './js/features/bookmarks.js',
+  './js/features/import-export.js',
+  './js/features/profile.js',
+  './js/features/quests.js',
+  './js/features/streak.js',
+  './js/habit/goal.js',
+  './js/habit/home.js',
+  './js/habit/learn.js',
+  './js/library/dock.js',
+  './js/library/filters.js',
+  './js/library/list.js',
+  './js/library/menus.js',
+  './js/library/playlists.js',
+  './js/main.js',
+  './js/practice/engine.js',
+  './js/practice/flashcard.js',
+  './js/practice/tts.js',
+  './js/stats/model.js',
+  './js/stats/view.js',
+  './js/ui/confetti.js',
+  './js/ui/screens.js',
+  './js/ui/swipe.js',
+  './js/ui/theme.js',
+  './js/ui/toast.js',
   './firebase-sync.js',
   './data.js',
   './japanese_words.js',
@@ -19,6 +50,7 @@ const STATIC_ASSETS = [
   './kanji_data.js',
   './japanese_sentences.js',
   './english_sentences2.js',
+  './data-registry.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -61,7 +93,7 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-/* ── ÜZENETKEZELŐ: frissítési parancs app.js-től ─────── */
+/* ── ÜZENETKEZELŐ: frissítési parancs az apptól (js/app/sw.js) ── */
 self.addEventListener('message', event => {
   if (event.data?.type === 'SKIP_WAITING') {
     console.log('[SW] SKIP_WAITING üzenet fogadva – azonnali frissítés.');

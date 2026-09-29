@@ -29,7 +29,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.2">
+<link rel="stylesheet" href="style.css?v=13.3">
 </head>
 <body data-screen="home">
 
@@ -468,16 +468,32 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- V12: Firebase Sync modul (type=module, async load) -->
-<script type="module" src="firebase-sync.js?v=13.2"></script>
+<!-- Statikus szótár-adatok (klasszikus scriptek, kézzel szerkeszthetők) -->
+<script src="data.js?v=13.3"></script>
+<script src="japanese_words.js?v=13.3"></script>
+<script src="dekiru.js?v=13.3"></script>
+<script src="kanji_data.js?v=13.3"></script>
+<script src="japanese_sentences.js?v=13.3"></script>
+<script src="english_sentences2.js?v=13.3"></script>
+<!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
+<script src="data-registry.js?v=13.3"></script>
 
-<script src="data.js?v=13.2"></script>
-<script src="japanese_words.js?v=13.2"></script>
-<script src="dekiru.js?v=13.2"></script>
-<script src="kanji_data.js?v=13.2"></script>
-<script src="japanese_sentences.js?v=13.2"></script>
-<script src="english_sentences2.js?v=13.2"></script>
-<script src="app.js?v=13.2"></script>
+<!-- V13.3: ES modulok nem futnak file:// alól (duplakattintással megnyitott index.html) -->
+<script>
+  if (location.protocol === 'file:') {
+    document.body.insertAdjacentHTML('afterbegin',
+      '<div style="position:fixed;inset:0;z-index:999;display:grid;place-items:center;padding:24px;background:#0e1311;color:#e5ebe8;font:600 16px/1.5 system-ui,sans-serif;text-align:center">' +
+      '<div><p style="font-size:20px;font-weight:800;margin-bottom:8px">A LexiLearn szerverről fut</p>' +
+      '<p>Fájlként megnyitva a böngésző nem tölti be a modulokat. Indítsd a projekt mappájában:<br>' +
+      '<code style="display:inline-block;margin-top:10px;padding:6px 10px;border-radius:8px;background:#202724">npm run serve</code><br>' +
+      'majd nyisd meg: http://localhost:5599</p></div></div>');
+  }
+</script>
+
+<!-- V13.3: az alkalmazás ES modulokként (js/). A main.js a firebase-sync előtt fut,
+     hogy az auth / szinkron események hallgatói már feliratkozva legyenek. -->
+<script type="module" src="js/main.js?v=13.3"></script>
+<script type="module" src="firebase-sync.js?v=13.3"></script>
 
 </body>
 </html>
