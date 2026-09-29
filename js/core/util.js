@@ -7,4 +7,11 @@ function shuffle(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){ const j
 function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escRegex(str) { return String(str).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 
-export { escHtml, escRegex, jsArg, shuffle };
+// Kártya hátoldalának forrás-sora: japán módban kandzsi írásmód (ha van) · kana · romaji
+// (V13.7); más módban maga a szó
+function japaneseBackLine(word, mode) {
+  if (mode !== 'japanese' || !word.romaji) return word.en;
+  return [word.kanji, word.en, word.romaji].filter(Boolean).join(' · ');
+}
+
+export { escHtml, escRegex, japaneseBackLine, jsArg, shuffle };

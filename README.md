@@ -28,7 +28,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | Hely | Tartalom |
 |---|---|
 | `index.html`, `style.css` | az oldal szerkezete és stílusa |
-| `data.js`, `japanese_words.js`, `dekiru.js`, `kanji_data.js`, `japanese_sentences.js`, `english_sentences2.js` | a szótár adatai, **kézzel szerkeszthető** klasszikus scriptek |
+| `data.js`, `japanese_words.js`, `jlpt_n3_words.js`, `dekiru.js`, `kanji_data.js`, `japanese_sentences.js`, `english_sentences2.js` | a szótár adatai, **kézzel szerkeszthető** klasszikus scriptek (a `jlpt_n3_words.js` szavai `kanji` írásmódot is kapnak, ami a kártya hátoldalán jelenik meg) |
 | `data-registry.js` | a fenti adatokat `eval` nélkül gyűjti a `window.LEXI_DATA`-ba (új Dekiru lecke 30-ig magától bekerül) |
 | `js/main.js` | belépési pont: betölti a modulokat, az inline `onclick` kezelőknek a `window`-ra teszi a függvényeket, elindítja az appot |
 | `js/core/` | állapot (`state`), statikus adatok (`data`), mentés / betöltés / migráció (`storage`), dátumok, segédek |
@@ -101,6 +101,8 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **`tests/handlers.test.js`** – minden kirajzolt inline eseménykezelő létező függvényt hív.
 - **`tests/unit/`** – egységtesztek a mag logikára (dátumok, napi napló, statisztika, új szavak) és a felhő
   tárolóra (felosztás, migráció, csak a változott rész írása, két eszköz, méret).
+- **`tests/data.test.js`** – az N3 szókincs ellenőrzése: minden mező kitöltve, a romaji egyezik a kanával
+  (`tests/harness/kana.js` átalakító), és egyetlen kana sem ütközik a meglévő szavakkal (az app kana alapján egyesít).
 - **`tests/unit/jlpt.test.js`** – mérföldkövek, halmozott számolás, rögzült, tempó és előrejelzés.
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.

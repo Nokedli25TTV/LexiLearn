@@ -11,7 +11,7 @@ import { ENV_SETUP_CODE, FIXED_NOW, makeRandom, bodyWithoutScripts } from './env
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const abs = f => path.join(ROOT, f);
 const read = f => readFileSync(abs(f), 'utf8');
-export const DATA_FILES = ['data.js', 'japanese_words.js', 'dekiru.js', 'kanji_data.js', 'japanese_sentences.js', 'english_sentences2.js', 'data-registry.js'];
+export const DATA_FILES = ['data.js', 'japanese_words.js', 'jlpt_n3_words.js', 'dekiru.js', 'kanji_data.js', 'japanese_sentences.js', 'english_sentences2.js', 'data-registry.js'];
 
 function listModules(dir) {
   return readdirSync(abs(dir)).flatMap(name => {

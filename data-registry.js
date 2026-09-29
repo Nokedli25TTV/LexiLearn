@@ -5,7 +5,8 @@
    Új lecke (pl. DEKIRU_L25) 30-ig automatikusan bekerül; e fölött bővítsd a listát. */
 window.LEXI_DATA = {
   sampleWords:      typeof SAMPLE_WORDS !== 'undefined' ? SAMPLE_WORDS : [],
-  japaneseWords:    typeof JAPANESE_WORDS !== 'undefined' ? JAPANESE_WORDS : [],
+  // V13.7: a JLPT N3 szókincs (jlpt_n3_words.js) a japán szavakhoz csatlakozik
+  japaneseWords:    [...(typeof JAPANESE_WORDS !== 'undefined' ? JAPANESE_WORDS : []), ...(typeof N3_WORDS !== 'undefined' ? N3_WORDS : [])],
   kanjiData:        typeof KANJI_DATA !== 'undefined' ? KANJI_DATA : [],
   englishSentences: typeof english_sentences2 !== 'undefined' ? english_sentences2 : [],
   travelPlan:       typeof TRAVEL_PLAN !== 'undefined' ? TRAVEL_PLAN : null,

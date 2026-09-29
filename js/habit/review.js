@@ -6,7 +6,7 @@
 import { todayKey } from '../core/dates.js';
 import { currentMode, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
-import { escHtml } from '../core/util.js';
+import { escHtml, japaneseBackLine } from '../core/util.js';
 import { AGAIN, HARD, GOOD, EASY } from '../srs/fsrs.js';
 import { REVIEW_BATCH_SIZE, dueForecast, fmtInterval, getDueWords, previewWord, rateWord } from '../srs/schedule.js';
 import { getDailyGoal, getNewWordPool, getTodayWords, logActivity } from './goal.js';
@@ -60,7 +60,7 @@ function showReviewCard() {
 
   const isKanji = currentMode === 'kanji';
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
-  const backSrc = currentMode === 'japanese' && word.romaji ? `${word.en} · ${word.romaji}` : word.en;
+  const backSrc = japaneseBackLine(word, currentMode);
   const kanjiReadings = isKanji
     ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
     : '';

@@ -1,12 +1,12 @@
 {
   "wordCounts": {
     "en": 927,
-    "ja": 1475,
+    "ja": 1749,
     "kj": 1715
   },
   "wordsHash": {
     "en": "215270:eff4203",
-    "ja": "341649:8820fb6b",
+    "ja": "408005:84fc1813",
     "kj": "483141:5f6502e3"
   },
   "basics": {
@@ -166,13 +166,34 @@
       "ja_もんげん",
       "ja_こわれています",
       "ja_けいひん",
-      "ja_はぐれました"
+      "ja_はぐれました",
+      "ja_にくむ",
+      "ja_さけぶ",
+      "ja_こおる",
+      "ja_はずれる",
+      "ja_うしなう",
+      "ja_ためす",
+      "ja_はずす",
+      "ja_わける",
+      "ja_くやしい",
+      "ja_にぶい",
+      "ja_さわやか",
+      "ja_めんせつ",
+      "ja_とりひき",
+      "ja_きょうそう",
+      "ja_じんこう",
+      "ja_こうふん",
+      "ja_けつろん",
+      "ja_ひじ",
+      "ja_こんご",
+      "ja_いったい",
+      "ja_たちまち"
     ],
-    "newCount": 1149
+    "newCount": 1363
   },
   "filters": {
     "none": {
-      "matching": 1475,
+      "matching": 1749,
       "matchingFirst": [
         "ja_わたし",
         "ja_なまえ",
@@ -180,7 +201,7 @@
         "ja_ハンがリー",
         "ja_イギリス"
       ],
-      "pool": 1149,
+      "pool": 1363,
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
@@ -297,7 +318,7 @@
       "hasFilters": true
     },
     "focus": {
-      "matching": 114,
+      "matching": 135,
       "matchingFirst": [
         "ja_わたし",
         "ja_とうきょう",
@@ -305,7 +326,7 @@
         "ja_バスケットボール",
         "ja_はたち"
       ],
-      "pool": 88,
+      "pool": 104,
       "poolFirst": [
         "ja_とうきょう",
         "ja_せいと",
@@ -347,8 +368,8 @@
       "hasFilters": true
     },
     "searchTa": {
-      "matching": 199,
-      "ignoringSearch": 1475
+      "matching": 239,
+      "ignoringSearch": 1749
     }
   },
   "library": {
@@ -428,9 +449,9 @@
     "pills": "<button class=\"pill is-active\" data-menu=\"lesson\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('lesson')\"> <span class=\"pill-label\">Dekiru 4. lecke</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"day\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('day')\"> <span class=\"pill-label\">Úti terv</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button><button class=\"pill pill-clear\" onclick=\"clearFilters()\">Szűrők törlése</button>",
     "menu_lesson": "7518:91ad29b5",
     "menu_day": "4524:28d0747d",
-    "menu_tags": "6124:c90c4d42",
-    "menu_diff": "959:8243e885",
-    "menu_list": "1743:acec5da2",
+    "menu_tags": "6547:31320832",
+    "menu_diff": "960:81a77223",
+    "menu_list": "1743:c6a957c3",
     "menu_sort": "1651:33875734",
     "dock": "<div class=\"dock-group\"> <span class=\"dock-label\" id=\"dock-type-label\">Gyakorlás típusa</span> <div class=\"type-list\" role=\"radiogroup\" aria-labelledby=\"dock-type-label\"> <button role=\"radio\" aria-checked=\"true\" class=\"type-opt active is-selected\" onclick=\"setPracticeOption('type', 'classic')\"><span class=\"type-ico\" aria-hidden=\"true\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"></circle><circle cx=\"12\" cy=\"12\" r=\"5\"></circle><circle cx=\"12\" cy=\"12\" r=\"1\"></circle></svg></span><span class=\"type-text\"><b>Klasszikus</b><small>4 válaszból választasz</small></span></button><button role=\"radio\" aria-checked=\"false\" class=\"type-opt \" onclick=\"setPracticeOption('type', 'hardcore')\"><span class=\"type-ico\" aria-hidden=\"true\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"2\" y=\"6\" width=\"20\" height=\"12\" rx=\"2\"></rect><path d=\"M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10\"></path></svg></span><span class=\"type-text\"><b>Gépelős</b><small>Beírod a választ</small></span></button><button role=\"radio\" aria-checked=\"false\" class=\"type-opt \" onclick=\"setPracticeOption('type', 'sentenceFill')\"><span class=\"type-ico\" aria-hidden=\"true\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 6h16M4 12h7M15 12h5M4 18h16\"></path></svg></span><span class=\"type-text\"><b>Mondat-kiegészítő</b><small>A szó a példamondatban</small></span></button><button role=\"radio\" aria-checked=\"false\" class=\"type-opt \" onclick=\"setPracticeOption('type', 'flashcard3d')\"><span class=\"type-ico\" aria-hidden=\"true\"><svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"6\" width=\"14\" height=\"14\" rx=\"2.5\"></rect><path d=\"M7 3h11.5A2.5 2.5 0 0 1 21 5.5V17\"></path></svg></span><span class=\"type-text\"><b>3D kártya</b><small>Fordítsd meg, húzd el</small></span></button> </div> </div> <div class=\"dock-group\"> <span class=\"dock-label\" id=\"dock-dir-label\">Irány</span> <div class=\"segmented\" role=\"radiogroup\" aria-labelledby=\"dock-dir-label\"> <button role=\"radio\" aria-checked=\"true\" class=\" active is-selected\" onclick=\"setDirection('en-hu')\">Kana → magyar</button><button role=\"radio\" aria-checked=\"false\" class=\" \" onclick=\"setDirection('hu-en')\">Magyar → kana</button> </div> </div> <div class=\"dock-group\"> <span class=\"dock-label\" id=\"dock-count-label\">Kérdések száma</span> <div class=\"segmented\" role=\"radiogroup\" aria-labelledby=\"dock-count-label\"> <button role=\"radio\" aria-checked=\"false\" class=\" \" onclick=\"setPracticeOption('count', 10)\">10</button><button role=\"radio\" aria-checked=\"true\" class=\" active is-selected\" onclick=\"setPracticeOption('count', 20)\">20</button><button role=\"radio\" aria-checked=\"false\" class=\" \" onclick=\"setPracticeOption('count', 30)\">30</button><button role=\"radio\" aria-checked=\"false\" class=\" \" onclick=\"setPracticeOption('count', 50)\">50</button><button role=\"radio\" aria-checked=\"false\" class=\" \" onclick=\"setPracticeOption('count', 'all')\">Mind</button> </div> </div> <div class=\"dock-group\"> <span class=\"dock-label\" id=\"dock-order-label\">Sorrend</span> <div class=\"chip-grid chip-grid-flat\" role=\"radiogroup\" aria-labelledby=\"dock-order-label\"> <button role=\"radio\" aria-checked=\"true\" class=\"chip active is-selected\" onclick=\"setPracticeOption('order', 'random')\">Véletlen</button><button role=\"radio\" aria-checked=\"false\" class=\"chip \" onclick=\"setPracticeOption('order', 'az')\">A → Z</button><button role=\"radio\" aria-checked=\"false\" class=\"chip \" onclick=\"setPracticeOption('order', 'za')\">Z → A</button><button role=\"radio\" aria-checked=\"false\" class=\"chip \" onclick=\"setPracticeOption('order', 'diff-asc')\">Könnyebb elöl</button><button role=\"radio\" aria-checked=\"false\" class=\"chip \" onclick=\"setPracticeOption('order', 'diff-desc')\">Nehezebb elöl</button> </div> </div>",
     "dockSummary": "Klasszikus · 20",
@@ -438,11 +459,11 @@
     "startDisabled": false
   },
   "home": {
-    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>8%</b> · kandzsi <b>0%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
-    "source": "<span>Forrás: <b>Teljes szótár</b> · 1149 új szó</span> <button class=\"link-btn\" onclick=\"openPoolSource()\">Módosítás</button>",
+    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>10%</b> · kandzsi <b>0%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
+    "source": "<span>Forrás: <b>Teljes szótár</b> · 1363 új szó</span> <button class=\"link-btn\" onclick=\"openPoolSource()\">Módosítás</button>",
     "streak": "3 nap",
     "hint": "A mai japán adag megvan.",
-    "goal": "115/10 új szó",
+    "goal": "136/10 új szó",
     "week": "<div class=\"week-day\"><div class=\"week-day-label\">H</div><div class=\"week-day-dot studied\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"20 6 9 17 4 12\"></polyline></svg></div></div><div class=\"week-day\"><div class=\"week-day-label\">K</div><div class=\"week-day-dot today-studied\"><svg width=\"12\" height=\"12\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"20 6 9 17 4 12\"></polyline></svg></div></div><div class=\"week-day\"><div class=\"week-day-label\">Sz</div><div class=\"week-day-dot not-studied\"></div></div><div class=\"week-day\"><div class=\"week-day-label\">Cs</div><div class=\"week-day-dot not-studied\"></div></div><div class=\"week-day\"><div class=\"week-day-label\">P</div><div class=\"week-day-dot not-studied\"></div></div><div class=\"week-day\"><div class=\"week-day-label\">Szo</div><div class=\"week-day-dot not-studied\"></div></div><div class=\"week-day\"><div class=\"week-day-label\">V</div><div class=\"week-day-dot not-studied\"></div></div>"
   },
   "quests": [
@@ -452,17 +473,17 @@
       "label": "5 helyes válasz 30 mp alatt"
     },
     {
-      "type": "PracticeTime",
-      "target": 900,
-      "label": "Gyakorolj 15 percet"
-    },
-    {
       "type": "Combo5",
       "target": 5,
       "label": "5 helyes válasz egymás után"
+    },
+    {
+      "type": "DailyWord",
+      "target": 1,
+      "label": "Nap szava: \"かいもの\""
     }
   ],
-  "questsHtml": "1843:d427bb7",
+  "questsHtml": "1962:f732be15",
   "practice": {
     "roundWords": [
       "ja_ハンがリー",
@@ -508,7 +529,7 @@
   },
   "learnBlockedBefore": {
     "goal": 10,
-    "today": 115
+    "today": 136
   },
   "learn": {
     "queue": [
@@ -532,7 +553,7 @@
       "againIds": [
         "ja_かう"
       ],
-      "todayWords": 116,
+      "todayWords": 137,
       "top": "1 / 5"
     }
   },
@@ -546,7 +567,7 @@
           "k": 7,
           "g": 3,
           "s": 615,
-          "n": 116,
+          "n": 137,
           "studied": true
         }
       ],
@@ -598,7 +619,7 @@
           "k": 0,
           "g": 0,
           "s": 0,
-          "n": 13,
+          "n": 15,
           "studied": false
         }
       ]
@@ -611,22 +632,22 @@
       4
     ],
     "maturity": {
-      "fresh": 328,
+      "fresh": 388,
       "practicing": 0,
       "mature": 0,
-      "notStarted": 1147,
-      "started": 328
+      "notStarted": 1361,
+      "started": 388
     },
-    "kpis": "<div class=\"kpi\"> <span class=\"kpi-label\">Konzisztencia</span> <span class=\"kpi-value\">3<span class=\"kpi-unit\">nap</span></span> <span class=\"kpi-sub\">Leghosszabb: 9 nap</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Aktív napok</span> <span class=\"kpi-value\">8<span class=\"kpi-unit\">/ 30</span></span> <span class=\"kpi-sub\">az elmúlt 30 napban</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Rögzült szavak</span> <span class=\"kpi-value\">0</span> <span class=\"kpi-sub\">328 elkezdett szóból</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Fókusz a héten</span> <span class=\"kpi-value\">35 p</span> <span class=\"kpi-sub kpi-delta is-up\"> <svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" aria-hidden=\"true\"><path d=\"M5 1 9 8H1z\"></path></svg> +30 p a múlt héthez képest </span> </div>",
+    "kpis": "<div class=\"kpi\"> <span class=\"kpi-label\">Konzisztencia</span> <span class=\"kpi-value\">3<span class=\"kpi-unit\">nap</span></span> <span class=\"kpi-sub\">Leghosszabb: 9 nap</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Aktív napok</span> <span class=\"kpi-value\">8<span class=\"kpi-unit\">/ 30</span></span> <span class=\"kpi-sub\">az elmúlt 30 napban</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Rögzült szavak</span> <span class=\"kpi-value\">0</span> <span class=\"kpi-sub\">388 elkezdett szóból</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Fókusz a héten</span> <span class=\"kpi-value\">35 p</span> <span class=\"kpi-sub kpi-delta is-up\"> <svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" aria-hidden=\"true\"><path d=\"M5 1 9 8H1z\"></path></svg> +30 p a múlt héthez képest </span> </div>",
     "heatmap": "12174:4f9c7f6e",
     "heatmapNote": "8 aktív nap az elmúlt 30-ból",
-    "maturityHtml": "<div class=\"mat-bar\" role=\"img\" aria-label=\"Ismerkedés: 328, Gyakorlás alatt: 0, Rögzült: 0\"><span class=\"mat-seg m1\" style=\"flex-grow:328\" data-label=\"Ismerkedés\" data-v=\"328\"></span></div> <ul class=\"mat-legend\"> <li><i class=\"mat-sw m1\" aria-hidden=\"true\"></i><span class=\"mat-name\">Ismerkedés</span><span class=\"mat-count\">328</span><span class=\"mat-pct\">100%</span></li> <li><i class=\"mat-sw m2\" aria-hidden=\"true\"></i><span class=\"mat-name\">Gyakorlás alatt</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> <li><i class=\"mat-sw m3\" aria-hidden=\"true\"></i><span class=\"mat-name\">Rögzült</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> </ul> <p class=\"viz-caption\">Az ismétlési köz szerint, mint az Ankiban. Rögzült: legalább 21 nap. Gyakorlás alatt: 7-20 nap. Ismerkedés: 7 napnál rövidebb.</p>",
+    "maturityHtml": "<div class=\"mat-bar\" role=\"img\" aria-label=\"Ismerkedés: 388, Gyakorlás alatt: 0, Rögzült: 0\"><span class=\"mat-seg m1\" style=\"flex-grow:388\" data-label=\"Ismerkedés\" data-v=\"388\"></span></div> <ul class=\"mat-legend\"> <li><i class=\"mat-sw m1\" aria-hidden=\"true\"></i><span class=\"mat-name\">Ismerkedés</span><span class=\"mat-count\">388</span><span class=\"mat-pct\">100%</span></li> <li><i class=\"mat-sw m2\" aria-hidden=\"true\"></i><span class=\"mat-name\">Gyakorlás alatt</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> <li><i class=\"mat-sw m3\" aria-hidden=\"true\"></i><span class=\"mat-name\">Rögzült</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> </ul> <p class=\"viz-caption\">Az ismétlési köz szerint, mint az Ankiban. Rögzült: legalább 21 nap. Gyakorlás alatt: 7-20 nap. Ismerkedés: 7 napnál rövidebb.</p>",
     "acc": "1564:c2e2ae10",
     "accNote": "14 napos átlag: 75% · a kártyáknál a \"Tudom\" is helyesnek számít",
     "focus": "3272:a0048f6f",
     "focusNote": "Ezen a héten 35 p aktív fókusz · múlt héten 6 p",
-    "levelsHtml": "<div class=\"perf-row\"> <span class=\"perf-name\">N5<small>999 szó · 942 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.77)\"></span></span> <span class=\"perf-pct\">77%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N4<small>367 szó · 347 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.76)\"></span></span> <span class=\"perf-pct\">76%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N3<small>62 szó · 40 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.75)\"></span></span> <span class=\"perf-pct\">75%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N2<small>41 szó · 37 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.84)\"></span></span> <span class=\"perf-pct\">84%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N1<small>6 szó · 6 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.67)\"></span></span> <span class=\"perf-pct\">67%</span> </div>",
-    "tags": "8353:90760d3d",
+    "levelsHtml": "<div class=\"perf-row\"> <span class=\"perf-name\">N5<small>999 szó · 942 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.77)\"></span></span> <span class=\"perf-pct\">77%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N4<small>367 szó · 347 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.76)\"></span></span> <span class=\"perf-pct\">76%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N3<small>336 szó · 296 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.77)\"></span></span> <span class=\"perf-pct\">77%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N2<small>41 szó · 37 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.84)\"></span></span> <span class=\"perf-pct\">84%</span> </div> <div class=\"perf-row\"> <span class=\"perf-name\">N1<small>6 szó · 6 válasz</small></span> <span class=\"perf-track\"><span class=\"perf-fill\" style=\"transform: scaleX(0.67)\"></span></span> <span class=\"perf-pct\">67%</span> </div>",
+    "tags": "9253:b29fb7c6",
     "history": "<div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 08. 15. 21:00:00</span> <span class=\"hist-score\">5 helyes · 5 hibás</span></div> <span class=\"hist-meta\">1 kör · 2 p 0 mp</span> </div> <div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 09. 22. 07:30:00</span> <span class=\"hist-score\">30 helyes · 5 hibás</span></div> <span class=\"hist-meta\">3 kör · 15 p 0 mp</span> </div> <div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 09. 15. 18:10:00</span> <span class=\"hist-score\">18 helyes · 2 hibás</span></div> <span class=\"hist-meta\">2 kör · 7 p 0 mp</span> </div>"
   },
   "english": {
@@ -659,7 +680,7 @@
       "kj_十"
     ],
     "goal": 5,
-    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>8%</b> · kandzsi <b>21%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
+    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>10%</b> · kandzsi <b>21%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
     "pills": "<button class=\"pill \" data-menu=\"lesson\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('lesson')\"> <span class=\"pill-label\">Lecke</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"day\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('day')\"> <span class=\"pill-label\">Úti terv</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button>",
     "count": "1715 kanji"
   },
@@ -692,7 +713,7 @@
         "selectedIds"
       ]
     },
-    "statsHash": "14349:553a226e"
+    "statsHash": "14402:95bb6189"
   },
   "__errors": []
 }

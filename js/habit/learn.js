@@ -8,6 +8,7 @@ import { calcStreak } from '../features/streak.js';
 import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordLearned } from './goal.js';
 import { dueForecast, scheduleLearnedWord } from '../srs/schedule.js';
 import { crossedMilestones, isLearnedWord } from '../goal/jlpt.js';
+import { japaneseBackLine } from '../core/util.js';
 import { renderHome } from './home.js';
 import { getExampleSentence, showQuestion, updatePracticeTop } from '../practice/engine.js';
 import { speakWord } from '../practice/tts.js';
@@ -65,7 +66,7 @@ function showLearnCard() {
 
   const isKanji = currentMode === 'kanji';
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
-  const backSrc = currentMode === 'japanese' && word.romaji ? `${word.en} · ${word.romaji}` : word.en;
+  const backSrc = japaneseBackLine(word, currentMode);
   const kanjiReadings = isKanji
     ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
     : '';

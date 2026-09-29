@@ -6,7 +6,7 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-6';
+const CACHE_NAME = 'lexilearn-v13-7';
 
 const STATIC_ASSETS = [
   './index.html',
@@ -52,6 +52,7 @@ const STATIC_ASSETS = [
   './firebase-sync.js',
   './data.js',
   './japanese_words.js',
+  './jlpt_n3_words.js',
   './dekiru.js',
   './kanji_data.js',
   './japanese_sentences.js',

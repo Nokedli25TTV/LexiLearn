@@ -402,6 +402,7 @@ function syncNewWords() {
       appData.japanese.words.push({
         id: stableWordId('ja', w.kana),
         en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
+        ...(w.kanji ? { kanji: w.kanji } : {}), // V13.7: írásmód (az N3 szavaknál)
         source: 'data_js', sentence: '',
         bookmarked: false,
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
@@ -409,6 +410,7 @@ function syncNewWords() {
     } else {
       existingWord.hu = w.hu;
       existingWord.source = 'data_js';
+      if (w.kanji) existingWord.kanji = w.kanji;
       if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
     }
   });
