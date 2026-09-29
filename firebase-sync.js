@@ -288,6 +288,8 @@ function applyCloudSnapshot(snap) {
 // ─── 9. KÖZÖS: felhő állapot alkalmazása + lokális mentés + UI ───
 async function applyAndPersist(cloudSnap) {
   applyCloudSnapshot(cloudSnap);
+  // V13.5: régi verziójú eszközről jött, még ütemezés nélküli tanult szavak beosztása
+  if (window.seedSrsAll) window.seedSrsAll();
   // Lokális mentés a split kulcsokba
   if (window.saveWords)     await window.saveWords();
   if (window.saveStats)     await window.saveStats();

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-29T15:33:43.413Z",
+  "generatedAt": "2026-09-29T18:07:15.868Z",
   "title": "Design System: LexiLearn",
   "extensions": {
     "colorMeta": {
@@ -269,6 +269,14 @@
       "description": "Egy felület hajszálvékony elválasztókkal; nagy, könnyű számok, mellettük mértékegység és magyarázat.",
       "html": "<div class=\"ds-kpis\"><div class=\"ds-kpi\"><span class=\"ds-kpi-l\">Konzisztencia</span><span class=\"ds-kpi-v\">12<small>nap</small></span><span class=\"ds-kpi-s\">Leghosszabb: 21 nap</span></div><div class=\"ds-kpi\"><span class=\"ds-kpi-l\">Fókusz a héten</span><span class=\"ds-kpi-v\">2 ó 15 p</span><span class=\"ds-kpi-s ds-up\">▲ +35 p a múlt héthez képest</span></div></div>",
       "css": ".ds-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; width: 340px; overflow: hidden; border: 1px solid #2d3531; border-radius: 20px; background: #2d3531; font-family: Nunito, sans-serif; } .ds-kpi { display: flex; flex-direction: column; gap: 4px; padding: 16px; background: #171c1a; } .ds-kpi-l { font-size: 13px; font-weight: 700; color: #acb3af; } .ds-kpi-v { font-size: 32px; font-weight: 300; line-height: 1.1; color: #e5ebe8; } .ds-kpi-v small { margin-left: 6px; font-size: 15px; font-weight: 600; color: #acb3af; } .ds-kpi-s { font-size: 12px; font-weight: 600; color: #7a837e; } .ds-up { color: #52b788; }"
+    },
+    {
+      "name": "Ismétlés értékelő sor",
+      "kind": "custom",
+      "refersTo": "review-rate",
+      "description": "A jelentés megnézése után jelenik meg: négy egyforma gomb, alattuk a következő ismétlésig hátralévő idő. Csak a \"Jó\" színes (zöld), a többi semleges; piros nincs.",
+      "html": "<div class=\"ds-rate\"><button class=\"ds-rate-b\"><span>Újra</span><small>ma</small></button><button class=\"ds-rate-b\"><span>Nehéz</span><small>2 n</small></button><button class=\"ds-rate-b is-good\"><span>Jó</span><small>4 n</small></button><button class=\"ds-rate-b\"><span>Könnyű</span><small>9 n</small></button></div>",
+      "css": ".ds-rate { width: 340px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; font-family: Nunito, sans-serif; } .ds-rate-b { min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 16px; border: 1px solid #2d3531; background: #171c1a; color: #e5ebe8; cursor: pointer; } .ds-rate-b span { font-size: 15px; font-weight: 900; } .ds-rate-b small { font-size: 12px; font-weight: 700; color: #acb3af; font-variant-numeric: tabular-nums; } .ds-rate-b.is-good { background: rgba(82, 183, 136, 0.15); color: #52b788; border-color: rgba(82, 183, 136, 0.4); } .ds-rate-b.is-good small { color: inherit; opacity: 0.85; }"
     }
   ],
   "narrative": {

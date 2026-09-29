@@ -5,6 +5,7 @@ import { appData, createEmptyState, currentMode } from './state.js';
 import { renderHome } from '../habit/home.js';
 import { renderDashboard } from '../library/list.js';
 import { setMode } from '../ui/screens.js';
+import { seedMissing } from '../srs/schedule.js';
 import { applyTheme } from '../ui/theme.js';
 
 /* ══════════════════════════════════════════════════════
@@ -257,6 +258,7 @@ async function loadState() {
   }
 
   cleanTags();
+  seedSrsAll();
   applyTheme(savedTheme);
   setMode(savedMode, true);
   renderDashboard();
@@ -286,6 +288,15 @@ async function renderStorageInfo() {
         </div>`;
     }
   } catch(e) { /* storage API nem elérhető */ }
+}
+
+// V13.5: a már tanult, de még ütemezés nélküli szavak beosztása (az SRS bevezetésekor egyszer,
+// utána csak ha pl. régi eszközről szinkronizált szó érkezik)
+function seedSrsAll() {
+  let n = 0;
+  ['english', 'japanese', 'kanji'].forEach(lang => { n += seedMissing(appData[lang].words); });
+  if (n > 0) { console.log(`[LexiLearn] Ismétlésütemezés: ${n} tanult szó beosztva.`); saveWords(); }
+  return n;
 }
 
 function cleanTags() {
@@ -472,4 +483,4 @@ function syncCustomLists() {
   });
 }
 
-export { UI_VERSION, _applyParsedData, _buildSaveObjects, _migrateMonolithToSplit, cleanTags, loadState, migrateToStableIds, renderStorageInfo, savePlaylists, saveSettings, saveState, saveStats, saveWords, stableWordId, syncCustomLists, syncNewWords };
+export { UI_VERSION, _applyParsedData, _buildSaveObjects, _migrateMonolithToSplit, cleanTags, loadState, migrateToStableIds, renderStorageInfo, savePlaylists, saveSettings, saveState, saveStats, saveWords, stableWordId, syncCustomLists, syncNewWords, seedSrsAll };

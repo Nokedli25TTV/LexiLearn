@@ -1234,6 +1234,76 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 }
 .learn-left { font-size: 13px; font-weight: 600; color: var(--text-3); text-align: center; }
 
+/* ── V13.5: Ismétlés (esedékes kártyák, Anki-szerű értékelés) ── */
+/* Értékelni csak a jelentés megnézése után lehet: addig a húzás pecsétjei sem jelennek meg */
+.review-card:not(.is-revealed) .swipe-stamp { display: none; }
+
+/* A "Mutasd" sor és az értékelő sor ugyanazon a helyen cserélődik (nincs elrendezés-ugrás) */
+.review-controls { width: 100%; display: grid; }
+.review-controls > * { grid-area: 1 / 1; transition: opacity 180ms var(--ease-out), transform 220ms var(--ease-out); }
+.review-rate { opacity: 0; visibility: hidden; transform: translateY(6px); }
+.review-controls.is-revealed .review-reveal-row { opacity: 0; visibility: hidden; }
+.review-controls.is-revealed .review-rate { opacity: 1; visibility: visible; transform: none; }
+
+.review-reveal-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+.review-reveal {
+  min-height: 58px;
+  border: none;
+  border-radius: 18px;
+  background: var(--text);
+  color: var(--surface);
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 140ms var(--ease-out);
+}
+.review-reveal:active { transform: scale(0.97); }
+
+.review-rate { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.rate-btn {
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 4px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 140ms var(--ease-out), border-color 0.18s, background-color 0.18s;
+}
+.rate-btn:active { transform: scale(0.95); }
+.rate-label { font-size: 15px; font-weight: 900; line-height: 1.2; }
+.rate-when { font-size: 12px; font-weight: 700; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.rate-3 { background: var(--success-bg); color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); }
+.rate-3 .rate-when { color: inherit; opacity: 0.85; }
+@media (hover: hover) {
+  .rate-btn:hover { border-color: var(--primary-h); }
+  .rate-3:hover { background: var(--success); color: var(--on-strong); }
+}
+.review-summary { font-size: 14px; font-weight: 700; color: var(--text-2); }
+
+/* Kezdőlap: ismétlés-előrejelzés a gombok alatt */
+.home-forecast { margin-top: 2px; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
+.home-forecast b { font-weight: 800; color: var(--text); }
+.home-forecast span { display: inline-block; }
+
+@media (max-width: 360px) {
+  .review-rate { gap: 6px; }
+  .rate-label { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .review-controls > * { transition: none; }
+  .review-rate { transform: none; }
+}
+
 /* A 3D kártya is követi az ujjat: a pecsét helyett a kártya maga repül ki */
 .flashcard-3d { will-change: transform; }
 

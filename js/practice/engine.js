@@ -12,6 +12,7 @@ import { initFlashcard3DSwipe, resetFlashcardState } from './flashcard.js';
 import { _currentTTSAudio, setTtsOnEnd, speakWord } from './tts.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
+import { practiceLapse } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
    PRACTICE LOGIC (V6.7: SZEM IKON + MONDAT MOTOR)
@@ -412,6 +413,7 @@ function checkSentenceAnswer(btn, chosen) {
   if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
   else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
   word.stats.lastAttempt = Date.now();
+  if (!isCorrect) practiceLapse(word); // V13.5: a hibás szó holnap visszajön ismétlésre
   updateQuestProgress('wordAnswered', { word, isCorrect });
 
   setTimeout(() => {
@@ -508,6 +510,7 @@ function checkHardcoreAnswer(wordId) {
   
   speakWord(word.en, false);
   word.stats.lastAttempt = Date.now();
+  if (!isCorrect) practiceLapse(word); // V13.5: a hibás szó holnap visszajön ismétlésre
   updateQuestProgress('wordAnswered', { word, isCorrect });
 
   if (isCorrect) {
@@ -581,6 +584,7 @@ function checkAnswer(btn, chosen, correct) {
     if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
     else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
     word.stats.lastAttempt = Date.now();
+    if (!isCorrect) practiceLapse(word); // V13.5: a hibás szó holnap visszajön ismétlésre
     updateQuestProgress('wordAnswered', { word, isCorrect });
     // V13: gyors ismétlésnél a hibás szó a sor végére kerül, amíg egyszer el nem találod
     if (!isCorrect && p.type === 'quickQuiz') p.roundWords.push(word.id);
@@ -707,7 +711,7 @@ function finishSession() {
 function confirmQuit() {
   const p = state.practice;
   // Tanulás közben minden "Tudom" azonnal mentődik, így kilépéskor nincs mit elveszíteni
-  if (p.type === 'learn' || confirm('Biztosan ki szeretnél lépni?')) showScreen(p.origin || 'dashboard');
+  if (p.type === 'learn' || p.type === 'review' || confirm('Biztosan ki szeretnél lépni?')) showScreen(p.origin || 'dashboard');
 }
 
 // Irány a gyakorláshoz: a gyors ismétlés mindig forrás → magyar, egyébként a felhasználó beállítása

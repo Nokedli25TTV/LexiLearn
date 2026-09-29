@@ -286,6 +286,17 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 - Gyakorlás közben a "Tovább" (hibás válasz után) a képernyő aljára rögzül: teljes szélesség, 56px, korall.
 - A kör vége képernyő gombjai és a modálok műveletei mobilon a lap aljára ragadnak (sticky), így kis kijelzőn sem kerülnek a képernyő alá. A modálok mobilon alulról nyíló lapok.
 
+### Ismétlő kártya és értékelő sor (Signature Component, V13.5)
+- **Kártya:** a tanuló kártya alakja (28px), elöl a szó és az olvasat, címke nélkül (csak az "Újra" kártya kap szürke "ÚJRA" pillát). Koppintásra megfordul: jelentés, olvasatok, példamondat.
+- **Mutasd a jelentést:** fordított semleges gomb (szöveg színű háttér), 58px, mellette a kiejtés gomb. A képernyőn nincs korall: a korall a Kezdőlap fő cselekvéséé.
+- **Értékelő sor:** csak a jelentés megnézése után jelenik meg, ugyanazon a helyen, ahol a "Mutasd" gomb volt (nincs elrendezés-ugrás). Négy egyforma, 60px magas gomb: Újra / Nehéz / Jó / Könnyű, alattuk a következő ismétlésig hátralévő idő ("ma", "3 n", "2 hó"), tabuláris számokkal. Csak a "Jó" színes (erdő-köd háttér, zöld felirat); a többi semleges, a piros hibaszín itt tilos (az "Újra" nem hiba, hanem a tanulás része).
+- **Húzás:** balra Újra, jobbra Jó, de csak a jelentés megnézése után; addig a pecsétek sem látszanak. Billentyűzet: Szóköz fordít, 1-4 értékel.
+- **Összegzés:** "N szó átismételve", alatta a következő lépés (még esedékes / új szavak) korallal, és egy csendes sor az értékelések eloszlásáról ("Újra 1 · Jó 12"). Konfetti nincs: az ismétlés napi rutin, nem ünnepi pillanat.
+
+### Kezdőlap cselekvések (V13.5)
+- Ha van esedékes ismétlés, az "Ismétlés" a korall fő gomb (darabszám chippel, "kb. N perc"), az "Új szavak tanulása" alatta másodlagos (felület háttér, nyíl nélkül). Ha nincs esedékes, az új szavak a fő gomb.
+- Alattuk egy csendes, középre zárt előrejelző sor: "Holnap 15 · a következő 7 napban 45" (13px, a számok 800-as súllyal). Így nincs meglepetés-hegy.
+
 ### Tanuló kártya (Signature Component)
 28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat).
 

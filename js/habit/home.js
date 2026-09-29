@@ -10,6 +10,7 @@ import { applyFilters } from '../library/list.js';
 import { closeFilterMenu, renderFilterBar } from '../library/menus.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
+import { REVIEW_BATCH_SIZE, dueForecast } from '../srs/schedule.js';
 
 /* ── KEZDŐLAP ─────────────────────────────────────────── */
 function renderHome() {
@@ -58,6 +59,25 @@ function renderHome() {
   }
 
   // ── Fő cselekvések ──
+  // V13.5: előbb az esedékes ismétlés (korall fő gomb), utána az új szavak (másodlagos).
+  // Ha nincs esedékes, az új szavak tanulása a fő gomb, mint eddig.
+  const forecast = dueForecast(state.words);
+  const due = forecast.due;
+  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const arrow = `<span class="cta-arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>`;
+
+  let reviewHtml = '';
+  if (due > 0) {
+    const batch = Math.min(due, REVIEW_BATCH_SIZE);
+    const mins = Math.max(1, Math.round(batch * 0.2));
+    reviewHtml = `
+      <button class="cta-learn" onclick="startReviewSession()">
+        <span class="cta-main">Ismétlés <span class="count-chip">${due}</span></span>
+        <span class="cta-sub">${due > batch ? `${batch} kártya most` : `${batch} esedékes`} · kb. ${mins} perc</span>
+        ${arrow}
+      </button>`;
+  }
+
   const remaining = goal - learnedToday;
   const nextBatch = Math.min(remaining, LEARN_BATCH_SIZE, pool.length);
   let learnHtml;
@@ -67,7 +87,7 @@ function renderHome() {
         <span class="home-note-icon" aria-hidden="true">✓</span>
         <div>
           <p class="home-note-title">A napi limit teljesítve.</p>
-          <p class="home-note-sub">Az új szavak holnap folytatódnak; addig ismételd a maiakat.</p>
+          <p class="home-note-sub">Az új szavak holnap folytatódnak.</p>
         </div>
       </div>`;
   } else if (pool.length === 0) {
@@ -85,29 +105,27 @@ function renderHome() {
            <span class="home-note-icon" aria-hidden="true">✓</span>
            <div>
              <p class="home-note-title">Ebben a módban minden szót elkezdtél.</p>
-             <p class="home-note-sub">Mélyítsd el őket a Gyakorlás fülön.</p>
+             <p class="home-note-sub">Az ismétlések gondoskodnak a rögzítésről.</p>
            </div>
          </div>`;
   } else {
     const mins = Math.max(1, Math.round(nextBatch * 0.5));
     learnHtml = `
-      <button class="cta-learn" onclick="startLearnSession()">
+      <button class="${due > 0 ? 'cta-review' : 'cta-learn'}" onclick="startLearnSession()">
         <span class="cta-main">Új szavak tanulása</span>
-        <span class="cta-sub">${nextBatch} ${currentMode === 'kanji' ? 'kanji' : 'szó'} · kb. ${mins} perc</span>
-        <span class="cta-arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+        <span class="cta-sub">${nextBatch} ${unit} · kb. ${mins} perc</span>
+        ${due > 0 ? '' : arrow}
       </button>`;
   }
 
-  // Ha mára kész a cél, a mai ismétlés lesz a fő (élénk) gomb
-  const reviewClass = goalReached && learnedToday > 0 ? 'cta-learn' : 'cta-review';
-  const reviewHtml = `
-    <button class="${reviewClass}" onclick="startTodayReview()" ${learnedToday === 0 ? 'disabled' : ''}>
-      <span class="cta-main">Mai szavak ismétlése${learnedToday > 0 ? ` <span class="count-chip">${learnedToday}</span>` : ''}</span>
-      <span class="cta-sub">${learnedToday > 0 ? 'Gyors kvíz: a hibás szó visszakerül a sor végére' : 'Tanulj ma új szót, és itt átismételheted.'}</span>
-    </button>`;
+  // Előrejelzés: mi jön a következő napokban (nincs meglepetés-hegy)
+  const hasSchedule = due > 0 || forecast.week > 0 || state.words.some(w => w.stats && w.stats.srs);
+  const forecastHtml = hasSchedule
+    ? `<p class="home-forecast">${due > 0 ? '' : '<span>Mára nincs esedékes ismétlés.</span> '}<span>Holnap <b>${forecast.tomorrow}</b> · a következő 7 napban <b>${forecast.week}</b></span></p>`
+    : '';
 
   const actions = document.getElementById('home-actions');
-  if (actions) actions.innerHTML = learnHtml + reviewHtml;
+  if (actions) actions.innerHTML = reviewHtml + learnHtml + forecastHtml;
 
   renderDailyQuests();
 }

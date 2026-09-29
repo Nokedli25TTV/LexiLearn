@@ -1,5 +1,5 @@
 // A RÉGI (klasszikus scriptes) app.js futtatása jsdom-ban, determinisztikus környezetben.
-// Használat: node tests/harness/run-legacy.js > tests/golden/legacy.json
+// Használat: node tests/harness/run-legacy.js > /tmp/legacy.json  (a V13.2 kimenete; a golden azóta tests/golden/expected.json)
 // Csak a refaktor előtti golden master rögzítésére kell: a régi app.js a git történetből jön
 // (LEGACY_REF, alapból a V13.2 commit, az utolsó, amiben még egyben volt).
 import { execSync } from 'node:child_process';

@@ -6,7 +6,7 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-4';
+const CACHE_NAME = 'lexilearn-v13-5';
 
 const STATIC_ASSETS = [
   './index.html',
@@ -28,6 +28,7 @@ const STATIC_ASSETS = [
   './js/habit/goal.js',
   './js/habit/home.js',
   './js/habit/learn.js',
+  './js/habit/review.js',
   './js/library/dock.js',
   './js/library/filters.js',
   './js/library/list.js',
@@ -37,6 +38,8 @@ const STATIC_ASSETS = [
   './js/practice/engine.js',
   './js/practice/flashcard.js',
   './js/practice/tts.js',
+  './js/srs/fsrs.js',
+  './js/srs/schedule.js',
   './js/stats/model.js',
   './js/stats/view.js',
   './js/ui/confetti.js',

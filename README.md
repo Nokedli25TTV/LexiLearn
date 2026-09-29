@@ -34,7 +34,8 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `js/core/` | állapot (`state`), statikus adatok (`data`), mentés / betöltés / migráció (`storage`), dátumok, segédek |
 | `js/library/` | Gyakorlás fül: szűrők, lenyíló menük, szólista, gyakorlás dokk, saját listák |
 | `js/practice/` | gyakorló motor (kvíz, gépelős, mondat), 3D kártya, felolvasás (TTS) |
-| `js/habit/` | napi szokás: napi penzum, új szavak tanulása, mai ismétlés, Kezdőlap |
+| `js/habit/` | napi szokás: napi penzum, új szavak tanulása, esedékes ismétlés (`review.js`), Kezdőlap |
+| `js/srs/` | ismétlésütemezés: FSRS-5 algoritmus (`fsrs.js`) és szó-szintű ütemezés, beosztás, előrejelzés (`schedule.js`) |
 | `js/stats/` | statisztika: számítások (`model`) és ábrák (`view`) |
 | `js/features/`, `js/ui/`, `js/app/` | feladatok, sorozat, könyvjelzők, profil, import/export; képernyők, téma, toast, húzás, konfetti; service worker, bejelentkezés |
 | `firebase-sync.js` | Google bejelentkezés + felhő szinkron (Firestore) |
@@ -67,15 +68,31 @@ jóval 1 MiB alatt marad (N3 szintű adatnál kb. 200 KB). Az első V13.4-es szi
 egyszer a régi `snapshot`-ot is megnézi, és ha az frissebb (egy még régi verziójú eszköz írta),
 abból migrál.
 
+## Ismétlésütemezés (SRS)
+
+Anki-szerű: minden tanult szó `stats.srs` mezőjében él a következő esedékesség (`due`), a stabilitás
+(`s`, nap), a nehézség (`d`, 1-10), az utolsó ismétlés napja, az ismétlések és visszaesések száma.
+A stats-szal együtt mentődik és szinkronizálódik.
+
+- **Algoritmus:** FSRS-5 az alapértelmezett paraméterekkel, 90%-os célzott megtartással, napi felbontással.
+- **Új szó:** a tanuló kártyán a "Tudom" Jó értékelés (első ismétlés 3 nap múlva); ha közben "Még nem" is volt, hamarabb.
+- **Ismétlés:** Újra / Nehéz / Jó / Könnyű; az Újra még ma visszajön. Egy alkalom legfeljebb 20 kártya.
+- **Szabad gyakorlás:** a kvízben / gépelősben / mondatban elrontott szó holnap esedékes lesz; a helyes válasz nem tolja ki.
+- **Már tanult szavak:** betöltéskor (és felhő szinkron után) a még ütemezés nélküli tanult szavakat a meglévő
+  eredményekből becsülve beosztja; a lemaradtakat napi adagokra (min. 15/nap, legfeljebb 3 hét).
+
 ## Tesztek
 
-- **`tests/golden.test.js` – golden master.** A `tests/golden/legacy.json` a V13.2-es, még
-  egyben lévő `app.js` kimenete (rögzített idő és véletlenszám mellett: szűrők, új szavak,
-  Kezdőlap, gyakorlás, tanulás, statisztika, mentési formátum). A moduláris kódnak ezzel
-  **pontosan** egyeznie kell. Szándékos viselkedésváltozásnál nézd át az eltérést, és
-  frissítsd a várt értéket: a harness a `tests/harness/` mappában van.
+- **`tests/golden.test.js` – golden master.** A `tests/golden/expected.json` az app kimenete rögzített
+  idő és véletlenszám mellett (szűrők, új szavak, Kezdőlap, gyakorlás, tanulás, statisztika, mentési
+  formátum); eredetileg a V13.2-es, még egyben lévő `app.js` kimenete, amivel a modulokra bontás pontosan
+  egyezett. Szándékos viselkedésváltozásnál: `UPDATE_GOLDEN=1 npx vitest run tests/golden.test.js`, majd a
+  `git diff`-ben ellenőrizd, hogy **csak** a szándékolt rész változott.
 - **`tests/handlers.test.js`** – minden kirajzolt inline eseménykezelő létező függvényt hív.
 - **`tests/unit/`** – egységtesztek a mag logikára (dátumok, napi napló, statisztika, új szavak) és a felhő
   tárolóra (felosztás, migráció, csak a változott rész írása, két eszköz, méret).
+- **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
+  ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
+- Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).
 - **`tests/cloud-sync.test.js`** – a valódi `firebase-sync.js` a teljes appal, memóriabeli Firestore-ral
   (`tests/fakes/`; a `vitest.config.js` a Firebase CDN importokat ezekre cseréli).

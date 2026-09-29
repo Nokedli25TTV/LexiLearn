@@ -1,20 +1,24 @@
-// Golden master: az ES modulokra bontott app PONTOSAN ugyanazt csinálja, mint a régi app.js.
-// A tests/golden/legacy.json a refaktor ELŐTTI kódból készült (tests/harness/run-legacy.js).
-// Ha egy szándékos viselkedésváltozás miatt eltér, a különbséget nézd át, és csak utána
-// frissítsd a golden fájlt (lásd tests/README.md).
+// Golden master: az app kimenete (szűrők, új szavak, Kezdőlap, gyakorlás, tanulás, statisztika,
+// mentési formátum) rögzített idő és véletlenszám mellett PONTOSAN egyezik a tests/golden/expected.json-nal.
+// Eredete: a V13.2-es app.js kimenete (tests/harness/run-legacy.js), a V13.3 modulokra bontás ezzel egyezett.
+// Szándékos viselkedésváltozásnál: UPDATE_GOLDEN=1 npx vitest run tests/golden.test.js,
+// majd a git diff-ben nézd át, hogy CSAK a szándékolt rész változott.
 import { it, expect, vi } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { bootApp } from './harness/boot.js';
 import { capture } from './harness/capture.js';
 
-it('az ES modul verzió kimenete megegyezik a refaktor előtti app.js-ével', async () => {
+const GOLDEN = path.join(path.dirname(fileURLToPath(import.meta.url)), 'golden', 'expected.json');
+
+it('az app kimenete megegyezik a rögzített (golden) kimenettel', async () => {
   const warn = vi.spyOn(console, 'warn');
   const error = vi.spyOn(console, 'error');
   const { api, reseed, win } = await bootApp();
   const result = await capture(api, win, reseed);
-  const golden = JSON.parse(readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), 'golden', 'legacy.json'), 'utf8'));
+  if (process.env.UPDATE_GOLDEN) writeFileSync(GOLDEN, JSON.stringify({ ...result, __errors: [] }, null, 2));
+  const golden = JSON.parse(readFileSync(GOLDEN, 'utf8'));
   delete golden.__errors;
   expect(result).toEqual(golden);
   // A betöltés a valódi úton fusson, ne a hibakezelő ágon

@@ -6,6 +6,7 @@ import { saveStats } from '../core/storage.js';
 import { escHtml, shuffle } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordLearned } from './goal.js';
+import { dueForecast, scheduleLearnedWord } from '../srs/schedule.js';
 import { renderHome } from './home.js';
 import { getExampleSentence, showQuestion, updatePracticeTop } from '../practice/engine.js';
 import { speakWord } from '../practice/tts.js';
@@ -133,6 +134,8 @@ function resolveLearnCard(known) {
   logActivity({ known });
   if (word) {
     if (known) {
+      // V13.5: a "Tudom" Jó értékelés; ha közben "Még nem" is volt, előbb Újra (így hamarabb jön vissza)
+      scheduleLearnedWord(word, p.againIds.includes(id));
       markWordLearned(word);
       p.learnedIds.push(id);
     } else {
@@ -153,6 +156,7 @@ function showLearnComplete() {
   const nextBatch = goalReached ? 0 : Math.min(remaining, LEARN_BATCH_SIZE, getNewWordPool().length);
   const pct = Math.min(1, learnedToday / goal);
   const streak = calcStreak();
+  const dueCount = dueForecast(state.words).due;
 
   const chips = p.learnedIds.map(id => {
     const w = state.words.find(x => x.id === id);
@@ -174,8 +178,9 @@ function showLearnComplete() {
       </div>
       <div class="learn-done-words">${chips}</div>
       <div class="learn-done-actions">
-        ${nextBatch > 0 ? `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Még ${nextBatch} új szó</span></button>` : ''}
-        <button class="${nextBatch > 0 ? 'cta-review' : 'cta-learn'} cta-compact" onclick="startTodayReview()"><span class="cta-main">Gyors kvíz a mai szavakból</span></button>
+        ${nextBatch > 0 ? `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Még ${nextBatch} új szó</span></button>`
+          : dueCount > 0 ? `<button class="cta-learn cta-compact" onclick="startReviewSession()"><span class="cta-main">Ismétlés · ${dueCount} esedékes</span></button>` : ''}
+        <button class="btn-quiet" onclick="startTodayReview()">Gyors kvíz a mai szavakból</button>
         <button class="btn-quiet" onclick="showScreen('home')">Vissza a kezdőlapra</button>
       </div>
     </div>`;

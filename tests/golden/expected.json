@@ -438,7 +438,7 @@
     "startDisabled": false
   },
   "home": {
-    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak; addig ismételd a maiakat.</p> </div> </div> <button class=\"cta-learn\" onclick=\"startTodayReview()\"> <span class=\"cta-main\">Mai szavak ismétlése <span class=\"count-chip\">115</span></span> <span class=\"cta-sub\">Gyors kvíz: a hibás szó visszakerül a sor végére</span> </button>",
+    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div>",
     "source": "<span>Forrás: <b>Teljes szótár</b> · 1149 új szó</span> <button class=\"link-btn\" onclick=\"openPoolSource()\">Módosítás</button>",
     "streak": "3 nap",
     "hint": "A mai japán adag megvan.",
@@ -483,7 +483,15 @@
         "streak": 0,
         "totalCorrect": 0,
         "totalWrong": 1,
-        "lastAttempt": 1790668800000
+        "lastAttempt": 1790668800000,
+        "srs": {
+          "due": "2026-09-30",
+          "s": 0.4026,
+          "d": 7.1949,
+          "last": "2026-09-29",
+          "reps": 0,
+          "lapses": 0
+        }
       },
       "errorList": [
         "ja_ハンがリー"
@@ -634,7 +642,7 @@
       "en_despite_,_-_of"
     ],
     "goal": 10,
-    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak; addig ismételd a maiakat.</p> </div> </div> <button class=\"cta-learn\" onclick=\"startTodayReview()\"> <span class=\"cta-main\">Mai szavak ismétlése <span class=\"count-chip\">72</span></span> <span class=\"cta-sub\">Gyors kvíz: a hibás szó visszakerül a sor végére</span> </button>",
+    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div>",
     "pills": "<button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button>",
     "count": "927 szó"
   },
@@ -651,7 +659,7 @@
       "kj_十"
     ],
     "goal": 5,
-    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak; addig ismételd a maiakat.</p> </div> </div> <button class=\"cta-learn\" onclick=\"startTodayReview()\"> <span class=\"cta-main\">Mai szavak ismétlése <span class=\"count-chip\">133</span></span> <span class=\"cta-sub\">Gyors kvíz: a hibás szó visszakerül a sor végére</span> </button>",
+    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div>",
     "pills": "<button class=\"pill \" data-menu=\"lesson\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('lesson')\"> <span class=\"pill-label\">Lecke</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"day\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('day')\"> <span class=\"pill-label\">Úti terv</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button>",
     "count": "1715 kanji"
   },

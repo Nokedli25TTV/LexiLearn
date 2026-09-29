@@ -22,7 +22,7 @@ function getDailyGoal() {
 
 function isNewWord(w) {
   const s = w.stats || {};
-  return !s.learnedAt && !s.lastAttempt && !(s.totalCorrect > 0) && !(s.totalWrong > 0);
+  return !s.learnedAt && !s.lastAttempt && !(s.totalCorrect > 0) && !(s.totalWrong > 0) && !s.srs;
 }
 
 function getTodayWords() {

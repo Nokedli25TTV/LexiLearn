@@ -8,13 +8,13 @@ product
 
 Egyetlen fő felhasználó (a fejlesztő maga): magyar anyanyelvű tanuló, aki japánt tanul a **JLPT N3** felé (kana, kandzsi, Dekiru leckék), és mellette angol szókincset bővít. Leginkább **telefonon, egy kézzel** használja (PWA, kezdőképernyőről indítva), gyakran reggel vagy késő este, rövid, 5-15 perces alkalmakban. Asztali gépen ritkábban, szólisták és egyéni gyakorlások összeállítására.
 
-A feladat minden nap ugyanaz: megtartani a konzisztenciát, teljesíteni a napi penzumot (új szavak), és átismételni a már tanultakat.
+A feladat minden nap ugyanaz: megtartani a konzisztenciát, először átismételni az esedékes szavakat (Anki-szerű ismétlésütemezés, FSRS), aztán teljesíteni a napi penzumot (új szavak).
 
 ## Product Purpose
 
 LexiLearn egy offline is működő, felhőben szinkronizált szótanuló, ami a **napi, fegyelmezett szokásra** épít, nem a hajrára. A siker: minden nap visszajön a felhasználó, a napi penzum teljesül (5-10 új szó módonként), és a tudás ténylegesen rögzül (nem csak a számláló nő). A rendszer szándékosan korlátozza a napi új szavakat, hogy ne legyen kiégés.
 
-Fő felületek: Kezdőlap (konzisztencia, napi penzum, új szavak, mai ismétlés), Gyakorlás (szűrhető szótár, egyéni gyakorlás összeállítása), Statisztika (konzisztencia-hőtérkép, tudás-érettség, pontosság, fókuszált idő), Profil.
+Fő felületek: Kezdőlap (konzisztencia, esedékes ismétlés, napi penzum, új szavak, előrejelzés), Gyakorlás (szűrhető szótár, egyéni gyakorlás összeállítása), Statisztika (konzisztencia-hőtérkép, tudás-érettség, pontosság, fókuszált idő), Profil.
 
 ## Brand Personality
 
