@@ -38,6 +38,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `js/stats/` | statisztika: számítások (`model`) és ábrák (`view`) |
 | `js/features/`, `js/ui/`, `js/app/` | feladatok, sorozat, könyvjelzők, profil, import/export; képernyők, téma, toast, húzás, konfetti; service worker, bejelentkezés |
 | `firebase-sync.js` | Google bejelentkezés + felhő szinkron (Firestore) |
+| `js/app/cloud-store.js` | a felhő adat felosztása több Firestore dokumentumra (lásd lent) |
 | `sw.js` | service worker (offline gyorsítótár) |
 
 ### Új függvény, amit HTML-ből hívsz
@@ -50,6 +51,22 @@ Ha egy `onclick="valami()"` új függvényt hív, tedd ki a `window`-ra a `js/ma
 Minden kiadásnál együtt emeld a verziót: `index.html` (`?v=` a script / style linkeken) és
 `sw.js` (`CACHE_NAME`). Új modul fájlnál vedd fel a `sw.js` `STATIC_ASSETS` listájába is.
 
+## Felhő adat (Firestore)
+
+Minden a `users/{uid}/data/` alatt van (a Firestore szabály ezt a gyűjteményt engedi a saját felhasználónak):
+
+| Dokumentum | Tartalom |
+|---|---|
+| `v2_manifest` | kis index: `updatedAt` + minden rész hash-e; a többi eszköz ezt figyeli |
+| `v2_{mód}_meta` | statisztika, napi feladatok, saját listák |
+| `v2_{mód}_w0` … `w7` | a gyakorolt / saját szavak, azonosító szerint 8 részre osztva |
+| `snapshot` | a V13.3-ig használt egyetlen dokumentum; csak migrációhoz és biztonsági mentésnek marad meg |
+
+Mentéskor csak a megváltozott részek íródnak, egy atomi batch-ben a manifesttel együtt. Egy rész
+jóval 1 MiB alatt marad (N3 szintű adatnál kb. 200 KB). Az első V13.4-es szinkron eszközönként
+egyszer a régi `snapshot`-ot is megnézi, és ha az frissebb (egy még régi verziójú eszköz írta),
+abból migrál.
+
 ## Tesztek
 
 - **`tests/golden.test.js` – golden master.** A `tests/golden/legacy.json` a V13.2-es, még
@@ -58,4 +75,7 @@ Minden kiadásnál együtt emeld a verziót: `index.html` (`?v=` a script / styl
   **pontosan** egyeznie kell. Szándékos viselkedésváltozásnál nézd át az eltérést, és
   frissítsd a várt értéket: a harness a `tests/harness/` mappában van.
 - **`tests/handlers.test.js`** – minden kirajzolt inline eseménykezelő létező függvényt hív.
-- **`tests/unit/`** – egységtesztek a mag logikára (dátumok, napi napló, statisztika, új szavak).
+- **`tests/unit/`** – egységtesztek a mag logikára (dátumok, napi napló, statisztika, új szavak) és a felhő
+  tárolóra (felosztás, migráció, csak a változott rész írása, két eszköz, méret).
+- **`tests/cloud-sync.test.js`** – a valódi `firebase-sync.js` a teljes appal, memóriabeli Firestore-ral
+  (`tests/fakes/`; a `vitest.config.js` a Firebase CDN importokat ezekre cseréli).

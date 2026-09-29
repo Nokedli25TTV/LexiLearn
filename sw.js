@@ -6,13 +6,14 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-3';
+const CACHE_NAME = 'lexilearn-v13-4';
 
 const STATIC_ASSETS = [
   './index.html',
   './style.css',
   // V13.3: ES modulok (js/) + adat-regiszter
   './js/app/auth-ui.js',
+  './js/app/cloud-store.js',
   './js/app/sw.js',
   './js/core/data.js',
   './js/core/dates.js',

@@ -53,7 +53,7 @@ export async function bootApp({ seed = 1 } = {}) {
 
   const modules = listModules('js').filter(f => f !== 'js/main.js');
   const api = {};
-  for (const f of modules) Object.assign(api, await import(pathToFileURL(abs(f)).href));
-  await import(pathToFileURL(abs('js/main.js')).href);
+  for (const f of modules) Object.assign(api, await import(/* @vite-ignore */ pathToFileURL(abs(f)).href));
+  await import(/* @vite-ignore */ pathToFileURL(abs('js/main.js')).href);
   return { api, reseed, win: window };
 }
