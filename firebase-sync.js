@@ -154,7 +154,8 @@ function _isWordModified(w) {
   if (!w) return false;
   if (w.bookmarked) return true;
   const s = w.stats || {};
-  return (s.totalCorrect > 0) || (s.totalWrong > 0) || (s.streak > 0) || (s.lastAttempt > 0);
+  // V13: a "Tudom"-mal megtanult (még nem kvízelt) szó is módosult → learnedAt a stats-ban utazik
+  return (s.totalCorrect > 0) || (s.totalWrong > 0) || (s.streak > 0) || (s.lastAttempt > 0) || !!s.learnedAt;
 }
 
 function buildCloudSnapshot() {
@@ -348,6 +349,7 @@ async function initialSyncFromCloud() {
 
     // UI újrarajzolás
     if (window.renderDashboard) window.renderDashboard();
+    if (window.renderHome) window.renderHome();
     if (window.renderStats && document.getElementById('screen-stats')?.classList.contains('active')) {
       window.renderStats();
     }
@@ -397,6 +399,7 @@ function startCloudListener() {
     if (window.saveStats)     window.saveStats();
     if (window.savePlaylists) window.savePlaylists();
     if (window.renderDashboard) window.renderDashboard();
+    if (window.renderHome) window.renderHome();
     if (window.renderStats && document.getElementById('screen-stats')?.classList.contains('active')) {
       window.renderStats();
     }

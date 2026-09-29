@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] App.js V12.4 (Stabil szó ID-k, eszközfüggetlen sync) indítása...");
+console.log("[LexiLearn] App.js V13.0 (Mobil kezdőlap, napi cél, mai szavak) indítása...");
 
 if (typeof SAMPLE_WORDS === 'undefined') window.SAMPLE_WORDS = [];
 if (typeof JAPANESE_WORDS === 'undefined') window.JAPANESE_WORDS = [];
@@ -54,14 +54,15 @@ initV6Features();
 /* ══════════════════════════════════════════════════════
    SÖTÉT MÓD LOGIKA
 ══════════════════════════════════════════════════════ */
+// V13: a sötét mód az alapértelmezés. A téma localStorage-ba is tükröződik,
+// hogy az index.html <head> scriptje villanás nélkül, még a CSS előtt be tudja állítani.
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  const moon = document.getElementById('icon-moon');
-  const sun = document.getElementById('icon-sun');
-  if (moon && sun) {
-    moon.style.display = theme === 'dark' ? 'none' : 'block';
-    sun.style.display = theme === 'dark' ? 'block' : 'none';
-  }
+  const sw = document.getElementById('theme-switch');
+  if (sw) sw.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', theme === 'dark' ? '#0e1311' : '#1a3d2e');
+  try { localStorage.setItem('lexi_theme', theme); } catch (e) { /* privát mód */ }
 }
 
 function toggleTheme() {
@@ -102,15 +103,6 @@ function tagLabel(tag) {
   return emoji + ' ' + tag;
 }
 
-function getEmojisForTags(tags) {
-  if (!tags || tags.length === 0) return '';
-  const emojis = tags.map(t => {
-    const clean = t.toLowerCase().trim();
-    if (clean.startsWith('lesson')) return '📖';
-    return TAG_EMOJIS[clean] || '🏷️';
-  });
-  return [...new Set(emojis)].join(''); 
-}
 
 /* ══════════════════════════════════════════════════════
    MULTI-LANGUAGE ÁLLAPOTTÉR & KÜLDETÉSEK
@@ -118,8 +110,9 @@ function getEmojisForTags(tags) {
 function createEmptyState() {
   return {
     words: [], playlists: [], selectedIds: new Set(),
-    filters: { search: '', topicSearch: '', tags: [], diff: new Set(), lesson: 'all', day: 'all', sort: 'az', list: 'all' },
+    filters: { search: '', tags: [], diff: new Set(), lesson: 'all', day: 'all', sort: 'az', list: 'all' },
     direction: 'en-hu', activeViewTab: 'words',
+    practiceOptions: { type: 'classic', count: 20, order: 'random' }, // V13.1: a Gyakorlás dokk beállításai
     practice: { roundNumber: 0, roundWords: [], currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: 0, sessionStartTime: 0, sessionCorrect: 0, sessionWrong: 0, type: 'classic', currentSentenceObj: null },
     globalStats: { totalSessions: 0, totalCorrect: 0, totalWrong: 0, sessionHistory: [], studyDays: {}, recordStreak: 0, lastStudiedTopic: null },
     dailyQuests: { date: '', list: [] }
@@ -252,19 +245,18 @@ function toggleBookmark(wordId) {
     btn.setAttribute('title', w.bookmarked ? 'Eltávolítás a Fókusz Listából' : 'Hozzáadás a Fókusz Listához');
   }
 
-  // word-list (szólista) csillag jelölés frissítése (ha a dashboard nyitva van)
-  const wItemBtn = document.querySelector(`.word-item[data-id="${wordId}"] .word-bookmark`);
-  if (wItemBtn) {
-    wItemBtn.classList.toggle('bookmarked', w.bookmarked);
-    const mark  = wItemBtn.querySelector('.word-bookmark-mark');
-    const empty = wItemBtn.querySelector('.word-bookmark-empty');
-    if (mark)  mark.style.display  = w.bookmarked ? '' : 'none';
-    if (empty) empty.style.display = w.bookmarked ? 'none' : '';
-    wItemBtn.setAttribute('title', w.bookmarked ? 'Eltávolítás a Fókusz Listából' : 'Hozzáadás a Fókusz Listához');
+  // Gyakorlás fül szólistájában a csillag frissítése (ha ki van rajzolva)
+  const star = document.querySelector(`.word-row[data-id="${CSS.escape(wordId)}"] .word-star`);
+  if (star) {
+    const label = w.bookmarked ? 'Eltávolítás a Fókusz Listából' : 'Hozzáadás a Fókusz Listához';
+    star.classList.toggle('is-on', w.bookmarked);
+    star.setAttribute('aria-pressed', w.bookmarked ? 'true' : 'false');
+    star.setAttribute('aria-label', label);
+    star.setAttribute('title', label);
   }
 
-  // Fókusz Lista számláló frissítése
-  renderFocusListCard();
+  // Fókusz Lista számláló (Lista pilla / nyitott menü) frissítése
+  refreshLibraryChrome();
 
   showToast(w.bookmarked ? '⭐ Hozzáadva a Fókusz Listához' : '☆ Eltávolítva a Fókusz Listából');
 }
@@ -275,42 +267,9 @@ function clearAllBookmarks() {
   if (!confirm(`Biztosan eltávolítod mind a ${bm.length} csillagot a Fókusz Listából?`)) return;
   bm.forEach(w => w.bookmarked = false);
   saveWords();
-  renderFocusListCard();
   applyFilters();
+  refreshLibraryChrome();
   showToast('Fókusz Lista kiürítve.');
-}
-
-function loadFocusList() {
-  const bm = getBookmarkedWords();
-  if (bm.length === 0) {
-    showToast('A Fókusz Lista üres – csillagozz meg pár szót először!');
-    return;
-  }
-  state.selectedIds.clear();
-  bm.forEach(w => state.selectedIds.add(w.id));
-
-  const searchInput = document.getElementById('search-input');
-  const topicSearch = document.getElementById('topic-search');
-  const lessonSelect = document.getElementById('lesson-select');
-  const daySelect = document.getElementById('day-select');
-  if (searchInput) searchInput.value = '';
-  if (topicSearch) topicSearch.value = '';
-  if (lessonSelect) lessonSelect.value = 'all';
-  if (daySelect) daySelect.value = 'all';
-
-  state.filters.search = '';
-  state.filters.topicSearch = '';
-  state.filters.tags = [];
-  state.filters.diff = new Set();
-  state.filters.lesson = 'all';
-  state.filters.day = 'all';
-  state.filters.list = 'all';
-  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-
-  applyFilters();
-  updateStartPanel();
-  saveSettings();
-  showToast(`⭐ Fókusz Lista betöltve (${bm.length} szó)`);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -322,9 +281,13 @@ function loadFocusList() {
      lexi_settings  → mód, téma, szűrők, irányok
 ══════════════════════════════════════════════════════ */
 
+// V13: beállítás-séma verzió. Az ez alatti verzióról érkezőknél egyszer átállunk sötét módra
+// (korábban a világos volt az alapértelmezés, így az elmentett 'light' nem tudatos választás).
+const UI_VERSION = 13;
+
 // ── Belső segéd: aktuális állapot → 4 mentési objektum ──────────
 function _buildSaveObjects() {
-  const words = {}, stats = {}, playlists = {}, settings = { lastMode: currentMode, theme: document.documentElement.getAttribute('data-theme') || 'light' };
+  const words = {}, stats = {}, playlists = {}, settings = { lastMode: currentMode, theme: document.documentElement.getAttribute('data-theme') || 'dark', uiVersion: UI_VERSION };
   ['english', 'japanese', 'kanji'].forEach(lang => {
     words[lang]     = appData[lang].words;
     stats[lang]     = { globalStats: appData[lang].globalStats, dailyQuests: appData[lang].dailyQuests };
@@ -332,7 +295,8 @@ function _buildSaveObjects() {
     settings[lang]  = {
       direction:   appData[lang].direction,
       filters:     { ...appData[lang].filters, diff: Array.from(appData[lang].filters.diff) },
-      selectedIds: Array.from(appData[lang].selectedIds)
+      selectedIds: Array.from(appData[lang].selectedIds),
+      practiceOptions: appData[lang].practiceOptions
     };
   });
   return { words, stats, playlists, settings };
@@ -377,6 +341,9 @@ function _applyParsedData(words, stats, playlists, settings) {
       if (settings[lang].selectedIds) {
         appData[lang].selectedIds = new Set(settings[lang].selectedIds);
       }
+      if (settings[lang].practiceOptions) {
+        appData[lang].practiceOptions = { ...createEmptyState().practiceOptions, ...settings[lang].practiceOptions };
+      }
     }
   });
 }
@@ -414,7 +381,7 @@ async function _migrateMonolithToSplit(monolit) {
 // ── Fő betöltő ──────────────────────────────────────────────────
 async function loadState() {
   let savedMode = 'english';
-  let savedTheme = 'light';
+  let savedTheme = 'dark';
 
   try {
     // ═══ 1. LÉPÉS: már split-DB-ben van? (V10.5 formátum) ═══════
@@ -452,7 +419,7 @@ async function loadState() {
         localforage.getItem('lexi_settings')
       ]);
       savedMode  = lexiSettings?.lastMode || 'english';
-      savedTheme = lexiSettings?.theme    || 'light';
+      savedTheme = (lexiSettings?.uiVersion || 0) < UI_VERSION ? 'dark' : (lexiSettings?.theme || 'dark');
       _applyParsedData(lexiWords, lexiStats, lexiPlaylists, lexiSettings);
     }
 
@@ -471,8 +438,8 @@ async function loadState() {
   cleanTags();
   applyTheme(savedTheme);
   setMode(savedMode, true);
-  updateDirectionUI();
   renderDashboard();
+  renderHome();
   renderStorageInfo(); // Tárhely kijelző frissítése
 }
 
@@ -700,75 +667,22 @@ function setMode(mode, isInit = false) {
   const activeBtn = document.getElementById('mode-' + mode);
   if (activeBtn) activeBtn.classList.add('active');
 
-  const isJp = mode !== 'english';
-  const diffListEn = document.getElementById('diff-filter-list-en');
-  const diffListJp = document.getElementById('diff-filter-list-jp');
-  if (diffListEn) diffListEn.style.display = isJp ? 'none' : 'flex';
-  if (diffListJp) diffListJp.style.display = isJp ? 'flex' : 'none';
-  
-  if (mode === 'kanji' || mode === 'japanese') {
-    const lessons = new Set(state.words.map(w => w.lesson).filter(l => l !== undefined && l !== null && l !== ''));
-    const sel = document.getElementById('lesson-select');
-    const group = document.getElementById('lesson-filter-group');
-    const prefix = mode === 'kanji' ? 'Kanji' : 'Dekiru';
-    
-    if (lessons.size > 0 && sel && group) {
-      group.style.display = 'block';
-      sel.innerHTML = '<option value="all">Minden Lecke</option>' + 
-        Array.from(lessons).sort((a,b)=>a-b).map(l => `<option value="${l}">${prefix} Lecke ${l}</option>`).join('');
-    } else if (group) {
-      group.style.display = 'none';
-    }
-  } else {
-    const group = document.getElementById('lesson-filter-group');
-    if (group) group.style.display = 'none';
-  }
-
-  // Úti terv (Nap) legördülő feltöltése – csak Japán módban jelenik meg
-  populateDaySelect();
-
-  const gb = '<img src="https://flagcdn.com/w20/gb.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
-  const hu = '<img src="https://flagcdn.com/w20/hu.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
-  const jp = '<img src="https://flagcdn.com/w20/jp.png" width="16" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
-  const kj = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-bottom:2px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
-
-  const dir1 = document.getElementById('lbl-dir-1');
-  const dir2 = document.getElementById('lbl-dir-2');
-  if (mode === 'english') {
-    if (dir1) dir1.innerHTML = `${gb} &rarr; ${hu}`;
-    if (dir2) dir2.innerHTML = `${hu} &rarr; ${gb}`;
-  } else if (mode === 'japanese') {
-    if (dir1) dir1.innerHTML = `${jp} Kana &rarr; ${hu}`;
-    if (dir2) dir2.innerHTML = `${hu} &rarr; ${jp} Kana`;
-  } else {
-    if (dir1) dir1.innerHTML = `${kj} Kanji &rarr; ${hu}`;
-    if (dir2) dir2.innerHTML = `${hu} &rarr; ${kj} Kanji`;
-  }
-
-  const streakLabels = { 'english': 'Angol', 'japanese': 'Japán', 'kanji': 'Kandzsi' };
-  const lblStreak = document.getElementById('lbl-streak');
-  if (lblStreak) lblStreak.innerText = `${streakLabels[mode]} streak (nap)`;
-
+  // V13.1: a szűrők állapota a state-ben él (a pillák és menük abból renderelnek);
+  // itt csak a keresőmezőt és a nyitott menüket / dokkot igazítjuk az új módhoz
+  closeLibraryOverlays();
+  _tagQuery = '';
   const searchInput = document.getElementById('search-input');
-  const topicSearch = document.getElementById('topic-search');
-  const sortSelect = document.getElementById('sort-select');
-  const lessonSelect = document.getElementById('lesson-select');
-  
   if (searchInput) searchInput.value = state.filters.search || '';
-  if (topicSearch) topicSearch.value = state.filters.topicSearch || '';
-  if (sortSelect) sortSelect.value = state.filters.sort || 'az';
-  if ((mode === 'kanji' || mode === 'japanese') && lessonSelect) {
-    lessonSelect.value = state.filters.lesson || 'all';
-  }
-  
-  document.querySelectorAll('.diff-btn').forEach(b => {
-    b.classList.toggle('active', state.filters.diff.has(b.dataset.diff));
-  });
+  validateDayFilter();
 
   if (!isInit) {
     saveSettings(); // Módváltás csak beállítást érint
-    updateDirectionUI();
     renderDashboard();
+    // V13: a módváltó a globális fejlécben van → az éppen látható képernyőt is frissítjük
+    const active = document.body.dataset.screen;
+    if (active === 'home')    renderHome();
+    if (active === 'stats')   renderStats();
+    if (active === 'profile') renderProfile();
   }
 }
 
@@ -785,61 +699,22 @@ function getTravelPlan() {
 }
 
 /* ══════════════════════════════════════════════════════
-   ÚTI TERV – NAP LEGÖRDÜLŐ FELTÖLTÉSE
-   Japán ÉS Kandzsi módban jelenik meg, a megfelelő terv
-   alapján. Minden nap mellett az aznapi elemek száma.
-══════════════════════════════════════════════════════ */
-function populateDaySelect() {
-  const sel = document.getElementById('day-select');
-  const group = document.getElementById('day-filter-group');
-  if (!sel || !group) return;
-
-  const plan = getTravelPlan();
-  if (!plan) {
-    group.style.display = 'none';
-    return;
-  }
-
-  const days = Object.keys(plan)
-    .map(Number)
-    .filter(n => !Number.isNaN(n))
-    .sort((a, b) => a - b);
-
-  if (days.length === 0) {
-    group.style.display = 'none';
-    return;
-  }
-
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
-  group.style.display = 'block';
-  sel.innerHTML = '<option value="all">Minden nap</option>' +
-    days.map(d => {
-      const count = Array.isArray(plan[d]) ? plan[d].length : 0;
-      return `<option value="${d}">${d}. nap (${count} ${unit})</option>`;
-    }).join('');
-
-  // Mentett nap visszaállítása; ha már nem létezik, essünk vissza 'all'-ra
-  const saved = state.filters.day || 'all';
-  if (saved !== 'all' && !days.includes(Number(saved))) {
-    state.filters.day = 'all';
-    sel.value = 'all';
-  } else {
-    sel.value = saved;
-  }
-}
-
-/* ══════════════════════════════════════════════════════
    STREAK, ACTIVITY ÉS KÜLDETÉSEK
 ══════════════════════════════════════════════════════ */
-function todayKey() { return new Date().toISOString().split('T')[0]; }
+// V13: HELYI dátum kulcs (YYYY-MM-DD). A korábbi toISOString() UTC-t adott, így
+// éjfél és hajnali 1-2 között a tanulás még az előző napra íródott (sorozat, "mai szavak").
+function dateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function todayKey() { return dateKey(new Date()); }
 
 function calcStreak() {
   const studyDays = state.globalStats.studyDays || {};
   let streak = 0;
   const checkDate = new Date();
-  if (!studyDays[checkDate.toISOString().split('T')[0]]) checkDate.setDate(checkDate.getDate() - 1);
+  if (!studyDays[dateKey(checkDate)]) checkDate.setDate(checkDate.getDate() - 1);
   for (let i = 0; i < 365; i++) {
-    const key = checkDate.toISOString().split('T')[0];
+    const key = dateKey(checkDate);
     if (studyDays[key]) { streak++; checkDate.setDate(checkDate.getDate() - 1); } else break;
   }
   return streak;
@@ -848,14 +723,14 @@ function calcStreak() {
 function getWeekDays() {
   const studyDays = state.globalStats.studyDays || {};
   const today = new Date();
-  const todayStr = today.toISOString().split('T')[0];
+  const todayStr = dateKey(today);
   const dow = today.getDay();
   const monday = new Date(today);
   monday.setDate(today.getDate() - ((dow + 6) % 7));
   const labels = ['H','K','Sz','Cs','P','Szo','V'];
   return labels.map((label, i) => {
     const d = new Date(monday); d.setDate(monday.getDate() + i);
-    const key = d.toISOString().split('T')[0];
+    const key = dateKey(d);
     return { label, studied: !!studyDays[key], isToday: key === todayStr };
   });
 }
@@ -1094,22 +969,23 @@ function renderDailyQuests() {
       ? `<span class="quest-daily-word">${quest.params.wordEn} = ${quest.params.wordHu}</span>`
       : '';
 
-    // TagMaster badge
+    // TagMaster badge (V13: színe a --q változóból, így sötét módban sem világít pasztellként)
     const tagBadge = quest.type === 'TagMaster' && !done
-      ? `<span class="quest-tag-badge" style="background:${style.bg};color:${style.color}">🏷️ ${quest.params.tag}</span>`
+      ? `<span class="quest-tag-badge">🏷️ ${escHtml(quest.params.tag)}</span>`
       : '';
 
     return `
-      <div class="quest-item ${done ? 'completed' : ''}" style="border-left: 3px solid ${style.color}">
-        <div class="quest-info">
-          <span class="quest-title">
-            <span style="margin-right:5px">${style.icon}</span>${quest.label}
-          </span>
-          <span class="quest-prog" style="color:${done ? 'var(--success)' : style.color}">${done ? '✓' : progressText}</span>
-        </div>
-        ${extraBadge}${tagBadge}
-        <div class="quest-bar-bg">
-          <div class="quest-bar-fill" style="width:${pct}%; background:${style.color}"></div>
+      <div class="quest-item ${done ? 'completed' : ''}" style="--q:${style.color}">
+        <span class="quest-icon" aria-hidden="true">${done ? '✓' : style.icon}</span>
+        <div class="quest-body">
+          <div class="quest-info">
+            <span class="quest-title">${quest.label}</span>
+            <span class="quest-prog">${done ? 'Kész' : progressText}</span>
+          </div>
+          ${extraBadge}${tagBadge}
+          <div class="quest-bar-bg">
+            <div class="quest-bar-fill" style="width:${pct}%"></div>
+          </div>
         </div>
       </div>
     `;
@@ -1119,585 +995,790 @@ function renderDailyQuests() {
 /* ══════════════════════════════════════════════════════
    SCREEN MANAGEMENT & DASHBOARD
 ══════════════════════════════════════════════════════ */
+const SCREENS = {
+  home: 'screen-home', dashboard: 'screen-dashboard', practice: 'screen-practice',
+  roundend: 'screen-round-end', stats: 'screen-stats', profile: 'screen-profile'
+};
+
 function showScreen(name) {
+  const key = SCREENS[name] ? name : 'home';
+  closeLibraryOverlays();
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const map = {dashboard:'screen-dashboard',practice:'screen-practice',roundend:'screen-round-end',stats:'screen-stats'};
-  const target = document.getElementById(map[name] || 'screen-dashboard');
+  const target = document.getElementById(SCREENS[key]);
   if (target) target.classList.add('active');
-  
-  if (name === 'dashboard') renderDashboard();
-  if (name === 'stats') renderStats();
-}
 
-function renderDashboard() {
-  renderPlaylists(); 
-  renderTagFilters();
-  applyFilters(); 
-  updateStartPanel();
-  updateDirectionUI();
-  renderSidebar();
-  renderDailyQuests();
-}
-
-function renderSidebar() {
-  const words = state.words;
-  const streak = calcStreak();
-  if (streak > (state.globalStats.recordStreak || 0)) state.globalStats.recordStreak = streak;
-
-  const totalAttempts = words.reduce((s,w)=>s+w.stats.totalCorrect+w.stats.totalWrong,0);
-  const totalCorrect  = words.reduce((s,w)=>s+w.stats.totalCorrect,0);
-  
-  const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  
-  setEl('ms-streak', streak);
-  setEl('ms-record', state.globalStats.recordStreak || 0);
-  setEl('ms-avg', totalAttempts > 0 ? Math.round(totalCorrect/totalAttempts*100)+'%' : '—');
-  setEl('ms-learned', words.filter(w=>w.stats.streak>=3).length);
-  setEl('ms-last-topic', state.globalStats.lastStudiedTopic ? tagLabel(state.globalStats.lastStudiedTopic) : '—');
-  
-  const mostWrong = [...words].sort((a,b)=>b.stats.totalWrong-a.stats.totalWrong).find(w=>w.stats.totalWrong>0);
-  setEl('ms-worst', mostWrong ? mostWrong.en : '—');
-
-  const days = getWeekDays();
-  const weekTracker = document.getElementById('week-tracker');
-  if (weekTracker) {
-    weekTracker.innerHTML = days.map(d => {
-      let cls, icon;
-      if (d.isToday && d.studied)  { cls='today-studied'; icon='✔'; }
-      else if (d.isToday)          { cls='today-not';     icon='○'; }
-      else if (d.studied)          { cls='studied';       icon='✔'; }
-      else                         { cls='not-studied';   icon='○'; }
-      return `<div class="week-day"><div class="week-day-label">${d.label}</div><div class="week-day-dot ${cls}">${icon}</div></div>`;
-    }).join('');
-  }
-  setEl('streak-big', streak + ' 🔥');
-}
-
-function renderTagFilters() {
-  const tags = new Set();
-  state.words.forEach(w => w.tags.forEach(t => tags.add(t)));
-  const container = document.getElementById('tag-filter-list');
-  if (!container) return;
-  
-  const searchInput = document.getElementById('topic-search');
-  const q = (searchInput?.value || '').toLowerCase().trim();
-  container.innerHTML = '';
-  
-  ['Összes', ...Array.from(tags).sort()].forEach(tag => {
-    if (q && tag !== 'Összes' && !tag.toLowerCase().includes(q)) return;
-    const isAll = tag === 'Összes';
-    const active = isAll ? state.filters.tags.length === 0 : state.filters.tags.includes(tag);
-    const btn = document.createElement('button');
-    btn.className = 'tag-btn' + (active ? ' active' : '');
-    btn.textContent = isAll ? '🌐 Összes' : tagLabel(tag);
-    btn.onclick = () => toggleTag(tag);
-    container.appendChild(btn);
+  // A body data-screen attribútuma vezérli a fejléc / alsó navigáció láthatóságát (CSS)
+  document.body.dataset.screen = key;
+  const navItems = [...document.querySelectorAll('.bottom-nav [data-screen]')];
+  navItems.forEach(btn => {
+    const isActive = btn.dataset.screen === key;
+    btn.classList.toggle('active', isActive);
+    if (isActive) btn.setAttribute('aria-current', 'page'); else btn.removeAttribute('aria-current');
   });
-}
+  // A navigáció üveg "lencséje" az aktív elem mögé csúszik
+  const navIndex = navItems.findIndex(btn => btn.dataset.screen === key);
+  const nav = document.getElementById('bottom-nav');
+  if (nav && navIndex >= 0) nav.style.setProperty('--nav-i', navIndex);
+  window.scrollTo(0, 0);
 
-function filterTopicSearch() { renderTagFilters(); }
-
-function toggleTag(tag) {
-  if (tag === 'Összes') state.filters.tags = [];
-  else {
-    const idx = state.filters.tags.indexOf(tag);
-    if (idx >= 0) state.filters.tags.splice(idx, 1); else state.filters.tags.push(tag);
-  }
-  renderTagFilters(); applyFilters();
-}
-
-function toggleDiff(d) {
-  if (state.filters.diff.has(d)) state.filters.diff.delete(d); else state.filters.diff.add(d);
-  document.querySelectorAll('.diff-btn').forEach(b => b.classList.toggle('active', state.filters.diff.has(b.dataset.diff)));
-  applyFilters();
-}
-
-function setSort(s) { state.filters.sort = s; applyFilters(); }
-
-function setDirection(dir) { state.direction = dir; updateDirectionUI(); saveSettings(); }
-
-function updateDirectionUI() {
-  const dir1 = document.getElementById('dir-en-hu');
-  const dir2 = document.getElementById('dir-hu-en');
-  if (dir1) dir1.classList.toggle('active', state.direction === 'en-hu');
-  if (dir2) dir2.classList.toggle('active', state.direction === 'hu-en');
-}
-
-function applyFilters() {
-  const searchInput = document.getElementById('search-input');
-  const topicSearch = document.getElementById('topic-search');
-  const lessonSelect = document.getElementById('lesson-select');
-
-  state.filters.search = searchInput ? searchInput.value.toLowerCase().trim() : '';
-  state.filters.topicSearch = topicSearch ? topicSearch.value.toLowerCase().trim() : '';
-  
-  if ((currentMode === 'kanji' || currentMode === 'japanese') && lessonSelect) {
-    state.filters.lesson = lessonSelect.value;
-  }
-
-  const daySelect = document.getElementById('day-select');
-  if ((currentMode === 'japanese' || currentMode === 'kanji') && daySelect) {
-    state.filters.day = daySelect.value;
-  }
-
-  let filtered = state.words.filter(w => {
-    if (state.filters.search) {
-      const s = state.filters.search;
-      const matchEn = w.en.toLowerCase().includes(s);
-      const matchHu = w.hu.toLowerCase().includes(s);
-      const matchRomaji = w.romaji ? w.romaji.toLowerCase().includes(s) : false;
-      const matchOnyomi = w.onyomi ? w.onyomi.toLowerCase().includes(s) : false;
-      const matchKunyomi = w.kunyomi ? w.kunyomi.toLowerCase().includes(s) : false;
-      if (!matchEn && !matchHu && !matchRomaji && !matchOnyomi && !matchKunyomi) return false;
-    }
-    if (state.filters.tags.length > 0 && !state.filters.tags.some(t => w.tags.includes(t))) return false;
-    if (state.filters.diff.size > 0 && !state.filters.diff.has(w.diff)) return false;
-    if ((currentMode === 'kanji' || currentMode === 'japanese') && state.filters.lesson !== 'all' && w.lesson != state.filters.lesson) return false;
-
-    // Úti terv (Nap) szűrő – Japán (TRAVEL_PLAN) és Kandzsi (TRAVEL_PLAN_KANJI) mód
-    if ((currentMode === 'japanese' || currentMode === 'kanji') && state.filters.day && state.filters.day !== 'all') {
-      const plan = getTravelPlan();
-      const dayItems = plan ? plan[state.filters.day] : null;
-      if (!Array.isArray(dayItems) || !dayItems.includes(w.en)) return false;
-    }
-    
-    // Lista (playlist) szerinti szűrés – FIX #4
-    // Hiba volt: w.lists-et vizsgált, ami soha nincs a szavakon.
-    // Javítva: a playlist wordIds tömbben keresi az adott szót.
-    // V11: '__focus' virtuális lista → csillagozott szavak
-    if (state.filters.list && state.filters.list !== 'all') {
-      if (state.filters.list === '__focus') {
-        if (!w.bookmarked) return false;
-      } else {
-        const pl = state.playlists ? state.playlists.find(p => p.id === state.filters.list) : null;
-        if (!pl || !pl.wordIds.includes(w.id)) return false;
-      }
-    }
-
-    return true;
-  });
-
-  const sort = state.filters.sort;
-  if      (sort === 'az')         filtered.sort((a,b) => a.en.localeCompare(b.en));
-  else if (sort === 'za')         filtered.sort((a,b) => b.en.localeCompare(a.en));
-  else if (sort === 'diff-asc')   filtered.sort((a,b) => diffOrder(a.diff) - diffOrder(b.diff));
-  else if (sort === 'diff-desc')  filtered.sort((a,b) => diffOrder(b.diff) - diffOrder(a.diff));
-  else if (sort === 'unlearned')  filtered.sort((a,b) => a.stats.streak - b.stats.streak);
-  else if (sort === 'mastered')   filtered.sort((a,b) => b.stats.streak - a.stats.streak);
-
-  const wordCountLabel = document.getElementById('word-count-label');
-  if (wordCountLabel) {
-    wordCountLabel.innerHTML = `Szólista <span style="color:var(--text-3);font-weight:500;text-transform:none;letter-spacing:0;font-size:12px;margin-left:4px">(${filtered.length} elem)</span>`;
-  }
-  
-  renderWordList(filtered);
-  renderSentenceList(filtered);
-  saveSettings(); // Szűrő változás csak beállítást érint 
-}
-
-function renderWordList(words) {
-  const container = document.getElementById('word-list');
-  if (!container) return;
-  if (words.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3)">Nincs találat.</div>'; return; }
-  
-  container.innerHTML = words.map(w => {
-    const selected = state.selectedIds.has(w.id);
-    const pct = w.stats.totalCorrect+w.stats.totalWrong>0 ? Math.round(w.stats.totalCorrect/(w.stats.totalCorrect+w.stats.totalWrong)*100) : null;
-    let subText = w.hu;
-    if(currentMode === 'kanji') subText = `${w.hu} | ${w.onyomi} / ${w.kunyomi}`;
-
-    return `
-      <div class="word-item ${selected?'selected':''}" data-id="${w.id}" onclick="toggleWordSelection('${w.id}')">
-        <div class="word-checkbox">${selected?'✓':''}</div>
-        <div class="word-info"><div class="word-en">${escHtml(w.en)}</div><div class="word-hu" style="font-size:10px">${escHtml(subText)}</div></div>
-        <div class="word-meta">
-          <button class="word-bookmark ${w.bookmarked ? 'bookmarked' : ''}" onclick="event.stopPropagation(); toggleBookmark('${w.id}')" title="${w.bookmarked ? 'Eltávolítás a Fókusz Listából' : 'Hozzáadás a Fókusz Listához'}">
-            <span class="word-bookmark-mark" style="display:${w.bookmarked ? '' : 'none'}">⭐</span>
-            <span class="word-bookmark-empty" style="display:${w.bookmarked ? 'none' : ''}">☆</span>
-          </button>
-          ${w.stats.streak > 0 ? `<span class="word-streak">🔥${w.stats.streak}</span>` : ''}
-          ${pct !== null ? `<span class="word-streak">${pct}%</span>` : ''}
-          <span style="font-size:13px; margin-right:2px;" title="${w.tags.join(', ')}">${getEmojisForTags(w.tags)}</span>
-          <div class="diff-pill d${w.diff}" title="${w.diff}">${w.diff}</div>
-        </div>
-      </div>`;
-  }).join('');
+  if (key === 'home') renderHome();
+  if (key === 'dashboard') renderDashboard();
+  if (key === 'stats') renderStats();
+  if (key === 'profile') renderProfile();
 }
 
 /* ══════════════════════════════════════════════════════
-   OKOS MONDAT SZÍNEZŐ (V6.7 ÚJDONSÁG)
+   V13.1: GYAKORLÁS FÜL
+   - Keresés + lenyíló szűrő pillák (Lecke, Úti terv, Témakör, Szint, Lista)
+   - Lapozva renderelt szólista: nincs belső görgetősáv, és nem kerül egyszerre
+     több ezer sor a DOM-ba (görgetéskor töltődik a következő adag)
+   - Gyakorlás dokk: mobilon lebegő üveg sáv felfelé nyíló beállításokkal,
+     asztalon ragadós oldalpanel. A típus / kérdésszám / sorrend módonként mentődik.
 ══════════════════════════════════════════════════════ */
-function renderSentenceList(words) {
-  const container = document.getElementById('sentence-list');
-  if (!container) return;
-  if (words.length === 0) { container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-3)">Nincs találat.</div>'; return; }
-  
-  // Kigyűjtjük az összes ismert japán szót a kék színezéshez, hossz szerint csökkenőben (hogy a hosszabbakat találja meg előbb)
-  let otherKnownWords = [];
-  if (currentMode !== 'english') {
-    otherKnownWords = appData.japanese.words.concat(appData.kanji.words)
-      .map(w => w.en)
-      .filter(Boolean)
-      .sort((a, b) => b.length - a.length);
+function renderDashboard() {
+  renderFilterBar();
+  applyFilters();
+  renderPracticeDock();
+}
+
+// V13: a heti sáv a Kezdőlapra költözött
+function renderWeekTracker() {
+  const weekTracker = document.getElementById('week-tracker');
+  if (!weekTracker) return;
+  weekTracker.innerHTML = getWeekDays().map(d => {
+    let cls, icon;
+    if (d.isToday && d.studied)  { cls='today-studied'; icon='✔'; }
+    else if (d.isToday)          { cls='today-not';     icon='○'; }
+    else if (d.studied)          { cls='studied';       icon='✔'; }
+    else                         { cls='not-studied';   icon='○'; }
+    return `<div class="week-day"><div class="week-day-label">${d.label}</div><div class="week-day-dot ${cls}">${icon}</div></div>`;
+  }).join('');
+}
+
+// V13: a szűrő-predikátum külön függvényben, hogy a Kezdőlap "új szavak" forrása
+// ugyanazokat a szűrőket (lecke, nap, témakör, szint, lista) használhassa.
+// ignoreSearch: a szabad szöveges keresés átmeneti, azt a napi tanulás figyelmen kívül hagyja.
+function wordMatchesFilters(w, { ignoreSearch = false } = {}) {
+  const f = state.filters;
+  if (!ignoreSearch && f.search) {
+    const s = f.search;
+    const matchEn = w.en.toLowerCase().includes(s);
+    const matchHu = w.hu.toLowerCase().includes(s);
+    const matchRomaji = w.romaji ? w.romaji.toLowerCase().includes(s) : false;
+    const matchOnyomi = w.onyomi ? w.onyomi.toLowerCase().includes(s) : false;
+    const matchKunyomi = w.kunyomi ? w.kunyomi.toLowerCase().includes(s) : false;
+    if (!matchEn && !matchHu && !matchRomaji && !matchOnyomi && !matchKunyomi) return false;
+  }
+  if (f.tags.length > 0 && !f.tags.some(t => w.tags.includes(t))) return false;
+  if (f.diff.size > 0 && !f.diff.has(w.diff)) return false;
+  if ((currentMode === 'kanji' || currentMode === 'japanese') && f.lesson !== 'all' && w.lesson != f.lesson) return false;
+
+  // Úti terv (Nap) szűrő – Japán (TRAVEL_PLAN) és Kandzsi (TRAVEL_PLAN_KANJI) mód
+  if ((currentMode === 'japanese' || currentMode === 'kanji') && f.day && f.day !== 'all') {
+    const plan = getTravelPlan();
+    const dayItems = plan ? plan[f.day] : null;
+    if (!Array.isArray(dayItems) || !dayItems.includes(w.en)) return false;
   }
 
-  container.innerHTML = words.map(w => {
-    if (currentMode === 'english') {
-      const enSentences = typeof english_sentences2 !== 'undefined'
-        ? english_sentences2.filter(s => s.baseWord === w.en)
-        : [];
-
-      if (enSentences.length === 0) {
-        // Ha nincs adat, egyszerű kártya a szó saját sentence mezőjével
-        let displayed = w.sentence
-          ? escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<span style="color:#4CAF50;font-weight:bold;">${m}</span>`)
-          : `<em style="color:var(--text-3)">Nincs még példamondat ehhez a szóhoz: ${escHtml(w.en)}</em>`;
-        return `
-          <div class="sentence-card">
-            <div class="sc-sentence" style="font-size:1.05em; line-height:1.5;">${displayed}</div>
-            <div class="sc-bottom" style="margin-top:10px;"><span class="sc-hu">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
-          </div>`;
-      }
-
-      // Mondatok renderelése – ugyanolyan stílusban mint a japán
-      const sHtml = enSentences.map(s => {
-        // A fullSentenceHTML-ben <strong>szó</strong> van – azt kicseréljük zöld spanre
-        let highlightedHTML = s.fullSentenceHTML.replace(
-          /<strong>(.*?)<\/strong>/g,
-          `<span style="color:#4CAF50;font-weight:bold;">$1</span>`
-        );
-        return `
-          <div style="margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);">
-            <div style="font-size:1.1em; margin-bottom:6px; line-height:1.5;">${highlightedHTML}</div>
-            <div style="font-size:0.9em; color:var(--text-2); font-style:italic;">${escHtml(s.hungarian)}</div>
-          </div>`;
-      }).join('');
-
-      return `
-        <div class="sentence-card" style="border-left:4px solid #4CAF50;">
-          <div style="font-weight:bold; font-size:1.2em; display:flex; justify-content:space-between;">
-            <span>${escHtml(w.en)}</span>
-            <span style="font-size:0.7em; font-weight:normal; color:var(--text-3); background:var(--surface-2); padding:2px 6px; border-radius:4px;">${enSentences.length} mondat</span>
-          </div>
-          ${sHtml}
-          <div class="sc-bottom" style="margin-top:12px;"><span class="sc-hu" style="font-weight:bold;">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
-        </div>`;
+  // Lista (playlist) szerinti szűrés – FIX #4
+  // Hiba volt: w.lists-et vizsgált, ami soha nincs a szavakon.
+  // Javítva: a playlist wordIds tömbben keresi az adott szót.
+  // V11: '__focus' virtuális lista → csillagozott szavak
+  if (f.list && f.list !== 'all') {
+    if (f.list === '__focus') {
+      if (!w.bookmarked) return false;
     } else {
-      // JAPÁN MÓD: Végigmegyünk az adatbázison
-      const sentences = typeof JAPANESE_SENTENCES !== 'undefined' ? JAPANESE_SENTENCES.filter(s => s.baseWord === w.en) : [];
-
-      if (sentences.length === 0) {
-        return `
-          <div class="sentence-card">
-            <div class="sc-sentence" style="color:var(--text-3); font-size: 0.9em;"><em>Nincs még példamondat ehhez a szóhoz: ${escHtml(w.en)}</em></div>
-            <div class="sc-bottom" style="margin-top:10px;"><span class="sc-hu">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
-          </div>`;
-      }
-
-      const sHtml = sentences.map(s => {
-        let highlightedHTML = s.fullSentenceHTML;
-
-        // Fő szó kiemelése zöldre
-        if (s.correctAnswer) {
-          const baseWordRegex = new RegExp(`(${escRegex(s.correctAnswer)})`, 'g');
-          highlightedHTML = highlightedHTML.replace(baseWordRegex, `<span style="color: #4CAF50; font-weight: bold;">$1</span>`);
-        }
-
-        // Többi ismert szó kiemelése kékre
-        const filteredKnownWords = otherKnownWords.filter(kw => kw !== w.en && kw !== s.correctAnswer);
-        filteredKnownWords.forEach(knownWord => {
-          if (highlightedHTML.includes(knownWord)) {
-            const knownRegex = new RegExp(`(?![^<]*>)${escRegex(knownWord)}`, 'g');
-            highlightedHTML = highlightedHTML.replace(knownRegex, `<span style="color: #2196F3; cursor: help;" title="Ismert szó a szótárból">${knownWord}</span>`);
-          }
-        });
-
-        return `
-          <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border);">
-            <div style="font-size: 1.1em; margin-bottom: 6px; line-height: 1.5;">${highlightedHTML}</div>
-            <div style="font-size: 0.9em; color: var(--text-2); font-style: italic;">${escHtml(s.hungarian)}</div>
-          </div>`;
-      }).join('');
-
-      return `
-        <div class="sentence-card" style="border-left: 4px solid #4CAF50;">
-          <div style="font-weight:bold; font-size:1.2em; display:flex; justify-content:space-between;">
-            <span>${escHtml(w.en)}</span>
-            <span style="font-size:0.7em; font-weight:normal; color:var(--text-3); background:var(--surface-2); padding: 2px 6px; border-radius: 4px;">${sentences.length} mondat</span>
-          </div>
-          <div style="color:var(--primary); font-size: 0.9em; margin-bottom: 8px;">${escHtml(w.romaji || '')}</div>
-          ${sHtml}
-          <div class="sc-bottom" style="margin-top:12px;"><span class="sc-hu" style="font-weight:bold;">${escHtml(w.hu)}</span><div style="display:flex;gap:6px"><span class="diff-pill d${w.diff}">${w.diff}</span><span class="sc-tags">${escHtml(w.tags.map(tagLabel).join(', '))}</span></div></div>
-        </div>`;
+      const pl = state.playlists ? state.playlists.find(p => p.id === f.list) : null;
+      if (!pl || !pl.wordIds.includes(w.id)) return false;
     }
+  }
+
+  return true;
+}
+
+/* ── Ikonok és segédek a menükhöz ── */
+const UI_ICONS = {
+  chevron: '<svg class="pill-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>',
+  check:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>',
+  plus:    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+  trash:   '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>',
+  star:    '<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  search:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+};
+
+// Érték biztonságos átadása inline onclick-nek (idézőjelek, aposztrófok is)
+const jsArg = v => escHtml(JSON.stringify(v));
+
+const SORT_OPTIONS = [
+  ['az', 'A → Z'], ['za', 'Z → A'], ['diff-asc', 'Könnyebb elöl'], ['diff-desc', 'Nehezebb elöl'],
+  ['unlearned', 'Még nem tanult elöl'], ['mastered', 'Jól tudott elöl']
+];
+
+/* ── Szűrő opciók ── */
+function lessonLabel(v) {
+  const prefix = currentMode === 'kanji' ? 'Kanji' : 'Dekiru';
+  return Number.isNaN(Number(v)) ? `${prefix}: ${v}` : `${prefix} ${v}. lecke`;
+}
+
+function getLessonOptions() {
+  if (currentMode === 'english') return [];
+  const map = new Map();
+  state.words.forEach(w => {
+    if (w.lesson === undefined || w.lesson === null || w.lesson === '') return;
+    const key = String(w.lesson);
+    const entry = map.get(key) || { value: key, total: 0, fresh: 0 };
+    entry.total++;
+    if (isNewWord(w)) entry.fresh++;
+    map.set(key, entry);
+  });
+  return [...map.values()].sort((a, b) => (Number(a.value) - Number(b.value)) || a.value.localeCompare(b.value, 'hu'));
+}
+
+function getDayOptions() {
+  const plan = getTravelPlan();
+  if (!plan) return [];
+  return Object.keys(plan).map(Number).filter(n => !Number.isNaN(n)).sort((a, b) => a - b)
+    .map(d => ({ value: String(d), total: Array.isArray(plan[d]) ? plan[d].length : 0 }));
+}
+
+// Mentett nap visszaállítása: ha a terv már nem tartalmazza, visszaesünk 'all'-ra
+function validateDayFilter() {
+  const f = state.filters;
+  if (!f.day || f.day === 'all') { f.day = 'all'; return; }
+  if (!getDayOptions().some(o => o.value === String(f.day))) f.day = 'all';
+}
+
+function listLabel(id) {
+  if (!id || id === 'all') return 'Lista';
+  if (id === '__focus') return '⭐ Fókusz';
+  return (state.playlists || []).find(p => p.id === id)?.name || 'Lista';
+}
+
+/* ── Szűrő pillák ── */
+function renderFilterBar() {
+  const bar = document.getElementById('filter-pills');
+  if (!bar) return;
+  validateDayFilter();
+  const f = state.filters;
+  const pills = [];
+  if (getLessonOptions().length > 0) pills.push(['lesson', f.lesson !== 'all' ? lessonLabel(f.lesson) : 'Lecke', f.lesson !== 'all']);
+  if (getDayOptions().length > 0) pills.push(['day', f.day !== 'all' ? `Úti terv: ${f.day}. nap` : 'Úti terv', f.day !== 'all']);
+  pills.push(['tags', f.tags.length === 0 ? 'Témakör' : f.tags.length === 1 ? f.tags[0] : `${f.tags.length} témakör`, f.tags.length > 0]);
+  pills.push(['diff', f.diff.size > 0 ? [...f.diff].sort((a, b) => diffOrder(a) - diffOrder(b)).join(' · ') : 'Szint', f.diff.size > 0]);
+  pills.push(['list', listLabel(f.list), !!f.list && f.list !== 'all']);
+
+  bar.innerHTML = pills.map(([key, label, active]) => `
+    <button class="pill ${active ? 'is-active' : ''}" data-menu="${key}" aria-haspopup="true" aria-expanded="${_openMenu === key}" onclick="toggleFilterMenu('${key}')">
+      <span class="pill-label">${escHtml(label)}</span>${UI_ICONS.chevron}
+    </button>`).join('') +
+    (hasPoolFilters() ? `<button class="pill pill-clear" onclick="clearFilters()">Szűrők törlése</button>` : '');
+
+  const sortLabel = document.getElementById('sort-label');
+  if (sortLabel) sortLabel.textContent = (SORT_OPTIONS.find(([v]) => v === f.sort) || SORT_OPTIONS[0])[1];
+}
+
+// Csillag, lista-mentés stb. után: pillák + nyitott menü frissítése
+function refreshLibraryChrome() {
+  renderFilterBar();
+  if (_openMenu) renderFilterMenu();
+}
+
+function onFiltersChanged({ close = false } = {}) {
+  renderFilterBar();
+  applyFilters();
+  if (close) closeFilterMenu(); else renderFilterMenu();
+}
+
+/* ── Lenyíló menük ──
+   Egyetlen #filter-menu konténer, a nyitó gomb alá pozicionálva. A pillák a scrim
+   fölött maradnak, így egy koppintással át lehet váltani egy másik menüre. */
+let _openMenu = null;
+let _tagQuery = '';
+
+function toggleFilterMenu(key) {
+  if (_openMenu === key) { closeFilterMenu(); return; }
+  const fromKeyboard = !!document.activeElement?.matches?.(':focus-visible');
+  toggleDockSettings(false);
+  const menu = document.getElementById('filter-menu');
+  if (menu) menu.innerHTML = ''; // új menü: görgetés a tetejéről
+  _openMenu = key;
+  renderFilterMenu();
+  setScrim(true);
+  // Billentyűzettel nyitva a fókusz a kiválasztott (vagy első) opcióra ugrik
+  if (fromKeyboard && menu) (menu.querySelector('.is-selected') || menu.querySelector('button, input'))?.focus();
+}
+
+function closeFilterMenu() {
+  if (!_openMenu) return;
+  const key = _openMenu;
+  const menu = document.getElementById('filter-menu');
+  const hadFocus = !!(menu && menu.contains(document.activeElement));
+  _openMenu = null;
+  if (menu) { menu.hidden = true; menu.innerHTML = ''; }
+  syncMenuTriggers();
+  if (!_dockOpen) setScrim(false);
+  // Billentyűzettel használva a fókusz visszakerül a nyitó gombra
+  if (hadFocus) document.querySelector(`[data-menu="${key}"]`)?.focus();
+}
+
+function syncMenuTriggers() {
+  document.querySelectorAll('[data-menu]').forEach(b => b.setAttribute('aria-expanded', b.dataset.menu === _openMenu ? 'true' : 'false'));
+}
+
+function renderFilterMenu() {
+  const menu = document.getElementById('filter-menu');
+  if (!menu || !_openMenu) return;
+  const builders = { lesson: lessonMenuHtml, day: dayMenuHtml, tags: tagsMenuHtml, diff: diffMenuHtml, list: listMenuHtml, sort: sortMenuHtml };
+  const prevScroll = menu.querySelector('.menu-body')?.scrollTop || 0;
+  menu.innerHTML = builders[_openMenu]();
+  menu.hidden = false;
+  const body = menu.querySelector('.menu-body');
+  if (body) body.scrollTop = prevScroll;
+  syncMenuTriggers();
+  positionFilterMenu();
+}
+
+// A menü a nyitó gomb alá kerül, és nem lóghat a lebegő dokk / navigáció alá
+function positionFilterMenu() {
+  const menu = document.getElementById('filter-menu');
+  const host = document.getElementById('lib-main');
+  const trigger = document.querySelector(`[data-menu="${_openMenu}"]`);
+  if (!menu || !host || !trigger) return;
+  const triggerBottom = trigger.getBoundingClientRect().bottom;
+  menu.style.top = (triggerBottom - host.getBoundingClientRect().top + 8) + 'px';
+  const floorEls = ['bottom-nav', 'practice-dock']
+    .map(id => document.getElementById(id))
+    .filter(el => el && getComputedStyle(el).position === 'fixed' && el.getClientRects().length > 0); // fixed elemnél az offsetParent mindig null
+  const floor = Math.min(window.innerHeight, ...floorEls.map(el => el.getBoundingClientRect().top)) - 12;
+  menu.style.maxHeight = Math.max(260, floor - triggerBottom - 8) + 'px';
+}
+
+function menuShell(title, meta, body, foot = '') {
+  return `
+    <div class="menu-head"><span class="menu-title">${title}</span>${meta ? `<span class="menu-meta">${meta}</span>` : ''}</div>
+    <div class="menu-body">${body}</div>
+    ${foot ? `<div class="menu-foot">${foot}</div>` : ''}`;
+}
+
+function menuOption({ selected, label, meta = '', action, extra = '' }) {
+  return `
+    <div class="menu-row">
+      <button class="menu-opt ${selected ? 'is-selected' : ''}" role="option" aria-selected="${selected}" onclick="${action}">
+        <span class="menu-check">${selected ? UI_ICONS.check : ''}</span>
+        <span class="menu-opt-label">${label}</span>
+        ${meta !== '' ? `<span class="menu-opt-meta">${meta}</span>` : ''}
+      </button>${extra}
+    </div>`;
+}
+
+function menuIconBtn(action, label, icon, disabled = false) {
+  return `<button class="menu-icon-btn" onclick="${action}" aria-label="${escHtml(label)}" title="${escHtml(label)}" ${disabled ? 'disabled' : ''}>${icon}</button>`;
+}
+
+function lessonMenuHtml() {
+  const f = state.filters;
+  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const opts = getLessonOptions();
+  const rows = menuOption({ selected: f.lesson === 'all', label: 'Minden lecke', action: `setLessonFilter('all')` }) +
+    opts.map(o => menuOption({
+      selected: String(f.lesson) === o.value,
+      label: escHtml(lessonLabel(o.value)),
+      meta: o.fresh > 0 ? `${o.total} ${unit} · <b>${o.fresh} új</b>` : `${o.total} ${unit}`,
+      action: `setLessonFilter(${jsArg(o.value)})`
+    })).join('');
+  return menuShell('Lecke', `${opts.length} lecke`, `<div role="listbox" aria-label="Lecke">${rows}</div>`);
+}
+
+function dayMenuHtml() {
+  const f = state.filters;
+  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const opts = getDayOptions();
+  const rows = menuOption({ selected: f.day === 'all', label: 'Minden nap', action: `setDayFilter('all')` }) +
+    opts.map(o => menuOption({ selected: String(f.day) === o.value, label: `${o.value}. nap`, meta: `${o.total} ${unit}`, action: `setDayFilter(${jsArg(o.value)})` })).join('');
+  return menuShell('Úti terv', `${opts.length} nap`, `<div role="listbox" aria-label="Úti terv nap">${rows}</div>`);
+}
+
+function tagChipsHtml() {
+  const counts = {};
+  state.words.forEach(w => w.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
+  const q = _tagQuery.toLowerCase().trim();
+  const tags = Object.keys(counts).filter(t => !q || t.includes(q)).sort((a, b) => a.localeCompare(b, 'hu'));
+  if (tags.length === 0) return '<p class="menu-empty">Nincs ilyen témakör.</p>';
+  return tags.map(t => {
+    const on = state.filters.tags.includes(t);
+    return `<button class="chip ${on ? 'is-selected' : ''}" aria-pressed="${on}" onclick="toggleTag(${jsArg(t)})">${escHtml(tagLabel(t))}<span class="chip-count">${counts[t]}</span></button>`;
   }).join('');
+}
+
+function tagsMenuHtml() {
+  const search = `
+    <label class="menu-search">${UI_ICONS.search}
+      <input id="tag-search" type="search" placeholder="Témakör keresése" autocomplete="off" value="${escHtml(_tagQuery)}" oninput="onTagSearch(this.value)" aria-label="Témakör keresése">
+    </label>`;
+  return menuShell('Témakör', 'Több is választható',
+    search + `<div class="chip-grid" id="tag-chips">${tagChipsHtml()}</div>`,
+    `<button class="menu-link" onclick="setTags([])">Összes törlése</button><button class="menu-done" onclick="closeFilterMenu()">Kész</button>`);
+}
+
+function onTagSearch(value) {
+  _tagQuery = value;
+  const chips = document.getElementById('tag-chips');
+  if (chips) chips.innerHTML = tagChipsHtml();
+}
+
+// Témakör váltásnál csak a chipeket rajzoljuk újra, hogy a keresőmező fókusza megmaradjon
+function toggleTag(tag) {
+  const tags = state.filters.tags;
+  const i = tags.indexOf(tag);
+  if (i >= 0) tags.splice(i, 1); else tags.push(tag);
+  renderFilterBar();
+  applyFilters();
+  onTagSearch(_tagQuery);
+}
+
+function setTags(list) {
+  state.filters.tags = list;
+  renderFilterBar();
+  applyFilters();
+  onTagSearch(_tagQuery);
+}
+
+function diffMenuHtml() {
+  const levels = currentMode === 'english' ? ['B1', 'B2', 'C1', 'C2'] : ['N5', 'N4', 'N3', 'N2', 'N1'];
+  const counts = {};
+  state.words.forEach(w => { counts[w.diff] = (counts[w.diff] || 0) + 1; });
+  const chips = levels.map(d => {
+    const on = state.filters.diff.has(d);
+    return `<button class="chip chip-level ${on ? 'is-selected' : ''}" aria-pressed="${on}" onclick="toggleDiff('${d}')">${d}<span class="chip-count">${counts[d] || 0}</span></button>`;
+  }).join('');
+  return menuShell('Szint', currentMode === 'english' ? 'CEFR' : 'JLPT', `<div class="chip-grid">${chips}</div>`,
+    `<button class="menu-link" onclick="clearDiff()">Összes törlése</button><button class="menu-done" onclick="closeFilterMenu()">Kész</button>`);
+}
+
+function toggleDiff(d) {
+  const set = state.filters.diff;
+  if (set.has(d)) set.delete(d); else set.add(d);
+  onFiltersChanged();
+}
+
+function clearDiff() {
+  state.filters.diff = new Set();
+  onFiltersChanged();
+}
+
+function listMenuHtml() {
+  const f = state.filters;
+  const bmCount = getBookmarkedWords().length;
+  const sel = state.selectedIds.size;
+  const rows = [
+    menuOption({ selected: !f.list || f.list === 'all', label: 'Minden szó', action: `setListFilter('all')` }),
+    menuOption({
+      selected: f.list === '__focus', label: '⭐ Fókusz Lista', meta: bmCount, action: `setListFilter('__focus')`,
+      extra: bmCount > 0 ? menuIconBtn('clearAllBookmarks()', 'Összes csillag törlése', UI_ICONS.trash) : ''
+    })
+  ];
+  (state.playlists || []).forEach(p => {
+    const fromFile = p.source === 'data_js';
+    const extra = fromFile ? '' :
+      menuIconBtn(`expandPlaylist(${jsArg(p.id)})`, sel > 0 ? `${sel} kijelölt szó hozzáadása` : 'Jelölj ki szavakat a bővítéshez', UI_ICONS.plus, sel === 0) +
+      menuIconBtn(`deletePlaylist(${jsArg(p.id)})`, 'Lista törlése', UI_ICONS.trash);
+    rows.push(menuOption({
+      selected: f.list === p.id, label: `${fromFile ? escHtml(p.icon || '📋') : '📁'} ${escHtml(p.name)}`,
+      meta: p.wordIds.length, action: `setListFilter(${jsArg(p.id)})`, extra
+    }));
+  });
+  const foot = `
+    <form class="menu-new-list" onsubmit="event.preventDefault(); savePlaylist();">
+      <input id="playlist-name-input" type="text" maxlength="40" autocomplete="off" aria-label="Új lista neve"
+        placeholder="${sel > 0 ? `${sel} kijelölt szó mentése új listaként` : 'Jelölj ki szavakat egy új listához'}" ${sel > 0 ? '' : 'disabled'}>
+      <button type="submit" class="menu-done" ${sel > 0 ? '' : 'disabled'}>Mentés</button>
+    </form>`;
+  return menuShell('Lista', 'Szűrés listára', `<div role="listbox" aria-label="Lista">${rows.join('')}</div>`, foot);
+}
+
+function sortMenuHtml() {
+  const rows = SORT_OPTIONS.map(([v, l]) => menuOption({ selected: state.filters.sort === v, label: l, action: `setSort('${v}')` })).join('');
+  return menuShell('Rendezés', '', `<div role="listbox" aria-label="Rendezés">${rows}</div>`);
+}
+
+function setLessonFilter(v) { state.filters.lesson = v; onFiltersChanged({ close: true }); }
+function setDayFilter(v)    { state.filters.day = v;    onFiltersChanged({ close: true }); }
+function setListFilter(id)  { state.filters.list = id || 'all'; onFiltersChanged({ close: true }); }
+function setSort(s)         { state.filters.sort = s;   onFiltersChanged({ close: true }); }
+
+/* ── Scrim + közös bezárás (Esc, háttér koppintás, képernyőváltás) ── */
+function setScrim(on) {
+  const scrim = document.getElementById('lib-scrim');
+  if (scrim) scrim.hidden = !on;
+}
+
+function closeLibraryOverlays() {
+  closeFilterMenu();
+  toggleDockSettings(false);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && (_openMenu || _dockOpen)) closeLibraryOverlays();
+});
+window.addEventListener('resize', () => { if (_openMenu) positionFilterMenu(); });
+
+/* ── Szólista (lapozva) ── */
+let _filteredWords = [];
+let _listShown = 0;
+let _knownWordsForSentences = [];
+const WORD_PAGE = 120;
+const SENTENCE_PAGE = 25;
+
+function applyFilters() {
+  const searchInput = document.getElementById('search-input');
+  if (searchInput) state.filters.search = searchInput.value.toLowerCase().trim();
+
+  const filtered = state.words.filter(w => wordMatchesFilters(w));
+  const sort = state.filters.sort;
+  if      (sort === 'az')        filtered.sort((a,b) => a.en.localeCompare(b.en));
+  else if (sort === 'za')        filtered.sort((a,b) => b.en.localeCompare(a.en));
+  else if (sort === 'diff-asc')  filtered.sort((a,b) => diffOrder(a.diff) - diffOrder(b.diff));
+  else if (sort === 'diff-desc') filtered.sort((a,b) => diffOrder(b.diff) - diffOrder(a.diff));
+  else if (sort === 'unlearned') filtered.sort((a,b) => a.stats.streak - b.stats.streak);
+  else if (sort === 'mastered')  filtered.sort((a,b) => b.stats.streak - a.stats.streak);
+  _filteredWords = filtered;
+
+  const countLabel = document.getElementById('word-count-label');
+  if (countLabel) countLabel.textContent = `${filtered.length.toLocaleString('hu-HU')} ${currentMode === 'kanji' ? 'kanji' : 'szó'}`;
+
+  renderActiveList();
+  updateSelectAllBtn();
+  saveSettings(); // Szűrő változás csak beállítást érint
+}
+
+// Csak az aktív nézetet rendereljük (a mondatos nézet sok regexet futtat)
+function renderActiveList() {
+  const isSentences = state.activeViewTab === 'sentences';
+  const wordView = document.getElementById('word-list-view');
+  const sentView = document.getElementById('sentence-list-view');
+  if (wordView) wordView.style.display = isSentences ? 'none' : '';
+  if (sentView) sentView.style.display = isSentences ? '' : 'none';
+  [['vtab-words', !isSentences], ['vtab-sentences', isSentences]].forEach(([id, on]) => {
+    const tab = document.getElementById(id);
+    if (tab) { tab.classList.toggle('active', on); tab.setAttribute('aria-selected', on ? 'true' : 'false'); }
+  });
+
+  const container = document.getElementById(isSentences ? 'sentence-list' : 'word-list');
+  const other = document.getElementById(isSentences ? 'word-list' : 'sentence-list');
+  if (other) other.innerHTML = '';
+  if (!container) return;
+
+  if (isSentences && currentMode !== 'english') {
+    // Ismert japán szavak a kék kiemeléshez, hosszabbak elöl (hogy a hosszabbat találja meg előbb)
+    _knownWordsForSentences = appData.japanese.words.concat(appData.kanji.words)
+      .map(w => w.en).filter(Boolean).sort((a, b) => b.length - a.length);
+  }
+
+  _listShown = 0;
+  if (_filteredWords.length === 0) {
+    container.innerHTML = `
+      <div class="list-empty">
+        <p class="list-empty-title">Nincs találat.</p>
+        <p class="list-empty-sub">${hasPoolFilters() || state.filters.search ? 'Próbálj más keresést, vagy töröld a szűrőket.' : 'Ebben a módban még nincs szó.'}</p>
+        ${hasPoolFilters() ? '<button class="menu-link" onclick="clearFilters()">Szűrők törlése</button>' : ''}
+      </div>`;
+    return;
+  }
+  container.innerHTML = '';
+  appendListPage();
+}
+
+function appendListPage() {
+  const isSentences = state.activeViewTab === 'sentences';
+  const container = document.getElementById(isSentences ? 'sentence-list' : 'word-list');
+  if (!container || _listShown >= _filteredWords.length) return;
+  const page = _filteredWords.slice(_listShown, _listShown + (isSentences ? SENTENCE_PAGE : WORD_PAGE));
+  container.insertAdjacentHTML('beforeend', page.map(isSentences ? sentenceCardHtml : wordRowHtml).join(''));
+  _listShown += page.length;
+  requestAnimationFrame(fillListViewport);
+}
+
+// Ha a lista vége (a sentinel) a képernyő közelében van, töltünk rá egy adagot
+function fillListViewport() {
+  if (document.body.dataset.screen !== 'dashboard') return;
+  const sentinel = document.getElementById('list-sentinel');
+  if (sentinel && sentinel.getBoundingClientRect().top < window.innerHeight + 600) appendListPage();
+}
+
+function wordRowHtml(w) {
+  const selected = state.selectedIds.has(w.id);
+  const s = w.stats;
+  const attempts = s.totalCorrect + s.totalWrong;
+  const pct = attempts > 0 ? Math.round(s.totalCorrect / attempts * 100) : null;
+  let sub = w.hu;
+  if (currentMode === 'japanese' && w.romaji) sub = `${w.hu} · ${w.romaji}`;
+  if (currentMode === 'kanji') sub = `${w.hu} · ${w.onyomi || '–'} / ${w.kunyomi || '–'}`;
+  const starLabel = w.bookmarked ? 'Eltávolítás a Fókusz Listából' : 'Hozzáadás a Fókusz Listához';
+  return `
+    <div class="word-row ${selected ? 'is-selected' : ''}" data-id="${escHtml(w.id)}">
+      <button class="word-toggle" role="checkbox" aria-checked="${selected}">
+        <span class="word-check" aria-hidden="true">${UI_ICONS.check}</span>
+        <span class="word-main">
+          <span class="word-src ${currentMode === 'kanji' ? 'is-kanji' : ''}">${escHtml(w.en)}</span>
+          <span class="word-sub">${escHtml(sub)}</span>
+        </span>
+        <span class="word-meta">
+          ${s.streak > 0 ? `<span class="word-stat" title="Sorozat">🔥${s.streak}</span>` : ''}
+          ${pct !== null ? `<span class="word-stat" title="Pontosság">${pct}%</span>` : ''}
+          <span class="diff-pill d${escHtml(w.diff)}">${escHtml(w.diff)}</span>
+        </span>
+      </button>
+      <button class="word-star ${w.bookmarked ? 'is-on' : ''}" aria-pressed="${!!w.bookmarked}" aria-label="${starLabel}" title="${starLabel}">${UI_ICONS.star}</button>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════════════
+   OKOS MONDAT SZÍNEZŐ (V6.7) – kártyánként, lapozva
+   Zöld: a szó maga · Kék: más, a szótárban már szereplő szó
+══════════════════════════════════════════════════════ */
+function sentenceCardHtml(w) {
+  const bottom = `
+    <div class="sent-bottom">
+      <span class="sent-hu">${escHtml(w.hu)}</span>
+      <span class="sent-tags"><span class="diff-pill d${escHtml(w.diff)}">${escHtml(w.diff)}</span>${escHtml(w.tags.map(tagLabel).join(', '))}</span>
+    </div>`;
+  const head = count => `<header class="sent-head"><span class="sent-word">${escHtml(w.en)}</span><span class="sent-count">${count} mondat</span></header>`;
+  const missing = `<p class="sent-missing">Nincs még példamondat ehhez a szóhoz.</p>`;
+
+  if (currentMode === 'english') {
+    const enSentences = typeof english_sentences2 !== 'undefined' ? english_sentences2.filter(s => s.baseWord === w.en) : [];
+    if (enSentences.length === 0) {
+      const own = w.sentence
+        ? `<div class="sent-text">${escHtml(w.sentence).replace(new RegExp('\\b(' + escRegex(w.en) + ')\\b', 'gi'), m => `<span class="hl-main">${m}</span>`)}</div>`
+        : missing;
+      return `<article class="sent-card">${head(w.sentence ? 1 : 0)}${own}${bottom}</article>`;
+    }
+    const items = enSentences.map(s => `
+      <div class="sent-item">
+        <div class="sent-text">${s.fullSentenceHTML.replace(/<strong>(.*?)<\/strong>/g, '<span class="hl-main">$1</span>')}</div>
+        <div class="sent-tr">${escHtml(s.hungarian)}</div>
+      </div>`).join('');
+    return `<article class="sent-card">${head(enSentences.length)}${items}${bottom}</article>`;
+  }
+
+  const sentences = typeof JAPANESE_SENTENCES !== 'undefined' ? JAPANESE_SENTENCES.filter(s => s.baseWord === w.en) : [];
+  const romaji = w.romaji ? `<div class="sent-romaji">${escHtml(w.romaji)}</div>` : '';
+  if (sentences.length === 0) return `<article class="sent-card">${head(0)}${romaji}${missing}${bottom}</article>`;
+
+  const items = sentences.map(s => {
+    let html = s.fullSentenceHTML;
+    if (s.correctAnswer) {
+      html = html.replace(new RegExp(`(${escRegex(s.correctAnswer)})`, 'g'), '<span class="hl-main">$1</span>');
+    }
+    _knownWordsForSentences.filter(kw => kw !== w.en && kw !== s.correctAnswer).forEach(knownWord => {
+      if (html.includes(knownWord)) {
+        html = html.replace(new RegExp(`(?![^<]*>)${escRegex(knownWord)}`, 'g'), `<span class="hl-known" title="Ismert szó a szótárból">${knownWord}</span>`);
+      }
+    });
+    return `
+      <div class="sent-item">
+        <div class="sent-text">${html}</div>
+        <div class="sent-tr">${escHtml(s.hungarian)}</div>
+      </div>`;
+  }).join('');
+  return `<article class="sent-card">${head(sentences.length)}${romaji}${items}${bottom}</article>`;
 }
 
 function switchViewTab(tab) {
   state.activeViewTab = tab;
-  const v1 = document.getElementById('vtab-words');
-  const v2 = document.getElementById('vtab-sentences');
-  if(v1) v1.classList.toggle('active', tab === 'words');
-  if(v2) v2.classList.toggle('active', tab === 'sentences');
-  
-  const wView = document.getElementById('word-list-view');
-  const sView = document.getElementById('sentence-list-view');
-  if(wView) wView.style.display = tab === 'words' ? '' : 'none';
-  if(sView) sView.style.display = tab === 'sentences' ? '' : 'none';
+  renderActiveList();
+}
+
+/* ── Kijelölés ── */
+function setRowSelected(row, on) {
+  row.classList.toggle('is-selected', on);
+  const toggle = row.querySelector('.word-toggle');
+  if (toggle) toggle.setAttribute('aria-checked', on ? 'true' : 'false');
 }
 
 function toggleWordSelection(id) {
   if (state.selectedIds.has(id)) state.selectedIds.delete(id); else state.selectedIds.add(id);
-  const el = document.querySelector(`.word-item[data-id="${id}"]`);
-  if (el) {
-    const sel = state.selectedIds.has(id);
-    el.classList.toggle('selected', sel);
-    const cb = el.querySelector('.word-checkbox');
-    if (cb) cb.textContent = sel ? '✓' : '';
-  }
+  const row = document.querySelector(`.word-row[data-id="${CSS.escape(id)}"]`);
+  if (row) setRowSelected(row, state.selectedIds.has(id));
   updateStartPanel();
-  saveSettings(); // Tag szűrő 
+  updateSelectAllBtn();
+  saveSettings();
 }
 
-function selectAll() { 
-  document.querySelectorAll('.word-item[data-id]').forEach(el=>{ 
-    state.selectedIds.add(el.dataset.id); 
-    el.classList.add('selected'); 
-    const cb = el.querySelector('.word-checkbox');
-    if(cb) cb.textContent = '✓'; 
-  }); 
-  updateStartPanel(); 
-  saveSettings(); // Diff szűrő 
+function allFilteredSelected() {
+  return _filteredWords.length > 0 && _filteredWords.every(w => state.selectedIds.has(w.id));
 }
 
-function selectNone() { 
-  state.selectedIds.clear(); 
-  document.querySelectorAll('.word-item.selected').forEach(el=>{ 
-    el.classList.remove('selected'); 
-    const cb = el.querySelector('.word-checkbox');
-    if(cb) cb.textContent = ''; 
-  }); 
-  updateStartPanel(); 
-  saveSettings(); // Sort szűrő 
+// "Mind kijelölése" az ÖSSZES szűrt szót kijelöli (nem csak a már kirajzolt sorokat)
+function toggleSelectAll() {
+  if (allFilteredSelected()) { selectNone(); return; }
+  _filteredWords.forEach(w => state.selectedIds.add(w.id));
+  document.querySelectorAll('.word-row').forEach(row => setRowSelected(row, true));
+  updateStartPanel();
+  updateSelectAllBtn();
+  saveSettings();
+  showToast(`${_filteredWords.length} szó kijelölve`);
+}
+
+function selectNone() {
+  state.selectedIds.clear();
+  document.querySelectorAll('.word-row.is-selected').forEach(row => setRowSelected(row, false));
+  updateStartPanel();
+  updateSelectAllBtn();
+  saveSettings();
+}
+
+function updateSelectAllBtn() {
+  const btn = document.getElementById('select-all-btn');
+  if (!btn) return;
+  btn.textContent = allFilteredSelected() ? 'Kijelölés törlése' : 'Mind kijelölése';
+  btn.disabled = _filteredWords.length === 0;
 }
 
 function updateStartPanel() {
   const cnt = state.selectedIds.size;
-  const bigCnt = document.getElementById('selected-count-big');
+  const big = document.getElementById('selected-count-big');
   const startBtn = document.getElementById('start-btn');
-  const saveBtn = document.getElementById('btn-save-list');
-  
-  if(bigCnt) bigCnt.textContent = cnt;
-  if(startBtn) startBtn.disabled = cnt === 0;
-  if(saveBtn) saveBtn.disabled = cnt === 0;
+  const clearBtn = document.getElementById('dock-clear');
+  if (big) big.textContent = cnt.toLocaleString('hu-HU');
+  if (startBtn) startBtn.disabled = cnt === 0;
+  if (clearBtn) clearBtn.hidden = cnt === 0;
+  if (_openMenu === 'list') renderFilterMenu(); // a "mentés új listaként" a kijelöléstől függ
 }
+
+// Eseménykezelés delegálva: a sorok újrarajzolása után sem kell újra feliratkozni,
+// és az aposztrófos szavak (pl. "don't") sem törik el az inline onclick-et.
+function initLibraryEvents() {
+  const list = document.getElementById('word-list');
+  if (list) {
+    list.addEventListener('click', e => {
+      const row = e.target.closest('.word-row');
+      if (!row) return;
+      if (e.target.closest('.word-star')) toggleBookmark(row.dataset.id);
+      else if (e.target.closest('.word-toggle')) toggleWordSelection(row.dataset.id);
+    });
+  }
+  // Lapozás görgetésre: képkockánként legfeljebb egyszer nézzük meg, látszik-e a lista vége
+  let scrollQueued = false;
+  window.addEventListener('scroll', () => {
+    if (scrollQueued) return;
+    scrollQueued = true;
+    requestAnimationFrame(() => { scrollQueued = false; fillListViewport(); });
+  }, { passive: true });
+}
+initLibraryEvents();
 
 /* ══════════════════════════════════════════════════════
-   SAJÁT LISTÁK
+   SAJÁT LISTÁK (a "Lista" lenyíló menüből kezelve)
 ══════════════════════════════════════════════════════ */
-// A toggleBookmark() meghívja ezt – a teljes Saját Listáim szekciót újrarajzolja,
-// így a Fókusz Lista szám- és előnézet-frissül.
-function renderFocusListCard() {
-  renderPlaylists();
-}
-
-function renderPlaylists() {
-  const cont = document.getElementById('playlists-container');
-  if (!cont) return;
-
-  // ⭐ FÓKUSZ LISTA (virtuális, csillagozott szavakból összerakott)
-  const bookmarked = getBookmarkedWords();
-  const focusHtml = `
-    <div class="focus-list-card${state.filters.list === '__focus' ? ' playlist-active' : ''}">
-      <div class="focus-list-header" onclick="toggleFocusListBody()">
-        <div class="focus-list-title">
-          <span class="focus-star">⭐</span>
-          <span>Fókusz Lista</span>
-          <span class="focus-list-count">${bookmarked.length}</span>
-          ${state.filters.list === '__focus' ? '<span class="focus-list-active-pill">aktív</span>' : ''}
-        </div>
-        <div class="pl-chevron" id="chevron-focus">▼</div>
-      </div>
-      <div class="focus-list-body" id="body-focus">
-        ${bookmarked.length === 0
-          ? '<div class="focus-list-empty">Még nincsenek csillaggal megjelölt szavaid.<br><small>Gyakorlás közben a kártya sarkában lévő ⭐ ikonra kattintva jelölhetsz meg szavakat.</small></div>'
-          : `<div class="playlist-word-list">${bookmarked.slice(0, 30).map(w => `<b>${escHtml(w.en)}</b> – ${escHtml(w.hu)}`).join('<br>')}${bookmarked.length > 30 ? `<br><em style="color:var(--text-3)">... és további ${bookmarked.length - 30} szó</em>` : ''}</div>
-             <div class="playlist-actions-row">
-               <button class="btn btn-primary" onclick="filterByFocusList()">🔍 Szűrés</button>
-               <button class="btn btn-outline" onclick="loadFocusList()" title="Csillagozott szavak kijelölése">✔ Kijelöl</button>
-               <button class="btn btn-outline" style="color:var(--error);border-color:var(--error-bg);" onclick="clearAllBookmarks()" title="Összes csillag eltávolítása">🗑</button>
-             </div>`
-        }
-      </div>
-    </div>
-  `;
-
-  if (!state.playlists || state.playlists.length === 0) {
-    cont.innerHTML = focusHtml + '<div class="empty-lists" style="margin-top:8px;">Még nincsenek elmentett listáid ebben a nyelvben.<br><small style="color:var(--text-3)">Jelölj ki szavakat, majd kattints a 💾 Mentés gombra.</small></div>';
-    return;
-  }
-
-  // Szétválasztjuk: data.js-ből jövők és kézzel mentett listák
-  const fileLists   = state.playlists.filter(p => p.source === 'data_js');
-  const savedLists  = state.playlists.filter(p => p.source !== 'data_js');
-
-  function renderCard(p) {
-    const isFromFile = p.source === 'data_js';
-    const isActive   = state.filters.list === p.id;
-    const icon       = isFromFile ? (p.icon || '📋') : '📁';
-
-    const plWordsHTML = p.wordIds.map(id => {
-      const w = state.words.find(x => x.id === id);
-      return w ? `<b>${escHtml(w.en)}</b> – ${escHtml(w.hu)}` : '';
-    }).filter(Boolean).join('<br>');
-
-    const actionBtns = isFromFile
-      ? /* Fájlból jövő: csak szűrés + kijelölés, nincs törlés */ `
-          <button class="btn btn-primary" onclick="filterByPlaylist('${p.id}')">🔍 Szűrés</button>
-          <button class="btn btn-outline" onclick="loadPlaylist('${p.id}')" title="Lista szavait hozzáadja a kijelöléshez">✔ Kijelöl</button>
-        `
-      : /* Kézzel mentett: összes gomb */ `
-          <button class="btn btn-primary" onclick="filterByPlaylist('${p.id}')">🔍 Szűrés</button>
-          <button class="btn btn-outline" onclick="expandPlaylist('${p.id}')" title="Kijelölt szavak hozzáadása">➕ Bővítés</button>
-          <button class="btn btn-outline" onclick="loadPlaylist('${p.id}')" title="Szavak kijelölése">✔ Kijelöl</button>
-          <button class="btn btn-outline" style="color:var(--error);border-color:var(--error-bg);" onclick="deletePlaylist('${p.id}')">🗑</button>
-        `;
-
-    return `
-      <div class="playlist-card-item${isActive ? ' playlist-active' : ''}${isFromFile ? ' playlist-from-file' : ''}">
-        <div class="playlist-header" onclick="togglePlaylist('${p.id}')">
-          <div style="display:flex;align-items:center;gap:6px;">
-            ${icon} ${escHtml(p.name)}
-            <span style="color:var(--text-3);font-size:11px">(${p.wordIds.length} szó)</span>
-            ${isFromFile ? '<span style="font-size:10px;background:var(--primary-dim);color:var(--primary);padding:1px 6px;border-radius:10px;border:1px solid var(--primary-light)">data.js</span>' : ''}
-            ${isActive ? '<span style="font-size:10px;background:var(--primary);color:#fff;padding:1px 6px;border-radius:10px;">aktív</span>' : ''}
-          </div>
-          <div class="pl-chevron" id="chevron-${p.id}">▼</div>
-        </div>
-        <div class="playlist-body" id="body-${p.id}">
-          <div class="playlist-word-list">${plWordsHTML || '<em style="color:var(--text-3)">Üres lista</em>'}</div>
-          <div class="playlist-actions-row">${actionBtns}</div>
-        </div>
-      </div>
-    `;
-  }
-
-  let html = focusHtml;
-
-  if (fileLists.length > 0) {
-    html += `<div class="playlist-section-label" style="margin-top:10px;">📄 Saját listák (data.js)</div>`;
-    html += fileLists.map(renderCard).join('');
-  }
-
-  if (savedLists.length > 0) {
-    html += `<div class="playlist-section-label" style="margin-top:10px;">💾 Elmentett listák</div>`;
-    html += savedLists.map(renderCard).join('');
-  }
-
-  cont.innerHTML = html;
-}
-
-function toggleFocusListBody() {
-  const body = document.getElementById('body-focus');
-  const chevron = document.getElementById('chevron-focus');
-  if (!body || !chevron) return;
-  if (body.classList.contains('open')) {
-    body.classList.remove('open'); chevron.classList.remove('open');
-  } else {
-    document.querySelectorAll('.playlist-body, .focus-list-body').forEach(b => b.classList.remove('open'));
-    document.querySelectorAll('.pl-chevron').forEach(c => c.classList.remove('open'));
-    body.classList.add('open'); chevron.classList.add('open');
-  }
-}
-
-function filterByFocusList() {
-  if (state.filters.list === '__focus') {
-    applyListFilter('all');
-    showToast('🔓 Szűrő eltávolítva – összes szó látható');
-  } else {
-    applyListFilter('__focus');
-    const bm = getBookmarkedWords();
-    showToast(`🔍 Szűrés: „Fókusz Lista" (${bm.length} szó)`);
-  }
-}
-
-function togglePlaylist(id) {
-  const body = document.getElementById('body-' + id);
-  const chevron = document.getElementById('chevron-' + id);
-  if (!body || !chevron) return;
-  if (body.classList.contains('open')) {
-    body.classList.remove('open'); chevron.classList.remove('open');
-  } else {
-    document.querySelectorAll('.playlist-body').forEach(b => b.classList.remove('open'));
-    document.querySelectorAll('.pl-chevron').forEach(c => c.classList.remove('open'));
-    body.classList.add('open'); chevron.classList.add('open');
-  }
-}
-
-function openPlaylistModal() {
-  if (state.selectedIds.size === 0) return;
-  const input = document.getElementById('playlist-name-input');
-  const modal = document.getElementById('playlist-modal');
-  if(input) input.value = '';
-  if(modal) modal.classList.add('open');
-}
-
 function savePlaylist() {
   const input = document.getElementById('playlist-name-input');
-  if(!input) return;
-  const name = input.value.trim();
-  if (!name) { showToast('Kérlek adj meg egy nevet a listának!'); return; }
+  const name = input ? input.value.trim() : '';
+  if (state.selectedIds.size === 0) { showToast('Először jelölj ki szavakat!'); return; }
+  if (!name) { showToast('Adj nevet a listának!'); if (input) input.focus(); return; }
   if (!state.playlists) state.playlists = [];
-  const isDuplicate = state.playlists.some(p => p.name.toLowerCase() === name.toLowerCase());
-  if (isDuplicate) { showToast('Már létezik ilyen nevű lista!'); return; }
+  if (state.playlists.some(p => p.name.toLowerCase() === name.toLowerCase())) { showToast('Már létezik ilyen nevű lista!'); return; }
 
   state.playlists.push({ id: 'pl_' + Date.now(), name: name, wordIds: Array.from(state.selectedIds) });
-  savePlaylists(); closeModal('playlist-modal'); renderPlaylists(); showToast('✅ Lista sikeresen elmentve: ' + name);
-}
-
-function loadPlaylist(id) {
-  const pl = state.playlists.find(p => p.id === id);
-  if (!pl) return;
-  pl.wordIds.forEach(wId => state.selectedIds.add(wId));
-  
-  const searchInput = document.getElementById('search-input');
-  const topicSearch = document.getElementById('topic-search');
-  const lessonSelect = document.getElementById('lesson-select');
-  const daySelect = document.getElementById('day-select');
-  if(searchInput) searchInput.value = '';
-  if(topicSearch) topicSearch.value = '';
-  if (lessonSelect) lessonSelect.value = 'all';
-  if (daySelect) daySelect.value = 'all';
-
-  state.filters.search = ''; state.filters.topicSearch = ''; state.filters.tags = []; state.filters.diff = new Set(); state.filters.lesson = 'all'; state.filters.day = 'all';
-  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-  
-  applyFilters(); updateStartPanel(); saveSettings(); // Lista betöltés: selectedIds+filters változik showToast('📂 ' + pl.name + ' szavai kijelölve!');
-}
-
-/* ÚJ: Lista alapján szűrés (csak a lista szavait mutatja a szólistában) */
-function filterByPlaylist(id) {
-  const pl = state.playlists ? state.playlists.find(p => p.id === id) : null;
-  if (!pl) return;
-  // Ha már ez a szűrő aktív, visszaállítás összes megjelenítésére
-  if (state.filters.list === id) {
-    applyListFilter('all');
-    showToast('🔓 Szűrő eltávolítva – összes szó látható');
-  } else {
-    applyListFilter(id);
-    showToast(`🔍 Szűrés: „${pl.name}" (${pl.wordIds.length} szó)`);
-  }
-  renderPlaylists(); // Aktív jelölő frissítése
+  savePlaylists();
+  renderFilterMenu();
+  showToast('✅ Lista elmentve: ' + name);
 }
 
 function deletePlaylist(id) {
-  if(!confirm('Biztosan törlöd ezt a listát?')) return;
-  // Ha ez az aktív szűrő, visszaállítás
-  if (state.filters.list === id) {
-    state.filters.list = 'all';
-  }
+  if (!confirm('Biztosan törlöd ezt a listát?')) return;
+  if (state.filters.list === id) state.filters.list = 'all';
   state.playlists = state.playlists.filter(p => p.id !== id);
-  savePlaylists(); renderPlaylists(); applyFilters();
+  savePlaylists();
+  onFiltersChanged();
+}
+
+/* ══════════════════════════════════════════════════════
+   GYAKORLÁS DOKK (típus, irány, kérdésszám, sorrend)
+══════════════════════════════════════════════════════ */
+const PRACTICE_TYPES = [
+  { value: 'classic',      icon: '🎯', name: 'Klasszikus',        desc: '4 válaszból választasz' },
+  { value: 'hardcore',     icon: '⌨️', name: 'Gépelős',           desc: 'Beírod a választ' },
+  { value: 'sentenceFill', icon: '📝', name: 'Mondat-kiegészítő', desc: 'A szó a példamondatban' },
+  { value: 'flashcard3d',  icon: '🎴', name: '3D kártya',         desc: 'Fordítsd meg, húzd el' }
+];
+const PRACTICE_COUNTS = [10, 20, 30, 50, 'all'];
+const PRACTICE_ORDERS = [['random', 'Véletlen'], ['az', 'A → Z'], ['za', 'Z → A'], ['diff-asc', 'Könnyebb elöl'], ['diff-desc', 'Nehezebb elöl']];
+const DIRECTION_LABELS = {
+  english:  ['Angol → magyar', 'Magyar → angol'],
+  japanese: ['Kana → magyar',  'Magyar → kana'],
+  kanji:    ['Kanji → magyar', 'Magyar → kanji']
+};
+
+function getPracticeOptions() {
+  if (!state.practiceOptions) state.practiceOptions = { ...createEmptyState().practiceOptions };
+  return state.practiceOptions;
+}
+
+function renderPracticeDock() {
+  const box = document.getElementById('dock-settings');
+  if (!box) return;
+  const o = getPracticeOptions();
+  const dirLabels = DIRECTION_LABELS[currentMode];
+  const radio = (on, attrs, label, cls = '') => `<button role="radio" aria-checked="${on}" class="${cls} ${on ? 'active is-selected' : ''}" ${attrs}>${label}</button>`;
+
+  box.innerHTML = `
+    <div class="dock-group">
+      <span class="dock-label" id="dock-type-label">Gyakorlás típusa</span>
+      <div class="type-list" role="radiogroup" aria-labelledby="dock-type-label">
+        ${PRACTICE_TYPES.map(t => radio(o.type === t.value, `onclick="setPracticeOption('type', '${t.value}')"`,
+          `<span class="type-ico" aria-hidden="true">${t.icon}</span><span class="type-text"><b>${t.name}</b><small>${t.desc}</small></span>`, 'type-opt')).join('')}
+      </div>
+    </div>
+    <div class="dock-group">
+      <span class="dock-label" id="dock-dir-label">Irány</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="dock-dir-label">
+        ${['en-hu', 'hu-en'].map((d, i) => radio(state.direction === d, `onclick="setDirection('${d}')"`, dirLabels[i])).join('')}
+      </div>
+    </div>
+    <div class="dock-group">
+      <span class="dock-label" id="dock-count-label">Kérdések száma</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="dock-count-label">
+        ${PRACTICE_COUNTS.map(c => radio(o.count === c, `onclick="setPracticeOption('count', ${c === 'all' ? `'all'` : c})"`, c === 'all' ? 'Mind' : c)).join('')}
+      </div>
+    </div>
+    <div class="dock-group">
+      <span class="dock-label" id="dock-order-label">Sorrend</span>
+      <div class="chip-grid chip-grid-flat" role="radiogroup" aria-labelledby="dock-order-label">
+        ${PRACTICE_ORDERS.map(([v, l]) => radio(o.order === v, `onclick="setPracticeOption('order', '${v}')"`, l, 'chip')).join('')}
+      </div>
+    </div>`;
+
+  const type = PRACTICE_TYPES.find(t => t.value === o.type) || PRACTICE_TYPES[0];
+  const summary = document.getElementById('dock-summary');
+  if (summary) summary.textContent = `${type.name} · ${o.count === 'all' ? 'mind' : o.count}`;
+  updateStartPanel();
+}
+
+function setPracticeOption(key, value) {
+  getPracticeOptions()[key] = value;
+  renderPracticeDock();
+  saveSettings();
+}
+
+function setDirection(dir) {
+  state.direction = dir;
+  renderPracticeDock();
+  saveSettings();
+}
+
+let _dockOpen = false;
+
+function toggleDockSettings(force) {
+  const next = typeof force === 'boolean' ? force : !_dockOpen;
+  if (next === _dockOpen) return;
+  _dockOpen = next;
+  if (next) closeFilterMenu();
+  const dock = document.getElementById('practice-dock');
+  if (dock) dock.classList.toggle('is-open', next);
+  const btn = document.getElementById('dock-settings-btn');
+  if (btn) btn.setAttribute('aria-expanded', next ? 'true' : 'false');
+  setScrim(next || !!_openMenu);
 }
 
 /* ══════════════════════════════════════════════════════
@@ -1709,13 +1790,12 @@ function startPractice() {
   const selectedWords = state.words.filter(w => state.selectedIds.has(w.id));
   if (selectedWords.length === 0) return;
   
-  const qCountSelect = document.getElementById('q-count');
-  const orderSelect = document.getElementById('practice-order');
-  const typeSelect = document.getElementById('practice-type');
-  
-  const qCount = qCountSelect ? Math.min(parseInt(qCountSelect.value) || 20, selectedWords.length) : selectedWords.length;
-  const order = orderSelect ? orderSelect.value : 'random';
-  const type = typeSelect ? typeSelect.value : 'classic';
+  // V13.1: a beállítások a Gyakorlás dokkból (state.practiceOptions) jönnek
+  closeLibraryOverlays();
+  const o = getPracticeOptions();
+  const qCount = o.count === 'all' ? selectedWords.length : Math.min(Number(o.count) || 20, selectedWords.length);
+  const order = o.order || 'random';
+  const type = o.type || 'classic';
   
   let orderedWords = [...selectedWords];
 
@@ -1806,20 +1886,12 @@ function showQuestion() {
   const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
   if (!word) return;
 
-  const total = p.roundWords.length;
-  const progBar = document.getElementById('prog-bar');
-  const progLabel = document.getElementById('prog-label');
-  const roundBadge = document.getElementById('round-badge');
-  const errBadge = document.getElementById('error-badge');
-  const errCount = document.getElementById('error-count-badge');
-  
-  if(progBar) progBar.style.width = Math.round((p.currentIdx / total) * 100) + '%';
-  if(progLabel) progLabel.textContent = p.currentIdx + ' / ' + total;
-  if(roundBadge) roundBadge.textContent = 'Round ' + p.roundNumber;
-  if(errBadge) errBadge.style.display = p.roundWrong > 0 ? '' : 'none';
-  if(errCount) errCount.textContent = p.roundWrong;
+  // V13: a gyors ismétlésnél a hibás szavak a sor végére kerülnek, így a haladást
+  // a helyesen megválaszolt EGYEDI szavakhoz mérjük, nem a (növekvő) sor hosszához.
+  if (p.type === 'quickQuiz') updatePracticeTop('Mai szavak', p.roundCorrect, p.uniqueCount, p.roundWrong);
+  else updatePracticeTop('Round ' + p.roundNumber, p.currentIdx, p.roundWords.length, p.roundWrong);
 
-  const isEnHu = state.direction === 'en-hu';
+  const isEnHu = practiceDir() === 'en-hu';
   const isJapanMode = currentMode !== 'english';
   eyeState = 0; 
 
@@ -1886,7 +1958,8 @@ function showQuestion() {
       <button class="dont-know" style="margin-top:10px;" onclick="checkSentenceAnswer(null, null)">Nem tudom :(</button>
     `;
   }
-  else if (p.type === 'classic') {
+  else if (p.type === 'classic' || p.type === 'quickQuiz') {
+    if (p.type === 'quickQuiz') hintText = `⚡ GYORS ISMÉTLÉS · ${hintText}`;
     const options = shuffle([correctText, ...getSmartDistractors(word, 3, isEnHu)]);
 
     contentHtml = `
@@ -1923,32 +1996,13 @@ function showQuestion() {
     else if (!isEnHu && currentMode === 'japanese' && word.romaji) backReading = word.romaji;
 
     // Példamondat (highlight + magyar)
-    let exampleSentenceHTML = '';
-    let exampleHU = '';
-    if (currentMode === 'english' && typeof english_sentences2 !== 'undefined') {
-      const found = english_sentences2.find(s => s.baseWord === word.en);
-      if (found) {
-        exampleSentenceHTML = (found.fullSentenceHTML || '').replace(/<strong>(.*?)<\/strong>/g, '<span class="fc-highlight">$1</span>');
-        exampleHU = found.hungarian || '';
-      }
-    } else if ((currentMode === 'japanese' || currentMode === 'kanji') && typeof JAPANESE_SENTENCES !== 'undefined') {
-      const found = JAPANESE_SENTENCES.find(s => s.baseWord === word.en);
-      if (found) {
-        exampleSentenceHTML = found.fullSentenceHTML || '';
-        if (found.correctAnswer) {
-          const baseWordRegex = new RegExp(`(${escRegex(found.correctAnswer)})`, 'g');
-          exampleSentenceHTML = exampleSentenceHTML.replace(baseWordRegex, '<span class="fc-highlight">$1</span>');
-        }
-        exampleHU = found.hungarian || '';
-      }
-    }
-    if (!exampleSentenceHTML && word.sentence) exampleSentenceHTML = escHtml(word.sentence);
+    const { html: exampleSentenceHTML, hu: exampleHU } = getExampleSentence(word);
 
     const isKanjiFront = currentMode === 'kanji' && isEnHu;
     const isKanjiBack  = currentMode === 'kanji' && !isEnHu;
 
     contentHtml = `
-      <div class="flashcard-3d" id="flashcard-3d" onclick="flipFlashcard3D()">
+      <div class="flashcard-3d" id="flashcard-3d">
         <div class="flashcard-3d-inner">
           <div class="flashcard-3d-front">
             <div class="fc-corner-hint">${isEnHu ? 'Forrás' : 'Magyar'}</div>
@@ -2051,7 +2105,7 @@ function showQuestion() {
     }, 100);
   }
 
-  if (p.type === 'classic' && isEnHu) {
+  if ((p.type === 'classic' || p.type === 'quickQuiz') && isEnHu) {
     setTimeout(() => { speakWord(questionText, false); }, 300);
   }
 
@@ -2088,7 +2142,7 @@ function checkSentenceAnswer(btn, chosen) {
 
   checkDailyReset();
 
-  const isEnHu = state.direction === 'en-hu';
+  const isEnHu = practiceDir() === 'en-hu';
   const correctOptionText = isEnHu ? sObj.correctAnswer : word.hu;
   const isCorrect = (chosen === correctOptionText);
   const qCard = document.getElementById('q-card');
@@ -2171,7 +2225,7 @@ function checkHardcoreAnswer(wordId) {
   inputEl.disabled = true;
 
   checkDailyReset();
-  const isEnHu = state.direction === 'en-hu';
+  const isEnHu = practiceDir() === 'en-hu';
   const correctText = isEnHu ? word.hu : word.en;
   
   let isCorrect = (userAnswer.toLowerCase() === correctText.toLowerCase());
@@ -2274,7 +2328,7 @@ function checkAnswer(btn, chosen, correct) {
     if (btn) btn.classList.add('wrong');
     document.querySelectorAll('.opt-btn').forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
     if(qCard) qCard.classList.add('shake');
-    if(currentMode !== 'english' && state.direction === 'en-hu') {
+    if(currentMode !== 'english' && practiceDir() === 'en-hu') {
       eyeState = currentMode === 'kanji' ? 1 : 0; 
       toggleEye(word.id);
     }
@@ -2285,9 +2339,11 @@ function checkAnswer(btn, chosen, correct) {
     else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
     word.stats.lastAttempt = Date.now();
     updateQuestProgress('wordAnswered', { word, isCorrect });
+    // V13: gyors ismétlésnél a hibás szó a sor végére kerül, amíg egyszer el nem találod
+    if (!isCorrect && p.type === 'quickQuiz') p.roundWords.push(word.id);
   }
 
-  if (!isCorrect && state.direction === 'hu-en') {
+  if (!isCorrect && practiceDir() === 'hu-en') {
       speakWord(word.en, false);
   }
 
@@ -2322,7 +2378,6 @@ function checkAnswer(btn, chosen, correct) {
 ══════════════════════════════════════════════════════ */
 let _flashcard3DFlipped = false;
 let _flashcard3DRated   = false;
-let _fc3dTouchStartX    = 0;
 
 function flipFlashcard3D() {
   if (_flashcard3DRated) return;
@@ -2335,7 +2390,7 @@ function flipFlashcard3D() {
     // Hátlap megjelenése után: hu-en irányban a forrás szót olvassuk fel
     const p = state.practice;
     const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
-    if (word && state.direction === 'hu-en') {
+    if (word && practiceDir() === 'hu-en') {
       setTimeout(() => speakWord(word.en, false), 350);
     }
   }
@@ -2348,7 +2403,7 @@ function speakFlashcard3D() {
   if (!p) return;
   const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
   if (!word) return;
-  const isEnHu = state.direction === 'en-hu';
+  const isEnHu = practiceDir() === 'en-hu';
 
   if (_flashcard3DFlipped) {
     let exampleText = '';
@@ -2371,7 +2426,8 @@ function speakFlashcard3D() {
   }
 }
 
-function rateFlashcard3D(isCorrect) {
+// immediate: elhúzásnál a kártya már kirepült, nincs szükség a színes felvillanás kivárására
+function rateFlashcard3D(isCorrect, immediate = false) {
   if (_flashcard3DRated) return;
   _flashcard3DRated = true;
 
@@ -2404,7 +2460,7 @@ function rateFlashcard3D(isCorrect) {
     } else {
       showQuestion();
     }
-  }, 650);
+  }, immediate ? 0 : 650);
 }
 
 function prevFlashcard3D() {
@@ -2418,22 +2474,20 @@ function prevFlashcard3D() {
   showQuestion();
 }
 
+// V13: az ujjat követő húzás (attachSwipe). Előlapról húzás: megfordítás (a kártya visszaugrik).
+// Hátlapról húzás: értékelés és kirepülés (jobbra = tudtam, balra = nem tudtam).
 function initFlashcard3DSwipe() {
   const card = document.getElementById('flashcard-3d');
   if (!card) return;
-  card.addEventListener('touchstart', e => {
-    _fc3dTouchStartX = e.touches[0].clientX;
-  }, { passive: true });
-  card.addEventListener('touchend', e => {
-    const dx = e.changedTouches[0].clientX - _fc3dTouchStartX;
-    if (Math.abs(dx) <= 50) return;
-    // Előlapról húzás: flip. Hátlapról húzás: értékelés (jobb=tudtam, bal=nem tudtam)
-    if (!_flashcard3DFlipped) {
-      flipFlashcard3D();
-    } else if (!_flashcard3DRated) {
-      rateFlashcard3D(dx > 0);
+  attachSwipe(card, {
+    onTap: flipFlashcard3D,
+    onSwipe: dir => {
+      if (!_flashcard3DFlipped) { flipFlashcard3D(); return false; }
+      if (_flashcard3DRated) return false;
+      flyOut(card, dir, () => rateFlashcard3D(dir === 'right', true));
+      return true;
     }
-  }, { passive: true });
+  });
 }
 
 /* ══════════════════════════════════════════════════════
@@ -2588,7 +2642,10 @@ function showRoundEnd() {
 
   const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
   
-  setEl('re-title', p.roundNumber === 1 && p.errorList.length === 0 ? '🎉 Hibátlan kör!' : `Round ${p.roundNumber} vége!`);
+  const isQuickQuiz = p.type === 'quickQuiz';
+  if (isQuickQuiz) setEl('re-title', p.roundWrong === 0 ? '🎉 Hibátlan ismétlés!' : 'Mai szavak átismételve!');
+  else setEl('re-title', p.roundNumber === 1 && p.errorList.length === 0 ? '🎉 Hibátlan kör!' : `Round ${p.roundNumber} vége!`);
+  setEl('err-title', isQuickQuiz ? 'Ezek elsőre nem mentek:' : 'Hibás elemek – következő körbe kerülnek:');
   setEl('re-subtitle', pct >= 80 ? 'Szép munka! 💪' : pct >= 50 ? 'Haladás! Folytasd! 📈' : 'Ne add fel! Próbáld újra! 🔁');
   setEl('re-correct', p.roundCorrect);
   setEl('re-wrong', p.roundWrong);
@@ -2615,7 +2672,8 @@ function showRoundEnd() {
         return `<div class="err-item"><span class="err-en">${escHtml(w.en)}</span><span class="err-hu">${escHtml(w.hu)}</span></div>`;
       }).join('');
     }
-    if(nextBtn) nextBtn.style.display = '';
+    // Gyors ismétlésnél nincs következő kör: a hibás szavak már a soron belül ismétlődtek
+    if(nextBtn) nextBtn.style.display = isQuickQuiz ? 'none' : '';
   } else {
     if(errSec) errSec.style.display = 'none';
     if(nextBtn) nextBtn.style.display = 'none';
@@ -2649,10 +2707,569 @@ function finishSession() {
     duration: duration
   });
 
-  saveStats(); saveWords(); showScreen('dashboard'); showToast('Gyakorlás befejezve!'); // Statisztika + szó streak mentése
+  saveStats(); saveWords(); showScreen(p.origin || 'dashboard'); showToast('Gyakorlás befejezve!'); // Statisztika + szó streak mentése
 }
 
-function confirmQuit() { if (confirm('Biztosan ki szeretnél lépni?')) showScreen('dashboard'); }
+// V13: oda térünk vissza, ahonnan a gyakorlás indult (Kezdőlap vagy Gyakorlás fül)
+function confirmQuit() {
+  const p = state.practice;
+  // Tanulás közben minden "Tudom" azonnal mentődik, így kilépéskor nincs mit elveszíteni
+  if (p.type === 'learn' || confirm('Biztosan ki szeretnél lépni?')) showScreen(p.origin || 'dashboard');
+}
+
+// Irány a gyakorláshoz: a gyors ismétlés mindig forrás → magyar, egyébként a felhasználó beállítása
+function practiceDir() {
+  return (state.practice && state.practice.direction) || state.direction;
+}
+
+// A gyakorló képernyő felső sávja (badge, haladás, hibaszámláló)
+function updatePracticeTop(label, done, total, errors = 0) {
+  const progBar = document.getElementById('prog-bar');
+  const progLabel = document.getElementById('prog-label');
+  const roundBadge = document.getElementById('round-badge');
+  const errBadge = document.getElementById('error-badge');
+  const errCount = document.getElementById('error-count-badge');
+  if (progBar) progBar.style.width = (total > 0 ? Math.round(done / total * 100) : 0) + '%';
+  if (progLabel) progLabel.textContent = done + ' / ' + total;
+  if (roundBadge) roundBadge.textContent = label;
+  if (errBadge) errBadge.style.display = errors > 0 ? '' : 'none';
+  if (errCount) errCount.textContent = errors;
+}
+
+// Példamondat egy szóhoz (kiemelt HTML + magyar fordítás) – a 3D kártya és a tanuló kártya közös forrása
+function getExampleSentence(word) {
+  let html = '', hu = '';
+  if (currentMode === 'english' && typeof english_sentences2 !== 'undefined') {
+    const found = english_sentences2.find(s => s.baseWord === word.en);
+    if (found) {
+      html = (found.fullSentenceHTML || '').replace(/<strong>(.*?)<\/strong>/g, '<span class="fc-highlight">$1</span>');
+      hu = found.hungarian || '';
+    }
+  } else if ((currentMode === 'japanese' || currentMode === 'kanji') && typeof JAPANESE_SENTENCES !== 'undefined') {
+    const found = JAPANESE_SENTENCES.find(s => s.baseWord === word.en);
+    if (found) {
+      html = found.fullSentenceHTML || '';
+      if (found.correctAnswer) {
+        const baseWordRegex = new RegExp(`(${escRegex(found.correctAnswer)})`, 'g');
+        html = html.replace(baseWordRegex, '<span class="fc-highlight">$1</span>');
+      }
+      hu = found.hungarian || '';
+    }
+  }
+  if (!html && word.sentence) html = escHtml(word.sentence);
+  return { html, hu };
+}
+
+/* ══════════════════════════════════════════════════════
+   V13: NAPI SZOKÁS MOTOR – új szavak, napi cél, mai ismétlés
+   - Egy szó "új", ha még sosem gyakoroltad és nincs learnedAt-je.
+   - Tanuláskor ("Tudom" / jobbra húzás) a szó stats.learnedAt = mai nap (helyi dátum).
+     A stats objektumban van, így a felhő szinkron módosítás nélkül viszi.
+   - A napi cél módonként állítható (globalStats.dailyGoal, szinkronizált).
+     Ha elérted, mára lezárjuk az új szavakat: holnap nagyobb kedvvel jössz vissza.
+══════════════════════════════════════════════════════ */
+const DEFAULT_DAILY_GOAL = { english: 10, japanese: 10, kanji: 5 };
+const LEARN_BATCH_SIZE = 5;
+const MODE_LABELS = { english: 'Angol', japanese: 'Japán', kanji: 'Kandzsi' };
+
+function getDailyGoal() {
+  return state.globalStats.dailyGoal || DEFAULT_DAILY_GOAL[currentMode] || 10;
+}
+
+function isNewWord(w) {
+  const s = w.stats || {};
+  return !s.learnedAt && !s.lastAttempt && !(s.totalCorrect > 0) && !(s.totalWrong > 0);
+}
+
+function getTodayWords() {
+  const today = todayKey();
+  return state.words.filter(w => w.stats && w.stats.learnedAt === today);
+}
+
+// Új szavak sorrendje: lecke → nehézség → eredeti adatsorrend (így követi a Dekiru / kanji leckéket)
+function getNewWordPool() {
+  const order = new Map(state.words.map((w, i) => [w.id, i]));
+  const lessonNum = w => { const n = parseInt(w.lesson, 10); return Number.isNaN(n) ? Infinity : n; };
+  return state.words
+    .filter(w => isNewWord(w) && wordMatchesFilters(w, { ignoreSearch: true }))
+    .sort((a, b) => (lessonNum(a) - lessonNum(b)) || (diffOrder(a.diff) - diffOrder(b.diff)) || (order.get(a.id) - order.get(b.id)));
+}
+
+function hasPoolFilters() {
+  const f = state.filters;
+  const isJp = currentMode !== 'english';
+  return f.tags.length > 0 || f.diff.size > 0 || (f.list && f.list !== 'all') ||
+    (isJp && f.lesson && f.lesson !== 'all') || (isJp && f.day && f.day !== 'all');
+}
+
+// Ember-olvasható leírás arról, honnan jönnek az új szavak (a Gyakorlás fül szűrői)
+function describePoolSource() {
+  const f = state.filters;
+  const isJp = currentMode !== 'english';
+  const parts = [];
+  if (f.list && f.list !== 'all') {
+    parts.push(f.list === '__focus' ? 'Fókusz Lista' : (state.playlists.find(p => p.id === f.list)?.name || 'Saját lista'));
+  }
+  if (isJp && f.day && f.day !== 'all') parts.push(`Úti terv ${f.day}. nap`);
+  if (isJp && f.lesson && f.lesson !== 'all') parts.push(lessonLabel(f.lesson));
+  if (f.tags.length > 0) parts.push(f.tags.slice(0, 2).join(', ') + (f.tags.length > 2 ? ` +${f.tags.length - 2}` : ''));
+  if (f.diff.size > 0) parts.push(Array.from(f.diff).join('/'));
+  return parts.length > 0 ? parts.join(' · ') : 'Teljes szótár';
+}
+
+function markWordLearned(word) {
+  const today = todayKey();
+  word.stats.learnedAt = today;
+  if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
+  state.globalStats.studyDays[today] = true; // a tanulás is számít a napi sorozatba
+  saveWords();
+  saveStats();
+}
+
+/* ── KEZDŐLAP ─────────────────────────────────────────── */
+function renderHome() {
+  if (!document.getElementById('screen-home')) return;
+  checkDailyReset();
+
+  const today = todayKey();
+  const streak = calcStreak();
+  if (streak > (state.globalStats.recordStreak || 0)) state.globalStats.recordStreak = streak;
+  const studiedToday = !!(state.globalStats.studyDays && state.globalStats.studyDays[today]);
+
+  const hour = new Date().getHours();
+  const greeting = hour < 5 ? 'Szép estét, bagoly! 🦉' : hour < 10 ? 'Jó reggelt! ☀️' : hour < 18 ? 'Szia! 👋' : 'Jó estét! 🌙';
+  const setText = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  setText('home-greeting', greeting);
+  setText('home-streak-text', streak > 0 ? `${streak} napos sorozat` : 'Indíts ma sorozatot');
+  setText('home-streak-hint',
+    studiedToday ? `Mára megvan a ${MODE_LABELS[currentMode].toLowerCase()} gyakorlás. Így tovább!`
+    : streak > 0 ? 'Tanulj ma is, hogy megmaradjon a sorozatod.'
+    : 'Egy kis adag ma, egy kicsi holnap: ebből lesz a szokás.');
+  const flame = document.getElementById('home-streak-flame');
+  if (flame) flame.classList.toggle('lit', studiedToday);
+  renderWeekTracker();
+
+  // ── Napi cél ──
+  const goal = getDailyGoal();
+  const learnedToday = getTodayWords().length;
+  const goalReached = learnedToday >= goal;
+  const pct = Math.min(1, learnedToday / goal);
+  setText('goal-done', learnedToday);
+  setText('goal-total', goal);
+  setText('goal-unit', currentMode === 'kanji' ? 'új kanji' : 'új szó');
+  const goalSection = document.getElementById('home-goal');
+  if (goalSection) goalSection.classList.toggle('is-done', goalReached);
+  const bar = document.getElementById('goal-bar');
+  if (bar) {
+    bar.setAttribute('aria-valuemax', goal);
+    bar.setAttribute('aria-valuenow', Math.min(learnedToday, goal));
+    bar.style.setProperty('--p', pct);
+  }
+
+  const pool = getNewWordPool();
+  const source = document.getElementById('goal-source');
+  if (source) {
+    source.innerHTML = `
+      <span>Forrás: <b>${escHtml(describePoolSource())}</b> · ${pool.length} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}</span>
+      <button class="link-btn" onclick="openPoolSource()">Módosítás</button>`;
+  }
+
+  // ── Fő cselekvések ──
+  const remaining = goal - learnedToday;
+  const nextBatch = Math.min(remaining, LEARN_BATCH_SIZE, pool.length);
+  let learnHtml;
+  if (goalReached) {
+    learnHtml = `
+      <div class="home-note is-success" role="status">
+        <span class="home-note-icon" aria-hidden="true">✓</span>
+        <div>
+          <p class="home-note-title">Szép munka! Mára végeztél az új szavakkal.</p>
+          <p class="home-note-sub">Térj vissza holnap, vagy gyakorold a maiakat!</p>
+        </div>
+      </div>`;
+  } else if (pool.length === 0) {
+    const filteredOut = hasPoolFilters() && state.words.some(isNewWord);
+    learnHtml = filteredOut
+      ? `<div class="home-note">
+           <span class="home-note-icon" aria-hidden="true">∅</span>
+           <div>
+             <p class="home-note-title">Ebben a válogatásban elfogytak az új szavak.</p>
+             <p class="home-note-sub">Válassz másik leckét, vagy tanulj a teljes szótárból.</p>
+             <button class="link-btn" onclick="clearFilters()">Szűrők törlése</button>
+           </div>
+         </div>`
+      : `<div class="home-note">
+           <span class="home-note-icon" aria-hidden="true">🏁</span>
+           <div>
+             <p class="home-note-title">Ebben a módban minden szót elkezdtél.</p>
+             <p class="home-note-sub">Mélyítsd el őket a Gyakorlás fülön.</p>
+           </div>
+         </div>`;
+  } else {
+    const mins = Math.max(1, Math.round(nextBatch * 0.5));
+    learnHtml = `
+      <button class="cta-learn" onclick="startLearnSession()">
+        <span class="cta-main">Új szavak tanulása</span>
+        <span class="cta-sub">${nextBatch} ${currentMode === 'kanji' ? 'kanji' : 'szó'} · kb. ${mins} perc</span>
+        <span class="cta-arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+      </button>`;
+  }
+
+  // Ha mára kész a cél, a mai ismétlés lesz a fő (élénk) gomb
+  const reviewClass = goalReached && learnedToday > 0 ? 'cta-learn' : 'cta-review';
+  const reviewHtml = `
+    <button class="${reviewClass}" onclick="startTodayReview()" ${learnedToday === 0 ? 'disabled' : ''}>
+      <span class="cta-main">Mai szavak ismétlése${learnedToday > 0 ? ` <span class="count-chip">${learnedToday}</span>` : ''}</span>
+      <span class="cta-sub">${learnedToday > 0 ? 'Gyors kvíz: a hibás szó visszakerül a sor végére' : 'Tanulj ma új szót, és itt átismételheted.'}</span>
+    </button>`;
+
+  const actions = document.getElementById('home-actions');
+  if (actions) actions.innerHTML = learnHtml + reviewHtml;
+
+  renderDailyQuests();
+}
+
+// "Módosítás": a Gyakorlás fül szűrő pilláihoz ugrik (ugyanazok a szűrők adják az új szavakat)
+function openPoolSource() {
+  showScreen('dashboard');
+  showToast('Az új szavak az itt beállított szűrőkből jönnek');
+}
+
+// Minden szerkezeti szűrő törlése (Kezdőlap és Gyakorlás fül közös)
+function clearFilters() {
+  Object.assign(state.filters, { tags: [], diff: new Set(), lesson: 'all', day: 'all', list: 'all' });
+  closeFilterMenu();
+  renderFilterBar();
+  applyFilters();
+  if (document.body.dataset.screen === 'home') renderHome();
+  showToast('Szűrők törölve');
+}
+
+/* ── ÚJ SZAVAK TANULÁSA (húzható kártyák) ─────────────── */
+let _learnFlipped = false;
+
+function startLearnSession() {
+  const remaining = getDailyGoal() - getTodayWords().length;
+  if (remaining <= 0) { renderHome(); return; }
+  const batch = getNewWordPool().slice(0, Math.min(remaining, LEARN_BATCH_SIZE));
+  if (batch.length === 0) { showToast('Nincs több új szó ebben a válogatásban.'); renderHome(); return; }
+
+  const ids = batch.map(w => w.id);
+  state.practice = {
+    type: 'learn', origin: 'home',
+    queue: [...ids], batchIds: ids, learnedIds: [], againIds: [],
+    roundNumber: 1, roundWords: [], currentIdx: 0, errorList: [],
+    roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now(),
+    sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0
+  };
+  showScreen('practice');
+  showLearnCard();
+}
+
+function showLearnCard() {
+  const p = state.practice;
+  updatePracticeTop('Új szavak', p.learnedIds.length, p.batchIds.length);
+  if (p.queue.length === 0) { showLearnComplete(); return; }
+
+  const word = state.words.find(w => w.id === p.queue[0]);
+  if (!word) { p.queue.shift(); showLearnCard(); return; }
+  _learnFlipped = false;
+
+  const isKanji = currentMode === 'kanji';
+  const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
+  const backSrc = currentMode === 'japanese' && word.romaji ? `${word.en} · ${word.romaji}` : word.en;
+  const kanjiReadings = isKanji
+    ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
+    : '';
+  const example = getExampleSentence(word);
+  const isAgain = p.againIds.includes(word.id);
+  const left = p.queue.length - 1;
+
+  const qArea = document.getElementById('question-area');
+  if (!qArea) return;
+  qArea.innerHTML = `
+    <div class="learn-stage">
+      <div class="learn-card" id="learn-card" role="button" tabindex="0" aria-label="Kártya: ${escHtml(word.en)}. Koppints a jelentésért.">
+        <div class="learn-card-inner">
+          <div class="learn-face learn-front">
+            <span class="learn-pill ${isAgain ? 'is-again' : ''}">${isAgain ? 'Újra' : (isKanji ? 'Új kanji' : 'Új szó')}</span>
+            <div class="learn-word ${isKanji ? 'learn-word-kanji' : ''}">${escHtml(word.en)}</div>
+            ${frontReading ? `<div class="learn-reading">${escHtml(frontReading)}</div>` : ''}
+            <div class="learn-tap-hint">Koppints a jelentésért</div>
+          </div>
+          <div class="learn-face learn-back">
+            <div class="learn-back-src">${escHtml(backSrc)}</div>
+            <div class="learn-meaning">${escHtml(word.hu)}</div>
+            ${kanjiReadings}
+            ${example.html ? `
+              <div class="learn-example">
+                <div class="learn-example-src">${example.html}</div>
+                ${example.hu && example.hu !== word.hu ? `<div class="learn-example-hu">${escHtml(example.hu)}</div>` : ''}
+              </div>` : ''}
+          </div>
+        </div>
+        <div class="swipe-stamp swipe-stamp-yes" aria-hidden="true">Tudom</div>
+        <div class="swipe-stamp swipe-stamp-no" aria-hidden="true">Még nem</div>
+      </div>
+
+      <div class="learn-controls">
+        <button class="swipe-btn swipe-btn-no" onclick="learnSwipe('left')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Még nem
+        </button>
+        <button class="swipe-speak" onclick="speakLearnWord()" aria-label="Kiejtés">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        </button>
+        <button class="swipe-btn swipe-btn-yes" onclick="learnSwipe('right')">
+          Tudom
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+      <p class="learn-left">${left > 0 ? `Még ${left} kártya` : 'Utolsó kártya'} · jobbra, ha megy, balra, ha még nem</p>
+    </div>`;
+
+  const card = document.getElementById('learn-card');
+  attachSwipe(card, {
+    onTap: flipLearnCard,
+    onSwipe: dir => { learnSwipe(dir); return true; }
+  });
+  setTimeout(() => speakWord(word.en, false), 250);
+}
+
+function speakLearnWord() {
+  const p = state.practice;
+  const word = p && p.queue ? state.words.find(w => w.id === p.queue[0]) : null;
+  if (word) speakWord(word.en, false);
+}
+
+function flipLearnCard() {
+  const card = document.getElementById('learn-card');
+  if (!card || card.dataset.swipeLocked) return;
+  _learnFlipped = !_learnFlipped;
+  card.classList.toggle('flipped', _learnFlipped);
+}
+
+function learnSwipe(dir) {
+  const p = state.practice;
+  if (!p || p.type !== 'learn' || p.queue.length === 0) return;
+  const card = document.getElementById('learn-card');
+  if (!card || card.dataset.swipeLocked) return;
+  flyOut(card, dir, () => resolveLearnCard(dir === 'right'));
+}
+
+function resolveLearnCard(known) {
+  const p = state.practice;
+  const id = p.queue.shift();
+  const word = state.words.find(w => w.id === id);
+  if (word) {
+    if (known) {
+      markWordLearned(word);
+      p.learnedIds.push(id);
+    } else {
+      // "Még nem megy": vissza a sor végére, amíg egyszer jobbra nem húzod
+      p.queue.push(id);
+      if (!p.againIds.includes(id)) p.againIds.push(id);
+    }
+  }
+  showLearnCard();
+}
+
+function showLearnComplete() {
+  const p = state.practice;
+  const goal = getDailyGoal();
+  const learnedToday = getTodayWords().length;
+  const goalReached = learnedToday >= goal;
+  const remaining = Math.max(0, goal - learnedToday);
+  const nextBatch = goalReached ? 0 : Math.min(remaining, LEARN_BATCH_SIZE, getNewWordPool().length);
+  const pct = Math.min(1, learnedToday / goal);
+  const streak = calcStreak();
+
+  const chips = p.learnedIds.map(id => {
+    const w = state.words.find(x => x.id === id);
+    return w ? `<span class="word-chip">${escHtml(w.en)} <span>${escHtml(w.hu)}</span></span>` : '';
+  }).join('');
+
+  const qArea = document.getElementById('question-area');
+  if (!qArea) return;
+  qArea.innerHTML = `
+    <div class="learn-done">
+      <div class="learn-done-badge" aria-hidden="true">✓</div>
+      <h2 class="learn-done-title">${p.learnedIds.length} új ${currentMode === 'kanji' ? 'kanji' : 'szó'} a zsebedben!</h2>
+      <p class="learn-done-sub">${goalReached
+        ? 'Szép munka! Mára végeztél az új szavakkal. Térj vissza holnap, vagy gyakorold a maiakat!'
+        : `Mai cél: ${learnedToday}/${goal}. Még ${remaining} van hátra mára.`}</p>
+      <div class="learn-done-meter">
+        <div class="goal-bar ${goalReached ? 'is-done' : ''}" style="--p:${pct}"><div class="goal-bar-fill"></div></div>
+        <span class="learn-done-streak">🔥 ${streak} napos sorozat</span>
+      </div>
+      <div class="learn-done-words">${chips}</div>
+      <div class="learn-done-actions">
+        ${nextBatch > 0 ? `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Még ${nextBatch} új szó</span></button>` : ''}
+        <button class="${nextBatch > 0 ? 'cta-review' : 'cta-learn'} cta-compact" onclick="startTodayReview()"><span class="cta-main">Gyors kvíz a mai szavakból</span></button>
+        <button class="btn-quiet" onclick="showScreen('home')">Vissza a kezdőlapra</button>
+      </div>
+    </div>`;
+
+  // Napi cél elérése: egyszer ünneplünk naponta (módonként)
+  if (goalReached && state.globalStats.goalCelebrated !== todayKey()) {
+    state.globalStats.goalCelebrated = todayKey();
+    saveStats();
+    launchConfetti();
+  }
+}
+
+// Billentyűzet a tanuló kártyákhoz: ← még nem, → tudom, Szóköz/Enter fordít
+document.addEventListener('keydown', e => {
+  const p = state.practice;
+  if (!p || p.type !== 'learn' || document.body.dataset.screen !== 'practice' || p.queue.length === 0) return;
+  if (e.target.closest && e.target.closest('input, textarea, select')) return;
+  if (e.key === 'ArrowRight') { e.preventDefault(); learnSwipe('right'); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); learnSwipe('left'); }
+  else if ((e.key === ' ' || e.key === 'Enter') && !(e.target.closest && e.target.closest('button'))) {
+    e.preventDefault();
+    flipLearnCard();
+  }
+});
+
+/* ── MAI SZAVAK GYORS ISMÉTLÉSE ───────────────────────── */
+function startTodayReview() {
+  const words = getTodayWords();
+  if (words.length === 0) { showToast('Ma még nem tanultál új szót.'); return; }
+  const ids = shuffle(words).map(w => w.id);
+  state.practice = {
+    type: 'quickQuiz', direction: 'en-hu', origin: 'home',
+    roundNumber: 1, roundWords: ids, uniqueCount: ids.length, currentIdx: 0, errorList: [],
+    roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now(),
+    sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0,
+    currentSentenceObj: null, _combo: 0
+  };
+  showScreen('practice');
+  showQuestion();
+}
+
+/* ── HÚZHATÓ KÁRTYA MOTOR (pointer események, egér + érintés) ──
+   A kártya követi az ujjat, a "Tudom" / "Még nem" pecsét a húzás mértékével jelenik meg.
+   Küszöb felett (vagy gyors suhintásnál) kirepül, alatta visszaugrik. Függőleges húzásnál
+   elengedjük a görgetést (touch-action: pan-y a CSS-ben). */
+const _prefersReducedMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+function attachSwipe(el, { onTap, onSwipe }) {
+  if (!el) return;
+  let startX = 0, startY = 0, startT = 0, dx = 0;
+  let pointerId = null, tracking = false, dragging = false;
+  const threshold = () => Math.min(110, el.offsetWidth * 0.28);
+
+  el.addEventListener('pointerdown', e => {
+    if (e.button > 0 || el.dataset.swipeLocked) return;
+    pointerId = e.pointerId; startX = e.clientX; startY = e.clientY; startT = performance.now();
+    dx = 0; tracking = true; dragging = false;
+  });
+
+  el.addEventListener('pointermove', e => {
+    if (!tracking || e.pointerId !== pointerId) return;
+    const mx = e.clientX - startX, my = e.clientY - startY;
+    if (!dragging) {
+      if (Math.abs(mx) < 8 && Math.abs(my) < 8) return;
+      if (Math.abs(my) > Math.abs(mx)) { tracking = false; return; } // függőleges: görgetés
+      dragging = true;
+      el.style.transition = 'none';
+      try { el.setPointerCapture(pointerId); } catch (_) { /* nem kritikus */ }
+    }
+    dx = mx;
+    setSwipeVisual(el, dx, threshold());
+  });
+
+  el.addEventListener('pointerup', e => {
+    if (!tracking || e.pointerId !== pointerId) return;
+    tracking = false;
+    const dt = performance.now() - startT;
+    if (!dragging) { if (dt < 500 && onTap) onTap(); return; }
+    const fast = Math.abs(dx) / Math.max(dt, 1) > 0.6 && Math.abs(dx) > 40;
+    if ((Math.abs(dx) > threshold() || fast) && onSwipe(dx > 0 ? 'right' : 'left') !== false) return;
+    resetSwipe(el);
+  });
+
+  el.addEventListener('pointercancel', e => {
+    if (e.pointerId !== pointerId) return;
+    tracking = false;
+    if (dragging) resetSwipe(el);
+  });
+}
+
+function setSwipeVisual(el, dx, threshold) {
+  el.style.transform = `translateX(${dx}px) rotate(${(dx * 0.05).toFixed(2)}deg)`;
+  const r = Math.max(-1, Math.min(1, dx / threshold));
+  el.style.setProperty('--swipe-yes', Math.max(0, r).toFixed(3));
+  el.style.setProperty('--swipe-no', Math.max(0, -r).toFixed(3));
+}
+
+function resetSwipe(el) {
+  el.style.transition = 'transform 260ms cubic-bezier(0.22, 1, 0.36, 1)';
+  el.style.transform = '';
+  el.style.setProperty('--swipe-yes', 0);
+  el.style.setProperty('--swipe-no', 0);
+}
+
+function flyOut(el, dir, done) {
+  el.dataset.swipeLocked = '1';
+  el.style.setProperty(dir === 'right' ? '--swipe-yes' : '--swipe-no', 1);
+  el.style.setProperty(dir === 'right' ? '--swipe-no' : '--swipe-yes', 0);
+  if (_prefersReducedMotion()) {
+    el.style.transition = 'opacity 120ms linear';
+    el.style.opacity = '0';
+    setTimeout(done, 120);
+    return;
+  }
+  const dist = window.innerWidth * 1.1 * (dir === 'right' ? 1 : -1);
+  el.style.transition = 'transform 300ms cubic-bezier(0.22, 1, 0.36, 1), opacity 300ms ease-out';
+  el.style.transform = `translateX(${dist}px) rotate(${dir === 'right' ? 16 : -16}deg)`;
+  el.style.opacity = '0';
+  setTimeout(done, 240);
+}
+
+/* ── KONFETTI (napi cél elérése) ──────────────────────── */
+function launchConfetti() {
+  if (_prefersReducedMotion()) return;
+  const layer = document.createElement('div');
+  layer.className = 'confetti-layer';
+  layer.setAttribute('aria-hidden', 'true');
+  const colors = ['var(--cta)', 'var(--primary-light)', 'var(--yellow)', 'var(--info)', 'var(--success)'];
+  for (let i = 0; i < 80; i++) {
+    const bit = document.createElement('span');
+    bit.className = 'confetti-bit';
+    bit.style.left = (Math.random() * 100).toFixed(1) + 'vw';
+    bit.style.background = colors[i % colors.length];
+    bit.style.setProperty('--dx', (Math.random() * 160 - 80).toFixed(0) + 'px');
+    bit.style.setProperty('--rot', (Math.random() * 900 - 450).toFixed(0) + 'deg');
+    bit.style.animationDelay = (Math.random() * 0.3).toFixed(2) + 's';
+    bit.style.animationDuration = (1.5 + Math.random() * 1).toFixed(2) + 's';
+    layer.appendChild(bit);
+  }
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 3000);
+}
+
+/* ── PROFIL ───────────────────────────────────────────── */
+function renderProfile() {
+  const goal = getDailyGoal();
+  document.querySelectorAll('#goal-segmented [data-goal]').forEach(btn => {
+    const isActive = Number(btn.dataset.goal) === goal;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+  });
+  const modeLbl = document.getElementById('pf-goal-mode');
+  if (modeLbl) modeLbl.textContent = MODE_LABELS[currentMode];
+  const sw = document.getElementById('theme-switch');
+  if (sw) sw.setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false');
+  renderStorageInfo();
+}
+
+function setDailyGoal(n) {
+  state.globalStats.dailyGoal = n;
+  saveStats();
+  renderProfile();
+  showToast(`Napi cél (${MODE_LABELS[currentMode]}): ${n} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}`);
+}
 
 /* ══════════════════════════════════════════════════════
    STATS & MODALS
@@ -3121,20 +3738,6 @@ function migrateDiff(d) {
 }
 
 /* ══════════════════════════════════════════════════════
-   FIX #2: renderCollections – COLLECTIONS globális nem létezik.
-   Átírva: a gyors lista-választó gombokat rendereli a saját listákból.
-══════════════════════════════════════════════════════ */
-function renderCollections() {
-  renderPlaylists();
-}
-
-function applyListFilter(listId) {
-  state.filters.list = listId || 'all';
-  renderPlaylists();
-  applyFilters();
-}
-
-/* ══════════════════════════════════════════════════════
    Lista bővítése – kijelölt szavak hozzáadása meglévő listához
 ══════════════════════════════════════════════════════ */
 function expandPlaylist(id) {
@@ -3157,7 +3760,7 @@ function expandPlaylist(id) {
     showToast(`✅ ${added} szó hozzáadva a(z) „${pl.name}" listához!`);
   }
   savePlaylists();
-  renderPlaylists();
+  refreshLibraryChrome();
 }
 
 /* ══════════════════════════════════════════════════════
@@ -3212,18 +3815,11 @@ function activateNewSW(e) {
 /* ══════════════════════════════════════════════════════
    V12: FIREBASE AUTH UI VEZÉRLŐ
 ══════════════════════════════════════════════════════ */
-function openAuthModal() {
-  const noConfig = !(window.LexiFirebase && window.LexiFirebase.isConfigured && window.LexiFirebase.isConfigured());
-  const warn = document.getElementById('auth-no-config-warning');
-  if (warn) warn.style.display = noConfig ? '' : 'none';
-  const errBox = document.getElementById('auth-error');
-  if (errBox) errBox.style.display = 'none';
-  const modal = document.getElementById('auth-modal');
-  if (modal) modal.classList.add('open');
-}
-
+// V13: a bejelentkezés a Profil képernyőn, modál nélkül történik
 async function googleSignIn() {
   if (!window.LexiFirebase) { showToast('Firebase nincs betöltve'); return; }
+  const errBox = document.getElementById('auth-error');
+  if (errBox) errBox.style.display = 'none';
   if (!window.LexiFirebase.isConfigured()) {
     const warn = document.getElementById('auth-no-config-warning');
     if (warn) warn.style.display = '';
@@ -3231,7 +3827,6 @@ async function googleSignIn() {
   }
   try {
     await window.LexiFirebase.signInGoogle();
-    closeModal('auth-modal');
     showToast('✅ Sikeresen bejelentkeztél');
   } catch (err) {
     const errBox = document.getElementById('auth-error');
@@ -3244,14 +3839,12 @@ async function googleSignIn() {
 
 async function signOutCloud() {
   if (!window.LexiFirebase) return;
-  closeUserMenu();
   await window.LexiFirebase.signOut();
   showToast('Kijelentkeztél');
 }
 
 async function manualCloudSync() {
   if (!window.LexiFirebase) return;
-  closeUserMenu();
   showToast('🔄 Szinkronizálás...');
   // 1. Pull a cloud-ról (másik eszközről érkezett változások letöltése)
   // 2. Push a frissített lokálisat (saját változások felfelé)
@@ -3264,70 +3857,47 @@ async function manualCloudSync() {
   }
 }
 
-function toggleUserMenu() {
-  const menu = document.getElementById('user-menu');
-  if (menu) menu.classList.toggle('open');
-}
-
-function closeUserMenu() {
-  const menu = document.getElementById('user-menu');
-  if (menu) menu.classList.remove('open');
-}
-
-document.addEventListener('click', e => {
-  const menu = document.getElementById('user-menu');
-  const btn  = document.getElementById('user-avatar-btn');
-  if (menu && menu.classList.contains('open') && !menu.contains(e.target) && (!btn || !btn.contains(e.target))) {
-    menu.classList.remove('open');
-  }
-});
-
 // Auth állapot változás (firebase-sync.js → custom event)
+// V13: a fejlécben csak az avatar + szinkron pötty látszik, a fiók részletei a Profilban vannak
 window.addEventListener('lexi:authChanged', (e) => {
   const { user } = e.detail || {};
-  const loginBtn  = document.getElementById('auth-login-btn');
-  const userBlock = document.getElementById('auth-user-block');
+  const loginBlock     = document.getElementById('auth-login-block');
+  const userBlock      = document.getElementById('auth-user-block');
+  const avatar         = document.getElementById('user-avatar');
+  const avatarFallback = document.getElementById('user-avatar-fallback');
+  const profileAvatar  = document.getElementById('profile-avatar');
+  const syncDot        = document.getElementById('sync-status');
+  const hasPhoto       = !!(user && user.photoURL);
+
+  if (loginBlock) loginBlock.style.display = user ? 'none' : '';
+  if (userBlock)  userBlock.style.display  = user ? '' : 'none';
+  if (syncDot)    syncDot.style.display    = user ? '' : 'none';
+
+  if (avatar) {
+    avatar.style.display = hasPhoto ? '' : 'none';
+    if (hasPhoto) avatar.src = user.photoURL;
+  }
+  if (avatarFallback) avatarFallback.style.display = hasPhoto ? 'none' : '';
+  if (profileAvatar) {
+    profileAvatar.style.display = hasPhoto ? '' : 'none';
+    if (hasPhoto) profileAvatar.src = user.photoURL;
+  }
 
   if (user) {
-    if (loginBtn)  loginBtn.style.display  = 'none';
-    if (userBlock) userBlock.style.display = '';
-
-    const avatar         = document.getElementById('user-avatar');
-    const avatarFallback = document.getElementById('user-avatar-fallback');
-    if (avatar && user.photoURL) {
-      avatar.src = user.photoURL;
-      avatar.style.display = '';
-      if (avatarFallback) avatarFallback.style.display = 'none';
-    } else {
-      if (avatar) avatar.style.display = 'none';
-      if (avatarFallback) avatarFallback.style.display = '';
-    }
-
     const nameEl  = document.getElementById('user-menu-name');
     const emailEl = document.getElementById('user-menu-email');
     if (nameEl)  nameEl.textContent  = user.displayName || 'Felhasználó';
     if (emailEl) emailEl.textContent = user.email || '';
-  } else {
-    if (loginBtn)  loginBtn.style.display  = '';
-    if (userBlock) userBlock.style.display = 'none';
   }
 });
 
-// Sync státusz indikátor
+// Sync státusz indikátor (V13: kis színes pötty a fejléc avatarján)
 window.addEventListener('lexi:syncStatus', (e) => {
   const status = e.detail.status;
   const el = document.getElementById('sync-status');
   if (!el) return;
-  const ICONS = {
-    idle:    { svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/></svg>', cls: '' },
-    pending: { svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>', cls: 'sync-pending' },
-    syncing: { svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>', cls: 'sync-syncing' },
-    synced:  { svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>', cls: 'sync-synced' },
-    error:   { svg: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>', cls: 'sync-error' }
-  };
-  const ic = ICONS[status] || ICONS.idle;
-  el.innerHTML = ic.svg;
-  el.className = 'sync-status ' + ic.cls;
+  const CLASSES = { pending: 'sync-pending', syncing: 'sync-syncing', synced: 'sync-synced', error: 'sync-error' };
+  el.className = 'sync-status ' + (CLASSES[status] || '');
   el.title = ({
     idle:    'Készen áll',
     pending: 'Mentésre vár...',

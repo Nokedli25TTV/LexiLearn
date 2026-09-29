@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-29T12:00:00+02:00",
+  "title": "Design System: LexiLearn",
+  "extensions": {
+    "colorMeta": {
+      "ember-cta":      { "role": "primary",   "displayName": "Parázs korall",        "canonical": "oklch(0.72 0.16 42)",    "tonalRamp": ["#250000", "#460300", "#6a1b00", "#903300", "#b74b19", "#e27549", "#ffa883", "#ffd8b8"] },
+      "ember-ink":      { "role": "primary",   "displayName": "Parázs tinta",         "canonical": "oklch(0.2 0.03 40)" },
+      "forest-primary": { "role": "primary",   "displayName": "Erdőzöld",             "canonical": "#2d6a4f", "tonalRamp": ["#001105", "#002a18", "#12452e", "#296246", "#3f8160", "#69a887", "#9dd3b5", "#cefbe1"] },
+      "forest-leaf":    { "role": "primary",   "displayName": "Levélzöld",            "canonical": "#52b788" },
+      "terracotta-accent": { "role": "secondary", "displayName": "Terrakotta",        "canonical": "#e76f51" },
+      "night-bg":       { "role": "neutral",   "displayName": "Éjszakai erdő háttér", "canonical": "oklch(0.18 0.008 165)", "tonalRamp": ["#090c0b", "#1f2321", "#373c39", "#515754", "#6d7370", "#939a97", "#c0c6c3", "#ebf0ed"] },
+      "night-surface":  { "role": "neutral",   "displayName": "Éjszakai felület",     "canonical": "oklch(0.22 0.009 165)" },
+      "night-surface-2": { "role": "neutral",  "displayName": "Éjszakai felület 2",   "canonical": "oklch(0.265 0.011 165)" },
+      "night-text":     { "role": "neutral",   "displayName": "Holdfény szöveg",      "canonical": "oklch(0.935 0.008 165)" },
+      "night-text-3":   { "role": "neutral",   "displayName": "Pala",                 "canonical": "oklch(0.6 0.012 165)" },
+      "paper-bg":       { "role": "neutral",   "displayName": "Papír",                "canonical": "#f7f5f0" },
+      "star-gold":      { "role": "tertiary",  "displayName": "Csillag arany",        "canonical": "oklch(0.72 0.16 75)" }
+    },
+    "typographyMeta": {
+      "display":  { "displayName": "Display",  "purpose": "Képernyőcímek és a napi sorozat sora." },
+      "headline": { "displayName": "Headline", "purpose": "Eredmény-képernyők címe." },
+      "title":    { "displayName": "Title",    "purpose": "Fő gombok felirata." },
+      "body":     { "displayName": "Body",     "purpose": "Leírások, menü-opciók, listák." },
+      "label":    { "displayName": "Label",    "purpose": "Nagybetűs szekciócímek és számlálók." },
+      "brand":    { "displayName": "Brand",    "purpose": "Csak a logó felirata." }
+    },
+    "shadows": [
+      { "name": "glass-float", "value": "inset 0 1px 0 oklch(0.98 0.005 165 / 0.15), 0 18px 40px -14px oklch(0.06 0.01 165 / 0.8), 0 4px 12px oklch(0.06 0.01 165 / 0.35)", "purpose": "Lebegő üveg vezérlők (alsó navigáció, gyakorlás dokk), backdrop-filter: blur(22px) saturate(180%) mellett." },
+      { "name": "menu", "value": "0 8px 48px rgba(0,0,0,0.6)", "purpose": "Lenyíló menük és tanuló kártyák sötét témában." },
+      { "name": "ember-glow", "value": "0 14px 30px -14px oklch(0.72 0.16 42 / 0.35)", "purpose": "Kizárólag a fő korall gomb alatt." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.22, 1, 0.36, 1)", "purpose": "Minden állapotváltás (lencse, menü, kártya-repülés, dokk)." },
+      { "name": "press", "value": "140-160ms scale(0.94-0.98)", "purpose": "Nyomás visszajelzés gombokon." },
+      { "name": "nav-lens", "value": "460ms transform", "purpose": "Az aktív navigációs elem mögötti üveg lencse csúszása." },
+      { "name": "menu-in", "value": "200ms opacity + translateY(-6px)", "purpose": "Lenyíló menü megjelenése." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "380px" },
+      { "name": "mobile", "value": "680px" },
+      { "name": "desktop", "value": "961px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Fő cselekvés (korall)",
+      "kind": "button",
+      "refersTo": "button-cta",
+      "description": "Képernyőnként egy: új szavak tanulása, indítás, mai ismétlés a cél után.",
+      "html": "<button class=\"ds-cta\"><span class=\"ds-cta-main\">Új szavak tanulása</span><span class=\"ds-cta-sub\">5 szó · kb. 3 perc</span><span class=\"ds-cta-arrow\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"/><polyline points=\"12 5 19 12 12 19\"/></svg></span></button>",
+      "css": ".ds-cta { width: 340px; min-height: 84px; display: grid; grid-template-columns: 1fr auto; align-items: center; column-gap: 12px; row-gap: 2px; padding: 16px 18px 16px 22px; border: none; border-radius: 22px; background: oklch(0.72 0.16 42); color: oklch(0.2 0.03 40); text-align: left; font-family: Nunito, sans-serif; cursor: pointer; box-shadow: 0 14px 30px -14px oklch(0.72 0.16 42 / 0.35); transition: transform 160ms cubic-bezier(0.22,1,0.36,1), background-color 0.2s; } .ds-cta:hover { background: oklch(0.76 0.15 45); } .ds-cta:active { transform: scale(0.98); } .ds-cta:focus-visible { outline: 3px solid #52b788; outline-offset: 2px; } .ds-cta-main { grid-column: 1; font-size: 19px; font-weight: 900; } .ds-cta-sub { grid-column: 1; font-size: 13px; font-weight: 700; opacity: 0.8; } .ds-cta-arrow { grid-column: 2; grid-row: 1 / span 2; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: oklch(0.2 0.03 40 / 0.12); }"
+    },
+    {
+      "name": "Szűrő pilla",
+      "kind": "chip",
+      "refersTo": "pill-filter",
+      "description": "Lenyíló menüt nyit; aktívan a kiválasztott értéket mutatja.",
+      "html": "<div class=\"ds-pills\"><button class=\"ds-pill ds-pill-active\">Dekiru 3. lecke <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"/></svg></button><button class=\"ds-pill\">Témakör <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"/></svg></button></div>",
+      "css": ".ds-pills { display: flex; gap: 8px; padding: 12px; background: #0e1311; } .ds-pill { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 12px 0 16px; border-radius: 999px; border: 1px solid #2d3531; background: #171c1a; color: #acb3af; font: 800 14px Nunito, sans-serif; cursor: pointer; transition: border-color 0.2s, background-color 0.2s; } .ds-pill:hover { border-color: #52b788; } .ds-pill:focus-visible { outline: 3px solid #52b788; outline-offset: 2px; } .ds-pill-active { background: rgba(82,183,136,0.15); border-color: rgba(82,183,136,0.45); color: #52b788; }"
+    },
+    {
+      "name": "Lebegő üveg navigáció",
+      "kind": "nav",
+      "refersTo": "nav-glass",
+      "description": "Alsó navigáció: lebegő kapszula, aktív elem mögött csúszó üveg lencse.",
+      "html": "<div class=\"ds-nav-stage\"><nav class=\"ds-nav\"><span class=\"ds-lens\"></span><button class=\"ds-nav-item\">Kezdőlap</button><button class=\"ds-nav-item ds-on\">Gyakorlás</button><button class=\"ds-nav-item\">Statisztika</button><button class=\"ds-nav-item\">Profil</button></nav></div>",
+      "css": ".ds-nav-stage { padding: 24px 12px; background: linear-gradient(135deg, #202724, #0e1311); } .ds-nav { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); height: 64px; padding: 6px; border-radius: 999px; background: oklch(0.27 0.012 165 / 0.6); -webkit-backdrop-filter: blur(22px) saturate(180%); backdrop-filter: blur(22px) saturate(180%); border: 1px solid oklch(0.98 0.005 165 / 0.13); box-shadow: inset 0 1px 0 oklch(0.98 0.005 165 / 0.15), 0 18px 40px -14px oklch(0.06 0.01 165 / 0.8); } .ds-lens { position: absolute; top: 6px; bottom: 6px; left: 6px; width: calc((100% - 12px) / 4); border-radius: 999px; background: oklch(0.8 0.1 160 / 0.16); transform: translateX(100%); transition: transform 460ms cubic-bezier(0.22,1,0.36,1); } .ds-nav-item { position: relative; border: none; border-radius: 999px; background: none; color: #acb3af; font: 800 11px Nunito, sans-serif; cursor: pointer; } .ds-nav-item:hover { color: #e5ebe8; } .ds-nav-item:focus-visible { outline: 3px solid #52b788; outline-offset: 2px; } .ds-on { color: #52b788; }"
+    },
+    {
+      "name": "Kereső mező",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "A Gyakorlás fül tetején; 16px betű, hogy iOS ne nagyítson.",
+      "html": "<label class=\"ds-search\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><line x1=\"21\" y1=\"21\" x2=\"16.65\" y2=\"16.65\"/></svg><input placeholder=\"Keresés: szó, jelentés, olvasat\"></label>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 10px; width: 320px; height: 50px; padding: 0 16px; border-radius: 16px; border: 1px solid #2d3531; background: #171c1a; color: #7a837e; transition: border-color 0.2s, box-shadow 0.2s; } .ds-search:focus-within { border-color: #52b788; box-shadow: 0 0 0 3px rgba(82,183,136,0.22); } .ds-search input { flex: 1; border: none; background: none; outline: none; color: #e5ebe8; font: 600 16px Nunito, sans-serif; } .ds-search input::placeholder { color: #7a837e; }"
+    },
+    {
+      "name": "Szólista sor",
+      "kind": "custom",
+      "refersTo": "word-row",
+      "description": "Kijelölhető sor pipával, jelentéssel, szinttel és külön csillag gombbal.",
+      "html": "<div class=\"ds-list\"><div class=\"ds-row ds-sel\"><span class=\"ds-check\">✓</span><span class=\"ds-main\"><b>たべる</b><small>eszik · taberu</small></span><span class=\"ds-level\">N5</span><span class=\"ds-star\">★</span></div><div class=\"ds-row\"><span class=\"ds-check\"></span><span class=\"ds-main\"><b>のむ</b><small>iszik · nomu</small></span><span class=\"ds-level\">N5</span><span class=\"ds-star ds-off\">☆</span></div></div>",
+      "css": ".ds-list { width: 340px; overflow: hidden; border-radius: 20px; border: 1px solid #2d3531; background: #171c1a; font-family: Nunito, sans-serif; } .ds-row { display: flex; align-items: center; gap: 12px; min-height: 62px; padding: 10px 0 10px 14px; border-bottom: 1px solid #2d3531; color: #e5ebe8; cursor: pointer; } .ds-row:last-child { border-bottom: none; } .ds-row:hover { background: rgba(32,39,36,0.6); } .ds-sel { background: rgba(82,183,136,0.15); } .ds-check { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #2d3531; display: grid; place-items: center; font-size: 13px; color: transparent; } .ds-sel .ds-check { background: #52b788; border-color: #52b788; color: #171c1a; } .ds-main { flex: 1; display: flex; flex-direction: column; } .ds-main b { font-size: 17px; font-weight: 800; } .ds-main small { font-size: 13px; font-weight: 600; color: #acb3af; } .ds-level { padding: 2px 6px; border-radius: 7px; font-size: 10px; font-weight: 800; background: rgba(41,182,246,0.2); color: #29b6f6; } .ds-star { width: 48px; text-align: center; color: #f7c747; } .ds-off { color: #7a837e; }"
+    },
+    {
+      "name": "Kész gomb",
+      "kind": "button",
+      "refersTo": "button-done",
+      "description": "Menük lezáró / mentő gombja: fordított semleges.",
+      "html": "<button class=\"ds-done\">Kész</button>",
+      "css": ".ds-done { min-height: 42px; padding: 0 18px; border: none; border-radius: 12px; background: #e5ebe8; color: #171c1a; font: 800 14px Nunito, sans-serif; cursor: pointer; } .ds-done:hover { background: #ffffff; } .ds-done:focus-visible { outline: 3px solid #52b788; outline-offset: 2px; } .ds-done:disabled { opacity: 0.35; cursor: not-allowed; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A Nyugodt Dojo",
+    "overview": "Egy japán edzőterem csendje, ahol minden nap ugyanabban az időben, ugyanazzal a figyelemmel gyakorolsz. A felület nem kiabál: tört, zöld árnyalatú sötét háttér, meleg papírszínű világos téma, és egyetlen élénk korall szín, ami mindig azt mutatja, mi a következő lépés. Az Apple iOS natív érzete, a Duolingo jutalmazó ritmusa és az Anki hatékonysága egy rendszerben.",
+    "keyCharacteristics": [
+      "Sötét az alapértelmezés (esti, reggeli tanulás), meleg világos téma egy kapcsolóra.",
+      "Színkód: korall = cselekvés, zöld = haladás és kijelölés, piros = hiba, arany = csillag.",
+      "Egy kéz, egy hüvelykujj: navigáció és gyakorlás-indítás a képernyő alján, lebegve.",
+      "Üveg csak lebegő vezérlőkön (navigáció, dokk); a tartalom mindig tömör felületen ül.",
+      "Mozgás csak állapotváltásra, 150-500 ms, exponenciális lassulással; prefers-reduced-motion alatt kikapcsol."
+    ],
+    "rules": [
+      { "name": "The One Ember Rule", "body": "Képernyőnként egy korall elem. Ha kettő lenne, az egyik nem fő cselekvés: szürke vagy zöld lesz belőle.", "section": "colors" },
+      { "name": "The Tinted Night Rule", "body": "Sötét módban tiszta szürke tilos; minden semleges az erdőzöld árnyalat felé tört (chroma 0,008-0,012, hue 165).", "section": "colors" },
+      { "name": "The 16px Input Rule", "body": "Minden szövegbeviteli mező legalább 16px, különben iOS ráközelít fókuszkor.", "section": "typography" },
+      { "name": "The No-Serif-Labels Rule", "body": "Lora soha nem kerül gombra, címkére vagy adatra.", "section": "typography" },
+      { "name": "The Glass Is For Floating Rule", "body": "Üveg kizárólag a tartalom fölött lebegő vezérlőn lehet (alsó navigáció, dokk). Kártyán, listán, menün tilos; ott tömör felület kell az olvashatósághoz.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do tartsd a fő cselekvést a képernyő alsó harmadában, legalább 44x44px érintési felülettel.",
+      "Do használd a korallt (#f57e4d) képernyőnként egyetlen fő gombra, mindig sötét (#22110b) felirattal.",
+      "Do tedd a beállításokat lenyíló menübe vagy a dokkba; a pilla mutassa a kiválasztott értéket.",
+      "Do ünnepelj csak valódi eredménynél (napi cél, hibátlan kör), egyszer naponta.",
+      "Do tarts minden szöveget WCAG AA felett mindkét témában, és kapcsold ki a mozgást prefers-reduced-motion alatt."
+    ],
+    "donts": [
+      "Don't legyen túlzsúfolt, gyerekes gamifikáció: nincs badge-eső, villogás, harsány szín mindenhol.",
+      "Don't legyen rideg, táblázatos szótár: nincs Excel-szerű lista apró betűkkel, és nincs végtelen görgetés a beállításokig.",
+      "Don't használj neon / cyberpunk sötét témát: lila-kék neon, erős glow, gradiens szöveg tilos.",
+      "Don't használj 1px-nél vastagabb színes oldalcsíkot (border-left) kártyán vagy listaelemen.",
+      "Don't tegyél üveget (backdrop-filter) tartalom-kártyára; csak lebegő vezérlő kaphatja.",
+      "Don't nyiss modált, ha elfér inline vagy lenyíló menüben (a lista mentése is a Lista menüben történik).",
+      "Don't animálj layout tulajdonságot (width, height, top); transform, opacity, clip-path."
+    ]
+  }
+}
