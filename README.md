@@ -35,6 +35,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `js/library/` | Gyakorlás fül: szűrők, lenyíló menük, szólista, gyakorlás dokk, saját listák |
 | `js/practice/` | gyakorló motor (kvíz, gépelős, mondat), 3D kártya, felolvasás (TTS) |
 | `js/habit/` | napi szokás: napi penzum, új szavak tanulása, esedékes ismétlés (`review.js`), Kezdőlap |
+| `js/goal/` | JLPT haladás: célszámok, mérföldkövek, tempó (`jlpt.js`) és a felületek: Statisztika kártya, Kezdőlap sor, Haladás képernyő (`view.js`) |
 | `js/srs/` | ismétlésütemezés: FSRS-5 algoritmus (`fsrs.js`) és szó-szintű ütemezés, beosztás, előrejelzés (`schedule.js`) |
 | `js/stats/` | statisztika: számítások (`model`) és ábrák (`view`) |
 | `js/features/`, `js/ui/`, `js/app/` | feladatok, sorozat, könyvjelzők, profil, import/export; képernyők, téma, toast, húzás, konfetti; service worker, bejelentkezés |
@@ -81,6 +82,15 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **Már tanult szavak:** betöltéskor (és felhő szinkron után) a még ütemezés nélküli tanult szavakat a meglévő
   eredményekből becsülve beosztja; a lemaradtakat napi adagokra (min. 15/nap, legfeljebb 3 hét).
 
+## JLPT haladás
+
+- **Viszonyítás:** a JLPT általános, halmozott célszámai: N5 800 / 100, N4 1500 / 300, N3 3750 / 650 (szó / kandzsi).
+  Az N5-N3 szintű szavak együtt számítanak.
+- **Megtanult:** elkezdett szó. **Rögzült:** az ismétlési köz (a stabilitásból, `intervalFor(s)`) legalább 21 nap;
+  ugyanez a definíció a Statisztika érettség-sávjában és KPI-jában.
+- **Mérföldkövek:** a megtanult szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
+- **Célidőpont:** `appData.japanese.globalStats.jlptGoal` (szinkronizált), alapból 2027-07-04.
+
 ## Tesztek
 
 - **`tests/golden.test.js` – golden master.** A `tests/golden/expected.json` az app kimenete rögzített
@@ -91,6 +101,7 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **`tests/handlers.test.js`** – minden kirajzolt inline eseménykezelő létező függvényt hív.
 - **`tests/unit/`** – egységtesztek a mag logikára (dátumok, napi napló, statisztika, új szavak) és a felhő
   tárolóra (felosztás, migráció, csak a változott rész írása, két eszköz, méret).
+- **`tests/unit/jlpt.test.js`** – mérföldkövek, halmozott számolás, rögzült, tempó és előrejelzés.
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
 - Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).

@@ -7,6 +7,7 @@ import { escHtml, shuffle } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordLearned } from './goal.js';
 import { dueForecast, scheduleLearnedWord } from '../srs/schedule.js';
+import { crossedMilestones, isLearnedWord } from '../goal/jlpt.js';
 import { renderHome } from './home.js';
 import { getExampleSentence, showQuestion, updatePracticeTop } from '../practice/engine.js';
 import { speakWord } from '../practice/tts.js';
@@ -30,10 +31,27 @@ function startLearnSession() {
     queue: [...ids], batchIds: ids, learnedIds: [], againIds: [],
     roundNumber: 1, roundWords: [], currentIdx: 0, errorList: [],
     roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now(),
-    sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0
+    sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0,
+    jlptBefore: jlptLearnedCount() // V13.6: mérföldkő-jelzéshez a tanulás végén
   };
   showScreen('practice');
   showLearnCard();
+}
+
+// V13.6: a JLPT sávba számító (N5-N3) megtanult szavak száma a mostani módban
+function jlptLearnedCount() {
+  if (currentMode === 'english') return null;
+  return state.words.filter(w => ['N5', 'N4', 'N3'].includes(w.diff) && isLearnedWord(w)).length;
+}
+
+function milestoneNoteHtml(p) {
+  if (p.jlptBefore === null || p.jlptBefore === undefined) return '';
+  const kind = currentMode === 'kanji' ? 'kanji' : 'words';
+  const crossed = crossedMilestones(kind, p.jlptBefore, jlptLearnedCount());
+  if (!crossed.length) return '';
+  const m = crossed[crossed.length - 1];
+  const unit = kind === 'kanji' ? 'kandzsi' : 'szó';
+  return `<button class="learn-milestone" onclick="showGoalScreen()">Mérföldkő: ${m.n.toLocaleString('hu-HU')} ${unit}${m.levelEnd ? ` · ${m.level} szint` : ''}</button>`;
 }
 
 function showLearnCard() {
@@ -176,6 +194,7 @@ function showLearnComplete() {
         <div class="goal-bar ${goalReached ? 'is-done' : ''}" style="--p:${pct}"><div class="goal-bar-fill"></div></div>
         <span class="learn-done-streak">Konzisztencia: ${streak} nap</span>
       </div>
+      ${milestoneNoteHtml(p)}
       <div class="learn-done-words">${chips}</div>
       <div class="learn-done-actions">
         ${nextBatch > 0 ? `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Még ${nextBatch} új szó</span></button>`

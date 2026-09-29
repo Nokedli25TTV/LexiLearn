@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-29T18:07:15.868Z",
+  "generatedAt": "2026-09-29T20:29:06.129Z",
   "title": "Design System: LexiLearn",
   "extensions": {
     "colorMeta": {
@@ -277,6 +277,14 @@
       "description": "A jelentés megnézése után jelenik meg: négy egyforma gomb, alattuk a következő ismétlésig hátralévő idő. Csak a \"Jó\" színes (zöld), a többi semleges; piros nincs.",
       "html": "<div class=\"ds-rate\"><button class=\"ds-rate-b\"><span>Újra</span><small>ma</small></button><button class=\"ds-rate-b\"><span>Nehéz</span><small>2 n</small></button><button class=\"ds-rate-b is-good\"><span>Jó</span><small>4 n</small></button><button class=\"ds-rate-b\"><span>Könnyű</span><small>9 n</small></button></div>",
       "css": ".ds-rate { width: 340px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; font-family: Nunito, sans-serif; } .ds-rate-b { min-height: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; border-radius: 16px; border: 1px solid #2d3531; background: #171c1a; color: #e5ebe8; cursor: pointer; } .ds-rate-b span { font-size: 15px; font-weight: 900; } .ds-rate-b small { font-size: 12px; font-weight: 700; color: #acb3af; font-variant-numeric: tabular-nums; } .ds-rate-b.is-good { background: rgba(82, 183, 136, 0.15); color: #52b788; border-color: rgba(82, 183, 136, 0.4); } .ds-rate-b.is-good small { color: inherit; opacity: 0.85; }"
+    },
+    {
+      "name": "JLPT mérföldkő-sáv",
+      "kind": "custom",
+      "refersTo": "milestone-bar",
+      "description": "Szegmensenként egy mérföldkő, szélessége arányos a darabszámmal. Halványabb zöld: megtanult, erősebb zöld: rögzült. Alatta szintjelek.",
+      "html": "<div class=\"ds-ms\"><div class=\"ds-ms-head\"><span>Szókincs</span><b>930<small>/ 3750</small></b><em>24%</em></div><div class=\"ds-ms-bar\"><i style=\"flex-grow:100;--f:1;--m:1\"></i><i style=\"flex-grow:100;--f:1;--m:.6\"></i><i style=\"flex-grow:100;--f:1;--m:.2\"></i><i style=\"flex-grow:100;--f:.3;--m:0\"></i><i style=\"flex-grow:100\"></i><i style=\"flex-grow:250\"></i><i style=\"flex-grow:250\"></i></div></div>",
+      "css": ".ds-ms { width: 340px; font-family: Nunito, sans-serif; color: #e5ebe8; } .ds-ms-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; } .ds-ms-head span { font-size: 13px; font-weight: 700; color: #acb3af; } .ds-ms-head b { margin-left: auto; font-size: 22px; font-weight: 300; } .ds-ms-head small { margin-left: 4px; font-size: 14px; font-weight: 600; color: #acb3af; } .ds-ms-head em { font-style: normal; font-size: 13px; font-weight: 800; } .ds-ms-bar { display: flex; gap: 2px; height: 14px; } .ds-ms-bar i { position: relative; border-radius: 3px; background: #292f2c; overflow: hidden; } .ds-ms-bar i::before, .ds-ms-bar i::after { content: \"\"; position: absolute; inset: 0 auto 0 0; } .ds-ms-bar i::before { width: calc(var(--f, 0) * 100%); background: #357153; } .ds-ms-bar i::after { width: calc(var(--m, 0) * 100%); background: #65d49e; }"
     }
   ],
   "narrative": {

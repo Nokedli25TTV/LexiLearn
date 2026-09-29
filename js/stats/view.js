@@ -6,6 +6,7 @@ import { escHtml } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { getDailyGoal } from '../habit/goal.js';
 import { accuracyOf, activityLevel, buildDailyIndex, computeMaturity, weekFocusSeconds } from './model.js';
+import { renderJlptCard } from '../goal/view.js';
 
 const HEAT_LEVEL_LABELS = ['Nem tanultál', 'Aktív nap', 'Napi penzum', 'Penzum + ismétlés', 'Intenzív nap'];
 
@@ -43,6 +44,7 @@ function renderStats() {
   const idx = buildDailyIndex();
   const goal = getDailyGoal();
   setText('stats-scope', `${MODE_LABELS[currentMode]} mód`);
+  renderJlptCard();
   renderKpis(idx, goal);
   renderConsistencyHeatmap(idx, goal);
   renderMaturity();
@@ -188,7 +190,7 @@ function renderMaturity() {
       ${stages.map(([key, cls, label, v]) => `
         <li><i class="mat-sw ${cls}" aria-hidden="true"></i><span class="mat-name">${label}</span><span class="mat-count">${fmtNum(v)}</span><span class="mat-pct">${pct(v)}%</span></li>`).join('')}
     </ul>
-    <p class="viz-caption">Rögzült: legalább ötször egymás után helyes, és két hétnél régebben tanult szó. Ismerkedés: az elmúlt két nap szavai.</p>`;
+    <p class="viz-caption">Az ismétlési köz szerint, mint az Ankiban. Rögzült: legalább 21 nap. Gyakorlás alatt: 7-20 nap. Ismerkedés: 7 napnál rövidebb.</p>`;
 
   const bar = host.querySelector('.mat-bar');
   const onMove = e => {

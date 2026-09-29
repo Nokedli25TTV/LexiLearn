@@ -8,6 +8,7 @@ import { validateDayFilter } from '../library/filters.js';
 import { renderDashboard } from '../library/list.js';
 import { closeLibraryOverlays, resetTagQuery } from '../library/menus.js';
 import { renderStats } from '../stats/view.js';
+import { renderGoalScreen } from '../goal/view.js';
 
 /* ══════════════════════════════════════════════════════
    MÓD VÁLTÁSA ÉS ZÁSZLÓK CSERÉJE
@@ -35,6 +36,7 @@ function setMode(mode, isInit = false) {
     if (active === 'home')    renderHome();
     if (active === 'stats')   renderStats();
     if (active === 'profile') renderProfile();
+    if (active === 'goal')    renderGoalScreen();
   }
 }
 
@@ -43,8 +45,10 @@ function setMode(mode, isInit = false) {
 ══════════════════════════════════════════════════════ */
 const SCREENS = {
   home: 'screen-home', dashboard: 'screen-dashboard', practice: 'screen-practice',
-  roundend: 'screen-round-end', stats: 'screen-stats', profile: 'screen-profile'
+  roundend: 'screen-round-end', stats: 'screen-stats', profile: 'screen-profile',
+  goal: 'screen-goal' // V13.6: a Statisztika alképernyője (a navigációban a Statisztika marad kiemelve)
 };
+const NAV_PARENT = { goal: 'stats' };
 
 function showScreen(name) {
   const key = SCREENS[name] ? name : 'home';
@@ -56,13 +60,14 @@ function showScreen(name) {
   // A body data-screen attribútuma vezérli a fejléc / alsó navigáció láthatóságát (CSS)
   document.body.dataset.screen = key;
   const navItems = [...document.querySelectorAll('.bottom-nav [data-screen]')];
+  const navKey = NAV_PARENT[key] || key;
   navItems.forEach(btn => {
-    const isActive = btn.dataset.screen === key;
+    const isActive = btn.dataset.screen === navKey;
     btn.classList.toggle('active', isActive);
     if (isActive) btn.setAttribute('aria-current', 'page'); else btn.removeAttribute('aria-current');
   });
   // A navigáció üveg "lencséje" az aktív elem mögé csúszik
-  const navIndex = navItems.findIndex(btn => btn.dataset.screen === key);
+  const navIndex = navItems.findIndex(btn => btn.dataset.screen === navKey);
   const nav = document.getElementById('bottom-nav');
   if (nav && navIndex >= 0) nav.style.setProperty('--nav-i', navIndex);
   window.scrollTo(0, 0);
@@ -71,6 +76,7 @@ function showScreen(name) {
   if (key === 'dashboard') renderDashboard();
   if (key === 'stats') renderStats();
   if (key === 'profile') renderProfile();
+  if (key === 'goal') renderGoalScreen();
 }
 
 export { SCREENS, setMode, showScreen };

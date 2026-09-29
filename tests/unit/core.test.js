@@ -58,17 +58,21 @@ describe('konzisztencia hőtérkép fokozatai', () => {
   });
 });
 
-describe('tudás-érettség', () => {
-  it('ismerkedés / gyakorlás alatt / rögzült / még nem kezdett', () => {
+describe('tudás-érettség (ismétlési köz szerint)', () => {
+  it('ismerkedés < 7 nap · gyakorlás alatt 7-20 nap · rögzült 21+ nap · még nem kezdett', () => {
+    // A köz a stabilitásból jön (90%-os megtartásnál köz = stabilitás), nem a due - last különbségből
+    const srs = s => ({ srs: { last: '2026-08-01', due: '2026-12-01', s, d: 5, reps: 2, lapses: 0 } });
     appData.japanese.words = [
-      word('uj'),                                                                  // még nem kezdett
-      word('friss', {}, { learnedAt: '2026-09-29', lastAttempt: 1 }),               // tegnap-ma tanult
-      word('keves', {}, { totalCorrect: 1, lastAttempt: 1 }),                       // kétszer sem talált
-      word('gyakorol', {}, { totalCorrect: 5, streak: 3, lastAttempt: 1 }),         // még nincs 5-ös sorozat
-      word('rogzult', {}, { totalCorrect: 8, streak: 6, lastAttempt: 1, learnedAt: '2026-09-01' }),
-      word('tulfriss', {}, { totalCorrect: 8, streak: 6, lastAttempt: 1, learnedAt: '2026-09-20' }) // < 2 hét
+      word('uj'),                                    // még nem kezdett
+      word('tanult', {}, { learnedAt: '2026-09-29' }), // még nincs ütemezve
+      word('friss', {}, srs(3.2)),                   // 3 nap
+      word('hat', {}, srs(6.1)),                     // 6 nap
+      word('het', {}, srs(7)),                       // 7 nap
+      word('husz', {}, srs(20.2)),                   // 20 nap
+      word('rogzult', {}, srs(21)),                  // 21 nap
+      word('regi', {}, srs(120))                     // 120 nap
     ];
-    expect(computeMaturity()).toEqual({ fresh: 2, practicing: 2, mature: 1, notStarted: 1, started: 5 });
+    expect(computeMaturity()).toEqual({ fresh: 3, practicing: 2, mature: 2, notStarted: 1, started: 7 });
   });
 });
 

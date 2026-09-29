@@ -49,6 +49,9 @@ it('minden inline eseménykezelő létező window függvényt hív', async () =>
   api.flipReviewCard(); snap();
   api.showReviewComplete(); snap();
 
+  // V13.6: JLPT haladás képernyő (Statisztika kártya már a stats képernyőn látszik japán módban)
+  api.showScreen('goal'); snap();
+
   expect(seen.size).toBeGreaterThan(40);
   const missing = [...seen].filter(n => typeof win[n] !== 'function' && !['event', 'document'].includes(n));
   expect(missing).toEqual([]);

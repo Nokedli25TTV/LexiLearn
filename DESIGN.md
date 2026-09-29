@@ -293,6 +293,14 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 - **Húzás:** balra Újra, jobbra Jó, de csak a jelentés megnézése után; addig a pecsétek sem látszanak. Billentyűzet: Szóköz fordít, 1-4 értékel.
 - **Összegzés:** "N szó átismételve", alatta a következő lépés (még esedékes / új szavak) korallal, és egy csendes sor az értékelések eloszlásáról ("Újra 1 · Jó 12"). Konfetti nincs: az ismétlés napi rutin, nem ünnepi pillanat.
 
+### JLPT haladás (Signature Component, V13.6)
+- **Mérföldkő-sáv:** vízszintes sáv, amelynek szegmensei a mérföldkövek (szókincs: N5-N4 100-anként, N3 250-enként; kandzsi 25 / 50 / 50); a szegmens szélessége arányos a darabszámmal, így a sáv lineáris. 2px rés a szegmensek között, 3px a szintek határán; alatta szintjelek (N5, N4, N3) a határpontoknál, elért szintnél erősebb szürkével.
+- **Két réteg, egy skála:** üres = `--hm-0`, megtanult = `--mat-1`, rögzült (21+ napos ismétlési köz) = `--mat-3`. Új szín nincs: a már validált érettség-skálát használja. A jelmagyarázat "halványabb / erősebb zöld" (sötétben a rögzült a világosabb, ezért a "sötétebb" szó tilos).
+- **Statisztika kártya:** a lap tetején (a KPI sáv fölött), csak japán és kandzsi módban; két sáv (Szókincs, Kandzsi) számmal és százalékkal, alatta link a Haladás képernyőre.
+- **Haladás képernyő:** a Statisztika alképernyője (a navigációban a Statisztika marad kiemelve), vissza gombbal. Célidőpont pilla alakú dátummezővel, "N nap van hátra"; soronként nagy szám (Stat stílus), sáv, "X rögzült · Y még ismétlés alatt"; tempó-panel (Hátravan, Szükséges tempó, 14 napos átlag, A mostani tempóval) és egy őszinte állapotmondat; mérföldkő lista (utolsó kettő teljesített dátummal, az aktuális "még N", a következő kettő), a teljes lista táblázatban; szótár-lefedettség.
+- **Kezdőlap sor:** a cselekvések alatt egy csendes, 48px-es sor: "N3 FELÉ szókincs 24% · kandzsi 20%", nyíllal, a Haladás képernyőre visz.
+- **Mérföldkő elérése:** a tanulás végén egy zöld-köd pilla ("Mérföldkő: 150 kandzsi"); konfetti nincs.
+
 ### Kezdőlap cselekvések (V13.5)
 - Ha van esedékes ismétlés, az "Ismétlés" a korall fő gomb (darabszám chippel, "kb. N perc"), az "Új szavak tanulása" alatta másodlagos (felület háttér, nyíl nélkül). Ha nincs esedékes, az új szavak a fő gomb.
 - Alattuk egy csendes, középre zárt előrejelző sor: "Holnap 15 · a következő 7 napban 45" (13px, a számok 800-as súllyal). Így nincs meglepetés-hegy.

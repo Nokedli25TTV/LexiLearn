@@ -14,7 +14,9 @@ A feladat minden nap ugyanaz: megtartani a konzisztenciát, először átisméte
 
 LexiLearn egy offline is működő, felhőben szinkronizált szótanuló, ami a **napi, fegyelmezett szokásra** épít, nem a hajrára. A siker: minden nap visszajön a felhasználó, a napi penzum teljesül (5-10 új szó módonként), és a tudás ténylegesen rögzül (nem csak a számláló nő). A rendszer szándékosan korlátozza a napi új szavakat, hogy ne legyen kiégés.
 
-Fő felületek: Kezdőlap (konzisztencia, esedékes ismétlés, napi penzum, új szavak, előrejelzés), Gyakorlás (szűrhető szótár, egyéni gyakorlás összeállítása), Statisztika (konzisztencia-hőtérkép, tudás-érettség, pontosság, fókuszált idő), Profil.
+Fő felületek: Kezdőlap (konzisztencia, esedékes ismétlés, napi penzum, új szavak, előrejelzés), Gyakorlás (szűrhető szótár, egyéni gyakorlás összeállítása), Statisztika (JLPT N3 haladás mérföldkövekkel és célidőponttal, konzisztencia-hőtérkép, tudás-érettség, pontosság, fókuszált idő), Profil.
+
+Hosszú távú cél: **JLPT N3** (alapértelmezett célidőpont 2027. július 4., átállítható). A haladás a JLPT általános célszámaihoz mér (N3-ig összesen kb. 3750 szó és 650 kandzsi), nem a szótár tartalmához, hogy a kép őszinte legyen.
 
 ## Brand Personality
 

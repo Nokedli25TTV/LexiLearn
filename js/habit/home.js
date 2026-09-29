@@ -11,6 +11,7 @@ import { closeFilterMenu, renderFilterBar } from '../library/menus.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { REVIEW_BATCH_SIZE, dueForecast } from '../srs/schedule.js';
+import { goalLineHtml } from '../goal/view.js';
 
 /* ── KEZDŐLAP ─────────────────────────────────────────── */
 function renderHome() {
@@ -125,7 +126,7 @@ function renderHome() {
     : '';
 
   const actions = document.getElementById('home-actions');
-  if (actions) actions.innerHTML = reviewHtml + learnHtml + forecastHtml;
+  if (actions) actions.innerHTML = reviewHtml + learnHtml + forecastHtml + goalLineHtml();
 
   renderDailyQuests();
 }

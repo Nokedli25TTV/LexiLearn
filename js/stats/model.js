@@ -3,6 +3,7 @@
 import { addDays, dateKey, parseHuDateKey, startOfWeek } from '../core/dates.js';
 import { state } from '../core/state.js';
 import { isNewWord } from '../habit/goal.js';
+import { MATURE_DAYS, srsInterval } from '../goal/jlpt.js';
 
 /* ── Napi index: napló + visszamenőleges becslés ──
    A részletes napló (globalStats.daily) a V13.2-vel indult. Az azelőtti napokra a
@@ -44,21 +45,19 @@ function activityLevel(e, goal) {
   return 1;
 }
 
-/* ── Tudás-érettség ──
-   Ismerkedés: az elmúlt 2 napban tanult, vagy még kétszer sem eltalált szó.
-   Rögzült: legalább 5-ször egymás után helyes, és (ha ismert) 2 hétnél régebben tanult.
-   Gyakorlás alatt: minden más elkezdett szó. */
+/* ── Tudás-érettség (V13.6: az ismétlési köz alapján, mint az Ankiban) ──
+   Ismerkedés: 7 napnál rövidebb ismétlési köz (vagy még nincs ütemezve).
+   Gyakorlás alatt: 7-20 nap. Rögzült: legalább 21 nap. */
+const YOUNG_DAYS = 7;
+
 function computeMaturity() {
-  const yesterday = dateKey(addDays(new Date(), -1));
-  const twoWeeksAgo = dateKey(addDays(new Date(), -14));
   const m = { fresh: 0, practicing: 0, mature: 0, notStarted: 0 };
   state.words.forEach(w => {
     if (isNewWord(w)) { m.notStarted++; return; }
-    const s = w.stats || {};
-    const la = s.learnedAt;
-    if ((la && la >= yesterday) || (s.totalCorrect || 0) < 2) m.fresh++;
-    else if ((s.streak || 0) >= 5 && (!la || la <= twoWeeksAgo)) m.mature++;
-    else m.practicing++;
+    const interval = srsInterval(w);
+    if (interval >= MATURE_DAYS) m.mature++;
+    else if (interval >= YOUNG_DAYS) m.practicing++;
+    else m.fresh++;
   });
   m.started = m.fresh + m.practicing + m.mature;
   return m;

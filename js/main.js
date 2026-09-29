@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.5)
+// LexiLearn – belépési pont (V13.6)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -18,6 +18,7 @@ import { clearFilters, openPoolSource, renderHome } from './habit/home.js';
 import { learnSwipe, speakLearnWord, startLearnSession, startTodayReview } from './habit/learn.js';
 import { flipReviewCard, rateReview, speakReviewWord, startReviewSession } from './habit/review.js';
 import { seedSrsAll } from './core/storage.js';
+import { setGoalDate, showGoalScreen } from './goal/view.js';
 import { setDirection, setPracticeOption, toggleDockSettings } from './library/dock.js';
 import './library/filters.js';
 import { applyFilters, initLibraryEvents, renderDashboard, selectNone, switchViewTab, toggleSelectAll } from './library/list.js';
@@ -101,6 +102,8 @@ Object.assign(window, {
   rateReview,
   speakReviewWord,
   seedSrsAll,
+  showGoalScreen,
+  setGoalDate,
   switchStatsTab,
   switchViewTab,
   toggleBookmark,
@@ -116,7 +119,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.5 indítása...");
+console.log("[LexiLearn] V13.6 indítása...");
 initV6Features();
 initLibraryEvents();
 
