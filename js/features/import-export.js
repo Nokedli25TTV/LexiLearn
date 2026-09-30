@@ -17,7 +17,7 @@ async function exportData() {
       localforage.getItem('lexi_playlists'),
       localforage.getItem('lexi_settings')
     ]);
-    if (!words && !stats) { showToast('Nincs mit menteni!'); return; }
+    if (!words && !stats) { showToast('Nincs mit menteni.'); return; }
     // Visszafelé kompatibilis export formátum (egyetlen JSON)
     const exportObj = { _format: 'lexilearn_v10_5', words, stats, playlists, settings };
     const blob = new Blob([JSON.stringify(exportObj)], { type: "application/json" });
@@ -27,9 +27,9 @@ async function exportData() {
     a.download = `LexiLearn_Mentes_${new Date().toISOString().split('T')[0]}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    showToast('Biztonsági mentés letöltve!');
+    showToast('Biztonsági mentés letöltve');
   } catch(e) {
-    showToast('Hiba a mentés során!');
+    showToast('A mentés nem sikerült.');
     console.warn('[LexiLearn] Export hiba:', e);
   }
 }
@@ -53,10 +53,10 @@ function importData(event) {
         // Régi monolit formátum: migráció menet közben
         await _migrateMonolithToSplit(parsed);
       }
-      showToast('Adatok betöltve! Újraindítás...');
+      showToast('Adatok betöltve, újraindítás…');
       setTimeout(() => location.reload(), 1500);
     } catch(err) {
-      showToast('Hiba: Érvénytelen mentés fájl!');
+      showToast('Ez nem érvényes mentésfájl.');
     }
   };
   reader.readAsText(file);
@@ -70,7 +70,7 @@ function openImportModal() {
     ta.value = '';
     mod.classList.add('open');
   } else {
-    showToast("Hiba: Az Import ablak nem található!");
+    showToast('Az importálás most nem érhető el.');
   }
 }
 
@@ -97,7 +97,7 @@ function doImport() {
     }
     added++;
   });
-  saveWords(); closeModal('import-modal'); renderDashboard(); showToast(added+' elem importálva!');
+  saveWords(); closeModal('import-modal'); renderDashboard(); showToast(added+' elem importálva');
 }
 
 function openAddModal() {
@@ -156,18 +156,18 @@ function doAddWord() {
   const synOrRomaji = synInput ? synInput.value.trim() : '';
   const sentence = sentInput ? sentInput.value.trim() : '';
 
-  if (!en || !hu) { showToast('Az első két mező kitöltése kötelező!'); return; }
+  if (!en || !hu) { showToast('Az első két mezőt ki kell tölteni.'); return; }
 
   const tags = tagsRaw ? tagsRaw.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean) : [];
 
   if (state.words.some(w => w.en.toLowerCase() === en.toLowerCase())) {
-    showToast('Ez a szó már szerepel a szótáradban!'); return;
+    showToast('Ez a szó már szerepel a szótáradban.'); return;
   }
 
   if (currentMode === 'english') {
     state.words.push({ id: stableWordId('en_man', en), en, hu, tags, diff, syn: synOrRomaji, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
   } else if (currentMode === 'japanese') {
-    if (!synOrRomaji) { showToast('A Romaji megadása kötelező japán szónál!'); return; }
+    if (!synOrRomaji) { showToast('Japán szónál a romaji is kell.'); return; }
     state.words.push({ id: stableWordId('jp_man', en), en, hu, romaji: synOrRomaji, tags, diff, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });
   } else if (currentMode === 'kanji') {
     state.words.push({ id: stableWordId('kj_man', en), en, hu, romaji: synOrRomaji, onyomi: '', kunyomi: '', lesson: 'Egyéb', tags, diff, sentence, bookmarked:false, stats:{streak:0,totalCorrect:0,totalWrong:0,lastAttempt:null} });

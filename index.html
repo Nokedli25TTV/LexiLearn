@@ -29,7 +29,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.7">
+<link rel="stylesheet" href="style.css?v=13.8">
 </head>
 <body data-screen="home">
 
@@ -184,41 +184,34 @@
      KÖR VÉGE KÉPERNYŐ
 ══════════════════════════════════════════════════════ -->
 <div id="screen-round-end" class="screen">
-  <div class="round-end-wrap">
-    <div class="round-end-card animate-in">
-      <div class="re-title" id="re-title">Kör vége</div>
-      <div class="re-subtitle" id="re-subtitle"></div>
-      <div class="donut-wrap">
-        <svg viewBox="0 0 100 100" width="150" height="150">
-          <circle cx="50" cy="50" r="40" fill="none" stroke="var(--border)" stroke-width="12"/>
-          <circle id="donut-correct" cx="50" cy="50" r="40" fill="none" stroke="var(--success)" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" style="transition: stroke-dashoffset 0.9s ease"/>
-          <circle id="donut-wrong" cx="50" cy="50" r="40" fill="none" stroke="var(--error)" stroke-width="12" stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" style="transition: stroke-dashoffset 0.9s ease 0.9s"/>
-        </svg>
-        <div class="donut-label">
-          <div class="donut-pct" id="donut-pct">—</div>
-          <div class="donut-sub">helyes</div>
-        </div>
+  <!-- V13.8: a tanulás / ismétlés vége képernyők mintájára (egy nyugodt szín, korall fő lépés alul) -->
+  <div class="round-end">
+    <header class="re-head">
+      <h1 class="re-title" id="re-title">Kör vége</h1>
+      <p class="re-subtitle" id="re-subtitle"></p>
+    </header>
+
+    <!-- A Kezdőlap "Napi penzum" mintája: címke balra, érték jobbra, alatta egyszínű sáv -->
+    <section class="goal re-score" aria-labelledby="re-score-label">
+      <div class="goal-head">
+        <span class="goal-label" id="re-score-label">Pontosság</span>
+        <span class="goal-count"><strong id="re-pct">0%</strong> helyes</span>
       </div>
-      <div class="stats-row">
-        <div class="stat-box g"><div class="sb-val" id="re-correct">0</div><div class="sb-lbl">Helyes</div></div>
-        <div class="stat-box r"><div class="sb-val" id="re-wrong">0</div><div class="sb-lbl">Hibás</div></div>
-        <div class="stat-box b"><div class="sb-val" id="re-time">0s</div><div class="sb-lbl">Idő</div></div>
-      </div>
-      <div class="error-list-section" id="error-list-section" style="display:none">
-        <div class="err-title" id="err-title">Hibás elemek – következő körbe kerülnek:</div>
-        <div id="error-list-items"></div>
-      </div>
-      <div class="re-actions">
-        <button class="btn btn-primary" id="re-next-btn" onclick="startNextRound()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span id="re-next-label">Következő kör</span>
-        </button>
-        <button class="btn btn-outline" onclick="finishSession()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-          Befejezés
-        </button>
-      </div>
-    </div>
+      <div class="goal-bar" id="re-bar" role="img" aria-label="Pontosság"><div class="goal-bar-fill"></div></div>
+    </section>
+
+    <dl class="kpi-strip re-kpis">
+      <div class="kpi"><dt class="kpi-label">Helyes</dt><dd class="kpi-value" id="re-correct">0</dd></div>
+      <div class="kpi"><dt class="kpi-label">Hibás</dt><dd class="kpi-value" id="re-wrong">0</dd></div>
+      <div class="kpi"><dt class="kpi-label">Idő</dt><dd class="kpi-value" id="re-time">0 mp</dd></div>
+    </dl>
+
+    <section class="re-errors" id="error-list-section" hidden>
+      <h2 class="detail-title" id="err-title">Következő körbe kerül</h2>
+      <ul class="re-err-list" id="error-list-items"></ul>
+    </section>
+
+    <div class="re-actions" id="re-actions"></div>
   </div>
 </div>
 
@@ -226,8 +219,8 @@
      V13.6: HALADÁS (JLPT cél, tempó, mérföldkövek)
 ══════════════════════════════════════════════════════ -->
 <div id="screen-goal" class="screen">
-  <div class="stats goal">
-    <header class="goal-head">
+  <div class="stats jl-screen">
+    <header class="jl-screen-head">
       <button class="goal-back" onclick="showScreen('stats')" aria-label="Vissza a Statisztikára">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
         Statisztika
@@ -495,15 +488,15 @@
 <div class="toast" id="toast"></div>
 
 <!-- Statikus szótár-adatok (klasszikus scriptek, kézzel szerkeszthetők) -->
-<script src="data.js?v=13.7"></script>
-<script src="japanese_words.js?v=13.7"></script>
-<script src="jlpt_n3_words.js?v=13.7"></script>
-<script src="dekiru.js?v=13.7"></script>
-<script src="kanji_data.js?v=13.7"></script>
-<script src="japanese_sentences.js?v=13.7"></script>
-<script src="english_sentences2.js?v=13.7"></script>
+<script src="data.js?v=13.8"></script>
+<script src="japanese_words.js?v=13.8"></script>
+<script src="jlpt_n3_words.js?v=13.8"></script>
+<script src="dekiru.js?v=13.8"></script>
+<script src="kanji_data.js?v=13.8"></script>
+<script src="japanese_sentences.js?v=13.8"></script>
+<script src="english_sentences2.js?v=13.8"></script>
 <!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
-<script src="data-registry.js?v=13.7"></script>
+<script src="data-registry.js?v=13.8"></script>
 
 <!-- V13.3: ES modulok nem futnak file:// alól (duplakattintással megnyitott index.html) -->
 <script>
@@ -519,8 +512,8 @@
 
 <!-- V13.3: az alkalmazás ES modulokként (js/). A main.js a firebase-sync előtt fut,
      hogy az auth / szinkron események hallgatói már feliratkozva legyenek. -->
-<script type="module" src="js/main.js?v=13.7"></script>
-<script type="module" src="firebase-sync.js?v=13.7"></script>
+<script type="module" src="js/main.js?v=13.8"></script>
+<script type="module" src="firebase-sync.js?v=13.8"></script>
 
 </body>
 </html>

@@ -41,7 +41,7 @@ function startPractice() {
     );
 
     if (orderedWords.length === 0) {
-      showToast('A kiválasztott szavakhoz még nem tartozik példamondat az adatbázisban!');
+      showToast('A kiválasztott szavakhoz még nincs példamondat.');
       return;
     }
   }
@@ -128,14 +128,10 @@ function showQuestion() {
   const isJapanMode = currentMode !== 'english';
   eyeState = 0; 
 
-  const gbFlag = '<img src="https://flagcdn.com/w20/gb.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
-  const huFlag = '<img src="https://flagcdn.com/w20/hu.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
-  const jpFlag = '<img src="https://flagcdn.com/w20/jp.png" width="14" style="border-radius:2px;vertical-align:middle;margin-bottom:2px;">';
-  const kjIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-bottom:2px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>';
-
-  let hintText = isEnHu ? `${gbFlag} ANGOL &rarr; ${huFlag} MAGYAR` : `${huFlag} MAGYAR &rarr; ${gbFlag} ANGOL`;
-  if (currentMode === 'japanese') hintText = isEnHu ? `${jpFlag} KANA &rarr; ${huFlag} MAGYAR` : `${huFlag} MAGYAR &rarr; ${jpFlag} JAPÁN`;
-  if (currentMode === 'kanji') hintText = isEnHu ? `${kjIcon} KANJI &rarr; ${huFlag} MAGYAR` : `${huFlag} MAGYAR &rarr; ${kjIcon} KANJI`;
+  // V13.8: az irány felirata zászlóképek nélkül (azok külső szerverről jöttek, offline nem töltődtek be)
+  const SOURCE_LABEL = { english: 'ANGOL', japanese: 'KANA', kanji: 'KANJI' }[currentMode] || 'ANGOL';
+  const TARGET_LABEL = { english: 'ANGOL', japanese: 'JAPÁN', kanji: 'KANJI' }[currentMode] || 'ANGOL';
+  let hintText = isEnHu ? `${SOURCE_LABEL} &rarr; MAGYAR` : `MAGYAR &rarr; ${TARGET_LABEL}`;
 
   const questionText = isEnHu ? word.en : word.hu;
   const correctText  = isEnHu ? word.hu : word.en;
@@ -489,7 +485,7 @@ function checkHardcoreAnswer(wordId) {
     if (qCard) qCard.classList.add('bounce');
     if (feedbackEl) {
       feedbackEl.style.color = 'var(--success)';
-      feedbackEl.innerHTML = `Helyes! <span style="font-weight:400; font-size:14px; display:block; color:var(--text-2); margin-top:4px;">${correctText} ${romajiAdd}</span>`;
+      feedbackEl.innerHTML = `Helyes <span style="font-weight:400; font-size:14px; display:block; color:var(--text-2); margin-top:4px;">${escHtml(correctText)} ${escHtml(romajiAdd)}</span>`;
     }
     inputEl.style.borderColor = 'var(--success)';
     inputEl.style.backgroundColor = 'var(--success-bg)';
@@ -499,7 +495,7 @@ function checkHardcoreAnswer(wordId) {
     if (qCard) qCard.classList.add('shake');
     if (feedbackEl) {
       feedbackEl.style.color = 'var(--error)';
-      feedbackEl.innerHTML = `Helytelen! A jó válasz:<br><span style="font-size:22px; margin-top:6px; display:block;">${correctText}</span><span style="font-weight:400; font-size:14px; color:var(--text-2);">${romajiAdd}</span>`;
+      feedbackEl.innerHTML = `A helyes válasz:<br><span style="font-size:22px; margin-top:6px; display:block;">${escHtml(correctText)}</span><span style="font-weight:400; font-size:14px; color:var(--text-2);">${escHtml(romajiAdd)}</span>`;
     }
     inputEl.style.borderColor = 'var(--error)';
     inputEl.style.backgroundColor = 'var(--error-bg)';
@@ -638,45 +634,55 @@ function showRoundEnd() {
   renderDailyQuests();
 
   const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
-  
+
   const isQuickQuiz = p.type === 'quickQuiz';
   if (isQuickQuiz) setEl('re-title', p.roundWrong === 0 ? 'Hibátlan ismétlés' : 'Mai szavak átismételve');
   else setEl('re-title', p.roundNumber === 1 && p.errorList.length === 0 ? 'Hibátlan kör' : `${p.roundNumber}. kör vége`);
-  setEl('err-title', isQuickQuiz ? 'Ezek elsőre nem mentek:' : 'Hibás elemek – következő körbe kerülnek:');
+  setEl('err-title', isQuickQuiz ? 'Elsőre nem ment' : 'Következő körbe kerül');
   setEl('re-subtitle', pct >= 80 ? 'Stabil tudás.' : pct >= 50 ? 'Fejlődik. A hibásakat érdemes még egyszer átvenni.' : 'Ezt a kört érdemes megismételni.');
   setEl('re-correct', p.roundCorrect);
   setEl('re-wrong', p.roundWrong);
-  setEl('donut-pct', pct + '%');
-  setEl('re-time', elapsed < 60 ? elapsed + 's' : Math.floor(elapsed/60) + 'm');
+  setEl('re-pct', pct + '%');
+  const timeEl = document.getElementById('re-time');
+  if (timeEl) timeEl.innerHTML = fmtRoundTime(elapsed);
 
-  const circ = 251.2;
-  const dCorrect = document.getElementById('donut-correct');
-  const dWrong = document.getElementById('donut-wrong');
-  if(dCorrect) dCorrect.style.strokeDashoffset = circ - (circ * pct / 100);
-  
-  const wPct = total > 0 ? p.roundWrong / total : 0;
-  if(dWrong) dWrong.style.strokeDashoffset = circ - (circ * wPct);
+  // V13.8: egyszínű meter-sáv (a tanulás vége képernyővel azonos), piros szakasz nélkül
+  const bar = document.getElementById('re-bar');
+  if (bar) {
+    bar.style.setProperty('--p', pct / 100);
+    bar.setAttribute('aria-label', `Pontosság: ${pct}%, ${p.roundCorrect} helyes, ${p.roundWrong} hibás`);
+  }
 
   const errSec = document.getElementById('error-list-section');
   const errList = document.getElementById('error-list-items');
-  const nextBtn = document.getElementById('re-next-btn');
-  
-  if (p.errorList.length > 0) {
-    if(errSec) errSec.style.display = '';
-    if(errList) {
-      errList.innerHTML = p.errorList.map(id => {
-        const w = state.words.find(x => x.id === id);
-        return `<div class="err-item"><span class="err-en">${escHtml(w.en)}</span><span class="err-hu">${escHtml(w.hu)}</span></div>`;
-      }).join('');
-    }
-    // Gyors ismétlésnél nincs következő kör: a hibás szavak már a soron belül ismétlődtek
-    if(nextBtn) nextBtn.style.display = isQuickQuiz ? 'none' : '';
-  } else {
-    if(errSec) errSec.style.display = 'none';
-    if(nextBtn) nextBtn.style.display = 'none';
+  if (errList) {
+    errList.innerHTML = p.errorList.map(id => {
+      const w = state.words.find(x => x.id === id);
+      return w ? `<li class="re-err"><span class="re-err-word">${escHtml(w.en)}</span><span class="re-err-meaning">${escHtml(w.hu)}</span></li>` : '';
+    }).join('');
   }
-  
+  if (errSec) errSec.hidden = p.errorList.length === 0;
+
+  // Gyors ismétlésnél nincs következő kör: a hibás szavak már a soron belül ismétlődtek.
+  // Ha van következő kör, az a korall fő lépés; különben a befejezés.
+  const hasNextRound = p.errorList.length > 0 && !isQuickQuiz;
+  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const actions = document.getElementById('re-actions');
+  if (actions) {
+    actions.innerHTML = hasNextRound
+      ? `<button class="cta-learn cta-compact" id="re-next-btn" onclick="startNextRound()"><span class="cta-main" id="re-next-label">Következő kör · ${p.errorList.length} ${unit}</span></button>
+         <button class="btn-quiet" onclick="finishSession()">Befejezés</button>`
+      : `<button class="cta-learn cta-compact" onclick="finishSession()"><span class="cta-main">Befejezés</span></button>`;
+  }
+
   showScreen('roundend');
+}
+
+// "38 mp", "2:05 p" (a mértékegység kisebb, mint a Statisztika KPI sávjában)
+function fmtRoundTime(sec) {
+  return sec < 60
+    ? `${sec}<span class="kpi-unit">mp</span>`
+    : `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}<span class="kpi-unit">p</span>`;
 }
 
 function startNextRound() {
@@ -704,7 +710,7 @@ function finishSession() {
     duration: duration
   });
 
-  saveStats(); saveWords(); showScreen(p.origin || 'dashboard'); showToast('Gyakorlás befejezve!'); // Statisztika + szó streak mentése
+  saveStats(); saveWords(); showScreen(p.origin || 'dashboard'); showToast('Gyakorlás mentve'); // Statisztika + szó streak mentése
 }
 
 // V13: oda térünk vissza, ahonnan a gyakorlás indult (Kezdőlap vagy Gyakorlás fül)

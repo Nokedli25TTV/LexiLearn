@@ -286,6 +286,15 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 - Gyakorlás közben a "Tovább" (hibás válasz után) a képernyő aljára rögzül: teljes szélesség, 56px, korall.
 - A kör vége képernyő gombjai és a modálok műveletei mobilon a lap aljára ragadnak (sticky), így kis kijelzőn sem kerülnek a képernyő alá. A modálok mobilon alulról nyíló lapok.
 
+### Kör vége (V13.8)
+A tanulás / ismétlés vége képernyők családja, közös komponensekből, egyedi stílus nélkül:
+- **Cím és alcím:** Nunito 900, 26px ("1. kör vége", "Hibátlan kör"), alatta egy mondat 15px-en ("Stabil tudás.").
+- **Pontosság:** a Kezdőlap "Napi penzum" kártyája (`.goal`): balra "PONTOSSÁG" címke, jobbra a százalék, alatta egyszínű zöld sáv. Piros szakasz, körgrafikon és "hős-szám" nincs.
+- **Számsor:** a Statisztika KPI sávja 3 oszlopban (Helyes, Hibás, Idő), vékony számokkal; a mértékegység kisebb ("14 mp", "2:05 p"). Színes (zöld / piros / kék) doboz nincs.
+- **Hibás szavak:** "Következő körbe kerül" (gyors ismétlésnél "Elsőre nem ment") részletcím, alatta semleges lista (kana balra, jelentés jobbra), piros háttér nélkül.
+- **Műveletek alul, a hüvelykujj alatt:** ha van következő kör, az a korall fő gomb a szavak számával ("Következő kör · 3 szó"), mellette csendes "Befejezés"; ha nincs, a "Befejezés" a korall gomb.
+- A kérdés fölötti irány-felirat csak szöveg ("KANA → MAGYAR"): külső szerverről betöltött kép (zászló) offline nem működik, ezért tilos.
+
 ### Ismétlő kártya és értékelő sor (Signature Component, V13.5)
 - **Kártya:** a tanuló kártya alakja (28px), elöl a szó és az olvasat, címke nélkül (csak az "Újra" kártya kap szürke "ÚJRA" pillát). Koppintásra megfordul: jelentés, olvasatok, példamondat.
 - **Mutasd a jelentést:** fordított semleges gomb (szöveg színű háttér), 58px, mellette a kiejtés gomb. A képernyőn nincs korall: a korall a Kezdőlap fő cselekvéséé.

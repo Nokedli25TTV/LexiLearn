@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-29T20:29:06.129Z",
+  "generatedAt": "2026-09-30T16:15:56.251Z",
   "title": "Design System: LexiLearn",
   "extensions": {
     "colorMeta": {
@@ -285,6 +285,14 @@
       "description": "Szegmensenként egy mérföldkő, szélessége arányos a darabszámmal. Halványabb zöld: megtanult, erősebb zöld: rögzült. Alatta szintjelek.",
       "html": "<div class=\"ds-ms\"><div class=\"ds-ms-head\"><span>Szókincs</span><b>930<small>/ 3750</small></b><em>24%</em></div><div class=\"ds-ms-bar\"><i style=\"flex-grow:100;--f:1;--m:1\"></i><i style=\"flex-grow:100;--f:1;--m:.6\"></i><i style=\"flex-grow:100;--f:1;--m:.2\"></i><i style=\"flex-grow:100;--f:.3;--m:0\"></i><i style=\"flex-grow:100\"></i><i style=\"flex-grow:250\"></i><i style=\"flex-grow:250\"></i></div></div>",
       "css": ".ds-ms { width: 340px; font-family: Nunito, sans-serif; color: #e5ebe8; } .ds-ms-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; } .ds-ms-head span { font-size: 13px; font-weight: 700; color: #acb3af; } .ds-ms-head b { margin-left: auto; font-size: 22px; font-weight: 300; } .ds-ms-head small { margin-left: 4px; font-size: 14px; font-weight: 600; color: #acb3af; } .ds-ms-head em { font-style: normal; font-size: 13px; font-weight: 800; } .ds-ms-bar { display: flex; gap: 2px; height: 14px; } .ds-ms-bar i { position: relative; border-radius: 3px; background: #292f2c; overflow: hidden; } .ds-ms-bar i::before, .ds-ms-bar i::after { content: \"\"; position: absolute; inset: 0 auto 0 0; } .ds-ms-bar i::before { width: calc(var(--f, 0) * 100%); background: #357153; } .ds-ms-bar i::after { width: calc(var(--m, 0) * 100%); background: #65d49e; }"
+    },
+    {
+      "name": "Kör vége",
+      "kind": "custom",
+      "refersTo": "round-end",
+      "description": "Közös komponensekből: a Napi penzum kártya (pontosság), a Statisztika KPI sávja (Helyes, Hibás, Idő), semleges hibás-lista, alul korall fő lépés és csendes Befejezés.",
+      "html": "<div class=\"ds-re\"><h3>1. kör vége</h3><p class=\"ds-re-sub\">Fejlődik. A hibásakat érdemes még egyszer átvenni.</p><div class=\"ds-re-goal\"><div class=\"ds-re-head\"><span>PONTOSSÁG</span><b>70%<small> helyes</small></b></div><div class=\"ds-re-bar\"><i style=\"width:70%\"></i></div></div><div class=\"ds-re-kpis\"><div><span>Helyes</span><b>7</b></div><div><span>Hibás</span><b>3</b></div><div><span>Idő</span><b>13<small>mp</small></b></div></div><button class=\"ds-re-cta\">Következő kör · 3 szó</button><button class=\"ds-re-quiet\">Befejezés</button></div>",
+      "css": ".ds-re { width: 340px; display: flex; flex-direction: column; gap: 14px; font-family: Nunito, sans-serif; color: #e5ebe8; text-align: center; } .ds-re h3 { margin: 0; font-size: 26px; font-weight: 900; } .ds-re-sub { margin: 0; font-size: 15px; font-weight: 600; color: #acb3af; } .ds-re-goal { padding: 18px; border: 1px solid #2d3531; border-radius: 22px; background: #171c1a; text-align: left; } .ds-re-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; } .ds-re-head span { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: #7a837e; } .ds-re-head b { font-size: 30px; font-weight: 900; } .ds-re-head small { font-size: 15px; font-weight: 700; color: #acb3af; } .ds-re-bar { height: 12px; border-radius: 999px; background: #202724; overflow: hidden; } .ds-re-bar i { display: block; height: 100%; background: #52b788; border-radius: 999px; } .ds-re-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border: 1px solid #2d3531; border-radius: 20px; overflow: hidden; background: #2d3531; text-align: left; } .ds-re-kpis div { display: flex; flex-direction: column; gap: 4px; padding: 14px; background: #171c1a; } .ds-re-kpis span { font-size: 13px; font-weight: 700; color: #acb3af; } .ds-re-kpis b { font-size: 28px; font-weight: 300; } .ds-re-kpis small { margin-left: 4px; font-size: 15px; font-weight: 600; color: #acb3af; } .ds-re-cta { min-height: 58px; border: none; border-radius: 22px; background: oklch(0.72 0.16 42); color: oklch(0.2 0.03 40); font: 900 19px Nunito, sans-serif; } .ds-re-quiet { min-height: 44px; border: none; background: none; color: #acb3af; font: 800 15px Nunito, sans-serif; }"
     }
   ],
   "narrative": {
