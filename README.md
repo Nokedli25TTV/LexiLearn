@@ -42,6 +42,8 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `firebase-sync.js` | Google bejelentkezés + felhő szinkron (Firestore) |
 | `js/app/cloud-store.js` | a felhő adat felosztása több Firestore dokumentumra (lásd lent) |
 | `sw.js` | service worker (offline gyorsítótár) |
+| `kanjivg/n5.json` … `n1.json` | a kandzsik vonássorrendje (KanjiVG), JLPT-szintenként; a `tools/build-kanjivg.mjs` állítja elő |
+| `js/features/strokes.js` | vonássorrend a tanuló / ismétlő kártya hátoldalán (lusta betöltés, rajzolás, újrajátszás) |
 
 ### Új függvény, amit HTML-ből hívsz
 
@@ -50,8 +52,10 @@ Ha egy `onclick="valami()"` új függvényt hív, tedd ki a `window`-ra a `js/ma
 
 ### Kiadás
 
-Minden kiadásnál együtt emeld a verziót: `index.html` (`?v=` a script / style linkeken) és
-`sw.js` (`CACHE_NAME`). Új modul fájlnál vedd fel a `sw.js` `STATIC_ASSETS` listájába is.
+Minden kiadásnál együtt emeld a verziót: `index.html` (`?v=` a script / style linkeken),
+`sw.js` (`CACHE_NAME`), `package.json` és a `js/main.js` fejléce. Új modul fájlnál vedd fel a `sw.js`
+`STATIC_ASSETS` listájába is; a `tests/sw.test.js` elbukik, ha kimarad, vagy ha a lista nem létező fájlt tartalmaz
+(egyetlen hiányzó fájl miatt a service worker nem települ, és az app nem működik offline).
 
 ## Felhő adat (Firestore)
 
@@ -91,6 +95,24 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **Mérföldkövek:** a megtanult szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
 - **Célidőpont:** `appData.japanese.globalStats.jlptGoal` (szinkronizált), alapból 2027-07-04.
 
+## Kandzsi vonássorrend (KanjiVG)
+
+- **Forrás:** [KanjiVG](https://kanjivg.tagaini.net) (© Ulrich Apel), **CC BY-SA 3.0**. A `kanjivg/*.json` fájlok
+  ebből származnak, ezért ugyanezen licenc alatt állnak; a forrásmegjelölés a Profil képernyő Források részén van.
+- **Formátum:** szintenként egy JSON: `{ "日": [[útvonal, x, y], …] }`, vonásonként az SVG útvonal (109×109-es rács)
+  és a sorszám helye. Csak a `kanji_data.js` kandzsijai kerülnek bele (összesen kb. 1,7 MB).
+- **Újragenerálás** (új kandzsi a `kanji_data.js`-ben, vagy új KanjiVG kiadás): töltsd le a KanjiVG kiadását
+  (`kanjivg-*-main.zip` a GitHubról), csomagold ki, majd
+
+  ```bash
+  node tools/build-kanjivg.mjs <kicsomagolt mappa, amiben a kanji/ van>
+  ```
+
+  Utána léptesd a `sw.js` `KANJIVG_CACHE` nevét, különben a telepített appok a régi fájlokat tartják meg.
+  A `tests/kanji.test.js` elbukik, ha egy kandzsinak nincs vonássorrendje.
+- **Betöltés:** a szint fájlja az első ilyen kandzsi kártyánál töltődik le, a többi a háttérben (adatforgalom-kímélő
+  módban nem). A service worker külön, verziófüggetlen cache-ben tartja, így az app frissítése nem törli.
+
 ## Tesztek
 
 - **`tests/golden.test.js` – golden master.** A `tests/golden/expected.json` az app kimenete rögzített
@@ -104,6 +126,10 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **`tests/data.test.js`** – az N3 szókincs ellenőrzése: minden mező kitöltve, a romaji egyezik a kanával
   (`tests/harness/kana.js` átalakító), és egyetlen kana sem ütközik a meglévő szavakkal (az app kana alapján egyesít).
 - **`tests/unit/jlpt.test.js`** – mérföldkövek, halmozott számolás, rögzült, tempó és előrejelzés.
+- **`tests/kanji.test.js`** – a kandzsi adatbázis: nincs duplikátum, az olvasatok tiszta kanák (on: katakana,
+  kun: hiragana), a romaji minden része egy olvasatból jön, és minden kandzsinak megvan a vonássorrendje.
+- **`tests/unit/strokes.test.js`** – a vonássorrend modul jsdomban: rajzolás, időzítés, újrajátszás, csökkentett mozgás.
+- **`tests/sw.test.js`** – a service worker előtöltési listája: minden fájl létezik, minden modul benne van.
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
 - Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).

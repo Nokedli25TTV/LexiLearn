@@ -172,7 +172,7 @@ A sűrűség kétarcú: a Kezdőlap levegős, egy fő cselekvéssel; a Gyakorlá
 - Színkód: korall = cselekvés, zöld = haladás és kijelölés, piros = hiba, arany = csillag.
 - Egy kéz, egy hüvelykujj: navigáció és gyakorlás-indítás a képernyő alján, lebegve.
 - Üveg csak lebegő vezérlőkön (navigáció, dokk); a tartalom mindig tömör felületen ül.
-- Mozgás csak állapotváltásra, 150-500 ms, exponenciális lassulással; `prefers-reduced-motion` alatt kikapcsol.
+- Mozgás csak állapotváltásra, 150-500 ms, exponenciális lassulással; `prefers-reduced-motion` alatt kikapcsol. Egyetlen kivétel a kandzsi vonássorrend rajzolása, ahol a mozgás maga a tartalom.
 
 ## 2. Colors
 
@@ -315,7 +315,17 @@ A tanulás / ismétlés vége képernyők családja, közös komponensekből, eg
 - Alattuk egy csendes, középre zárt előrejelző sor: "Holnap 15 · a következő 7 napban 45" (13px, a számok 800-as súllyal). Így nincs meglepetés-hegy.
 
 ### Tanuló kártya (Signature Component)
-28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat).
+28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat; kandzsi módban fölötte a vonássorrend).
+
+### Kandzsi vonássorrend (Signature Component, V13.9)
+- **Helye:** kandzsi módban a tanuló és az ismétlő kártya hátoldalán, a jelentés fölött (a kis kandzsi-sor helyén). Az előoldalon nincs: ott a felidézés a feladat.
+- **Írásgyakorló négyzet:** `clamp(104px, 18vh, 136px)`, 16px lekerekítés, Felület 2 háttér, szaggatott középvonalak (十) Szegély színnel. Benne a kandzsi halvány teljes alakja (a szövegszín 16%-a a felületen), fölötte a tintaszínű vonások (3,4 egység a KanjiVG 109-es rácsán, kerek végek és illesztések).
+- **Rajzolás:** megfordításkor (380 ms múlva, a fordulás közepén) a vonások sorban megrajzolódnak, állandó tempóval: a hosszabb vonás tovább tart (240-620 ms, köztük 80 ms szünet), a sok vonásos kandzsi is legfeljebb 5,2 s. Az épp rajzolódó vonás erdőzöld, utána tintaszínre vált; a sorszám a vonás kezdetén jelenik meg. Ez az app egyetlen hosszabb mozgása: a mozgás itt maga az információ (sorrend és irány), és semmit nem blokkol, közben is lehet húzni és értékelni.
+- **Sorszámok:** Nunito 800, 8,5 egység, Köd színnel, felület színű körvonallal (`paint-order: stroke`), így a vonásokon átfedve is olvasható. A helyük a KanjiVG-ből jön.
+- **Alatta:** "N VONÁS" címke (Label stílus, Köd) és egy csendes, 32px-es újrajátszás ikon (44px érintési felület, a kártya húzását nem indítja). Korall nincs.
+- **Csökkentett mozgás:** a kész, számozott ábra látszik animáció és újrajátszás gomb nélkül.
+- **Betöltés:** amíg az adat nincs meg (vagy egy saját kandzsihoz nincs), a négyzetben a kandzsi betűként áll: a hátoldal sosem üres. Az adat szintenként lustán töltődik, a service worker külön cache-ben tartja (offline is megvan).
+- **Hosszú tartalom:** a hátoldal auto margóval zár középre, így ha nem fér ki, felülről görgethető (a teteje nem vágódik le).
 
 ## 6. Do's and Don'ts
 
@@ -328,6 +338,7 @@ A tanulás / ismétlés vége képernyők családja, közös komponensekből, eg
 - **Do** használd a felnőtt szótárt: Konzisztencia (nap), Napi penzum, A napi limit teljesítve., Napi feladatok.
 - **Do** futtasd a `validate_palette.js`-t minden új ábraszínre (mindkét témában), és adj minden ábrának táblázatos párt.
 - **Do** ellenőrizd az új képernyőket 320×640-en és 375×667-en: semmi nem lóghat ki vízszintesen, és a fő gomb görgetés nélkül elérhető.
+- **Do** tüntesd fel a külső adatok forrását és licencét a Profil Források részén (KanjiVG, CC BY-SA 3.0).
 
 ### Don't:
 - **Don't** legyen túlzsúfolt, gyerekes gamifikáció: nincs badge-eső, villogás, harsány szín mindenhol.

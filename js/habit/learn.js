@@ -8,6 +8,7 @@ import { calcStreak } from '../features/streak.js';
 import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordLearned } from './goal.js';
 import { dueForecast, scheduleLearnedWord } from '../srs/schedule.js';
 import { crossedMilestones, isLearnedWord } from '../goal/jlpt.js';
+import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { japaneseBackLine } from '../core/util.js';
 import { renderHome } from './home.js';
 import { getExampleSentence, showQuestion, updatePracticeTop } from '../practice/engine.js';
@@ -67,6 +68,7 @@ function showLearnCard() {
   const isKanji = currentMode === 'kanji';
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
   const backSrc = japaneseBackLine(word, currentMode);
+  const strokes = isKanji ? strokeFigureHtml(word.en) : ''; // V13.9: vonássorrend a hátoldalon
   const kanjiReadings = isKanji
     ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
     : '';
@@ -86,8 +88,8 @@ function showLearnCard() {
             ${frontReading ? `<div class="learn-reading">${escHtml(frontReading)}</div>` : ''}
             <div class="learn-tap-hint">Koppints a jelentésért</div>
           </div>
-          <div class="learn-face learn-back">
-            <div class="learn-back-src">${escHtml(backSrc)}</div>
+          <div class="learn-face learn-back${strokes ? ' has-strokes' : ''}">
+            ${strokes || `<div class="learn-back-src">${escHtml(backSrc)}</div>`}
             <div class="learn-meaning">${escHtml(word.hu)}</div>
             ${kanjiReadings}
             ${example.html ? `
@@ -118,6 +120,7 @@ function showLearnCard() {
     </div>`;
 
   const card = document.getElementById('learn-card');
+  if (strokes) mountStrokes(card);
   attachSwipe(card, {
     onTap: flipLearnCard,
     onSwipe: dir => { learnSwipe(dir); return true; }
@@ -136,6 +139,7 @@ function flipLearnCard() {
   if (!card || card.dataset.swipeLocked) return;
   _learnFlipped = !_learnFlipped;
   card.classList.toggle('flipped', _learnFlipped);
+  if (_learnFlipped) playStrokes(card); else stopStrokes(card);
 }
 
 function learnSwipe(dir) {

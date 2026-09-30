@@ -1197,6 +1197,89 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 [data-theme="light"] .learn-example-src .fc-highlight { color: var(--accent-h); }
 .learn-example-hu { margin-top: 6px; font-size: 13px; line-height: 1.45; color: var(--text-2); }
 
+/* ── V13.9: Kandzsi vonássorrend a kártya hátoldalán ──
+   Írásgyakorló négyzet (szaggatott középvonalak), benne a kandzsi halvány teljes alakja; megfordításkor
+   a vonások sorban megrajzolódnak (az épp rajzolódó zöld, utána tinta), a számok a vonás kezdetén jelennek meg.
+   Túl magas tartalomnál felülről görgethető (auto margó a justify-content: center helyett). */
+.learn-back.has-strokes { justify-content: flex-start; padding-top: 24px; padding-bottom: 28px; }
+.learn-back.has-strokes > :first-child { margin-top: auto; }
+.learn-back.has-strokes > :last-child { margin-bottom: auto; }
+.ks { margin: 0 0 2px; display: flex; flex-direction: column; align-items: center; }
+.ks-box {
+  --ks-size: clamp(104px, 18vh, 136px);
+  width: var(--ks-size);
+  height: var(--ks-size);
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+.ks-glyph { font-size: calc(var(--ks-size) * 0.64); font-weight: 500; line-height: 1; color: var(--text); }
+.ks-svg {
+  --ks-ghost: color-mix(in oklab, var(--text) 16%, var(--surface-2));
+  --ks-active: var(--primary-h);
+  width: 100%;
+  height: 100%;
+}
+.ks-guide line { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
+.ks-ghost path, .ks-ink path { fill: none; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.ks-ghost path { stroke: var(--ks-ghost); }
+.ks-ink path { stroke: var(--text); }
+.ks-num text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 8.5px;
+  font-weight: 800;
+  fill: var(--text-2);
+  stroke: var(--surface-2);
+  stroke-width: 2.6px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+.ks.is-playing .ks-ink path {
+  stroke-dasharray: 1 2;
+  animation:
+    ks-draw var(--t, 320ms) cubic-bezier(0.4, 0, 0.2, 1) calc(var(--ks-delay, 0ms) + var(--d, 0ms)) both,
+    ks-settle 360ms var(--ease-out) calc(var(--ks-delay, 0ms) + var(--d, 0ms) + var(--t, 320ms)) both;
+}
+.ks.is-playing .ks-num text { animation: ks-fade 180ms var(--ease-out) calc(var(--ks-delay, 0ms) + var(--d, 0ms)) both; }
+@keyframes ks-draw { from { stroke-dashoffset: 1.05; } to { stroke-dashoffset: 0; } }
+@keyframes ks-settle { from { stroke: var(--ks-active); } to { stroke: var(--text); } }
+@keyframes ks-fade { from { opacity: 0; } to { opacity: 1; } }
+.ks-meta {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  min-height: 36px;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+.ks-count:empty { display: none; }
+.ks-replay {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+.ks-replay::before { content: ''; position: absolute; inset: -6px; } /* 44px-es érintési felület */
+.ks-replay[hidden] { display: none; }
+.ks-replay:active { background: var(--surface-2); color: var(--text); }
+@media (hover: hover) { .ks-replay:hover { background: var(--surface-2); color: var(--text); } }
+@media (prefers-reduced-motion: reduce) {
+  .ks.is-playing .ks-ink path, .ks.is-playing .ks-num text { animation: none; stroke-dasharray: none; }
+  .ks-replay { display: none; }
+}
+
 /* Húzás közben megjelenő pecsétek (átlátszóság = húzás mértéke, JS állítja) */
 .swipe-stamp {
   position: absolute;
@@ -1402,6 +1485,7 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .pf-section:first-of-type { padding-top: 0; border-top: none; }
 .pf-title { margin-bottom: 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
 .pf-text { max-width: 60ch; margin-bottom: 12px; font-size: 14px; line-height: 1.5; color: var(--text-2); }
+.pf-text a { color: var(--primary-h); font-weight: 700; text-underline-offset: 2px; }
 .pf-error { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: var(--error-bg); color: var(--error); font-size: 13px; line-height: 1.5; }
 .pf-account { display: flex; align-items: center; gap: 12px; }
 .pf-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }

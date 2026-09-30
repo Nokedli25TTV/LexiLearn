@@ -20,7 +20,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LexiLearn">
 <link rel="apple-touch-icon" href="icon-192.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 
 <!-- Fonts -->
@@ -29,7 +28,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.8">
+<link rel="stylesheet" href="style.css?v=13.9">
 </head>
 <body data-screen="home">
 
@@ -423,6 +422,12 @@
       </div>
       <div id="storage-info"></div>
     </section>
+
+    <!-- V13.9: forrásmegjelölés (a KanjiVG licence megköveteli) -->
+    <section class="pf-section" aria-labelledby="pf-sources-title">
+      <h2 class="pf-title" id="pf-sources-title">Források</h2>
+      <p class="pf-text">A kandzsik vonássorrendje a <a href="https://kanjivg.tagaini.net" target="_blank" rel="noopener">KanjiVG</a> projektből származik (© Ulrich Apel, <a href="https://creativecommons.org/licenses/by-sa/3.0/deed.hu" target="_blank" rel="noopener">CC BY-SA 3.0</a>). A vonássorrend-adatok ugyanezen licenc alatt használhatók tovább.</p>
+    </section>
   </div>
 </main>
 
@@ -488,15 +493,15 @@
 <div class="toast" id="toast"></div>
 
 <!-- Statikus szótár-adatok (klasszikus scriptek, kézzel szerkeszthetők) -->
-<script src="data.js?v=13.8"></script>
-<script src="japanese_words.js?v=13.8"></script>
-<script src="jlpt_n3_words.js?v=13.8"></script>
-<script src="dekiru.js?v=13.8"></script>
-<script src="kanji_data.js?v=13.8"></script>
-<script src="japanese_sentences.js?v=13.8"></script>
-<script src="english_sentences2.js?v=13.8"></script>
+<script src="data.js?v=13.9"></script>
+<script src="japanese_words.js?v=13.9"></script>
+<script src="jlpt_n3_words.js?v=13.9"></script>
+<script src="dekiru.js?v=13.9"></script>
+<script src="kanji_data.js?v=13.9"></script>
+<script src="japanese_sentences.js?v=13.9"></script>
+<script src="english_sentences2.js?v=13.9"></script>
 <!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
-<script src="data-registry.js?v=13.8"></script>
+<script src="data-registry.js?v=13.9"></script>
 
 <!-- V13.3: ES modulok nem futnak file:// alól (duplakattintással megnyitott index.html) -->
 <script>
@@ -512,8 +517,8 @@
 
 <!-- V13.3: az alkalmazás ES modulokként (js/). A main.js a firebase-sync előtt fut,
      hogy az auth / szinkron események hallgatói már feliratkozva legyenek. -->
-<script type="module" src="js/main.js?v=13.8"></script>
-<script type="module" src="firebase-sync.js?v=13.8"></script>
+<script type="module" src="js/main.js?v=13.9"></script>
+<script type="module" src="firebase-sync.js?v=13.9"></script>
 
 </body>
 </html>

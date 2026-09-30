@@ -15,6 +15,7 @@ function attachSwipe(el, { onTap, onSwipe }) {
 
   el.addEventListener('pointerdown', e => {
     if (e.button > 0 || el.dataset.swipeLocked) return;
+    if (e.target.closest && e.target.closest('[data-no-swipe]')) return; // belső gomb (pl. vonássorrend újrajátszása)
     pointerId = e.pointerId; startX = e.clientX; startY = e.clientY; startT = performance.now();
     dx = 0; tracking = true; dragging = false;
   });

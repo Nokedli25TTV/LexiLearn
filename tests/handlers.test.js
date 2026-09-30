@@ -52,6 +52,12 @@ it('minden inline eseménykezelő létező window függvényt hív', async () =>
   // V13.6: JLPT haladás képernyő (Statisztika kártya már a stats képernyőn látszik japán módban)
   api.showScreen('goal'); snap();
 
+  // V13.9: kandzsi kártya (a hátoldalon a vonássorrend újrajátszás gombja)
+  api.setMode('kanji');
+  api.showScreen('home'); api.startLearnSession(); snap();
+  expect(win.document.querySelector('#learn-card .ks-replay')).not.toBeNull();
+  api.setMode('japanese');
+
   expect(seen.size).toBeGreaterThan(40);
   const missing = [...seen].filter(n => typeof win[n] !== 'function' && !['event', 'document'].includes(n));
   expect(missing).toEqual([]);

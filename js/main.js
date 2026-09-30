@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.8)
+// LexiLearn – belépési pont (V13.9)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -11,6 +11,7 @@ import { escHtml, jsArg } from './core/util.js';
 import { clearAllBookmarks, toggleBookmark } from './features/bookmarks.js';
 import { doAddWord, doImport, exportData, importData, openAddModal, openImportModal } from './features/import-export.js';
 import { setDailyGoal } from './features/profile.js';
+import { replayStrokes } from './features/strokes.js';
 import './features/quests.js';
 import './features/streak.js';
 import './habit/goal.js';
@@ -72,6 +73,7 @@ Object.assign(window, {
   renderDekiruLessonStats,
   renderHome,
   renderStats,
+  replayStrokes,
   revealHardcoreAnswer,
   savePlaylist,
   savePlaylists,
@@ -119,7 +121,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.8 indítása...");
+console.log("[LexiLearn] V13.9 indítása...");
 initV6Features();
 initLibraryEvents();
 

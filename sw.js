@@ -3,10 +3,14 @@
    Stratégiák:
      index.html  → Network-first (mindig a legfrissebb UI)
      JS/CSS/ikonok → Cache-first (villámgyors indulás)
+     kanjivg/*.json → Cache-first, külön, verziófüggetlen cache-ben (V13.9)
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-8';
+const CACHE_NAME = 'lexilearn-v13-9';
+// A vonássorrend-adat (1,7 MB) igény szerint töltődik le, és az app frissítései túlélik.
+// Ha a tools/build-kanjivg.mjs újragenerálja a fájlokat, ezt a nevet kell léptetni.
+const KANJIVG_CACHE = 'lexilearn-kanjivg-1';
 
 const STATIC_ASSETS = [
   './index.html',
@@ -27,6 +31,7 @@ const STATIC_ASSETS = [
   './js/features/profile.js',
   './js/features/quests.js',
   './js/features/streak.js',
+  './js/features/strokes.js',
   './js/habit/goal.js',
   './js/habit/home.js',
   './js/habit/learn.js',
@@ -61,7 +66,7 @@ const STATIC_ASSETS = [
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
-  './favicon-32.png',
+  './favicon.ico',
   'https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js'
 ];
 
@@ -91,7 +96,7 @@ self.addEventListener('activate', event => {
   console.log('[SW] Aktiválás – régi cache verziók törlése...');
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => {
+      Promise.all(keys.filter(k => k !== CACHE_NAME && k !== KANJIVG_CACHE).map(k => {
         console.log('[SW] Régi cache törölve:', k);
         return caches.delete(k);
       }))
@@ -113,6 +118,21 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
 
   const isNavigation = event.request.mode === 'navigate' || event.request.destination === 'document';
+
+  /* V13.9: vonássorrend (kanjivg/n5.json … n1.json): cache-first a saját cache-ben */
+  const url = new URL(event.request.url);
+  if (url.origin === self.location.origin && url.pathname.includes('/kanjivg/')) {
+    event.respondWith(
+      caches.open(KANJIVG_CACHE).then(async cache => {
+        const cached = await cache.match(event.request, { ignoreSearch: true });
+        if (cached) return cached;
+        const networkRes = await fetch(event.request);
+        if (networkRes && networkRes.ok) await cache.put(event.request, networkRes.clone());
+        return networkRes;
+      })
+    );
+    return;
+  }
 
   if (isNavigation) {
     /* index.html: Network-first, cache fallback */

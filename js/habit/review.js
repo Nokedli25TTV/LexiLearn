@@ -7,6 +7,7 @@ import { todayKey } from '../core/dates.js';
 import { currentMode, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, japaneseBackLine } from '../core/util.js';
+import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { AGAIN, HARD, GOOD, EASY } from '../srs/fsrs.js';
 import { REVIEW_BATCH_SIZE, dueForecast, fmtInterval, getDueWords, previewWord, rateWord } from '../srs/schedule.js';
 import { getDailyGoal, getNewWordPool, getTodayWords, logActivity } from './goal.js';
@@ -61,6 +62,7 @@ function showReviewCard() {
   const isKanji = currentMode === 'kanji';
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
   const backSrc = japaneseBackLine(word, currentMode);
+  const strokes = isKanji ? strokeFigureHtml(word.en) : ''; // V13.9: vonássorrend a hátoldalon
   const kanjiReadings = isKanji
     ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
     : '';
@@ -81,8 +83,8 @@ function showReviewCard() {
             ${frontReading ? `<div class="learn-reading">${escHtml(frontReading)}</div>` : ''}
             <div class="learn-tap-hint">Idézd fel a jelentést, aztán koppints</div>
           </div>
-          <div class="learn-face learn-back">
-            <div class="learn-back-src">${escHtml(backSrc)}</div>
+          <div class="learn-face learn-back${strokes ? ' has-strokes' : ''}">
+            ${strokes || `<div class="learn-back-src">${escHtml(backSrc)}</div>`}
             <div class="learn-meaning">${escHtml(word.hu)}</div>
             ${kanjiReadings}
             ${example.html ? `
@@ -115,6 +117,7 @@ function showReviewCard() {
     </div>`;
 
   const card = document.getElementById('review-card');
+  if (strokes) mountStrokes(card);
   attachSwipe(card, {
     onTap: flipReviewCard,
     // Értékelni csak a jelentés megnézése után lehet; előtte a húzás visszaugrik
@@ -134,6 +137,7 @@ function flipReviewCard() {
   if (!card || card.dataset.swipeLocked) return;
   _reviewFlipped = !_reviewFlipped;
   card.classList.toggle('flipped', _reviewFlipped);
+  if (_reviewFlipped) playStrokes(card); else stopStrokes(card);
   if (_reviewFlipped && !_reviewRevealed && controls) {
     _reviewRevealed = true;
     card.classList.add('is-revealed');
