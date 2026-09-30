@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 440" width="1280" height="440" role="img" aria-labelledby="t d">
+  <title id="t">LexiLearn</title>
+  <desc id="d">Nyugodt, napi szótanulás a JLPT N3 felé. A 学 (tanulás) kandzsi vonásonként megrajzolódik egy írásgyakorló négyzetben.</desc>
+  <defs>
+    <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+      <path d="M44 0H0V44" fill="none" stroke="#e5ebe8" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="fade" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0.38" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.72" stop-color="#fff" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="gridMask"><rect width="1280" height="440" fill="url(#fade)"/></mask>
+    <radialGradient id="glow" cx="1007" cy="215" r="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#52b788" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#52b788" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="frame"><rect width="1280" height="440" rx="28"/></clipPath>
+  </defs>
+  <style>
+    .word { font-family: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Noto Serif', serif; font-weight: 700; }
+    .tag { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-weight: 600; }
+    .sub { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-weight: 500; }
+    .rate-l { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-weight: 800; font-size: 19px; }
+    .rate-w { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-weight: 700; font-size: 14px; }
+    .cap { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-weight: 800; font-size: 15px; letter-spacing: 0.14em; }
+    .ghost path, .ink path { fill: none; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+    .ghost path { stroke: #3a423e; }
+    .ink path { stroke: #e5ebe8; stroke-dasharray: 1 2; stroke-dashoffset: 1.05; }
+    .num text { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; font-weight: 800; font-size: 8.5px; fill: #acb3af; stroke: #171c1a; stroke-width: 2.6px; stroke-linejoin: round; paint-order: stroke; opacity: 0; }
+    @keyframes s0 {
+      0%, 5.00% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      8.12% { stroke-dashoffset: 0; stroke: #52b788; }
+      11.92%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n0 {
+      0%, 5.00% { opacity: 0; }
+      6.80%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(1) { animation: s0 10000ms linear infinite; }
+    .num text:nth-child(1) { animation: n0 10000ms linear infinite; }
+    @keyframes s1 {
+      0%, 9.22% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      12.34% { stroke-dashoffset: 0; stroke: #52b788; }
+      16.14%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n1 {
+      0%, 9.22% { opacity: 0; }
+      11.02%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(2) { animation: s1 10000ms linear infinite; }
+    .num text:nth-child(2) { animation: n1 10000ms linear infinite; }
+    @keyframes s2 {
+      0%, 13.44% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      16.56% { stroke-dashoffset: 0; stroke: #52b788; }
+      20.36%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n2 {
+      0%, 13.44% { opacity: 0; }
+      15.24%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(3) { animation: s2 10000ms linear infinite; }
+    .num text:nth-child(3) { animation: n2 10000ms linear infinite; }
+    @keyframes s3 {
+      0%, 17.66% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      20.78% { stroke-dashoffset: 0; stroke: #52b788; }
+      24.58%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n3 {
+      0%, 17.66% { opacity: 0; }
+      19.46%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(4) { animation: s3 10000ms linear infinite; }
+    .num text:nth-child(4) { animation: n3 10000ms linear infinite; }
+    @keyframes s4 {
+      0%, 21.88% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      28.73% { stroke-dashoffset: 0; stroke: #52b788; }
+      32.53%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n4 {
+      0%, 21.88% { opacity: 0; }
+      23.68%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(5) { animation: s4 10000ms linear infinite; }
+    .num text:nth-child(5) { animation: n4 10000ms linear infinite; }
+    @keyframes s5 {
+      0%, 29.83% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      34.69% { stroke-dashoffset: 0; stroke: #52b788; }
+      38.49%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n5 {
+      0%, 29.83% { opacity: 0; }
+      31.63%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(6) { animation: s5 10000ms linear infinite; }
+    .num text:nth-child(6) { animation: n5 10000ms linear infinite; }
+    @keyframes s6 {
+      0%, 35.79% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      41.15% { stroke-dashoffset: 0; stroke: #52b788; }
+      44.95%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n6 {
+      0%, 35.79% { opacity: 0; }
+      37.59%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(7) { animation: s6 10000ms linear infinite; }
+    .num text:nth-child(7) { animation: n6 10000ms linear infinite; }
+    @keyframes s7 {
+      0%, 42.25% { stroke-dashoffset: 1.05; stroke: #52b788; opacity: 1; animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+      49.13% { stroke-dashoffset: 0; stroke: #52b788; }
+      52.93%, 86.00% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 1; }
+      93.00%, 100% { stroke-dashoffset: 0; stroke: #e5ebe8; opacity: 0; }
+    }
+    @keyframes n7 {
+      0%, 42.25% { opacity: 0; }
+      44.05%, 86.00% { opacity: 1; }
+      93.00%, 100% { opacity: 0; }
+    }
+    .ink path:nth-child(8) { animation: s7 10000ms linear infinite; }
+    .num text:nth-child(8) { animation: n7 10000ms linear infinite; }
+    @media (prefers-reduced-motion: reduce) {
+      .ink path { animation: none !important; stroke-dashoffset: 0; stroke: #e5ebe8; }
+      .num text { animation: none !important; opacity: 1; }
+    }
+  </style>
+  <g clip-path="url(#frame)">
+    <rect width="1280" height="440" fill="#0e1311"/>
+    <rect width="1280" height="440" fill="url(#grid)" mask="url(#gridMask)"/>
+    <rect width="1280" height="440" fill="url(#glow)"/>
+  </g>
+  <rect x="0.5" y="0.5" width="1279" height="439" rx="27.5" fill="none" stroke="#2d3531"/>
+
+  <!-- Logó: kétlevelű hajtás + szóvédjegy (az appban Lora betűvel) -->
+  <g transform="translate(72 84)" fill="none" stroke="#52b788" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 62V30"/>
+    <path d="M26 38C26 22 14 12 2 12C2 28 12 38 26 38Z" fill="#52b788" fill-opacity="0.18"/>
+    <path d="M26 30C26 14 38 4 52 4C52 20 42 30 26 30Z" fill="#52b788" fill-opacity="0.18"/>
+  </g>
+  <text x="146" y="146" class="word" font-size="88"><tspan fill="#52b788">Lexi</tspan><tspan fill="#e76f51">Learn</tspan></text>
+  <text x="74" y="218" class="tag" font-size="34" fill="#e5ebe8">Nyugodt, napi szótanulás a JLPT N3 felé.</text>
+  <text x="74" y="264" class="sub" font-size="22" fill="#acb3af">Japán szókincs, kandzsi és angol · Anki-szerű ismétlés · offline is</text>
+    <g transform="translate(72 318)">
+      <rect width="118" height="58" rx="16" fill="#171c1a" stroke="#2d3531"/>
+      <text x="59" y="26" text-anchor="middle" class="rate-l" fill="#e5ebe8">Újra</text>
+      <text x="59" y="46" text-anchor="middle" class="rate-w" fill="#acb3af">ma</text>
+    </g>
+    <g transform="translate(202 318)">
+      <rect width="118" height="58" rx="16" fill="#171c1a" stroke="#2d3531"/>
+      <text x="59" y="26" text-anchor="middle" class="rate-l" fill="#e5ebe8">Nehéz</text>
+      <text x="59" y="46" text-anchor="middle" class="rate-w" fill="#acb3af">2 n</text>
+    </g>
+    <g transform="translate(332 318)">
+      <rect width="118" height="58" rx="16" fill="#1d3329" stroke="#2f6b4f"/>
+      <text x="59" y="26" text-anchor="middle" class="rate-l" fill="#52b788">Jó</text>
+      <text x="59" y="46" text-anchor="middle" class="rate-w" fill="#52b788">4 n</text>
+    </g>
+    <g transform="translate(462 318)">
+      <rect width="118" height="58" rx="16" fill="#171c1a" stroke="#2d3531"/>
+      <text x="59" y="26" text-anchor="middle" class="rate-l" fill="#e5ebe8">Könnyű</text>
+      <text x="59" y="46" text-anchor="middle" class="rate-w" fill="#acb3af">9 n</text>
+    </g>
+
+  <!-- Írásgyakorló négyzet a vonásonként megrajzolódó 学 kandzsival -->
+  <rect x="848" y="56" width="318" height="318" rx="30" fill="#171c1a" stroke="#2d3531"/>
+  <g stroke="#2d3531" stroke-width="1.5" stroke-dasharray="6 7">
+    <line x1="1007" y1="70" x2="1007" y2="360"/>
+    <line x1="862" y1="215" x2="1152" y2="215"/>
+  </g>
+  <g transform="translate(860 68) scale(2.6972)">
+    <g class="ghost"><path d="M29.5,17.25c3.5,3,6.5,7.25,7.75,9.75"/><path d="M49,12c1.25,2,4.75,8.25,5.25,11.5"/><path d="M75,11c0.25,1.75-0.12,2.75-0.75,4.25c-1.29,3.1-4.25,7.38-6.5,9.75"/><path d="M21.25,33.75c-0.12,4.75-2,12.5-3.75,16.25"/><path d="M23.5,36.5c17-1.62,42.38-5.5,60-5.75c9.5-0.13,4.12,5.12,0,9"/><path d="M37.25,46.5c1,0.25,3.75,0.25,5.5-0.25s18.25-4,20-4s2.75,0.75,1,2.25S54.5,53.5,53,54.75"/><path d="M50.75,55.75c4,8.75,7.18,24.67,1.75,38c-2.75,6.75-7.75,1.25-9.75-2"/><path d="M15.75,67.75c1.75,1,4.64,1.36,7.5,1c15.88-2,44.43-6.25,61.37-5.5c2.5,0.11,4.72,0.25,6.39,1"/></g>
+    <g class="ink"><path d="M29.5,17.25c3.5,3,6.5,7.25,7.75,9.75" pathLength="1"/><path d="M49,12c1.25,2,4.75,8.25,5.25,11.5" pathLength="1"/><path d="M75,11c0.25,1.75-0.12,2.75-0.75,4.25c-1.29,3.1-4.25,7.38-6.5,9.75" pathLength="1"/><path d="M21.25,33.75c-0.12,4.75-2,12.5-3.75,16.25" pathLength="1"/><path d="M23.5,36.5c17-1.62,42.38-5.5,60-5.75c9.5-0.13,4.12,5.12,0,9" pathLength="1"/><path d="M37.25,46.5c1,0.25,3.75,0.25,5.5-0.25s18.25-4,20-4s2.75,0.75,1,2.25S54.5,53.5,53,54.75" pathLength="1"/><path d="M50.75,55.75c4,8.75,7.18,24.67,1.75,38c-2.75,6.75-7.75,1.25-9.75-2" pathLength="1"/><path d="M15.75,67.75c1.75,1,4.64,1.36,7.5,1c15.88-2,44.43-6.25,61.37-5.5c2.5,0.11,4.72,0.25,6.39,1" pathLength="1"/></g>
+    <g class="num"><text x="20.25" y="13.63">1</text><text x="39.75" y="8.5">2</text><text x="66.5" y="8.5">3</text><text x="14.5" y="34.63">4</text><text x="24.5" y="32.5">5</text><text x="29.25" y="48.5">6</text><text x="44.5" y="58.63">7</text><text x="8.5" y="72.5">8</text></g>
+  </g>
+  <text x="1007" y="412" text-anchor="middle" class="cap" fill="#7a837e">学 · TANULÁS · 8 VONÁS</text>
+</svg>

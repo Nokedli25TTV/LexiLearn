@@ -1,137 +1,226 @@
-# LexiLearn
+<p align="center">
+  <a href="https://nokedli25ttv.github.io/LexiLearn/">
+    <img src="docs/readme/banner.svg" width="100%" alt="LexiLearn: nyugodt, napi szótanulás a JLPT N3 felé. Egy írásgyakorló négyzetben a 学 (tanulás) kandzsi vonásonként megrajzolódik.">
+  </a>
+</p>
 
-Offline is működő, felhőben szinkronizált szótanuló PWA (japán a JLPT N3 felé, angol mellette).
-Élő verzió: https://nokedli25ttv.github.io/LexiLearn/ (GitHub Pages, a `main` ágból, build lépés nélkül).
+<p align="center">
+  <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
+  <img alt="Verzió 13.9" src="https://img.shields.io/badge/verzi%C3%B3-13.9-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
+  <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
+  <br>
+  <img alt="Vanilla JS, ES modulok" src="https://img.shields.io/badge/vanilla%20JS-ES%20modulok-de9300?style=for-the-badge&logo=javascript&logoColor=white&labelColor=171c1a">
+  <img alt="Firebase felhő szinkron" src="https://img.shields.io/badge/Firebase-felh%C5%91%20szinkron-1a73e8?style=for-the-badge&logo=firebase&logoColor=white&labelColor=171c1a">
+  <img alt="Vitest, 65 teszt" src="https://img.shields.io/badge/Vitest-65%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
+  <img alt="KanjiVG, CC BY-SA 3.0" src="https://img.shields.io/badge/KanjiVG-CC%20BY--SA%203.0-7a837e?style=for-the-badge&labelColor=171c1a">
+</p>
 
-Termék- és design-kontextus: [PRODUCT.md](PRODUCT.md), [DESIGN.md](DESIGN.md).
+<p align="center">
+  <b>Szótanuló, ami a napi szokásra épít, nem a hajrára.</b><br>
+  Japán a JLPT N3 felé (kana, szókincs, kandzsi vonássorrenddel), mellette angol.<br>
+  Telefonra, egy kézre, offline is, több eszköz között szinkronban.
+</p>
 
-## Futtatás helyben
+---
+
+## Képernyők
+
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/readme/kezdolap.jpg" width="250" alt="Kezdőlap: konzisztencia napokban, heti pöttysor, napi penzum sáv, korall Új szavak tanulása gomb, N3 felé sor és a napi feladatok.">
+      <br><sub><b>Kezdőlap</b><br>konzisztencia, napi penzum, egyetlen fő lépés</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/readme/tanulo-kartya.jpg" width="250" alt="Megfordított tanuló kártya: わたし, watashi, én; alatta példamondat furiganával és magyar fordítással; Még nem és Tudom gombok.">
+      <br><sub><b>Új szó kártya</b><br>húzd jobbra, ha megy, balra, ha még nem</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/readme/kandzsi-vonassorrend.jpg" width="250" alt="Kandzsi kártya hátoldala: a 学 vonásai sorban rajzolódnak, az ötödikig kész, a hatodik zölden rajzolódik; alatta 8 vonás, a jelentés és az on-kun olvasat.">
+      <br><sub><b>Vonássorrend</b><br>a kandzsi vonásonként megrajzolódik</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/readme/gyakorlas.jpg" width="250" alt="Gyakorlás fül: kereső, szűrőpillák (Dekiru 3. lecke, Úti terv, Témakör), kijelölt szavak listája N5 jelvénnyel és csillaggal, alul lebegő dokk 53 kijelölt szóval és korall Indítás gombbal.">
+      <br><sub><b>Gyakorlás</b><br>szűrhető szótár, lebegő dokk</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/readme/dokk-beallitasok.jpg" width="250" alt="Kinyitott gyakorlás beállítások: Klasszikus, Gépelős, Mondat-kiegészítő és 3D kártya típus, irány, kérdések száma, sorrend.">
+      <br><sub><b>Beállítások a hüvelykujj alatt</b><br>típus, irány, kérdésszám, sorrend</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/readme/kviz.jpg" width="250" alt="Klasszikus kvíz kérdés: エーティーエム, négy válaszlehetőség, szem és kiejtés gomb, Nem tudom.">
+      <br><sub><b>Kvíz</b><br>okos zavaró válaszokkal, kiejtéssel</sub>
+    </td>
+  </tr>
+</table>
+
+> [!TIP]
+> Telefonon nyisd meg az [élő verziót](https://nokedli25ttv.github.io/LexiLearn/), és a böngésző menüjéből add hozzá a kezdőképernyőhöz. Így teljes képernyős appként indul, és internet nélkül is működik.
+
+## Egy nap a LexiLearnnel
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Segoe UI, Helvetica, Arial, sans-serif', 'fontSize': '15px', 'primaryColor': '#171c1a', 'primaryTextColor': '#e5ebe8', 'primaryBorderColor': '#2d3531', 'lineColor': '#52b788', 'edgeLabelBackground': '#202724', 'tertiaryColor': '#202724'}}}%%
+flowchart LR
+  home([Kezdőlap]) --> due{Van esedékes<br>ismétlés?}
+  due -- igen --> rev[Ismétlés<br>Újra · Nehéz · Jó · Könnyű]
+  due -- nem --> learn[Új szavak<br>a napi penzumig]
+  rev --> learn
+  learn --> prac[Gyakorlás<br>kvíz, gépelős, mondat, 3D]
+  prac --> stats[Statisztika<br>és JLPT haladás]
+  classDef ember fill:#f57e4d,stroke:#f57e4d,color:#22110b
+  classDef leaf fill:#1d3329,stroke:#52b788,color:#e5ebe8
+  class rev ember
+  class learn,prac leaf
+```
+
+A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van esedékes ismétlés, az jön először, utána az új szavak. A napi limit szándékos: módonként 10 új szó (kandzsiból 5, a Profilban állítható), hogy a tudás rögzüljön, és ne legyen kiégés.
+
+## Minden, ami benne van
+
+### Napi szokás, nem hajrá
+
+- **Konzisztencia:** hány egymást követő napon tanultál, alatta a hét napjai pöttysorban. A kihagyott nap nem büntetés, csak tény.
+- **Napi penzum:** sáv a mai új szavakkal; a forrás a Gyakorlás fül szűrőiből jön („Forrás: Dekiru 3. lecke · 53 új szó”), egy koppintással módosítható.
+- **Előrejelzés:** egy csendes sor arról, mennyi ismétlés jön holnap és a következő héten, hogy ne érjen meglepetés.
+- **Napi feladatok:** naponta három, változó feladat, például egy hibátlan kör, tematikus nap, a nap szava, régen látott szavak vagy a legtöbbször elrontott szavak javítása.
+- **Egyetlen ünneplés:** konfetti csak akkor, ha a napi cél teljesült, és akkor is naponta egyszer.
+
+### Új szavak: húzható kártyák
+
+- Jobbra húzva „Tudom”, balra „Még nem”; a pecsét a húzás mértékével jelenik meg, küszöb felett a kártya kirepül.
+- Koppintásra megfordul: jelentés, kandzsi írásmód, romaji és egy példamondat furiganával, magyar fordítással.
+- A „Még nem” kártya a sor végére kerül, és addig visszajön, amíg egyszer nem megy.
+- Kiejtés japánul és angolul (iOS kezdőképernyős appban is), billentyűzettel a nyilak és a Szóköz is működik.
+
+### Ismétlés: Anki-szerű ütemezés (FSRS-5)
+
+- Négy gomb: **Újra, Nehéz, Jó, Könnyű**, mindegyik alatt a következő ismétlésig hátralévő idő („ma”, „3 n”, „2 hó”).
+- 90%-os célzott megtartás, napi felbontás; a „Rögzült” szó ismétlési köze legalább 21 nap.
+- Egy alkalom legfeljebb 20 kártya; az „Újra” még aznap visszajön. Húzással (balra Újra, jobbra Jó) és az 1-4 billentyűkkel is értékelhetsz.
+- A szabad gyakorlásban elrontott szó holnapra előre jön, a korábban tanult szavakat pedig az app magától, napi adagokra osztva ütemezi be.
+
+### Kandzsi: 1715 írásjegy, vonássorrenddel
+
+<table>
+<tr>
+<td width="50%" valign="top">
+
+- N5-től N1-ig, magyar jelentéssel, on és kun olvasattal, romajival, témakörökkel.
+- A kártya hátoldalán egy írásgyakorló négyzetben **a kandzsi vonásonként megrajzolódik**: az épp rajzolódó vonás zöld, a kész tintaszínű, a sorszám a vonás kezdetén jelenik meg.
+- Alatta a vonások száma és egy újrajátszás gomb. Csökkentett mozgás beállítás mellett a kész, számozott ábra látszik.
+- Az adat a [KanjiVG](https://kanjivg.tagaini.net) projektből jön, szintenként töltődik le, és utána offline is megvan.
+- A V13.9-es kiadás minden kandzsit átnézett: 337 javítás a jelentésekben, az olvasatokban és a romajiban.
+
+</td>
+<td width="50%" align="center">
+<img src="docs/readme/kandzsi-vilagos.jpg" width="230" alt="Világos témájú kandzsi kártya: a 学 mind a nyolc vonása kész és számozott, alatta 8 vonás, tanulás / tudomány, On: ガク, Kun: まな.">
+<br><sub>világos témában, a kész ábrával</sub>
+</td>
+</tr>
+</table>
+
+### Gyakorlás: a teljes szótár kézben
+
+- **Keresés** szóra, jelentésre és olvasatra; **lenyíló szűrőpillák:** Lecke (Dekiru), Úti terv (nap), Témakör, Szint, Lista, Rendezés. Minden pilla a kiválasztott értéket mutatja.
+- Szavak és Mondatok nézet, kijelölés, csillag (könyvjelző), saját listák.
+- **Lebegő dokk** a képernyő alján: a kijelöltek száma, a beállítások összefoglalója és a korall Indítás gomb.
+- **Négy gyakorlástípus:**
+
+| Típus | Mit csinálsz |
+|---|---|
+| Klasszikus | négy válaszból választasz; a zavaró válaszok hasonló szavakból jönnek |
+| Gépelős | beírod a választ; japánnál kanával vagy romajival is jó |
+| Mondat-kiegészítő | a szó a példamondatban hiányzik |
+| 3D kártya | megfordítod, és elhúzod, ha tudtad |
+
+- Irány (kana → magyar vagy fordítva), kérdésszám (10, 20, 30, 50 vagy mind), sorrend (véletlen, betűrend, könnyebb vagy nehezebb elöl).
+- Körökben halad: a hibás szavak a következő körbe kerülnek. A kör végén pontosság, helyes és hibás válaszok, idő, és a hibás szavak listája.
+
+### Statisztika és JLPT N3 haladás
+
+- **KPI sáv:** Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten.
+- **Konzisztencia hőtérkép** GitHub-stílusú naptárban, **tudás-érettség** (Ismerkedés, Gyakorlás alatt, Rögzült), **pontosság** és **fókuszált idő** az elmúlt 14 napról. Minden ábrának van táblázatos nézete is.
+- **JLPT haladás:** mérföldkő-sáv N5-től N3-ig (szókincs és kandzsi külön), célidőpont (alapból 2027. július 4., átállítható), szükséges tempó, 14 napos átlag, várható dátum és szótár-lefedettség. A Kezdőlapon egy sor mutatja: „N3 FELÉ szókincs 24% · kandzsi 20%”.
+- Fülek szintekre és témakörökre, szavakra, előzményekre és a Dekiru leckékre.
+
+### Szótár
+
+| Mód | Tartalom |
+|---|---|
+| Japán | 3794 szó (N5-N3, a JLPT kb. 3750 szavas célját lefedi), kanával, romajival, kandzsi írásmóddal, témakörökkel; 24 Dekiru lecke szószedete; 2760 példamondat |
+| Kandzsi | 1715 kandzsi N5-től N1-ig, jelentéssel, olvasatokkal és vonássorrenddel |
+| Angol | 927 szó szintekkel és témakörökkel, 920 példamondat |
+| Úti terv | 15 napos szó- és 25 napos kandzsi-terv egy japán útra, napra bontva |
+
+Saját szó felvehető kézzel vagy listából importálva.
+
+### Offline és felhő
+
+- **PWA:** telepíthető, a service worker minden fájlt eltárol, így internet nélkül is teljes értékű.
+- **Google bejelentkezés** és Firestore szinkron több eszköz között; mentéskor csak a megváltozott részek íródnak.
+- **Biztonsági mentés** egy fájlba (statisztika, listák, saját szavak), telefoncserénél egy kattintással visszaállítható.
+
+### Kényelem és hozzáférhetőség
+
+- Sötét téma alapból, meleg világos téma egy kapcsolóra.
+- Egy kéz, egy hüvelykujj: a navigáció és a gyakorlás indítása alul, lebegő sávon.
+- WCAG AA kontraszt mindkét témában, `prefers-reduced-motion` tisztelete, billentyűzetes alternatíva minden húzáshoz, legalább 44 px-es érintési felületek.
+- Felnőtt, nyugodt nyelvezet: Konzisztencia, Napi penzum, Napi feladatok.
+
+## Színek és formák
+
+A design iránya: **„A Nyugodt Dojo”**. Egy japán edzőterem csendje, ahol minden nap ugyanazzal a figyelemmel gyakorolsz.
+
+| | Név | Szerep |
+|---|---|---|
+| ![#f57e4d](https://img.shields.io/badge/%23f57e4d-f57e4d?style=flat-square) | Parázs korall | az egyetlen „nyomd meg” szín, képernyőnként egy |
+| ![#52b788](https://img.shields.io/badge/%2352b788-52b788?style=flat-square) | Levélzöld | haladás, kijelölés, az épp rajzolódó vonás |
+| ![#2d6a4f](https://img.shields.io/badge/%232d6a4f-2d6a4f?style=flat-square) | Erdőzöld | világos témában a haladás színe |
+| ![#e76f51](https://img.shields.io/badge/%23e76f51-e76f51?style=flat-square) | Terrakotta | a logó „Learn” szava |
+| ![#0e1311](https://img.shields.io/badge/%230e1311-0e1311?style=flat-square) | Éjszakai erdő | a sötét téma háttere, zöld felé tört |
+| ![#f7f5f0](https://img.shields.io/badge/%23f7f5f0-f7f5f0?style=flat-square) | Papír | a világos téma háttere |
+
+Betűk: **Nunito** az egész felületen, **Lora** csak a logóban. A részletes rendszer a [DESIGN.md](DESIGN.md)-ben, a termék célja és hangja a [PRODUCT.md](PRODUCT.md)-ben van.
+
+## Technika
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Segoe UI, Helvetica, Arial, sans-serif', 'fontSize': '14px', 'primaryColor': '#171c1a', 'primaryTextColor': '#e5ebe8', 'primaryBorderColor': '#2d3531', 'lineColor': '#7a837e', 'edgeLabelBackground': '#202724'}}}%%
+flowchart LR
+  data[Szótár-adatok<br>kézzel szerkeszthető scriptek] --> reg[data-registry.js<br>window.LEXI_DATA]
+  reg --> main[js/main.js]
+  html[index.html + style.css] --> main
+  main --> mods[ES modulok<br>core · habit · srs · goal<br>practice · stats · library]
+  mods --> idb[(IndexedDB)]
+  mods <--> fs[(Firestore)]
+  kvg[kanjivg/*.json] -. lusta betöltés .-> mods
+  sw[sw.js<br>service worker] -. offline .-> html
+  classDef ember fill:#f57e4d,stroke:#f57e4d,color:#22110b
+  classDef leaf fill:#1d3329,stroke:#52b788,color:#e5ebe8
+  class main ember
+  class mods,kvg leaf
+```
+
+- **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
+- **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
+- **65 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 
 ```bash
-npm install        # csak a fejlesztői eszközök (tesztek, lint); az oldal nem használja
+npm install        # csak a fejlesztői eszközök (tesztek, lint)
 npm run serve      # http://localhost:5599
+npm run check      # lint + az összes teszt
 ```
 
-Az `index.html` **nem nyitható meg fájlként** (duplakattintással): az app ES modulokból áll,
-amiket a böngésző csak szerverről tölt be.
+> [!NOTE]
+> Az `index.html` fájlként megnyitva nem indul el, mert a böngésző az ES modulokat csak szerverről tölti be. A felépítés, a felhő adatformátum, az ütemezés és a tesztek részletes leírása a [docs/FEJLESZTES.md](docs/FEJLESZTES.md)-ben van.
 
-## Ellenőrzés (minden változtatás előtt és után)
+## Források
 
-```bash
-npm run check      # lint (hiányzó importok, eval tiltás) + összes teszt
-npm test           # csak a tesztek
-npm run test:watch # tesztek figyelő módban fejlesztés közben
-```
-
-## Felépítés
-
-| Hely | Tartalom |
-|---|---|
-| `index.html`, `style.css` | az oldal szerkezete és stílusa |
-| `data.js`, `japanese_words.js`, `jlpt_n3_words.js`, `dekiru.js`, `kanji_data.js`, `japanese_sentences.js`, `english_sentences2.js` | a szótár adatai, **kézzel szerkeszthető** klasszikus scriptek (a `jlpt_n3_words.js` szavai `kanji` írásmódot is kapnak, ami a kártya hátoldalán jelenik meg) |
-| `data-registry.js` | a fenti adatokat `eval` nélkül gyűjti a `window.LEXI_DATA`-ba (új Dekiru lecke 30-ig magától bekerül) |
-| `js/main.js` | belépési pont: betölti a modulokat, az inline `onclick` kezelőknek a `window`-ra teszi a függvényeket, elindítja az appot |
-| `js/core/` | állapot (`state`), statikus adatok (`data`), mentés / betöltés / migráció (`storage`), dátumok, segédek |
-| `js/library/` | Gyakorlás fül: szűrők, lenyíló menük, szólista, gyakorlás dokk, saját listák |
-| `js/practice/` | gyakorló motor (kvíz, gépelős, mondat), 3D kártya, felolvasás (TTS) |
-| `js/habit/` | napi szokás: napi penzum, új szavak tanulása, esedékes ismétlés (`review.js`), Kezdőlap |
-| `js/goal/` | JLPT haladás: célszámok, mérföldkövek, tempó (`jlpt.js`) és a felületek: Statisztika kártya, Kezdőlap sor, Haladás képernyő (`view.js`) |
-| `js/srs/` | ismétlésütemezés: FSRS-5 algoritmus (`fsrs.js`) és szó-szintű ütemezés, beosztás, előrejelzés (`schedule.js`) |
-| `js/stats/` | statisztika: számítások (`model`) és ábrák (`view`) |
-| `js/features/`, `js/ui/`, `js/app/` | feladatok, sorozat, könyvjelzők, profil, import/export; képernyők, téma, toast, húzás, konfetti; service worker, bejelentkezés |
-| `firebase-sync.js` | Google bejelentkezés + felhő szinkron (Firestore) |
-| `js/app/cloud-store.js` | a felhő adat felosztása több Firestore dokumentumra (lásd lent) |
-| `sw.js` | service worker (offline gyorsítótár) |
-| `kanjivg/n5.json` … `n1.json` | a kandzsik vonássorrendje (KanjiVG), JLPT-szintenként; a `tools/build-kanjivg.mjs` állítja elő |
-| `js/features/strokes.js` | vonássorrend a tanuló / ismétlő kártya hátoldalán (lusta betöltés, rajzolás, újrajátszás) |
-
-### Új függvény, amit HTML-ből hívsz
-
-Ha egy `onclick="valami()"` új függvényt hív, tedd ki a `window`-ra a `js/main.js`
-`Object.assign(window, { … })` listájában. A `tests/handlers.test.js` elbukik, ha kimarad.
-
-### Kiadás
-
-Minden kiadásnál együtt emeld a verziót: `index.html` (`?v=` a script / style linkeken),
-`sw.js` (`CACHE_NAME`), `package.json` és a `js/main.js` fejléce. Új modul fájlnál vedd fel a `sw.js`
-`STATIC_ASSETS` listájába is; a `tests/sw.test.js` elbukik, ha kimarad, vagy ha a lista nem létező fájlt tartalmaz
-(egyetlen hiányzó fájl miatt a service worker nem települ, és az app nem működik offline).
-
-## Felhő adat (Firestore)
-
-Minden a `users/{uid}/data/` alatt van (a Firestore szabály ezt a gyűjteményt engedi a saját felhasználónak):
-
-| Dokumentum | Tartalom |
-|---|---|
-| `v2_manifest` | kis index: `updatedAt` + minden rész hash-e; a többi eszköz ezt figyeli |
-| `v2_{mód}_meta` | statisztika, napi feladatok, saját listák |
-| `v2_{mód}_w0` … `w7` | a gyakorolt / saját szavak, azonosító szerint 8 részre osztva |
-| `snapshot` | a V13.3-ig használt egyetlen dokumentum; csak migrációhoz és biztonsági mentésnek marad meg |
-
-Mentéskor csak a megváltozott részek íródnak, egy atomi batch-ben a manifesttel együtt. Egy rész
-jóval 1 MiB alatt marad (N3 szintű adatnál kb. 200 KB). Az első V13.4-es szinkron eszközönként
-egyszer a régi `snapshot`-ot is megnézi, és ha az frissebb (egy még régi verziójú eszköz írta),
-abból migrál.
-
-## Ismétlésütemezés (SRS)
-
-Anki-szerű: minden tanult szó `stats.srs` mezőjében él a következő esedékesség (`due`), a stabilitás
-(`s`, nap), a nehézség (`d`, 1-10), az utolsó ismétlés napja, az ismétlések és visszaesések száma.
-A stats-szal együtt mentődik és szinkronizálódik.
-
-- **Algoritmus:** FSRS-5 az alapértelmezett paraméterekkel, 90%-os célzott megtartással, napi felbontással.
-- **Új szó:** a tanuló kártyán a "Tudom" Jó értékelés (első ismétlés 3 nap múlva); ha közben "Még nem" is volt, hamarabb.
-- **Ismétlés:** Újra / Nehéz / Jó / Könnyű; az Újra még ma visszajön. Egy alkalom legfeljebb 20 kártya.
-- **Szabad gyakorlás:** a kvízben / gépelősben / mondatban elrontott szó holnap esedékes lesz; a helyes válasz nem tolja ki.
-- **Már tanult szavak:** betöltéskor (és felhő szinkron után) a még ütemezés nélküli tanult szavakat a meglévő
-  eredményekből becsülve beosztja; a lemaradtakat napi adagokra (min. 15/nap, legfeljebb 3 hét).
-
-## JLPT haladás
-
-- **Viszonyítás:** a JLPT általános, halmozott célszámai: N5 800 / 100, N4 1500 / 300, N3 3750 / 650 (szó / kandzsi).
-  Az N5-N3 szintű szavak együtt számítanak.
-- **Megtanult:** elkezdett szó. **Rögzült:** az ismétlési köz (a stabilitásból, `intervalFor(s)`) legalább 21 nap;
-  ugyanez a definíció a Statisztika érettség-sávjában és KPI-jában.
-- **Mérföldkövek:** a megtanult szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
-- **Célidőpont:** `appData.japanese.globalStats.jlptGoal` (szinkronizált), alapból 2027-07-04.
-
-## Kandzsi vonássorrend (KanjiVG)
-
-- **Forrás:** [KanjiVG](https://kanjivg.tagaini.net) (© Ulrich Apel), **CC BY-SA 3.0**. A `kanjivg/*.json` fájlok
-  ebből származnak, ezért ugyanezen licenc alatt állnak; a forrásmegjelölés a Profil képernyő Források részén van.
-- **Formátum:** szintenként egy JSON: `{ "日": [[útvonal, x, y], …] }`, vonásonként az SVG útvonal (109×109-es rács)
-  és a sorszám helye. Csak a `kanji_data.js` kandzsijai kerülnek bele (összesen kb. 1,7 MB).
-- **Újragenerálás** (új kandzsi a `kanji_data.js`-ben, vagy új KanjiVG kiadás): töltsd le a KanjiVG kiadását
-  (`kanjivg-*-main.zip` a GitHubról), csomagold ki, majd
-
-  ```bash
-  node tools/build-kanjivg.mjs <kicsomagolt mappa, amiben a kanji/ van>
-  ```
-
-  Utána léptesd a `sw.js` `KANJIVG_CACHE` nevét, különben a telepített appok a régi fájlokat tartják meg.
-  A `tests/kanji.test.js` elbukik, ha egy kandzsinak nincs vonássorrendje.
-- **Betöltés:** a szint fájlja az első ilyen kandzsi kártyánál töltődik le, a többi a háttérben (adatforgalom-kímélő
-  módban nem). A service worker külön, verziófüggetlen cache-ben tartja, így az app frissítése nem törli.
-
-## Tesztek
-
-- **`tests/golden.test.js` – golden master.** A `tests/golden/expected.json` az app kimenete rögzített
-  idő és véletlenszám mellett (szűrők, új szavak, Kezdőlap, gyakorlás, tanulás, statisztika, mentési
-  formátum); eredetileg a V13.2-es, még egyben lévő `app.js` kimenete, amivel a modulokra bontás pontosan
-  egyezett. Szándékos viselkedésváltozásnál: `UPDATE_GOLDEN=1 npx vitest run tests/golden.test.js`, majd a
-  `git diff`-ben ellenőrizd, hogy **csak** a szándékolt rész változott.
-- **`tests/handlers.test.js`** – minden kirajzolt inline eseménykezelő létező függvényt hív.
-- **`tests/unit/`** – egységtesztek a mag logikára (dátumok, napi napló, statisztika, új szavak) és a felhő
-  tárolóra (felosztás, migráció, csak a változott rész írása, két eszköz, méret).
-- **`tests/data.test.js`** – az N3 szókincs ellenőrzése: minden mező kitöltve, a romaji egyezik a kanával
-  (`tests/harness/kana.js` átalakító), és egyetlen kana sem ütközik a meglévő szavakkal (az app kana alapján egyesít).
-- **`tests/unit/jlpt.test.js`** – mérföldkövek, halmozott számolás, rögzült, tempó és előrejelzés.
-- **`tests/kanji.test.js`** – a kandzsi adatbázis: nincs duplikátum, az olvasatok tiszta kanák (on: katakana,
-  kun: hiragana), a romaji minden része egy olvasatból jön, és minden kandzsinak megvan a vonássorrendje.
-- **`tests/unit/strokes.test.js`** – a vonássorrend modul jsdomban: rajzolás, időzítés, újrajátszás, csökkentett mozgás.
-- **`tests/sw.test.js`** – a service worker előtöltési listája: minden fájl létezik, minden modul benne van.
-- **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
-  ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
-- Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).
-- **`tests/cloud-sync.test.js`** – a valódi `firebase-sync.js` a teljes appal, memóriabeli Firestore-ral
-  (`tests/fakes/`; a `vitest.config.js` a Firebase CDN importokat ezekre cseréli).
+- **Vonássorrend:** [KanjiVG](https://kanjivg.tagaini.net), © Ulrich Apel, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.hu). A `kanjivg/` mappa adatai ebből származnak, és ugyanezen licenc alatt használhatók tovább.
+- **Ismétlésütemezés:** az [FSRS](https://github.com/open-spaced-repetition) algoritmus 5. változata, az alapértelmezett paraméterekkel.
+- **Betűk:** Nunito és Lora (Google Fonts, SIL Open Font License).
+- **Tárolás és felhő:** [localforage](https://github.com/localForage/localForage), [Firebase](https://firebase.google.com).
