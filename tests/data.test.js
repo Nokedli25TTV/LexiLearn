@@ -36,7 +36,8 @@ describe('JLPT N3 szókincs (jlpt_n3_words.js)', () => {
 
   it('a romaji egyezik a kanával', () => {
     const wrong = N3.map(w => ({ kana: w.kana, romaji: w.romaji, expected: kanaToRomaji(w.kana) }))
-      .filter(x => normRomaji(x.romaji) !== normRomaji(x.expected));
+      // a szóvégi は kötőszóként "wa"-nak hangzik (または → matawa, mint a こんにちは → konnichiwa)
+      .filter(x => ![x.expected, String(x.expected).replace(/ha$/, 'wa')].some(e => normRomaji(x.romaji) === normRomaji(e)));
     expect(wrong).toEqual([]);
   });
 
