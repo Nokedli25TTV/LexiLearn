@@ -63,7 +63,7 @@
 ## Egy nap a LexiLearnnel
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Segoe UI, Helvetica, Arial, sans-serif', 'fontSize': '15px', 'primaryColor': '#171c1a', 'primaryTextColor': '#e5ebe8', 'primaryBorderColor': '#2d3531', 'lineColor': '#52b788', 'edgeLabelBackground': '#202724', 'tertiaryColor': '#202724'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#171c1a', 'primaryTextColor': '#e5ebe8', 'primaryBorderColor': '#2d3531', 'lineColor': '#52b788', 'edgeLabelBackground': '#202724', 'tertiaryColor': '#202724'}}}%%
 flowchart LR
   home([Kezdőlap]) --> due{Van esedékes<br>ismétlés?}
   due -- igen --> rev[Ismétlés<br>Újra · Nehéz · Jó · Könnyű]
@@ -189,7 +189,7 @@ Betűk: **Nunito** az egész felületen, **Lora** csak a logóban. A részletes 
 ## Technika
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'fontFamily': 'Segoe UI, Helvetica, Arial, sans-serif', 'fontSize': '14px', 'primaryColor': '#171c1a', 'primaryTextColor': '#e5ebe8', 'primaryBorderColor': '#2d3531', 'lineColor': '#7a837e', 'edgeLabelBackground': '#202724'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#171c1a', 'primaryTextColor': '#e5ebe8', 'primaryBorderColor': '#2d3531', 'lineColor': '#7a837e', 'edgeLabelBackground': '#202724'}}}%%
 flowchart LR
   data[Szótár-adatok<br>kézzel szerkeszthető scriptek] --> reg[data-registry.js<br>window.LEXI_DATA]
   reg --> main[js/main.js]
