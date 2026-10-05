@@ -1,15 +1,11 @@
 // LexiLearn – practice/flashcard.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { JAPANESE_SENTENCES, english_sentences2 } from '../core/data.js';
-import { todayKey } from '../core/dates.js';
 import { currentMode, state } from '../core/state.js';
-import { saveStats } from '../core/storage.js';
 import { logActivity } from '../habit/goal.js';
-import { practiceDir, showQuestion } from './engine.js';
+import { practiceDir, showQuestion, showRoundEnd } from './engine.js';
 import { speakWord } from './tts.js';
-import { showScreen } from '../ui/screens.js';
 import { attachSwipe, flyOut } from '../ui/swipe.js';
-import { showToast } from '../ui/toast.js';
 
 /* ══════════════════════════════════════════════════════
    V11: 3D FLASHCARD MÓD – FLIP, RATING, SWIPE
@@ -79,6 +75,11 @@ function rateFlashcard3D(isCorrect, immediate = false) {
   // tudja törölni ha a felhasználó visszaugrik.
   if (!p.flashcardHistory) p.flashcardHistory = [];
   p.flashcardHistory[p.currentIdx] = { wordId: word.id, isCorrect };
+  if (isCorrect) p.roundCorrect++;
+  else {
+    p.roundWrong++;
+    if (!p.errorList.includes(word.id)) p.errorList.push(word.id);
+  }
   logActivity({ known: isCorrect }); // V13.2: csak a napi naplóba (a szó statisztikáját továbbra sem érinti)
 
   // Vizuális visszacsatolás: rövid színes felvillanás a kártyán
@@ -90,12 +91,9 @@ function rateFlashcard3D(isCorrect, immediate = false) {
     _flashcard3DRated   = false;
     p.currentIdx++;
     if (p.currentIdx >= p.roundWords.length) {
-      // Vége: jelöljük a mai napot mint "gyakorolt nap" (a streak rendszerhez),
-      // de NE adjunk hozzá session history-t, kvíz-eredményt, stb.
-      state.globalStats.studyDays[todayKey()] = true;
-      saveStats();
-      showScreen('dashboard');
-      showToast(`Áttekintve: ${p.roundWords.length} kártya`);
+      // A körvégi összegzésből a "Nem tudtam" kártyák külön következő körben
+      // újravehetők. A 3D mód ettől még nem módosít szó-szintű kvízstatisztikát.
+      showRoundEnd();
     } else {
       showQuestion();
     }
@@ -105,9 +103,19 @@ function rateFlashcard3D(isCorrect, immediate = false) {
 function prevFlashcard3D() {
   const p = state.practice;
   if (!p || p.currentIdx === 0) return;
-  p.currentIdx--;
-  // Az új current pozíción tárolt értékelés "törlése" (a felhasználó újraértékelheti)
-  if (p.flashcardHistory) p.flashcardHistory[p.currentIdx] = undefined;
+  const previousIdx = p.currentIdx - 1;
+  const previous = p.flashcardHistory && p.flashcardHistory[previousIdx];
+  // A visszalépett kártya előző értékelését a kör összesítéséből is kivesszük,
+  // így az újraértékelés nem számít duplán.
+  if (previous) {
+    if (previous.isCorrect) p.roundCorrect = Math.max(0, p.roundCorrect - 1);
+    else {
+      p.roundWrong = Math.max(0, p.roundWrong - 1);
+      p.errorList = p.errorList.filter(id => id !== previous.wordId);
+    }
+    p.flashcardHistory[previousIdx] = undefined;
+  }
+  p.currentIdx = previousIdx;
   _flashcard3DFlipped = false;
   _flashcard3DRated   = false;
   showQuestion();

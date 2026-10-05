@@ -3,6 +3,7 @@
 //   word.stats.srs = { due: 'YYYY-MM-DD', s: stabilitás, d: nehézség, last: 'YYYY-MM-DD', reps, lapses }
 // A stats-szal együtt mentődik és szinkronizálódik (helyi tár + felhő), külön kezelés nélkül.
 import { addDays, dateKey, keyToDate, todayKey } from '../core/dates.js';
+import { isLearnedWord } from '../goal/jlpt.js';
 import { AGAIN, GOOD, W, intervalFor, nextState, previewAll, retrievability } from './fsrs.js';
 
 const REVIEW_BATCH_SIZE = 20;       // egy alkalom legfeljebb ennyi kártya (5-15 perces alkalmak)
@@ -14,7 +15,7 @@ const daysBetween = (fromKey, toKey) => Math.round((keyToDate(toKey) - keyToDate
 const shiftKey = (key, n) => dateKey(addDays(keyToDate(key), n));
 
 function srsOf(word) { return (word.stats && word.stats.srs) || null; }
-function isDue(word, today = todayKey()) { const s = srsOf(word); return !!s && s.due <= today; }
+function isDue(word, today = todayKey()) { const s = srsOf(word); return isLearnedWord(word) && !!s && s.due <= today; }
 
 // Esedékes szavak: a legrégebben esedékes elöl, azon belül a leginkább felejtett
 function getDueWords(words, today = todayKey()) {
@@ -29,7 +30,7 @@ function dueForecast(words, today = todayKey()) {
   let due = 0, tomorrowCount = 0, week = 0;
   words.forEach(w => {
     const s = srsOf(w);
-    if (!s) return;
+    if (!s || !isLearnedWord(w)) return;
     if (s.due <= today) due++;
     else if (s.due <= weekEnd) { week++; if (s.due === tomorrow) tomorrowCount++; }
   });
@@ -80,8 +81,7 @@ function practiceLapse(word, today = todayKey()) {
    - egymás utáni helyes válaszok: minden további kb. 1,9-szeres köz, a pontossággal súlyozva
    Ami így már esedékes lenne, azt a leginkább felejtettel kezdve napi adagokra osztja (legfeljebb 3 hét). */
 function hasHistory(w) {
-  const s = w.stats || {};
-  return !!s.learnedAt || !!s.lastAttempt || s.totalCorrect > 0 || s.totalWrong > 0;
+  return isLearnedWord(w);
 }
 
 function estimateCard(w, today) {

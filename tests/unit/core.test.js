@@ -61,7 +61,7 @@ describe('konzisztencia hőtérkép fokozatai', () => {
 describe('tudás-érettség (ismétlési köz szerint)', () => {
   it('ismerkedés < 7 nap · gyakorlás alatt 7-20 nap · rögzült 21+ nap · még nem kezdett', () => {
     // A köz a stabilitásból jön (90%-os megtartásnál köz = stabilitás), nem a due - last különbségből
-    const srs = s => ({ srs: { last: '2026-08-01', due: '2026-12-01', s, d: 5, reps: 2, lapses: 0 } });
+    const srs = s => ({ totalCorrect: 5, srs: { last: '2026-08-01', due: '2026-12-01', s, d: 5, reps: 2, lapses: 0 } });
     appData.japanese.words = [
       word('uj'),                                    // még nem kezdett
       word('tanult', {}, { learnedAt: '2026-09-29' }), // még nincs ütemezve
@@ -95,17 +95,32 @@ describe('napi index (napló + visszamenőleges becslés)', () => {
 });
 
 describe('új szavak és napi napló', () => {
-  it('isNewWord: se learnedAt, se próbálkozás', () => {
+  it('isNewWord: a napi tanulás vagy 5 helyes gyakorlóválasz után már nem új', () => {
     expect(isNewWord(word('x'))).toBe(true);
     expect(isNewWord(word('x', {}, { learnedAt: '2026-09-01' }))).toBe(false);
-    expect(isNewWord(word('x', {}, { totalWrong: 1 }))).toBe(false);
+    expect(isNewWord(word('x', {}, { totalWrong: 8, totalCorrect: 4 }))).toBe(true);
+    expect(isNewWord(word('x', {}, { totalCorrect: 5 }))).toBe(false);
   });
-  it('az új szavak lecke, majd szint szerint rendezve jönnek', () => {
+  it('a napi japán szavak csak a Dekiru leckéiből, szűrőktől függetlenül és leckesorban jönnek', () => {
     appData.japanese.words = [
-      word('n4-l2', { lesson: 2, diff: 'N4' }), word('n5-l2', { lesson: 2, diff: 'N5' }),
-      word('l1', { lesson: 1 }), word('lecke-nelkul', {}), word('regi', { lesson: 1 }, { totalCorrect: 1 })
+      word('l2-a', { source: 'dekiru', lesson: [2] }),
+      word('l1-a', { source: 'dekiru', lesson: [1] }),
+      word('l1-b', { source: 'dekiru', lesson: [1] }),
+      word('l2-b', { source: 'dekiru', lesson: [2] }),
+      word('nem-dekiru', {}),
+      word('mar-megy', { source: 'dekiru', lesson: [1] }, { totalCorrect: 5 })
     ];
-    expect(getNewWordPool().map(w => w.id)).toEqual(['l1', 'n5-l2', 'n4-l2', 'lecke-nelkul']);
+    appData.japanese.filters.lesson = '2';
+    expect(getNewWordPool().map(w => w.id)).toEqual(['l1-a', 'l1-b', 'l2-a', 'l2-b']);
+  });
+  it('a napi adag a lecke végén a következő leckéből töltődik fel', () => {
+    appData.japanese.words = [
+      ...Array.from({ length: 3 }, (_, i) => word(`l1-${i}`, { source: 'dekiru', lesson: [1] })),
+      ...Array.from({ length: 9 }, (_, i) => word(`l2-${i}`, { source: 'dekiru', lesson: [2] }))
+    ];
+    expect(getNewWordPool().slice(0, 10).map(w => w.id)).toEqual([
+      'l1-0', 'l1-1', 'l1-2', 'l2-0', 'l2-1', 'l2-2', 'l2-3', 'l2-4', 'l2-5', 'l2-6'
+    ]);
   });
   it('a napi cél módonként alapértelmezett, a beállított felülírja', () => {
     expect(getDailyGoal()).toBe(10);

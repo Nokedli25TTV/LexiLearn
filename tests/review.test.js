@@ -14,6 +14,7 @@ it('esedékes ismétlés a Kezdőlaptól az összegzésig', async () => {
   const ja = win.appData.japanese;
   const [a, b, c, later, tomorrow] = ja.words;
   const srs = (due, last = '2026-09-20') => ({ due, s: 8, d: 5, last, reps: 2, lapses: 0 });
+  [a, b, c, later, tomorrow].forEach(w => { w.stats.learnedAt = '2026-09-01'; });
   a.stats.srs = srs('2026-09-27');
   b.stats.srs = srs(TODAY);
   c.stats.srs = srs(TODAY);

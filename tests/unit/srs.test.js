@@ -65,7 +65,7 @@ describe('szavak ütemezése', () => {
     expect(unscheduled.stats.srs.due).toBe('2026-09-30');
   });
   it('esedékes lista és előrejelzés', () => {
-    const at = (id, due, s = 5) => ({ ...word(id), stats: { srs: { due, s, d: 5, last: '2026-09-20' } } });
+    const at = (id, due, s = 5) => ({ ...word(id), stats: { learnedAt: '2026-09-01', srs: { due, s, d: 5, last: '2026-09-20' } } });
     const words = [at('c', '2026-09-29'), at('a', '2026-09-25'), at('b', '2026-09-29', 50), at('x', '2026-09-30'), at('y', '2026-10-06'), at('z', '2026-10-07'), word('uj')];
     expect(getDueWords(words, TODAY).map(w => w.id)).toEqual(['a', 'c', 'b']);
     expect(dueForecast(words, TODAY)).toEqual({ due: 3, tomorrow: 1, week: 2 }) // a 10-07-es már a 7 napon túl van;
@@ -105,7 +105,13 @@ describe('már tanult szavak beosztása', () => {
     const strong = word('eros', { lastAttempt: recent, totalCorrect: 6, totalWrong: 0, streak: 6 });
     const weak = word('gyenge', { lastAttempt: recent, totalCorrect: 2, totalWrong: 2, streak: 1 });
     seedMissing([strong, weak], TODAY);
-    expect(strong.stats.srs.due > weak.stats.srs.due).toBe(true);
     expect(strong.stats.srs.due > '2026-10-20').toBe(true);
+    expect(weak.stats.srs).toBeUndefined();
+  });
+  it('az egyszer kipróbált régi kártya nem kerül az ismétlési halomba', () => {
+    const accidental = word('veletlen', { totalCorrect: 1, totalWrong: 1, lastAttempt: new Date(2026, 8, 20).getTime() });
+    practiceLapse(accidental, '2026-09-20');
+    expect(accidental.stats.srs).toBeDefined(); // az adat megmarad
+    expect(getDueWords([accidental], TODAY)).toEqual([]); // de még nem tekintjük megtanultnak
   });
 });

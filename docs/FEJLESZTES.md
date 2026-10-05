@@ -82,7 +82,7 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **Algoritmus:** FSRS-5 az alapértelmezett paraméterekkel, 90%-os célzott megtartással, napi felbontással.
 - **Új szó:** a tanuló kártyán a "Tudom" Jó értékelés (első ismétlés 3 nap múlva); ha közben "Még nem" is volt, hamarabb.
 - **Ismétlés:** Újra / Nehéz / Jó / Könnyű; az Újra még ma visszajön. Egy alkalom legfeljebb 20 kártya.
-- **Szabad gyakorlás:** a kvízben / gépelősben / mondatban elrontott szó holnap esedékes lesz; a helyes válasz nem tolja ki.
+- **Szabad gyakorlás:** az ötödik helyes kvíz- / gépelős / mondatválasznál a szó megtanultnak számít, bekerül az SRS-be és a JLPT-haladásba. Megtanult szónál a hibás válasz holnapra hozza az ismétlést; a helyes válasz nem tolja ki.
 - **Már tanult szavak:** betöltéskor (és felhő szinkron után) a még ütemezés nélküli tanult szavakat a meglévő
   eredményekből becsülve beosztja; a lemaradtakat napi adagokra (min. 15/nap, legfeljebb 3 hét).
 
@@ -92,7 +92,7 @@ A stats-szal együtt mentődik és szinkronizálódik.
   Az N5-N3 szintű szavak együtt számítanak.
 - **Megtanult:** elkezdett szó. **Rögzült:** az ismétlési köz (a stabilitásból, `intervalFor(s)`) legalább 21 nap;
   ugyanez a definíció a Statisztika érettség-sávjában és KPI-jában.
-- **Mérföldkövek:** a megtanult szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
+- **Mérföldkövek:** a napi tanulásban sikerült, illetve szabad gyakorlásban legalább ötször helyesen megválaszolt szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
 - **Célidőpont:** `appData.japanese.globalStats.jlptGoal` (szinkronizált), alapból 2027-07-04.
 
 ## Kandzsi vonássorrend (KanjiVG)

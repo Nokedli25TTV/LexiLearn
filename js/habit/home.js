@@ -5,10 +5,9 @@ import { MODE_LABELS, currentMode, state } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests } from '../features/quests.js';
 import { calcStreak, renderWeekTracker } from '../features/streak.js';
-import { LEARN_BATCH_SIZE, describePoolSource, getDailyGoal, getNewWordPool, getTodayWords, hasPoolFilters, isNewWord } from './goal.js';
+import { LEARN_BATCH_SIZE, describePoolSource, getDailyGoal, getNewWordPool, getTodayWords } from './goal.js';
 import { applyFilters } from '../library/list.js';
 import { closeFilterMenu, renderFilterBar } from '../library/menus.js';
-import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { REVIEW_BATCH_SIZE, dueForecast } from '../srs/schedule.js';
 import { goalLineHtml } from '../goal/view.js';
@@ -54,9 +53,7 @@ function renderHome() {
   const pool = getNewWordPool();
   const source = document.getElementById('goal-source');
   if (source) {
-    source.innerHTML = `
-      <span>Forrás: <b>${escHtml(describePoolSource())}</b> · ${pool.length} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}</span>
-      <button class="link-btn" onclick="openPoolSource()">Módosítás</button>`;
+    source.innerHTML = `<span>Forrás: <b>${escHtml(describePoolSource())}</b> · ${pool.length} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}</span>`;
   }
 
   // ── Fő cselekvések ──
@@ -92,23 +89,14 @@ function renderHome() {
         </div>
       </div>`;
   } else if (pool.length === 0) {
-    const filteredOut = hasPoolFilters() && state.words.some(isNewWord);
-    learnHtml = filteredOut
-      ? `<div class="home-note">
-           <span class="home-note-icon" aria-hidden="true">∅</span>
-           <div>
-             <p class="home-note-title">Ebben a válogatásban elfogytak az új szavak.</p>
-             <p class="home-note-sub">Válassz másik leckét, vagy tanulj a teljes szótárból.</p>
-             <button class="link-btn" onclick="clearFilters()">Szűrők törlése</button>
-           </div>
-         </div>`
-      : `<div class="home-note">
-           <span class="home-note-icon" aria-hidden="true">✓</span>
-           <div>
-             <p class="home-note-title">Ebben a módban minden szót elkezdtél.</p>
-             <p class="home-note-sub">Az ismétlések gondoskodnak a rögzítésről.</p>
-           </div>
-         </div>`;
+    const completed = currentMode === 'japanese' ? 'Minden Dekiru-szót elkezdtél.' : 'Ebben a módban minden szót elkezdtél.';
+    learnHtml = `<div class="home-note">
+       <span class="home-note-icon" aria-hidden="true">✓</span>
+       <div>
+         <p class="home-note-title">${completed}</p>
+         <p class="home-note-sub">Az ismétlések gondoskodnak a rögzítésről.</p>
+       </div>
+     </div>`;
   } else {
     const mins = Math.max(1, Math.round(nextBatch * 0.5));
     learnHtml = `
@@ -131,10 +119,9 @@ function renderHome() {
   renderDailyQuests();
 }
 
-// "Módosítás": a Gyakorlás fül szűrő pilláihoz ugrik (ugyanazok a szűrők adják az új szavakat)
+// Régi globális kezelő kompatibilitásához megtartva; a napi sorrend már automatikus.
 function openPoolSource() {
-  showScreen('dashboard');
-  showToast('Az új szavak az itt beállított szűrőkből jönnek');
+  showToast('A napi új szavak automatikusan, lecke szerint következnek.');
 }
 
 // Minden szerkezeti szűrő törlése (Kezdőlap és Gyakorlás fül közös)

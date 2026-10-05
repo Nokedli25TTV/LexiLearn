@@ -43,7 +43,10 @@ it('minden inline eseménykezelő létező window függvényt hív', async () =>
   api.openAddModal(); snap(); api.closeModal('add-modal');
 
   // V13.5: esedékes ismétlés (Kezdőlap fő gomb, kártya, értékelő gombok, összegzés)
-  ja.words.slice(0, 3).forEach(w => { w.stats.srs = { due: '2026-09-28', s: 5, d: 5, last: '2026-09-20', reps: 1, lapses: 0 }; });
+  ja.words.slice(0, 3).forEach(w => {
+    w.stats.learnedAt = '2026-09-01';
+    w.stats.srs = { due: '2026-09-28', s: 5, d: 5, last: '2026-09-20', reps: 1, lapses: 0 };
+  });
   api.showScreen('home'); snap();
   api.startReviewSession(); snap();
   api.flipReviewCard(); snap();

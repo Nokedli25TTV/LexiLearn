@@ -3,11 +3,11 @@
 import { todayKey } from '../core/dates.js';
 import { currentMode, diffOrder, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
-import { lessonLabel, wordMatchesFilters } from '../library/filters.js';
+import { isLearnedWord } from '../goal/jlpt.js';
 
 /* ══════════════════════════════════════════════════════
    V13: NAPI SZOKÁS MOTOR – új szavak, napi cél, mai ismétlés
-   - Egy szó "új", ha még sosem gyakoroltad és nincs learnedAt-je.
+   - Egy szó "új", ha a napi tanulásban még nem sikerült és nincs 5 helyes gyakorlóválasza.
    - Tanuláskor ("Tudom" / jobbra húzás) a szó stats.learnedAt = mai nap (helyi dátum).
      A stats objektumban van, így a felhő szinkron módosítás nélkül viszi.
    - A napi cél módonként állítható (globalStats.dailyGoal, szinkronizált).
@@ -21,8 +21,7 @@ function getDailyGoal() {
 }
 
 function isNewWord(w) {
-  const s = w.stats || {};
-  return !s.learnedAt && !s.lastAttempt && !(s.totalCorrect > 0) && !(s.totalWrong > 0) && !s.srs;
+  return !isLearnedWord(w);
 }
 
 function getTodayWords() {
@@ -30,35 +29,39 @@ function getTodayWords() {
   return state.words.filter(w => w.stats && w.stats.learnedAt === today);
 }
 
-// Új szavak sorrendje: lecke → nehézség → eredeti adatsorrend (így követi a Dekiru / kanji leckéket)
+const lessonNum = w => {
+  const values = Array.isArray(w.lesson) ? w.lesson : [w.lesson];
+  const nums = values.map(Number).filter(n => Number.isFinite(n) && n >= 1);
+  return nums.length ? Math.min(...nums) : Infinity;
+};
+
+// Japánban kizárólag a Dekiru leckéin megyünk végig, a leckehatáron fennmaradó
+// napi helyeket automatikusan a következő lecke szavai töltik fel.
+// A Gyakorlás fül szűrői és sorrendje a napi adagba nem szólnak bele.
 function getNewWordPool() {
   const order = new Map(state.words.map((w, i) => [w.id, i]));
-  const lessonNum = w => { const n = parseInt(w.lesson, 10); return Number.isNaN(n) ? Infinity : n; };
-  return state.words
-    .filter(w => isNewWord(w) && wordMatchesFilters(w, { ignoreSearch: true }))
+  let pool = state.words.filter(isNewWord);
+  if (currentMode === 'japanese') {
+    // A lesson mező a biztos Dekiru-azonosító: néhány, másik szótárban is szereplő szó
+    // forráscímkéje összevonáskor megváltozhat, a lecke-hozzárendelése viszont megmarad.
+    pool = pool.filter(w => Number.isFinite(lessonNum(w)));
+    return pool.sort((a, b) => (lessonNum(a) - lessonNum(b)) || (order.get(a.id) - order.get(b.id)));
+  }
+  return pool
     .sort((a, b) => (lessonNum(a) - lessonNum(b)) || (diffOrder(a.diff) - diffOrder(b.diff)) || (order.get(a.id) - order.get(b.id)));
 }
 
 function hasPoolFilters() {
-  const f = state.filters;
-  const isJp = currentMode !== 'english';
-  return f.tags.length > 0 || f.diff.size > 0 || (f.list && f.list !== 'all') ||
-    (isJp && f.lesson && f.lesson !== 'all') || (isJp && f.day && f.day !== 'all');
+  return false;
 }
 
-// Ember-olvasható leírás arról, honnan jönnek az új szavak (a Gyakorlás fül szűrői)
+// Ember-olvasható leírás az automatikus napi sorrendről.
 function describePoolSource() {
-  const f = state.filters;
-  const isJp = currentMode !== 'english';
-  const parts = [];
-  if (f.list && f.list !== 'all') {
-    parts.push(f.list === '__focus' ? 'Fókusz Lista' : (state.playlists.find(p => p.id === f.list)?.name || 'Saját lista'));
-  }
-  if (isJp && f.day && f.day !== 'all') parts.push(`Úti terv ${f.day}. nap`);
-  if (isJp && f.lesson && f.lesson !== 'all') parts.push(lessonLabel(f.lesson));
-  if (f.tags.length > 0) parts.push(f.tags.slice(0, 2).join(', ') + (f.tags.length > 2 ? ` +${f.tags.length - 2}` : ''));
-  if (f.diff.size > 0) parts.push(Array.from(f.diff).join('/'));
-  return parts.length > 0 ? parts.join(' · ') : 'Teljes szótár';
+  const first = getNewWordPool()[0];
+  if (currentMode === 'japanese') return first ? `Dekiru ${lessonNum(first)}. lecke · sorrendben` : 'Dekiru leckék';
+  if (currentMode === 'kanji') return first && Number.isFinite(lessonNum(first))
+    ? `Kanji ${lessonNum(first)}. lecke · sorrendben` : 'Kanji leckék · sorrendben';
+  return 'Teljes angol szótár · szint szerint';
 }
 
 /* ── V13.2: NAPI AKTIVITÁS NAPLÓ (a Statisztika ábráihoz) ──

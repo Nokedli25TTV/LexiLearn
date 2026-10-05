@@ -1,6 +1,6 @@
 // JLPT haladás: mérföldkövek, elérési dátumok, rögzült (21+ nap), tempó és előrejelzés.
 import { describe, it, expect } from 'vitest';
-import { buildMilestones, crossedMilestones, getGoal, paceFor, trackProgress } from '../../js/goal/jlpt.js';
+import { buildMilestones, crossedMilestones, getGoal, isLearnedWord, learnedDate, markPracticeLearned, paceFor, trackProgress } from '../../js/goal/jlpt.js';
 
 const TODAY = '2026-09-29';
 let seq = 0;
@@ -40,9 +40,18 @@ describe('sáv állapota', () => {
     expect(m200).toMatchObject({ n: 200, done: false, current: true, progress: 0.52 });
     expect(t.milestones[2]).toMatchObject({ done: false, current: false, progress: 0 });
   });
+  it('szabad gyakorlásból az ötödik helyes válasznál kerül be a haladásba', () => {
+    const almost = w('N5', { totalCorrect: 4, lastAttempt: new Date(2026, 8, 29).getTime() });
+    const ready = w('N5', { totalCorrect: 5, lastAttempt: new Date(2026, 8, 29).getTime() });
+    expect(isLearnedWord(almost)).toBe(false);
+    expect(isLearnedWord(ready)).toBe(true);
+    expect(markPracticeLearned(almost, TODAY)).toBe(false);
+    expect(markPracticeLearned(ready, TODAY)).toBe(true);
+    expect(learnedDate(ready)).toBe(TODAY);
+  });
   it('a mérföldkő dátuma a k-adik megtanult szó dátuma; ismeretlen dátum ("korábban") elöl', () => {
     const words = [
-      ...Array.from({ length: 30 }, () => w('N5', { totalCorrect: 1 })),                 // régi, dátum nélkül
+      ...Array.from({ length: 30 }, () => w('N5', { totalCorrect: 5 })),                 // régi, dátum nélkül
       ...Array.from({ length: 70 }, (_, i) => learned('N5', i < 60 ? '2026-09-10' : '2026-09-20'))
     ];
     const t = trackProgress(words, 'kanji', TODAY);

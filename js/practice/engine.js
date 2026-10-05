@@ -8,16 +8,22 @@ import { escHtml, escRegex, shuffle } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests, updateQuestProgress } from '../features/quests.js';
 import { getPracticeOptions } from '../library/dock.js';
 import { closeLibraryOverlays } from '../library/menus.js';
+import { markPracticeLearned } from '../goal/jlpt.js';
 import { initFlashcard3DSwipe, resetFlashcardState } from './flashcard.js';
 import { _currentTTSAudio, setTtsOnEnd, speakWord } from './tts.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
-import { practiceLapse } from '../srs/schedule.js';
+import { practiceLapse, seedMissing } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
    PRACTICE LOGIC (V6.7: SZEM IKON + MONDAT MOTOR)
 ══════════════════════════════════════════════════════ */
 let eyeState = 0; 
+
+// Az ötödik helyes szabad gyakorlóválasznál a szó belép a JLPT-haladásba és az SRS-be.
+function registerPracticeMastery(word, isCorrect) {
+  if (isCorrect && markPracticeLearned(word)) seedMissing([word]);
+}
 
 function startPractice() {
   const selectedWords = state.words.filter(w => state.selectedIds.has(w.id));
@@ -409,6 +415,7 @@ function checkSentenceAnswer(btn, chosen) {
   if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
   else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
   word.stats.lastAttempt = Date.now();
+  registerPracticeMastery(word, isCorrect);
   if (!isCorrect) practiceLapse(word); // V13.5: a hibás szó holnap visszajön ismétlésre
   updateQuestProgress('wordAnswered', { word, isCorrect });
 
@@ -506,6 +513,7 @@ function checkHardcoreAnswer(wordId) {
   
   speakWord(word.en, false);
   word.stats.lastAttempt = Date.now();
+  registerPracticeMastery(word, isCorrect);
   if (!isCorrect) practiceLapse(word); // V13.5: a hibás szó holnap visszajön ismétlésre
   updateQuestProgress('wordAnswered', { word, isCorrect });
 
@@ -580,6 +588,7 @@ function checkAnswer(btn, chosen, correct) {
     if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
     else { word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if(!p.errorList.includes(word.id)) p.errorList.push(word.id); }
     word.stats.lastAttempt = Date.now();
+    registerPracticeMastery(word, isCorrect);
     if (!isCorrect) practiceLapse(word); // V13.5: a hibás szó holnap visszajön ismétlésre
     updateQuestProgress('wordAnswered', { word, isCorrect });
     // V13: gyors ismétlésnél a hibás szó a sor végére kerül, amíg egyszer el nem találod
@@ -622,16 +631,24 @@ function showRoundEnd() {
   const total = p.roundWords.length;
   const pct = total > 0 ? Math.round(p.roundCorrect / total * 100) : 0;
   const elapsed = Math.round((Date.now() - p.roundStartTime) / 1000);
-  
-  checkDailyReset();
-  updateQuestProgress('roundEnd', {
-    roundCorrect: p.roundCorrect,
-    roundWrong: p.roundWrong,
-    roundLength: total,
-    elapsed: elapsed
-  });
-  saveStats(); // Csak a statisztikát kell menteni kör végén
-  renderDailyQuests();
+
+  // A 3D kártya önértékelés, nem kvízeredmény: aktív tanulási napnak számít,
+  // de nem írjuk bele a küldetés- vagy pontossági statisztikába.
+  if (p.type === 'flashcard3d') {
+    if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
+    state.globalStats.studyDays[todayKey()] = true;
+    saveStats();
+  } else {
+    checkDailyReset();
+    updateQuestProgress('roundEnd', {
+      roundCorrect: p.roundCorrect,
+      roundWrong: p.roundWrong,
+      roundLength: total,
+      elapsed: elapsed
+    });
+    saveStats(); // Csak a statisztikát kell menteni kör végén
+    renderDailyQuests();
+  }
 
   const setEl = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
 
@@ -687,13 +704,24 @@ function fmtRoundTime(sec) {
 
 function startNextRound() {
   const p = state.practice;
-  state.practice = { ...p, roundNumber: p.roundNumber + 1, roundWords: shuffle([...p.errorList]), currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now() };
+  state.practice = { ...p, roundNumber: p.roundNumber + 1, roundWords: shuffle([...p.errorList]), currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now(), flashcardHistory: p.type === 'flashcard3d' ? [] : p.flashcardHistory };
   showScreen('practice'); showQuestion();
 }
 
 function finishSession() {
   const p = state.practice;
   const duration = Math.round((Date.now() - p.sessionStartTime) / 1000);
+
+  // A 3D kártya szabad önellenőrzés: aktív tanulási napnak számít, de nem hoz
+  // létre 0/0-s kvízelőzményt és nem módosítja a globális pontosságot.
+  if (p.type === 'flashcard3d') {
+    if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
+    state.globalStats.studyDays[todayKey()] = true;
+    saveStats();
+    showScreen(p.origin || 'dashboard');
+    showToast('Kártyák áttekintve');
+    return;
+  }
 
   state.globalStats.studyDays[todayKey()] = true;
   state.globalStats.totalSessions++; 

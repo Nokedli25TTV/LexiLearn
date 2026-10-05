@@ -3,8 +3,8 @@
 //
 // Viszonyítás: a JLPT-hez általánosan megadott, halmozott célszámok (N3-hoz összesen kb. 3750 szó
 // és 650 kandzsi). Az N5-N3 szintű szavak együtt számítanak, így a vártnál több N5 szó is előrevisz.
-// Egy szó "megtanult", ha már elkezdted (ütemezésben van / gyakoroltad), és "rögzült", ha az
-// ismétlési köze legalább 21 nap (mint az Anki "mature" fogalma).
+// Egy szó "megtanult", ha a napi tanulásban már sikerült, vagy szabad gyakorlásban legalább
+// ötször helyesen válaszoltál rá. "Rögzült", ha az ismétlési köze legalább 21 nap.
 import { addDays, dateKey, keyToDate } from '../core/dates.js';
 import { intervalFor } from '../srs/fsrs.js';
 
@@ -21,6 +21,7 @@ const STEPS = {
 const DEFAULT_GOAL = { level: 'N3', date: '2027-07-04' };
 const MATURE_DAYS = 21;
 const PACE_WINDOW_DAYS = 14;
+const PRACTICE_LEARNED_CORRECT = 5;
 
 const dayDiff = (a, b) => Math.round((keyToDate(b) - keyToDate(a)) / 86400000);
 
@@ -34,7 +35,16 @@ function buildMilestones(kind) {
 
 function isLearnedWord(w) {
   const s = w.stats || {};
-  return !!(s.srs || s.learnedAt || s.lastAttempt || s.totalCorrect > 0 || s.totalWrong > 0);
+  return !!s.learnedAt || (s.totalCorrect || 0) >= PRACTICE_LEARNED_CORRECT;
+}
+
+// A küszöb átlépésének dátuma kell a 14 napos tempóhoz és a mérföldkövekhez.
+// Régi adatoknál, ahol ez még nincs eltárolva, a learnedDate a lastAttempt dátumára esik vissza.
+function markPracticeLearned(w, today = dateKey(new Date())) {
+  const s = w.stats || (w.stats = {});
+  if (s.learnedAt || (s.totalCorrect || 0) < PRACTICE_LEARNED_CORRECT || s.practiceLearnedAt) return false;
+  s.practiceLearnedAt = today;
+  return true;
 }
 
 // A kártya saját ismétlési köze (a stabilitásból). Nem a due - last különbség: a beosztás és a
@@ -50,6 +60,7 @@ function isMatureWord(w) { return srsInterval(w) >= MATURE_DAYS; }
 function learnedDate(w) {
   const s = w.stats || {};
   if (s.learnedAt) return s.learnedAt;
+  if (s.practiceLearnedAt) return s.practiceLearnedAt;
   if (s.lastAttempt) return dateKey(new Date(s.lastAttempt));
   return null;
 }
@@ -122,5 +133,6 @@ function getGoal(globalStats) {
   return { ...DEFAULT_GOAL, ...(g || {}) };
 }
 
-export { DEFAULT_GOAL, LEVELS, MATURE_DAYS, STEPS, TARGETS, buildMilestones, crossedMilestones, getGoal,
-  isLearnedWord, isMatureWord, learnedDate, paceFor, srsInterval, trackProgress };
+export { DEFAULT_GOAL, LEVELS, MATURE_DAYS, PRACTICE_LEARNED_CORRECT, STEPS, TARGETS, buildMilestones,
+  crossedMilestones, getGoal, isLearnedWord, isMatureWord, learnedDate, markPracticeLearned, paceFor,
+  srsInterval, trackProgress };

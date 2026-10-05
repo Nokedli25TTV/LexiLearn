@@ -348,7 +348,7 @@
       "ja_とりあえず",
       "ja_ていきゅうび"
     ],
-    "newCount": 2957
+    "newCount": 3184
   },
   "filters": {
     "none": {
@@ -360,7 +360,7 @@
         "ja_ハンがリー",
         "ja_イギリス"
       ],
-      "pool": 2957,
+      "pool": 1051,
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
@@ -373,7 +373,7 @@
         "ja_かんこく",
         "ja_がいこく"
       ],
-      "source": "Teljes szótár",
+      "source": "Dekiru 1. lecke · sorrendben",
       "hasFilters": false
     },
     "lesson3": {
@@ -385,21 +385,21 @@
         "ja_ぎんこう",
         "ja_ゆうびんきょく"
       ],
-      "pool": 41,
+      "pool": 1051,
       "poolFirst": [
-        "ja_ある",
-        "ja_いる",
-        "ja_えき",
-        "ja_ゆうびんきょく",
-        "ja_エーティーエム",
-        "ja_みち",
-        "ja_こうえん",
-        "ja_みせ",
-        "ja_ほんや",
-        "ja_すしや"
+        "ja_なまえ",
+        "ja_にほん",
+        "ja_ハンがリー",
+        "ja_イギリス",
+        "ja_オーストリア",
+        "ja_ドイツ",
+        "ja_アメリカ",
+        "ja_オーストラリア",
+        "ja_かんこく",
+        "ja_がいこく"
       ],
-      "source": "Dekiru 3. lecke",
-      "hasFilters": true
+      "source": "Dekiru 1. lecke · sorrendben",
+      "hasFilters": false
     },
     "day2": {
       "matching": 15,
@@ -410,21 +410,21 @@
         "ja_にもつ",
         "ja_ちかい"
       ],
-      "pool": 12,
+      "pool": 1051,
       "poolFirst": [
-        "ja_バス",
-        "ja_ひこうき",
-        "ja_にもつ",
-        "ja_ちかい",
-        "ja_とおい",
-        "ja_くうこう",
-        "ja_のります",
-        "ja_ゲート",
-        "ja_しゅうてん",
-        "ja_おくれ"
+        "ja_なまえ",
+        "ja_にほん",
+        "ja_ハンがリー",
+        "ja_イギリス",
+        "ja_オーストリア",
+        "ja_ドイツ",
+        "ja_アメリカ",
+        "ja_オーストラリア",
+        "ja_かんこく",
+        "ja_がいこく"
       ],
-      "source": "Úti terv 2. nap",
-      "hasFilters": true
+      "source": "Dekiru 1. lecke · sorrendben",
+      "hasFilters": false
     },
     "tagTransport": {
       "matching": 108,
@@ -435,21 +435,21 @@
         "ja_くるま",
         "ja_じどうしゃ"
       ],
-      "pool": 81,
+      "pool": 1051,
       "poolFirst": [
-        "ja_えき",
-        "ja_くるま",
-        "ja_バス",
-        "ja_してん",
-        "ja_ひこうき",
-        "ja_ちかてつ",
-        "ja_でんしゃ",
-        "ja_のりもの",
-        "ja_タクシー",
-        "ja_てつどう"
+        "ja_なまえ",
+        "ja_にほん",
+        "ja_ハンがリー",
+        "ja_イギリス",
+        "ja_オーストリア",
+        "ja_ドイツ",
+        "ja_アメリカ",
+        "ja_オーストラリア",
+        "ja_かんこく",
+        "ja_がいこく"
       ],
-      "source": "közlekedés",
-      "hasFilters": true
+      "source": "Dekiru 1. lecke · sorrendben",
+      "hasFilters": false
     },
     "diffN4": {
       "matching": 563,
@@ -460,21 +460,21 @@
         "ja_こうこうせい",
         "ja_かいしゃいん"
       ],
-      "pool": 436,
+      "pool": 1051,
       "poolFirst": [
-        "ja_こうこう",
-        "ja_はたち",
-        "ja_だいどころ",
-        "ja_おしいれ",
-        "ja_きょうしつ",
-        "ja_うんどうじょう",
-        "ja_たいいくかん",
-        "ja_としょしつ",
-        "ja_こくばん",
-        "ja_そろそろ"
+        "ja_なまえ",
+        "ja_にほん",
+        "ja_ハンがリー",
+        "ja_イギリス",
+        "ja_オーストリア",
+        "ja_ドイツ",
+        "ja_アメリカ",
+        "ja_オーストラリア",
+        "ja_かんこく",
+        "ja_がいこく"
       ],
-      "source": "N4",
-      "hasFilters": true
+      "source": "Dekiru 1. lecke · sorrendben",
+      "hasFilters": false
     },
     "focus": {
       "matching": 292,
@@ -485,21 +485,21 @@
         "ja_バスケットボール",
         "ja_はたち"
       ],
-      "pool": 227,
+      "pool": 1051,
       "poolFirst": [
-        "ja_とうきょう",
-        "ja_せいと",
-        "ja_バスケットボール",
-        "ja_はたち",
-        "ja_リビング",
-        "ja_えんぴつ",
-        "ja_かし",
-        "ja_あの",
-        "ja_こうえん",
-        "ja_おかあさん"
+        "ja_なまえ",
+        "ja_にほん",
+        "ja_ハンがリー",
+        "ja_イギリス",
+        "ja_オーストリア",
+        "ja_ドイツ",
+        "ja_アメリカ",
+        "ja_オーストラリア",
+        "ja_かんこく",
+        "ja_がいこく"
       ],
-      "source": "Fókusz Lista",
-      "hasFilters": true
+      "source": "Dekiru 1. lecke · sorrendben",
+      "hasFilters": false
     },
     "lessonAndDiff": {
       "matching": 50,
@@ -510,21 +510,21 @@
         "ja_バス",
         "ja_してん"
       ],
-      "pool": 40,
+      "pool": 1051,
       "poolFirst": [
-        "ja_いく",
-        "ja_くるま",
-        "ja_バス",
-        "ja_してん",
-        "ja_ひこうき",
-        "ja_ちかてつ",
-        "ja_でんしゃ",
-        "ja_うち",
-        "ja_プール",
-        "ja_きょうかい"
+        "ja_なまえ",
+        "ja_にほん",
+        "ja_ハンがリー",
+        "ja_イギリス",
+        "ja_オーストリア",
+        "ja_ドイツ",
+        "ja_アメリカ",
+        "ja_オーストラリア",
+        "ja_かんこく",
+        "ja_がいこく"
       ],
-      "source": "Dekiru 5. lecke · N5",
-      "hasFilters": true
+      "source": "Dekiru 1. lecke · sorrendben",
+      "hasFilters": false
     },
     "searchTa": {
       "matching": 586,
@@ -605,8 +605,8 @@
       "selectAll": "Mind kijelölése"
     },
     "firstRowHtml": "<div class=\"word-row \" data-id=\"ja_セーター\"> <button class=\"word-toggle\" role=\"checkbox\" aria-checked=\"false\"> <span class=\"word-check\" aria-hidden=\"true\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"20 6 9 17 4 12\"></polyline></svg></span> <span class=\"word-main\"> <span class=\"word-src \">セーター</span> <span class=\"word-sub\">pulóver, szvetter · seetaa</span> </span> <span class=\"word-meta\"> <span class=\"word-stat\" title=\"Egymás utáni helyes válaszok\">5×</span> <span class=\"word-stat\" title=\"Pontosság\">67%</span> <span class=\"diff-pill dN5\">N5</span> </span> </button> <button class=\"word-star \" aria-pressed=\"false\" aria-label=\"Hozzáadás a Fókusz Listához\" title=\"Hozzáadás a Fókusz Listához\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon></svg></button> </div>",
-    "pills": "<button class=\"pill is-active\" data-menu=\"lesson\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('lesson')\"> <span class=\"pill-label\">Dekiru 4. lecke</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"day\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('day')\"> <span class=\"pill-label\">Úti terv</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button><button class=\"pill pill-clear\" onclick=\"clearFilters()\">Szűrők törlése</button>",
-    "menu_lesson": "7518:91ad29b5",
+    "pills": "<button class=\"pill is-active\" data-menu=\"lesson\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('lesson')\"> <span class=\"pill-label\">Dekiru 4. lecke</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"day\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('day')\"> <span class=\"pill-label\">Úti terv</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button>",
+    "menu_lesson": "7518:68c798d4",
     "menu_day": "4524:28d0747d",
     "menu_tags": "6708:cfb4bac4",
     "menu_diff": "962:af86fb44",
@@ -618,8 +618,8 @@
     "startDisabled": false
   },
   "home": {
-    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>22%</b> · kandzsi <b>0%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
-    "source": "<span>Forrás: <b>Teljes szótár</b> · 2957 új szó</span> <button class=\"link-btn\" onclick=\"openPoolSource()\">Módosítás</button>",
+    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>16%</b> · kandzsi <b>0%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
+    "source": "<span>Forrás: <b>Dekiru 1. lecke · sorrendben</b> · 1051 új szó</span>",
     "streak": "3 nap",
     "hint": "A mai japán adag megvan.",
     "goal": "295/10 új szó",
@@ -692,25 +692,25 @@
   },
   "learn": {
     "queue": [
-      "ja_あう",
-      "ja_かう",
-      "ja_きく",
-      "ja_つくる",
-      "ja_おきる"
+      "ja_なまえ",
+      "ja_にほん",
+      "ja_ハンがリー",
+      "ja_イギリス",
+      "ja_オーストリア"
     ],
-    "card": "2144:d1f778a",
+    "card": "2106:d9e5da99",
     "after": {
       "learnedIds": [
-        "ja_あう"
+        "ja_なまえ"
       ],
       "queue": [
-        "ja_きく",
-        "ja_つくる",
-        "ja_おきる",
-        "ja_かう"
+        "ja_ハンがリー",
+        "ja_イギリス",
+        "ja_オーストリア",
+        "ja_にほん"
       ],
       "againIds": [
-        "ja_かう"
+        "ja_にほん"
       ],
       "todayWords": 296,
       "top": "1 / 5"
@@ -791,16 +791,16 @@
       4
     ],
     "maturity": {
-      "fresh": 839,
+      "fresh": 611,
       "practicing": 0,
       "mature": 0,
-      "notStarted": 2955,
-      "started": 839
+      "notStarted": 3183,
+      "started": 611
     },
-    "kpis": "<div class=\"kpi\"> <span class=\"kpi-label\">Konzisztencia</span> <span class=\"kpi-value\">3<span class=\"kpi-unit\">nap</span></span> <span class=\"kpi-sub\">Leghosszabb: 9 nap</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Aktív napok</span> <span class=\"kpi-value\">8<span class=\"kpi-unit\">/ 30</span></span> <span class=\"kpi-sub\">az elmúlt 30 napban</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Rögzült szavak</span> <span class=\"kpi-value\">0</span> <span class=\"kpi-sub\">839 elkezdett szóból</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Fókusz a héten</span> <span class=\"kpi-value\">35 p</span> <span class=\"kpi-sub kpi-delta is-up\"> <svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" aria-hidden=\"true\"><path d=\"M5 1 9 8H1z\"></path></svg> +30 p a múlt héthez képest </span> </div>",
+    "kpis": "<div class=\"kpi\"> <span class=\"kpi-label\">Konzisztencia</span> <span class=\"kpi-value\">3<span class=\"kpi-unit\">nap</span></span> <span class=\"kpi-sub\">Leghosszabb: 9 nap</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Aktív napok</span> <span class=\"kpi-value\">8<span class=\"kpi-unit\">/ 30</span></span> <span class=\"kpi-sub\">az elmúlt 30 napban</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Rögzült szavak</span> <span class=\"kpi-value\">0</span> <span class=\"kpi-sub\">611 elkezdett szóból</span> </div> <div class=\"kpi\"> <span class=\"kpi-label\">Fókusz a héten</span> <span class=\"kpi-value\">35 p</span> <span class=\"kpi-sub kpi-delta is-up\"> <svg width=\"10\" height=\"10\" viewBox=\"0 0 10 10\" aria-hidden=\"true\"><path d=\"M5 1 9 8H1z\"></path></svg> +30 p a múlt héthez képest </span> </div>",
     "heatmap": "12174:4f9c7f6e",
     "heatmapNote": "8 aktív nap az elmúlt 30-ból",
-    "maturityHtml": "<div class=\"mat-bar\" role=\"img\" aria-label=\"Ismerkedés: 839, Gyakorlás alatt: 0, Rögzült: 0\"><span class=\"mat-seg m1\" style=\"flex-grow:839\" data-label=\"Ismerkedés\" data-v=\"839\"></span></div> <ul class=\"mat-legend\"> <li><i class=\"mat-sw m1\" aria-hidden=\"true\"></i><span class=\"mat-name\">Ismerkedés</span><span class=\"mat-count\">839</span><span class=\"mat-pct\">100%</span></li> <li><i class=\"mat-sw m2\" aria-hidden=\"true\"></i><span class=\"mat-name\">Gyakorlás alatt</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> <li><i class=\"mat-sw m3\" aria-hidden=\"true\"></i><span class=\"mat-name\">Rögzült</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> </ul> <p class=\"viz-caption\">Az ismétlési köz szerint, mint az Ankiban. Rögzült: legalább 21 nap. Gyakorlás alatt: 7-20 nap. Ismerkedés: 7 napnál rövidebb.</p>",
+    "maturityHtml": "<div class=\"mat-bar\" role=\"img\" aria-label=\"Ismerkedés: 611, Gyakorlás alatt: 0, Rögzült: 0\"><span class=\"mat-seg m1\" style=\"flex-grow:611\" data-label=\"Ismerkedés\" data-v=\"611\"></span></div> <ul class=\"mat-legend\"> <li><i class=\"mat-sw m1\" aria-hidden=\"true\"></i><span class=\"mat-name\">Ismerkedés</span><span class=\"mat-count\">611</span><span class=\"mat-pct\">100%</span></li> <li><i class=\"mat-sw m2\" aria-hidden=\"true\"></i><span class=\"mat-name\">Gyakorlás alatt</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> <li><i class=\"mat-sw m3\" aria-hidden=\"true\"></i><span class=\"mat-name\">Rögzült</span><span class=\"mat-count\">0</span><span class=\"mat-pct\">0%</span></li> </ul> <p class=\"viz-caption\">Az ismétlési köz szerint, mint az Ankiban. Rögzült: legalább 21 nap. Gyakorlás alatt: 7-20 nap. Ismerkedés: 7 napnál rövidebb.</p>",
     "acc": "1564:c2e2ae10",
     "accNote": "14 napos átlag: 75% · a kártyáknál a \"Tudom\" is helyesnek számít",
     "focus": "3272:a0048f6f",
@@ -810,7 +810,7 @@
     "history": "<div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 08. 15. 21:00:00</span> <span class=\"hist-score\">5 helyes · 5 hibás</span></div> <span class=\"hist-meta\">1 kör · 2 p 0 mp</span> </div> <div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 09. 22. 07:30:00</span> <span class=\"hist-score\">30 helyes · 5 hibás</span></div> <span class=\"hist-meta\">3 kör · 15 p 0 mp</span> </div> <div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 09. 15. 18:10:00</span> <span class=\"hist-score\">18 helyes · 2 hibás</span></div> <span class=\"hist-meta\">2 kör · 7 p 0 mp</span> </div>"
   },
   "english": {
-    "pool": 722,
+    "pool": 777,
     "poolFirst": [
       "en_delighted",
       "en_perhaps",
@@ -827,7 +827,7 @@
     "count": "927 szó"
   },
   "kanji": {
-    "pool": 1337,
+    "pool": 1439,
     "poolFirst": [
       "kj_二",
       "kj_三",
@@ -839,7 +839,7 @@
       "kj_十"
     ],
     "goal": 5,
-    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>22%</b> · kandzsi <b>21%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
+    "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div> <button class=\"home-jlpt\" onclick=\"showGoalScreen()\"> <span class=\"home-jlpt-label\">N3 felé</span> <span class=\"home-jlpt-value\">szókincs <b>16%</b> · kandzsi <b>15%</b></span> <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"9 6 15 12 9 18\"></polyline></svg> </button>",
     "pills": "<button class=\"pill \" data-menu=\"lesson\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('lesson')\"> <span class=\"pill-label\">Lecke</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"day\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('day')\"> <span class=\"pill-label\">Úti terv</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button>",
     "count": "1715 kanji"
   },

@@ -84,7 +84,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 ### Napi szokás, nem hajrá
 
 - **Konzisztencia:** hány egymást követő napon tanultál, alatta a hét napjai pöttysorban. A kihagyott nap nem büntetés, csak tény.
-- **Napi penzum:** sáv a mai új szavakkal; a forrás a Gyakorlás fül szűrőiből jön („Forrás: Dekiru 3. lecke · 53 új szó”), egy koppintással módosítható.
+- **Napi penzum:** japán módban automatikusan a Dekiru 1. leckétől halad előre, leckénként; ha egy lecke végén kevesebb szó marad a napi célnál, a következő leckéből tölti fel az adagot. A Gyakorlás fül szűrői ezt nem módosítják.
 - **Előrejelzés:** egy csendes sor arról, mennyi ismétlés jön holnap és a következő héten, hogy ne érjen meglepetés.
 - **Napi feladatok:** naponta három, változó feladat, például egy hibátlan kör, tematikus nap, a nap szava, régen látott szavak vagy a legtöbbször elrontott szavak javítása.
 - **Egyetlen ünneplés:** konfetti csak akkor, ha a napi cél teljesült, és akkor is naponta egyszer.
@@ -101,7 +101,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - Négy gomb: **Újra, Nehéz, Jó, Könnyű**, mindegyik alatt a következő ismétlésig hátralévő idő („ma”, „3 n”, „2 hó”).
 - 90%-os célzott megtartás, napi felbontás; a „Rögzült” szó ismétlési köze legalább 21 nap.
 - Egy alkalom legfeljebb 20 kártya; az „Újra” még aznap visszajön. Húzással (balra Újra, jobbra Jó) és az 1-4 billentyűkkel is értékelhetsz.
-- A szabad gyakorlásban elrontott szó holnapra előre jön, a korábban tanult szavakat pedig az app magától, napi adagokra osztva ütemezi be.
+- A napi tanulásban már sikerült, illetve a szabad gyakorlásban legalább ötször helyesen megválaszolt szavak kerülnek az SRS-be és a JLPT-haladásba. Ezeknél egy hibás gyakorlóválasz másnapra előrehozza az ismétlést.
 
 ### Kandzsi: 1715 írásjegy, vonássorrenddel
 
