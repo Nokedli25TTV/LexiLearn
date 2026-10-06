@@ -101,7 +101,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - Négy gomb: **Újra, Nehéz, Jó, Könnyű**, mindegyik alatt a következő ismétlésig hátralévő idő („ma”, „3 n”, „2 hó”).
 - 90%-os célzott megtartás, napi felbontás; a „Rögzült” szó ismétlési köze legalább 21 nap.
 - Egy alkalom legfeljebb 20 kártya; az „Újra” még aznap visszajön. Húzással (balra Újra, jobbra Jó) és az 1-4 billentyűkkel is értékelhetsz.
-- A napi tanulásban már sikerült, illetve a szabad gyakorlásban legalább ötször helyesen megválaszolt szavak kerülnek az SRS-be és a JLPT-haladásba. Ezeknél egy hibás gyakorlóválasz másnapra előrehozza az ismétlést.
+- Az SRS-be kizárólag a napi, Dekiru-sorrendű tanulásban már sikerült szavak kerülnek. A szabad gyakorlásban legalább ötször helyesen megválaszolt szavak beleszámítanak a JLPT-haladásba és a statisztikába, de nem hoznak létre ismétlőkártyát; egy gyakorlási hiba csak egy már létező napi kártyát hozhat előre.
 
 ### Kandzsi: 1715 írásjegy, vonássorrenddel
 

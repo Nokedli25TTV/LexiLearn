@@ -2,7 +2,8 @@
 import { describe, it, expect } from 'vitest';
 import { AGAIN, HARD, GOOD, EASY, intervalFor, initDifficulty, nextState, previewAll, retrievability } from '../../js/srs/fsrs.js';
 import {
-  dueForecast, fmtInterval, getDueWords, practiceLapse, previewWord, rateWord, scheduleLearnedWord, seedMissing
+  clearPracticeOnlySchedules, dueForecast, fmtInterval, getDueWords, practiceLapse, previewWord, rateWord,
+  scheduleLearnedWord, seedMissing
 } from '../../js/srs/schedule.js';
 
 const TODAY = '2026-09-29';
@@ -55,14 +56,14 @@ describe('szavak ütemezése', () => {
     expect(b.stats.srs.lapses).toBe(0);
   });
   it('szabad gyakorlás hibája holnapra hozza, a stabilitáshoz nem nyúl', () => {
-    const w = word('a');
+    const w = word('a', { learnedAt: TODAY });
     rateWord(w, EASY, TODAY);
     const s = w.stats.srs.s;
     practiceLapse(w, TODAY);
     expect(w.stats.srs).toMatchObject({ due: '2026-09-30', s });
     const unscheduled = word('b', { totalWrong: 1 });
     practiceLapse(unscheduled, TODAY);
-    expect(unscheduled.stats.srs.due).toBe('2026-09-30');
+    expect(unscheduled.stats.srs).toBeUndefined();
   });
   it('esedékes lista és előrejelzés', () => {
     const at = (id, due, s = 5) => ({ ...word(id), stats: { learnedAt: '2026-09-01', srs: { due, s, d: 5, last: '2026-09-20' } } });
@@ -100,18 +101,25 @@ describe('már tanult szavak beosztása', () => {
     expect(Math.max(...Object.values(perDay))).toBeLessThanOrEqual(20);
     expect(words.find(w => w.id === 'gyenge').stats.srs.due).toBe(TODAY);
   });
-  it('a nemrég, többször helyesen válaszolt szó későbbre kerül', () => {
+  it('a csak szabad gyakorlásból ismert szó nem kap ismétlési ütemezést', () => {
     const recent = new Date(2026, 8, 27).getTime();
     const strong = word('eros', { lastAttempt: recent, totalCorrect: 6, totalWrong: 0, streak: 6 });
     const weak = word('gyenge', { lastAttempt: recent, totalCorrect: 2, totalWrong: 2, streak: 1 });
-    seedMissing([strong, weak], TODAY);
-    expect(strong.stats.srs.due > '2026-10-20').toBe(true);
+    expect(seedMissing([strong, weak], TODAY)).toBe(0);
+    expect(strong.stats.srs).toBeUndefined();
     expect(weak.stats.srs).toBeUndefined();
   });
-  it('az egyszer kipróbált régi kártya nem kerül az ismétlési halomba', () => {
+  it('az egyszer kipróbált kártya nem kerül az ismétlési halomba', () => {
     const accidental = word('veletlen', { totalCorrect: 1, totalWrong: 1, lastAttempt: new Date(2026, 8, 20).getTime() });
     practiceLapse(accidental, '2026-09-20');
-    expect(accidental.stats.srs).toBeDefined(); // az adat megmarad
-    expect(getDueWords([accidental], TODAY)).toEqual([]); // de még nem tekintjük megtanultnak
+    expect(accidental.stats.srs).toBeUndefined();
+    expect(getDueWords([accidental], TODAY)).toEqual([]);
+  });
+  it('a régi, csak gyakorlásból létrejött ütemezést törli, a napi tanulásét megtartja', () => {
+    const practiceOnly = word('gyakorlas', { totalCorrect: 5, practiceLearnedAt: '2026-09-20', srs: { due: TODAY, s: 3, d: 5, last: '2026-09-20' } });
+    const daily = word('napi', { learnedAt: '2026-09-20', srs: { due: TODAY, s: 3, d: 5, last: '2026-09-20' } });
+    expect(clearPracticeOnlySchedules([practiceOnly, daily])).toBe(1);
+    expect(practiceOnly.stats.srs).toBeUndefined();
+    expect(daily.stats.srs).toBeDefined();
   });
 });

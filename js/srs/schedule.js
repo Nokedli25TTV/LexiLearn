@@ -4,7 +4,7 @@
 // A stats-szal együtt mentődik és szinkronizálódik (helyi tár + felhő), külön kezelés nélkül.
 import { addDays, dateKey, keyToDate, todayKey } from '../core/dates.js';
 import { isLearnedWord } from '../goal/jlpt.js';
-import { AGAIN, GOOD, W, intervalFor, nextState, previewAll, retrievability } from './fsrs.js';
+import { AGAIN, GOOD, W, intervalFor, previewAll, retrievability } from './fsrs.js';
 
 const REVIEW_BATCH_SIZE = 20;       // egy alkalom legfeljebb ennyi kártya (5-15 perces alkalmak)
 const SEED_SPREAD_MAX_DAYS = 21;    // a már tanult szavak beosztása legfeljebb 3 hétre
@@ -60,18 +60,32 @@ function scheduleLearnedWord(word, hadAgain, today = todayKey()) {
   return rateWord(word, GOOD, today);
 }
 
-// Szabad gyakorlásban (kvíz, gépelős, mondat) elrontott szó: holnap visszajön ismétlésre.
-// A helyes válasz nem tolja ki az ütemezést, és a stabilitás sem változik (a kvíz könnyebb a felidézésnél).
+// Szabad gyakorlásban (kvíz, gépelős, mondat) elrontott, már napi tanulásból
+// ütemezett szó legkésőbb holnap visszajön. A szabad gyakorlás önmagában nem hoz
+// létre SRS-kártyát: így egy véletlenül kiválasztott, későbbi lecke nehéz szava nem
+// kerül be a napi ismétlésbe.
 function practiceLapse(word, today = todayKey()) {
   const tomorrow = shiftKey(today, 1);
   const s = srsOf(word);
-  if (!s) {
-    const st = nextState(null, AGAIN, 0);
-    word.stats.srs = { due: tomorrow, s: round4(st.s), d: round4(st.d), last: today, reps: 0, lapses: 0 };
-  } else if (s.due > tomorrow) {
+  if (!s || !word.stats?.learnedAt) return s;
+  if (s.due > tomorrow) {
     s.due = tomorrow;
   }
   return word.stats.srs;
+}
+
+// A korábbi működés a csak szabad gyakorlásban ötször eltalált szavakhoz is
+// létrehozott SRS-kártyát. Ezeket betöltéskor eltávolítjuk; a kvízeredmény és a
+// statisztikai „megtanult” állapot megmarad, csak az ismétlési sor tisztul ki.
+function clearPracticeOnlySchedules(words) {
+  let cleared = 0;
+  words.forEach(w => {
+    if (w.stats?.srs && !w.stats.learnedAt) {
+      delete w.stats.srs;
+      cleared++;
+    }
+  });
+  return cleared;
 }
 
 /* ── Már tanult szavak beosztása (az SRS bevezetésekor, és ha szinkronból ütemezés nélküli szó jön) ──
@@ -81,7 +95,7 @@ function practiceLapse(word, today = todayKey()) {
    - egymás utáni helyes válaszok: minden további kb. 1,9-szeres köz, a pontossággal súlyozva
    Ami így már esedékes lenne, azt a leginkább felejtettel kezdve napi adagokra osztja (legfeljebb 3 hét). */
 function hasHistory(w) {
-  return isLearnedWord(w);
+  return !!w.stats?.learnedAt;
 }
 
 function estimateCard(w, today) {
@@ -118,5 +132,5 @@ function fmtInterval(days) {
   return `${(Math.round(days / 36.5) / 10).toLocaleString('hu-HU')} év`;
 }
 
-export { REVIEW_BATCH_SIZE, daysBetween, dueForecast, fmtInterval, getDueWords, hasHistory, isDue, practiceLapse,
+export { REVIEW_BATCH_SIZE, clearPracticeOnlySchedules, daysBetween, dueForecast, fmtInterval, getDueWords, hasHistory, isDue, practiceLapse,
   previewWord, rateWord, scheduleLearnedWord, seedMissing, shiftKey, srsOf };

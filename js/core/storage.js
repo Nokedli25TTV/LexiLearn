@@ -5,7 +5,7 @@ import { appData, createEmptyState, currentMode } from './state.js';
 import { renderHome } from '../habit/home.js';
 import { renderDashboard } from '../library/list.js';
 import { setMode } from '../ui/screens.js';
-import { seedMissing } from '../srs/schedule.js';
+import { clearPracticeOnlySchedules, seedMissing } from '../srs/schedule.js';
 import { applyTheme } from '../ui/theme.js';
 
 /* ══════════════════════════════════════════════════════
@@ -293,10 +293,15 @@ async function renderStorageInfo() {
 // V13.5: a már tanult, de még ütemezés nélküli szavak beosztása (az SRS bevezetésekor egyszer,
 // utána csak ha pl. régi eszközről szinkronizált szó érkezik)
 function seedSrsAll() {
-  let n = 0;
-  ['english', 'japanese', 'kanji'].forEach(lang => { n += seedMissing(appData[lang].words); });
-  if (n > 0) { console.log(`[LexiLearn] Ismétlésütemezés: ${n} tanult szó beosztva.`); saveWords(); }
-  return n;
+  let seeded = 0, cleared = 0;
+  ['english', 'japanese', 'kanji'].forEach(lang => {
+    cleared += clearPracticeOnlySchedules(appData[lang].words);
+    seeded += seedMissing(appData[lang].words);
+  });
+  if (cleared > 0) console.log(`[LexiLearn] Ismétlési sor javítása: ${cleared} csak gyakorlásból bekerült kártya eltávolítva.`);
+  if (seeded > 0) console.log(`[LexiLearn] Ismétlésütemezés: ${seeded} napi tanulásból származó szó beosztva.`);
+  if (cleared > 0 || seeded > 0) saveWords();
+  return seeded;
 }
 
 function cleanTags() {

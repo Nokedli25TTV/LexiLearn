@@ -699,15 +699,7 @@
         "streak": 0,
         "totalCorrect": 0,
         "totalWrong": 1,
-        "lastAttempt": 1790668800000,
-        "srs": {
-          "due": "2026-09-30",
-          "s": 0.4026,
-          "d": 7.1949,
-          "last": "2026-09-29",
-          "reps": 0,
-          "lapses": 0
-        }
+        "lastAttempt": 1790668800000
       },
       "errorList": [
         "ja_ハンがリー"

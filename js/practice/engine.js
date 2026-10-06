@@ -13,16 +13,17 @@ import { initFlashcard3DSwipe, resetFlashcardState } from './flashcard.js';
 import { _currentTTSAudio, setTtsOnEnd, speakWord } from './tts.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
-import { practiceLapse, seedMissing } from '../srs/schedule.js';
+import { practiceLapse } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
    PRACTICE LOGIC (V6.7: SZEM IKON + MONDAT MOTOR)
 ══════════════════════════════════════════════════════ */
 let eyeState = 0; 
 
-// Az ötödik helyes szabad gyakorlóválasznál a szó belép a JLPT-haladásba és az SRS-be.
+// Az ötödik helyes szabad gyakorlóválasznál a szó belép a JLPT-haladásba.
+// SRS-ismétlést csak a napi, Dekiru-sorrendű tanulás hoz létre.
 function registerPracticeMastery(word, isCorrect) {
-  if (isCorrect && markPracticeLearned(word)) seedMissing([word]);
+  if (isCorrect) markPracticeLearned(word);
 }
 
 function startPractice() {
