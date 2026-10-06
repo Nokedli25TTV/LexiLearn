@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.9)
+// LexiLearn – belépési pont (V13.10)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -10,12 +10,13 @@ import { loadState, savePlaylists, saveStats, saveWords } from './core/storage.j
 import { escHtml, jsArg } from './core/util.js';
 import { clearAllBookmarks, toggleBookmark } from './features/bookmarks.js';
 import { doAddWord, doImport, exportData, importData, openAddModal, openImportModal } from './features/import-export.js';
+import { openReviewQueue, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
 import { setDailyGoal } from './features/profile.js';
 import { replayStrokes } from './features/strokes.js';
 import './features/quests.js';
 import './features/streak.js';
 import './habit/goal.js';
-import { clearFilters, openPoolSource, renderHome } from './habit/home.js';
+import { clearFilters, openCurrentLesson, openPoolSource, renderHome } from './habit/home.js';
 import { learnSwipe, speakLearnWord, startLearnSession, startTodayReview } from './habit/learn.js';
 import { flipReviewCard, rateReview, speakReviewWord, startReviewSession } from './habit/review.js';
 import { seedSrsAll } from './core/storage.js';
@@ -65,14 +66,19 @@ Object.assign(window, {
   manualNextQuestion,
   onTagSearch,
   openAddModal,
+  openCurrentLesson,
   openImportModal,
   openPoolSource,
+  openReviewQueue,
+  openWordInspector,
+  postponeReviewWord,
   prevFlashcard3D,
   rateFlashcard3D,
   renderDashboard,
   renderDekiruLessonStats,
   renderHome,
   renderStats,
+  restoreReviewWord,
   replayStrokes,
   revealHardcoreAnswer,
   savePlaylist,
@@ -108,6 +114,7 @@ Object.assign(window, {
   setGoalDate,
   switchStatsTab,
   switchViewTab,
+  suspendReviewWord,
   toggleBookmark,
   toggleDiff,
   toggleDockSettings,
@@ -121,7 +128,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.9 indítása...");
+console.log("[LexiLearn] V13.10 indítása...");
 initV6Features();
 initLibraryEvents();
 

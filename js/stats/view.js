@@ -86,11 +86,11 @@ function renderKpis(idx, goal) {
       <span class="kpi-value">${active30}<span class="kpi-unit">/ 30</span></span>
       <span class="kpi-sub">az elmúlt 30 napban</span>
     </div>
-    <div class="kpi">
+    <button class="kpi kpi-click" onclick="openWordInspector('mature')" aria-label="Rögzült szavak megnyitása">
       <span class="kpi-label">Rögzült szavak</span>
       <span class="kpi-value">${fmtNum(mat.mature)}</span>
       <span class="kpi-sub">${fmtNum(mat.started)} elkezdett szóból</span>
-    </div>
+    </button>
     <div class="kpi">
       <span class="kpi-label">Fókusz a héten</span>
       <span class="kpi-value">${fmtDuration(thisWeek)}</span>
@@ -182,14 +182,22 @@ function renderMaturity() {
     ['mature', 'm3', 'Rögzült', m.mature]
   ];
   const pct = v => Math.round(v / m.started * 100);
+  const dailyLearned = state.words.filter(w => !!w.stats?.learnedAt).length;
+  const practiceLearned = state.words.filter(w => !w.stats?.learnedAt && (w.stats?.totalCorrect || 0) >= 5).length;
+  const activeReview = state.words.filter(w => !!w.stats?.srs).length;
   const segments = stages.filter(s => s[3] > 0)
     .map(([key, cls, label, v]) => `<span class="mat-seg ${cls}" style="flex-grow:${v}" data-label="${label}" data-v="${v}"></span>`).join('');
   host.innerHTML = `
     <div class="mat-bar" role="img" aria-label="${stages.map(s => `${s[2]}: ${s[3]}`).join(', ')}">${segments}</div>
     <ul class="mat-legend">
       ${stages.map(([key, cls, label, v]) => `
-        <li><i class="mat-sw ${cls}" aria-hidden="true"></i><span class="mat-name">${label}</span><span class="mat-count">${fmtNum(v)}</span><span class="mat-pct">${pct(v)}%</span></li>`).join('')}
+        <li><button onclick="openWordInspector('${key}')"><i class="mat-sw ${cls}" aria-hidden="true"></i><span class="mat-name">${label}</span><span class="mat-count">${fmtNum(v)}</span><span class="mat-pct">${pct(v)}%</span></button></li>`).join('')}
     </ul>
+    <div class="learning-breakdown" aria-label="Miből számít megtanultnak">
+      <button onclick="openWordInspector('daily')"><b>${fmtNum(dailyLearned)}</b><span>Napi tanulás</span></button>
+      <button onclick="openWordInspector('practice')"><b>${fmtNum(practiceLearned)}</b><span>5× helyes gyakorlás</span></button>
+      <button onclick="openWordInspector('review')"><b>${fmtNum(activeReview)}</b><span>Aktív ismétlés</span></button>
+    </div>
     <p class="viz-caption">Az ismétlési köz szerint, mint az Ankiban. Rögzült: legalább 21 nap. Gyakorlás alatt: 7-20 nap. Ismerkedés: 7 napnál rövidebb.</p>`;
 
   const bar = host.querySelector('.mat-bar');

@@ -51,6 +51,45 @@ function getNewWordPool() {
     .sort((a, b) => (lessonNum(a) - lessonNum(b)) || (diffOrder(a.diff) - diffOrder(b.diff)) || (order.get(a.id) - order.get(b.id)));
 }
 
+// Az aktuális tankönyvi lecke állapota a Kezdőlaphoz. A több leckében szereplő
+// szó mindegyik érintett leckében számít, ugyanúgy, mint a Gyakorlás szűrőjében.
+function getCurrentLessonProgress() {
+  if (currentMode !== 'japanese') return null;
+  const lessonWords = new Map();
+  state.words.forEach(w => {
+    const lessons = (Array.isArray(w.lesson) ? w.lesson : [w.lesson])
+      .map(Number).filter(n => Number.isFinite(n) && n >= 1);
+    lessons.forEach(lesson => {
+      if (!lessonWords.has(lesson)) lessonWords.set(lesson, []);
+      lessonWords.get(lesson).push(w);
+    });
+  });
+  const lessons = [...lessonWords.keys()].sort((a, b) => a - b);
+  const lesson = lessons.find(n => lessonWords.get(n).some(isNewWord));
+  if (!lesson) {
+    if (!lessons.length) return null;
+    const lastLesson = lessons.at(-1), words = lessonWords.get(lastLesson);
+    return {
+      lesson: lastLesson, complete: true, total: words.length, learned: words.length,
+      reviewing: words.filter(w => !!w.stats?.srs).length, remaining: 0, next: []
+    };
+  }
+  const words = lessonWords.get(lesson);
+  const learned = words.filter(w => !isNewWord(w)).length;
+  const reviewing = words.filter(w => !!w.stats?.srs).length;
+  const slots = Math.max(0, getDailyGoal() - getTodayWords().length);
+  const nextCounts = new Map();
+  getNewWordPool().slice(0, slots).forEach(w => {
+    const n = lessonNum(w);
+    nextCounts.set(n, (nextCounts.get(n) || 0) + 1);
+  });
+  return {
+    lesson, complete: false, total: words.length, learned, reviewing,
+    remaining: words.length - learned,
+    next: [...nextCounts].map(([lessonNumber, count]) => ({ lesson: lessonNumber, count }))
+  };
+}
+
 function hasPoolFilters() {
   return false;
 }
@@ -103,4 +142,4 @@ function markWordLearned(word) {
   saveStats();
 }
 
-export { ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, LEARN_BATCH_SIZE, _lastActivityTs, describePoolSource, getDailyGoal, getNewWordPool, getTodayWords, hasPoolFilters, isNewWord, logActivity, markWordLearned };
+export { ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, LEARN_BATCH_SIZE, _lastActivityTs, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getTodayWords, hasPoolFilters, isNewWord, logActivity, markWordLearned };

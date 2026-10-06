@@ -56,6 +56,7 @@ function rateWord(word, rating, today = todayKey()) {
 
 // Új szó a tanuló kártyán: a "Tudom" Jó értékelés; ha közben "Még nem" is volt, előbb Újra (még ma)
 function scheduleLearnedWord(word, hadAgain, today = todayKey()) {
+  if (word.stats) delete word.stats.srsSuspended;
   if (hadAgain) rateWord(word, AGAIN, today);
   return rateWord(word, GOOD, today);
 }
@@ -95,7 +96,7 @@ function clearPracticeOnlySchedules(words) {
    - egymás utáni helyes válaszok: minden további kb. 1,9-szeres köz, a pontossággal súlyozva
    Ami így már esedékes lenne, azt a leginkább felejtettel kezdve napi adagokra osztja (legfeljebb 3 hét). */
 function hasHistory(w) {
-  return !!w.stats?.learnedAt;
+  return !!w.stats?.learnedAt && !w.stats.srsSuspended;
 }
 
 function estimateCard(w, today) {

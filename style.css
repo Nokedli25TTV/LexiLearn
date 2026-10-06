@@ -986,6 +986,21 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 
 /* Fő gombok */
 .home-actions { display: flex; flex-direction: column; gap: 12px; }
+.lesson-card {
+  width: 100%; display: flex; flex-direction: column; gap: 8px; padding: 16px 18px;
+  border: 1px solid var(--border); border-radius: 20px; background: var(--surface); color: var(--text);
+  font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer; transition: border-color 0.18s, transform 140ms var(--ease-out);
+}
+.lesson-card:active { transform: scale(0.985); }
+@media (hover: hover) { .lesson-card:hover { border-color: var(--primary-h); } }
+.lesson-card-kicker { font-size: 11px; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary-h); }
+.lesson-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.lesson-card-head b { font-size: 20px; font-weight: 900; }
+.lesson-card-head > span { font-size: 13px; font-weight: 700; color: var(--text-2); }
+.lesson-progress { --p: 0; display: block; height: 8px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+.lesson-progress i { display: block; width: calc(var(--p) * 100%); height: 100%; border-radius: inherit; background: var(--primary-h); }
+.lesson-card-meta, .lesson-card-next { font-size: 13px; font-weight: 650; color: var(--text-2); }
+.lesson-card-next { color: var(--text-3); }
 .cta-learn, .cta-review {
   width: 100%;
   display: grid;
@@ -1395,6 +1410,42 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .home-forecast { margin-top: 2px; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
 .home-forecast b { font-weight: 800; color: var(--text); }
 .home-forecast span { display: inline-block; }
+.review-queue-link {
+  min-height: 44px; border: none; background: none; color: var(--primary-h);
+  font: 800 13px 'Nunito', sans-serif; cursor: pointer;
+}
+@media (hover: hover) { .review-queue-link:hover { text-decoration: underline; } }
+
+/* Ismétlési sor és statisztikai szólisták */
+.inspector-modal { max-width: 620px; }
+.inspector-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.inspector-head .modal-title { margin-bottom: 2px; }
+.inspector-sub { font-size: 13px; font-weight: 700; color: var(--text-2); }
+.inspector-close {
+  flex: none; width: 44px; height: 44px; margin: -10px -10px 0 0; border: none; border-radius: 50%;
+  background: var(--surface-2); color: var(--text-2); font: 700 25px/1 'Nunito', sans-serif; cursor: pointer;
+}
+.inspect-list { margin: 0; padding: 0; list-style: none; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.inspect-row { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border); }
+.inspect-row:last-child { border-bottom: none; }
+.inspect-row.is-muted { background: var(--surface-2); }
+.inspect-row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.inspect-word { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.inspect-word b { overflow: hidden; color: var(--text); font-size: 17px; text-overflow: ellipsis; white-space: nowrap; }
+.inspect-word small { overflow: hidden; color: var(--text-2); font-size: 12px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.inspect-meta, .inspect-reason { font-size: 12px; font-weight: 650; line-height: 1.35; color: var(--text-3); }
+.inspect-reason { color: var(--text-2); }
+.inspect-side { flex: none; max-width: 110px; font-size: 12px; font-weight: 800; text-align: right; color: var(--text-2); }
+.inspect-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.inspect-empty, .inspect-limit { padding: 18px 4px; font-size: 14px; color: var(--text-2); }
+.inspect-suspended { margin-top: 16px; }
+.inspect-suspended summary { min-height: 44px; padding: 12px 4px; color: var(--text-2); font-size: 13px; font-weight: 800; cursor: pointer; }
+@media (max-width: 560px) {
+  .inspect-row:not(.inspect-word-row) { align-items: stretch; flex-direction: column; }
+  .inspect-actions { justify-content: flex-start; }
+  .inspect-actions .btn { flex: 1; justify-content: center; }
+  .inspect-word-row { align-items: flex-start; }
+}
 
 @media (max-width: 360px) {
   .review-rate { gap: 6px; }
@@ -2206,6 +2257,8 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
   background: var(--border);
 }
 .kpi { min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 16px 16px 14px; background: var(--surface); }
+.kpi-click { border: none; color: inherit; font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer; }
+@media (hover: hover) { .kpi-click:hover { background: color-mix(in oklch, var(--surface) 82%, var(--primary-dim)); } }
 .kpi-label { font-size: 13px; font-weight: 700; color: var(--text-2); }
 .kpi-value { font-size: 32px; font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; color: var(--text); white-space: nowrap; }
 .kpi-unit { margin-left: 6px; font-size: 15px; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
@@ -2257,11 +2310,16 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .mat-seg.m2, .mat-sw.m2 { background: var(--mat-2); }
 .mat-seg.m3, .mat-sw.m3 { background: var(--mat-3); }
 .mat-legend { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; list-style: none; }
-.mat-legend li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto 44px; align-items: center; gap: 10px; font-size: 14px; }
+.mat-legend li > button { width: 100%; display: grid; grid-template-columns: 12px minmax(0, 1fr) auto 44px; align-items: center; gap: 10px; padding: 2px 0; border: none; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .mat-sw { width: 12px; height: 12px; border-radius: 3px; }
 .mat-name { font-weight: 700; color: var(--text); }
 .mat-count { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
 .mat-pct { text-align: right; font-weight: 600; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.learning-breakdown { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.learning-breakdown button { min-width: 0; padding: 10px 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); color: var(--text); font-family: 'Nunito', sans-serif; cursor: pointer; }
+.learning-breakdown b, .learning-breakdown span { display: block; }
+.learning-breakdown b { font-size: 18px; font-weight: 900; }
+.learning-breakdown span { margin-top: 2px; font-size: 10px; font-weight: 750; line-height: 1.25; color: var(--text-3); }
 
 /* Vonal- és oszlopdiagram jelölők */
 .viz-grid { stroke: var(--viz-grid); stroke-width: 1; shape-rendering: crispEdges; }

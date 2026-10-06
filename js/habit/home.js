@@ -5,7 +5,7 @@ import { MODE_LABELS, currentMode, state } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests } from '../features/quests.js';
 import { calcStreak, renderWeekTracker } from '../features/streak.js';
-import { LEARN_BATCH_SIZE, describePoolSource, getDailyGoal, getNewWordPool, getTodayWords } from './goal.js';
+import { LEARN_BATCH_SIZE, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getTodayWords } from './goal.js';
 import { applyFilters } from '../library/list.js';
 import { closeFilterMenu, renderFilterBar } from '../library/menus.js';
 import { showToast } from '../ui/toast.js';
@@ -55,6 +55,7 @@ function renderHome() {
   if (source) {
     source.innerHTML = `<span>Forrás: <b>${escHtml(describePoolSource())}</b> · ${pool.length} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}</span>`;
   }
+  renderCurrentLesson();
 
   // ── Fő cselekvések ──
   // V13.5: előbb az esedékes ismétlés (korall fő gomb), utána az új szavak (másodlagos).
@@ -112,9 +113,13 @@ function renderHome() {
   const forecastHtml = hasSchedule
     ? `<p class="home-forecast">${due > 0 ? '' : '<span>Mára nincs esedékes ismétlés.</span> '}<span>Holnap <b>${forecast.tomorrow}</b> · a következő 7 napban <b>${forecast.week}</b></span></p>`
     : '';
+  const hasReviewCards = state.words.some(w => w.stats?.srs || w.stats?.srsSuspended);
+  const queueHtml = hasReviewCards
+    ? '<button class="review-queue-link" onclick="openReviewQueue()">Ismétlési sor megtekintése és kezelése</button>'
+    : '';
 
   const actions = document.getElementById('home-actions');
-  if (actions) actions.innerHTML = reviewHtml + learnHtml + forecastHtml + goalLineHtml();
+  if (actions) actions.innerHTML = reviewHtml + learnHtml + forecastHtml + queueHtml + goalLineHtml();
 
   renderDailyQuests();
 }
@@ -122,6 +127,34 @@ function renderHome() {
 // Régi globális kezelő kompatibilitásához megtartva; a napi sorrend már automatikus.
 function openPoolSource() {
   showToast('A napi új szavak automatikusan, lecke szerint következnek.');
+}
+
+function renderCurrentLesson() {
+  const host = document.getElementById('home-current-lesson');
+  if (!host) return;
+  const p = getCurrentLessonProgress();
+  host.hidden = !p;
+  if (!p) { host.innerHTML = ''; return; }
+  const pct = p.total ? p.learned / p.total : 0;
+  const book = p.lesson >= 25 ? '2. könyv' : '1. könyv';
+  const next = p.complete
+    ? 'Minden Dekiru-lecke szava elkezdve.'
+    : p.next.length
+      ? `Következő adag: ${p.next.map(x => `${x.count} szó a ${x.lesson}. leckéből`).join(' és ')}`
+      : 'A mai napi penzum teljesítve.';
+  host.innerHTML = `
+    <button class="lesson-card" onclick="openCurrentLesson(${p.lesson})">
+      <span class="lesson-card-kicker">Aktuális lecke · Dekiru ${book}</span>
+      <span class="lesson-card-head"><b>${p.lesson}. lecke</b><span>${p.learned} / ${p.total} megtanult</span></span>
+      <span class="lesson-progress" style="--p:${pct}" role="progressbar" aria-label="${p.lesson}. lecke haladása" aria-valuemin="0" aria-valuemax="${p.total}" aria-valuenow="${p.learned}"><i></i></span>
+      <span class="lesson-card-meta">${p.remaining} szó van hátra · ${p.reviewing} ismétlés alatt</span>
+      <span class="lesson-card-next">${escHtml(next)}</span>
+    </button>`;
+}
+
+function openCurrentLesson(lesson) {
+  if (window.setLessonFilter) window.setLessonFilter(String(lesson));
+  if (window.showScreen) window.showScreen('dashboard');
 }
 
 // Minden szerkezeti szűrő törlése (Kezdőlap és Gyakorlás fül közös)
@@ -134,4 +167,4 @@ function clearFilters() {
   showToast('Szűrők törölve');
 }
 
-export { clearFilters, openPoolSource, renderHome };
+export { clearFilters, openCurrentLesson, openPoolSource, renderCurrentLesson, renderHome };

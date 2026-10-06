@@ -28,7 +28,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.9">
+<link rel="stylesheet" href="style.css?v=13.10">
 </head>
 <body data-screen="home">
 
@@ -83,6 +83,8 @@
       </div>
       <div class="goal-source" id="goal-source"></div>
     </section>
+
+    <section id="home-current-lesson" hidden></section>
 
     <div class="home-actions" id="home-actions"></div>
 
@@ -458,6 +460,20 @@
      MODÁLIS ABLAKOK
 ══════════════════════════════════════════════════════ -->
 
+<!-- Tanulási állapot / ismétlési sor részletező -->
+<div class="modal-overlay" id="learning-inspector-modal">
+  <div class="modal inspector-modal" role="dialog" aria-modal="true" aria-labelledby="learning-inspector-title">
+    <div class="inspector-head">
+      <div>
+        <div class="modal-title" id="learning-inspector-title">Tanulási állapot</div>
+        <p class="inspector-sub" id="learning-inspector-sub"></p>
+      </div>
+      <button class="inspector-close" onclick="closeModal('learning-inspector-modal')" aria-label="Bezárás">×</button>
+    </div>
+    <div id="learning-inspector-body"></div>
+  </div>
+</div>
+
 <!-- Importálás modal -->
 <div class="modal-overlay" id="import-modal">
   <div class="modal">
@@ -493,16 +509,16 @@
 <div class="toast" id="toast"></div>
 
 <!-- Statikus szótár-adatok (klasszikus scriptek, kézzel szerkeszthetők) -->
-<script src="data.js?v=13.9"></script>
-<script src="japanese_words.js?v=13.9"></script>
-<script src="jlpt_n3_words.js?v=13.9"></script>
-<script src="dekiru.js?v=13.9"></script>
-<script src="dekiru2.js?v=13.9"></script>
-<script src="kanji_data.js?v=13.9"></script>
-<script src="japanese_sentences.js?v=13.9"></script>
-<script src="english_sentences2.js?v=13.9"></script>
+<script src="data.js?v=13.10"></script>
+<script src="japanese_words.js?v=13.10"></script>
+<script src="jlpt_n3_words.js?v=13.10"></script>
+<script src="dekiru.js?v=13.10"></script>
+<script src="dekiru2.js?v=13.10"></script>
+<script src="kanji_data.js?v=13.10"></script>
+<script src="japanese_sentences.js?v=13.10"></script>
+<script src="english_sentences2.js?v=13.10"></script>
 <!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
-<script src="data-registry.js?v=13.9"></script>
+<script src="data-registry.js?v=13.10"></script>
 
 <!-- V13.3: ES modulok nem futnak file:// alól (duplakattintással megnyitott index.html) -->
 <script>
@@ -518,8 +534,8 @@
 
 <!-- V13.3: az alkalmazás ES modulokként (js/). A main.js a firebase-sync előtt fut,
      hogy az auth / szinkron események hallgatói már feliratkozva legyenek. -->
-<script type="module" src="js/main.js?v=13.9"></script>
-<script type="module" src="firebase-sync.js?v=13.9"></script>
+<script type="module" src="js/main.js?v=13.10"></script>
+<script type="module" src="firebase-sync.js?v=13.10"></script>
 
 </body>
 </html>

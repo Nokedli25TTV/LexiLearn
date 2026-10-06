@@ -4,7 +4,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { dateKey, todayKey, parseHuDateKey, fmtDuration, lastNDays, startOfWeek, addDays } from '../../js/core/dates.js';
 import { appData, setCurrentMode, createEmptyState } from '../../js/core/state.js';
 import { activityLevel, computeMaturity, buildDailyIndex } from '../../js/stats/model.js';
-import { isNewWord, getNewWordPool, logActivity, getDailyGoal } from '../../js/habit/goal.js';
+import { getCurrentLessonProgress, isNewWord, getNewWordPool, logActivity, getDailyGoal } from '../../js/habit/goal.js';
 import { getLessonOptions, lessonLabel, wordMatchesFilters } from '../../js/library/filters.js';
 import { lessonMenuHtml, tagChipsHtml } from '../../js/library/menus.js';
 
@@ -123,6 +123,17 @@ describe('új szavak és napi napló', () => {
     expect(getNewWordPool().slice(0, 10).map(w => w.id)).toEqual([
       'l1-0', 'l1-1', 'l1-2', 'l2-0', 'l2-1', 'l2-2', 'l2-3', 'l2-4', 'l2-5', 'l2-6'
     ]);
+  });
+  it('az aktuális lecke haladása és a következő vegyes adag is kiszámolható', () => {
+    appData.japanese.words = [
+      word('l1-kesz', { lesson: [1] }, { learnedAt: '2026-09-28', srs: { due: '2026-10-01', s: 3, d: 5, last: '2026-09-28' } }),
+      word('l1-uj-a', { lesson: [1] }),
+      word('l1-uj-b', { lesson: [1] }),
+      ...Array.from({ length: 10 }, (_, i) => word(`l2-${i}`, { lesson: [2] }))
+    ];
+    const p = getCurrentLessonProgress();
+    expect(p).toMatchObject({ lesson: 1, total: 3, learned: 1, reviewing: 1, remaining: 2 });
+    expect(p.next).toEqual([{ lesson: 1, count: 2 }, { lesson: 2, count: 8 }]);
   });
   it('a napi cél módonként alapértelmezett, a beállított felülírja', () => {
     expect(getDailyGoal()).toBe(10);
