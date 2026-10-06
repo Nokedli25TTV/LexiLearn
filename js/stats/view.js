@@ -436,7 +436,11 @@ function renderDekiruLessonStats() {
   if (dekiruWords.length === 0) { container.innerHTML = vizEmpty('Még nincs Dekiru szó az adatbázisban.'); return; }
 
   const lessonMap = {};
-  dekiruWords.forEach(w => { (lessonMap[w.lesson] = lessonMap[w.lesson] || []).push(w); });
+  dekiruWords.forEach(w => {
+    const lessons = Array.isArray(w.lesson) ? w.lesson : [w.lesson];
+    lessons.filter(lesson => lesson !== null && lesson !== undefined && lesson !== '')
+      .forEach(lesson => { (lessonMap[lesson] = lessonMap[lesson] || []).push(w); });
+  });
   let lessons = Object.entries(lessonMap).map(([lesson, ws]) => {
     const a = accuracyOf(ws);
     return { lesson: Number(lesson), count: ws.length, learned: ws.filter(w => w.stats.streak >= 3).length, ...a };

@@ -59,6 +59,7 @@ const STATIC_ASSETS = [
   './japanese_words.js',
   './jlpt_n3_words.js',
   './dekiru.js',
+  './dekiru2.js',
   './kanji_data.js',
   './japanese_sentences.js',
   './english_sentences2.js',

@@ -11,11 +11,12 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = { window: {}, console: { log() {} } };
 ctx.globalThis = ctx;
 vm.createContext(ctx);
-for (const f of ['japanese_words.js', 'dekiru.js', 'jlpt_n3_words.js']) {
+for (const f of ['japanese_words.js', 'dekiru.js', 'dekiru2.js', 'jlpt_n3_words.js']) {
   vm.runInContext(readFileSync(path.join(ROOT, f), 'utf8'), ctx, { filename: f });
 }
 const get = name => vm.runInContext(`typeof ${name} !== 'undefined' ? ${name} : null`, ctx);
 const N3 = get('N3_WORDS');
+const DEKIRU_2 = get('DEKIRU_2_WORDS');
 const existing = [...get('JAPANESE_WORDS'), ...Array.from({ length: 30 }, (_, i) => get(`DEKIRU_L${i + 1}`)).filter(Boolean).flat()];
 
 describe('JLPT N3 szókincs (jlpt_n3_words.js)', () => {
@@ -46,6 +47,24 @@ describe('JLPT N3 szókincs (jlpt_n3_words.js)', () => {
     const dupes = [];
     N3.forEach(w => { if (seen.has(w.kana)) dupes.push(w.kana); seen.add(w.kana); });
     expect(dupes).toEqual([]);
+  });
+});
+
+describe('Dekiru 2 szókincs (dekiru2.js)', () => {
+  it('a 25–48. leckét teljesen és leckenövekvő sorrendben tartalmazza', () => {
+    expect(DEKIRU_2.length).toBe(885);
+    const lessons = [...new Set(DEKIRU_2.flatMap(w => w.lesson))].sort((a, b) => a - b);
+    expect(lessons).toEqual(Array.from({ length: 24 }, (_, i) => i + 25));
+  });
+
+  it('minden rekord teljes, témakörözött és egyedi olvasatú', () => {
+    const bad = DEKIRU_2.filter(w =>
+      !(w.kana || '').trim() || !(w.romaji || '').trim() || !(w.hu || '').trim() ||
+      !Array.isArray(w.tags) || w.tags.length === 0 ||
+      !Array.isArray(w.lesson) || w.lesson.some(n => n < 25 || n > 48) ||
+      !['N5', 'N4', 'N3', 'N2', 'N1'].includes(w.jlpt) || w.book !== 2 || w.source !== 'dekiru');
+    expect(bad.map(w => w.kana)).toEqual([]);
+    expect(new Set(DEKIRU_2.map(w => w.kana)).size).toBe(DEKIRU_2.length);
   });
 });
 

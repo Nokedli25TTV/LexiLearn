@@ -125,7 +125,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 
 ### Gyakorlás: a teljes szótár kézben
 
-- **Keresés** szóra, jelentésre és olvasatra; **lenyíló szűrőpillák:** Lecke (Dekiru), Úti terv (nap), Témakör, Szint, Lista, Rendezés. Minden pilla a kiválasztott értéket mutatja.
+- **Keresés** szóra, jelentésre és olvasatra; **lenyíló szűrőpillák:** Lecke (Dekiru), Úti terv (nap), Témakör, Szint, Lista, Rendezés. A témakörök darabszámai a többi aktív szűrő (például a kiválasztott lecke) találataiból számolódnak, a leckelistában pedig külön jelölés mutatja a Dekiru 2. könyv kezdetét a 25. leckénél.
 - Szavak és Mondatok nézet, kijelölés, csillag (könyvjelző), saját listák.
 - **Lebegő dokk** a képernyő alján: a kijelöltek száma, a beállítások összefoglalója és a korall Indítás gomb.
 - **Négy gyakorlástípus:**
@@ -151,7 +151,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 
 | Mód | Tartalom |
 |---|---|
-| Japán | 3794 szó (N5-N3, a JLPT kb. 3750 szavas célját lefedi), kanával, romajival, kandzsi írásmóddal, témakörökkel; 24 Dekiru lecke szószedete; 2760 példamondat |
+| Japán | 4257 szó, kanával, romajival, kandzsi írásmóddal és témakörökkel; a Dekiru 1–2 teljes, 48 leckés szószedete; 2760 példamondat |
 | Kandzsi | 1715 kandzsi N5-től N1-ig, jelentéssel, olvasatokkal és vonássorrenddel |
 | Angol | 927 szó szintekkel és témakörökkel, 920 példamondat |
 | Úti terv | 15 napos szó- és 25 napos kandzsi-terv egy japán útra, napra bontva |

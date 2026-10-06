@@ -19,7 +19,11 @@ function getTravelPlan() {
 // V13: a szűrő-predikátum külön függvényben, hogy a Kezdőlap "új szavak" forrása
 // ugyanazokat a szűrőket (lecke, nap, témakör, szint, lista) használhassa.
 // ignoreSearch: a szabad szöveges keresés átmeneti, azt a napi tanulás figyelmen kívül hagyja.
-function wordMatchesFilters(w, { ignoreSearch = false } = {}) {
+const wordLessons = w => (Array.isArray(w.lesson) ? w.lesson : [w.lesson])
+  .filter(value => value !== undefined && value !== null && value !== '')
+  .map(String);
+
+function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false } = {}) {
   const f = state.filters;
   if (!ignoreSearch && f.search) {
     const s = f.search;
@@ -30,9 +34,9 @@ function wordMatchesFilters(w, { ignoreSearch = false } = {}) {
     const matchKunyomi = w.kunyomi ? w.kunyomi.toLowerCase().includes(s) : false;
     if (!matchEn && !matchHu && !matchRomaji && !matchOnyomi && !matchKunyomi) return false;
   }
-  if (f.tags.length > 0 && !f.tags.some(t => w.tags.includes(t))) return false;
+  if (!ignoreTags && f.tags.length > 0 && !f.tags.some(t => w.tags.includes(t))) return false;
   if (f.diff.size > 0 && !f.diff.has(w.diff)) return false;
-  if ((currentMode === 'kanji' || currentMode === 'japanese') && f.lesson !== 'all' && w.lesson != f.lesson) return false;
+  if ((currentMode === 'kanji' || currentMode === 'japanese') && f.lesson !== 'all' && !wordLessons(w).includes(String(f.lesson))) return false;
 
   // Úti terv (Nap) szűrő – Japán (TRAVEL_PLAN) és Kandzsi (TRAVEL_PLAN_KANJI) mód
   if ((currentMode === 'japanese' || currentMode === 'kanji') && f.day && f.day !== 'all') {
@@ -65,19 +69,21 @@ const SORT_OPTIONS = [
 /* ── Szűrő opciók ── */
 function lessonLabel(v) {
   const prefix = currentMode === 'kanji' ? 'Kanji' : 'Dekiru';
-  return Number.isNaN(Number(v)) ? `${prefix}: ${v}` : `${prefix} ${v}. lecke`;
+  if (Number.isNaN(Number(v))) return `${prefix}: ${v}`;
+  const book = currentMode === 'japanese' && Number(v) >= 25 ? ' · 2. könyv' : '';
+  return `${prefix} ${v}. lecke${book}`;
 }
 
 function getLessonOptions() {
   if (currentMode === 'english') return [];
   const map = new Map();
   state.words.forEach(w => {
-    if (w.lesson === undefined || w.lesson === null || w.lesson === '') return;
-    const key = String(w.lesson);
-    const entry = map.get(key) || { value: key, total: 0, fresh: 0 };
-    entry.total++;
-    if (isNewWord(w)) entry.fresh++;
-    map.set(key, entry);
+    wordLessons(w).forEach(key => {
+      const entry = map.get(key) || { value: key, total: 0, fresh: 0 };
+      entry.total++;
+      if (isNewWord(w)) entry.fresh++;
+      map.set(key, entry);
+    });
   });
   return [...map.values()].sort((a, b) => (Number(a.value) - Number(b.value)) || a.value.localeCompare(b.value, 'hu'));
 }
@@ -102,4 +108,4 @@ function listLabel(id) {
   return (state.playlists || []).find(p => p.id === id)?.name || 'Lista';
 }
 
-export { SORT_OPTIONS, getDayOptions, getLessonOptions, getTravelPlan, lessonLabel, listLabel, validateDayFilter, wordMatchesFilters };
+export { SORT_OPTIONS, getDayOptions, getLessonOptions, getTravelPlan, lessonLabel, listLabel, validateDayFilter, wordLessons, wordMatchesFilters };

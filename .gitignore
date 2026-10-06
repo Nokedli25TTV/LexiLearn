@@ -1,2 +1,6 @@
 node_modules/
 coverage/
+
+# Helyi forrásanyagok és az importálás köztes OCR-fájljai
+Japan_anyagok/
+tmp/

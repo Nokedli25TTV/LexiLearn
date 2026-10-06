@@ -2,7 +2,7 @@
    V13.3: a korábbi eval('DEKIRU_L' + i) helyett itt, kifejezetten gyűjtjük össze a
    data fájlok globális konstansait egy objektumba. A modulok (js/core/data.js) csak ezt
    olvassák, így a data fájlok formátuma változatlan marad (kézzel szerkeszthetők).
-   Új lecke (pl. DEKIRU_L25) 30-ig automatikusan bekerül; e fölött bővítsd a listát. */
+   A Dekiru 2 egységes listája külön fájlban van; a lesson tömb tartja meg a leckecímkéket. */
 window.LEXI_DATA = {
   sampleWords:      typeof SAMPLE_WORDS !== 'undefined' ? SAMPLE_WORDS : [],
   // V13.7: a JLPT N3 szókincs (jlpt_n3_words.js) a japán szavakhoz csatlakozik
@@ -43,7 +43,7 @@ window.LEXI_DATA = {
     typeof DEKIRU_L28 !== 'undefined' ? DEKIRU_L28 : null,
     typeof DEKIRU_L29 !== 'undefined' ? DEKIRU_L29 : null,
     typeof DEKIRU_L30 !== 'undefined' ? DEKIRU_L30 : null
-  ].filter(Boolean),
+  ].filter(Boolean).concat(typeof DEKIRU_2_WORDS !== 'undefined' ? [DEKIRU_2_WORDS] : []),
   japaneseSentenceLessons: [
     typeof JAPANESE_SENTENCES_L1 !== 'undefined' ? JAPANESE_SENTENCES_L1 : null,
     typeof JAPANESE_SENTENCES_L2 !== 'undefined' ? JAPANESE_SENTENCES_L2 : null,

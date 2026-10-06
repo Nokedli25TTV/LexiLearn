@@ -5,6 +5,8 @@ import { dateKey, todayKey, parseHuDateKey, fmtDuration, lastNDays, startOfWeek,
 import { appData, setCurrentMode, createEmptyState } from '../../js/core/state.js';
 import { activityLevel, computeMaturity, buildDailyIndex } from '../../js/stats/model.js';
 import { isNewWord, getNewWordPool, logActivity, getDailyGoal } from '../../js/habit/goal.js';
+import { getLessonOptions, lessonLabel, wordMatchesFilters } from '../../js/library/filters.js';
+import { lessonMenuHtml, tagChipsHtml } from '../../js/library/menus.js';
 
 const NOW = new Date(2026, 8, 29, 10, 0, 0); // kedd
 
@@ -137,5 +139,34 @@ describe('új szavak és napi napló', () => {
     logActivity({ known: false });                  // 8 perc szünet → új blokk, +5
     expect(appData.japanese.globalStats.daily['2026-09-29']).toEqual({ a: 2, c: 1, k: 1, g: 1, s: 75 });
     expect(appData.japanese.globalStats.dailySince).toBe('2026-09-29');
+  });
+});
+
+describe('többleckés Dekiru-szűrés', () => {
+  beforeEach(() => {
+    appData.japanese.words = [
+      word('l1-etel', { lesson: [1, 25], tags: ['ételek'] }),
+      word('l1-allat', { lesson: [1], tags: ['állatok'] }),
+      word('l2-etel', { lesson: [2], tags: ['ételek'] })
+    ];
+  });
+
+  it('a többleckés szó minden érintett leckében megtalálható', () => {
+    appData.japanese.filters.lesson = '25';
+    expect(appData.japanese.words.filter(wordMatchesFilters).map(w => w.id)).toEqual(['l1-etel']);
+    expect(getLessonOptions().find(o => o.value === '25')?.total).toBe(1);
+  });
+
+  it('a témakör száma a kiválasztott lecke készletéből számolódik', () => {
+    appData.japanese.filters.lesson = '1';
+    const html = tagChipsHtml();
+    expect(html).toContain('ételek<span class="chip-count">1</span>');
+    expect(html).toContain('állatok<span class="chip-count">1</span>');
+    expect(html).not.toContain('ételek<span class="chip-count">2</span>');
+  });
+
+  it('a 25. leckétől látható a második könyv jelölése', () => {
+    expect(lessonLabel('25')).toBe('Dekiru 25. lecke · 2. könyv');
+    expect(lessonMenuHtml()).toContain('Dekiru 2. könyv · 25. leckétől');
   });
 });

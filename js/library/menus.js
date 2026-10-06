@@ -5,7 +5,7 @@ import { escHtml, jsArg } from '../core/util.js';
 import { getBookmarkedWords } from '../features/bookmarks.js';
 import { hasPoolFilters } from '../habit/goal.js';
 import { _dockOpen, toggleDockSettings } from './dock.js';
-import { SORT_OPTIONS, getDayOptions, getLessonOptions, lessonLabel, listLabel, validateDayFilter } from './filters.js';
+import { SORT_OPTIONS, getDayOptions, getLessonOptions, lessonLabel, listLabel, validateDayFilter, wordMatchesFilters } from './filters.js';
 import { applyFilters } from './list.js';
 
 /* ── Ikonok és segédek a menükhöz ── */
@@ -143,13 +143,20 @@ function lessonMenuHtml() {
   const f = state.filters;
   const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
   const opts = getLessonOptions();
-  const rows = menuOption({ selected: f.lesson === 'all', label: 'Minden lecke', action: `setLessonFilter('all')` }) +
-    opts.map(o => menuOption({
+  let previousBook = null;
+  const optionRows = opts.map(o => {
+    const book = currentMode === 'japanese' && Number(o.value) >= 25 ? 2 : 1;
+    const divider = currentMode === 'japanese' && book !== previousBook
+      ? `<div class="menu-section-label">Dekiru ${book}. könyv${book === 2 ? ' · 25. leckétől' : ''}</div>` : '';
+    previousBook = book;
+    return divider + menuOption({
       selected: String(f.lesson) === o.value,
       label: escHtml(lessonLabel(o.value)),
       meta: o.fresh > 0 ? `${o.total} ${unit} · <b>${o.fresh} új</b>` : `${o.total} ${unit}`,
       action: `setLessonFilter(${jsArg(o.value)})`
-    })).join('');
+    });
+  }).join('');
+  const rows = menuOption({ selected: f.lesson === 'all', label: 'Minden lecke', action: `setLessonFilter('all')` }) + optionRows;
   return menuShell('Lecke', `${opts.length} lecke`, `<div role="listbox" aria-label="Lecke">${rows}</div>`);
 }
 
@@ -164,7 +171,8 @@ function dayMenuHtml() {
 
 function tagChipsHtml() {
   const counts = {};
-  state.words.forEach(w => w.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
+  state.words.filter(w => wordMatchesFilters(w, { ignoreTags: true }))
+    .forEach(w => w.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; }));
   const q = _tagQuery.toLowerCase().trim();
   const tags = Object.keys(counts).filter(t => !q || t.includes(q)).sort((a, b) => a.localeCompare(b, 'hu'));
   if (tags.length === 0) return '<p class="menu-empty">Nincs ilyen témakör.</p>';

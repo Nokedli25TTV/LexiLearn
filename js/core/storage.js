@@ -366,9 +366,27 @@ function syncNewWords() {
   }
   
   // --- JAPÁN ÉS KANDZSI SZINKRONIZÁLÁS (Javítva) ---
-  const existingJpIds = new Set(appData.japanese.words.map(w => w.en)); 
   // V13.3: eval helyett a data-registry.js által összegyűjtött leckék
-  const DEKIRU_WORDS = DEKIRU_LESSONS.flat();
+  const mergeText = (left, right) => {
+    const parts = [...String(left || '').split(';'), ...String(right || '').split(';')].map(s => s.trim()).filter(Boolean);
+    return [...new Set(parts)].join('; ');
+  };
+  const lessonValues = value => (Array.isArray(value) ? value : [value])
+    .map(Number).filter(n => Number.isFinite(n) && n >= 1);
+  // A két könyvben ismétlődő olvasatok egyetlen alkalmazásbeli rekordot kapnak.
+  // A jelentések, témakörök és leckecímkék összeadódnak, így pl. ugyanaz a szó
+  // mindkét érintett lecke szűrőjében megjelenik.
+  const dekiruByKana = new Map();
+  DEKIRU_LESSONS.flat().forEach(w => {
+    const merged = dekiruByKana.get(w.kana) || { ...w, lesson: [], tags: [] };
+    merged.lesson = [...new Set([...lessonValues(merged.lesson), ...lessonValues(w.lesson)])].sort((a, b) => a - b);
+    merged.tags = [...new Set([...(merged.tags || []), ...(w.tags || [])])];
+    merged.hu = mergeText(merged.hu, w.hu);
+    if (!merged.romaji && w.romaji) merged.romaji = w.romaji;
+    if (!merged.jlpt || Number(w.jlpt?.slice(1)) < Number(merged.jlpt?.slice(1))) merged.jlpt = w.jlpt;
+    dekiruByKana.set(w.kana, merged);
+  });
+  const DEKIRU_WORDS = [...dekiruByKana.values()];
 
   // Megjelöljük a régi japán/kandzsi szavakat is a törléshez
   appData.japanese.words.forEach(w => {
@@ -377,21 +395,23 @@ function syncNewWords() {
     }
   });
 
-  DEKIRU_WORDS.forEach((w, i) => {
-    let lessonVal = w.lesson ? (Array.isArray(w.lesson) ? w.lesson[0] : w.lesson) : null;
+  DEKIRU_WORDS.forEach(w => {
+    const lessons = lessonValues(w.lesson);
     let existingWord = appData.japanese.words.find(x => x.en === w.kana);
     if (!existingWord) {
       appData.japanese.words.push({
         id: stableWordId('ja', w.kana),
         en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
-        lesson: lessonVal, source: 'dekiru', sentence: '',
+        lesson: lessons, source: 'dekiru', sentence: '',
         bookmarked: false,
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
     } else {
-      existingWord.lesson = lessonVal;
+      existingWord.lesson = [...new Set([...lessonValues(existingWord.lesson), ...lessons])].sort((a, b) => a - b);
       existingWord.source = 'dekiru';
-      existingWord.hu = w.hu; // Frissítjük a fordítást is
+      existingWord.hu = mergeText(existingWord.hu, w.hu);
+      existingWord.tags = [...new Set([...(existingWord.tags || []), ...(w.tags || [])])];
+      if (!existingWord.romaji && w.romaji) existingWord.romaji = w.romaji;
       if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
     }
   });
