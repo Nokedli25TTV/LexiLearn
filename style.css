@@ -1440,6 +1440,20 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .inspect-empty, .inspect-limit { padding: 18px 4px; font-size: 14px; color: var(--text-2); }
 .inspect-suspended { margin-top: 16px; }
 .inspect-suspended summary { min-height: 44px; padding: 12px 4px; color: var(--text-2); font-size: 13px; font-weight: 800; cursor: pointer; }
+.inspect-explain { margin: 14px 0; font-size: 13px; font-weight: 600; line-height: 1.55; color: var(--text-2); }
+.calc-equation { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; padding: 16px; border-radius: 16px; background: var(--primary-dim); color: var(--text-2); font-size: 13px; font-weight: 700; }
+.calc-equation b { color: var(--text); font-size: 18px; }
+.calc-equation strong { color: var(--primary-h); font-size: 20px; }
+.calc-equation span { color: var(--text-3); }
+.calc-list { overflow: hidden; border: 1px solid var(--border); border-radius: 16px; }
+.calc-row { width: 100%; min-height: 58px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 14px; border: none; border-bottom: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Nunito', sans-serif; text-align: left; }
+.calc-row:last-child { border-bottom: none; }
+.calc-row[onclick] { cursor: pointer; }
+@media (hover: hover) { .calc-row[onclick]:hover { background: var(--surface-2); } }
+.calc-row > span { display: flex; flex-direction: column; gap: 2px; }
+.calc-row b { font-size: 14px; }
+.calc-row small { font-size: 11px; font-weight: 650; color: var(--text-3); }
+.calc-row strong { flex: none; font-size: 20px; font-weight: 900; color: var(--text); font-variant-numeric: tabular-nums; }
 @media (max-width: 560px) {
   .inspect-row:not(.inspect-word-row) { align-items: stretch; flex-direction: column; }
   .inspect-actions { justify-content: flex-start; }
@@ -2320,6 +2334,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .learning-breakdown b, .learning-breakdown span { display: block; }
 .learning-breakdown b { font-size: 18px; font-weight: 900; }
 .learning-breakdown span { margin-top: 2px; font-size: 10px; font-weight: 750; line-height: 1.25; color: var(--text-3); }
+.stats-calc-open { margin-top: 8px; }
 
 /* Vonal- és oszlopdiagram jelölők */
 .viz-grid { stroke: var(--viz-grid); stroke-width: 1; shape-rendering: crispEdges; }
@@ -2382,6 +2397,8 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .jl-track-value { margin-right: auto; }
 .jl-track-label + .jl-track-value { margin-left: auto; margin-right: 0; }
 .jl-track-value { font-size: 22px; font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; color: var(--text); }
+.jl-track-open { padding: 0; border: none; background: none; font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer; }
+.jl-track-open:hover { color: var(--primary-h); }
 .jl-track-value.is-big { font-size: 32px; }
 .jl-track-unit { margin-left: 4px; font-size: 14px; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
 .jl-track-pct { min-width: 3.2em; text-align: right; font-size: 13px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
@@ -2465,6 +2482,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .goal-track:first-child { padding-top: 8px; border-top: none; }
 .goal-track .home-section-title { margin-bottom: 10px; }
 .jl-mature { margin: 2px 0 14px; font-size: 13px; font-weight: 600; color: var(--text-2); }
+.jl-calc-open { margin: -8px 0 10px; }
 
 .jl-pace {
   display: grid;

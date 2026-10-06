@@ -71,7 +71,7 @@ function trackHead(t, { big = false } = {}) {
   return `
     <div class="jl-track-head">
       ${big ? '' : `<span class="jl-track-label">${t.label}</span>`}
-      <span class="jl-track-value ${big ? 'is-big' : ''}">${fmt(t.learned)}<span class="jl-track-unit">/ ${fmt(t.target)}</span></span>
+      <button class="jl-track-value jl-track-open ${big ? 'is-big' : ''}" onclick="openWordInspector('learned', '${t.mode}')" aria-label="${t.label}: ${fmt(t.learned)} megtanult elem megnyitása">${fmt(t.learned)}<span class="jl-track-unit">/ ${fmt(t.target)}</span></button>
       <span class="jl-track-pct">${pctText(t.pct)}</span>
     </div>`;
 }
@@ -90,6 +90,7 @@ function renderJlptCard() {
   const host = document.getElementById('jlpt-card-body');
   host.innerHTML = tracks.map(t => `<div class="jl-track">${trackHead(t)}${milestoneBar(t)}</div>`).join('') + `
     <p class="viz-caption">Egy szakasz egy mérföldkő. Halványabb zöld: megtanult, erősebb zöld: rögzült (21+ napos ismétlési köz).</p>
+    <button class="link-btn jl-open" onclick="openStatsExplanation('${currentMode === 'kanji' ? 'kanji' : 'japanese'}')">Hogyan számoljuk a haladást?</button>
     <button class="link-btn jl-open" onclick="showGoalScreen()">Célidőpont, tempó és mérföldkövek</button>`;
   bindBarTips(host, tracks);
 }
@@ -182,6 +183,7 @@ function renderGoalScreen() {
       ${trackHead(t, { big: true })}
       ${milestoneBar(t)}
       <p class="jl-mature">${fmt(t.mature)} rögzült · ${fmt(t.learned - t.mature)} még ismétlés alatt</p>
+      <button class="link-btn jl-calc-open" onclick="openStatsExplanation('${t.mode}')">Hogyan jött ki a ${fmt(t.learned)}?</button>
       ${paceHtml(t, goal)}
       <h3 class="detail-title">Mérföldkövek</h3>
       ${milestonesHtml(t)}

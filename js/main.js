@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.10)
+// LexiLearn – belépési pont (V13.11)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -10,7 +10,7 @@ import { loadState, savePlaylists, saveStats, saveWords } from './core/storage.j
 import { escHtml, jsArg } from './core/util.js';
 import { clearAllBookmarks, toggleBookmark } from './features/bookmarks.js';
 import { doAddWord, doImport, exportData, importData, openAddModal, openImportModal } from './features/import-export.js';
-import { openReviewQueue, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
+import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
 import { setDailyGoal } from './features/profile.js';
 import { replayStrokes } from './features/strokes.js';
 import './features/quests.js';
@@ -70,6 +70,8 @@ Object.assign(window, {
   openImportModal,
   openPoolSource,
   openReviewQueue,
+  openStatsBreakdown,
+  openStatsExplanation,
   openWordInspector,
   postponeReviewWord,
   prevFlashcard3D,
@@ -128,7 +130,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.10 indítása...");
+console.log("[LexiLearn] V13.11 indítása...");
 initV6Features();
 initLibraryEvents();
 

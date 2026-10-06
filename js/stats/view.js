@@ -76,26 +76,26 @@ function renderKpis(idx, goal) {
        </span>`;
 
   setHtml('kpi-strip', `
-    <div class="kpi">
+    <button class="kpi kpi-click" onclick="openStatsBreakdown('consistency')" aria-label="Konzisztencia napi bontása">
       <span class="kpi-label">Konzisztencia</span>
       <span class="kpi-value">${streak}<span class="kpi-unit">nap</span></span>
       <span class="kpi-sub">Leghosszabb: ${record} nap</span>
-    </div>
-    <div class="kpi">
+    </button>
+    <button class="kpi kpi-click" onclick="openStatsBreakdown('activeDays')" aria-label="Aktív napok részletei">
       <span class="kpi-label">Aktív napok</span>
       <span class="kpi-value">${active30}<span class="kpi-unit">/ 30</span></span>
       <span class="kpi-sub">az elmúlt 30 napban</span>
-    </div>
+    </button>
     <button class="kpi kpi-click" onclick="openWordInspector('mature')" aria-label="Rögzült szavak megnyitása">
       <span class="kpi-label">Rögzült szavak</span>
       <span class="kpi-value">${fmtNum(mat.mature)}</span>
       <span class="kpi-sub">${fmtNum(mat.started)} elkezdett szóból</span>
     </button>
-    <div class="kpi">
+    <button class="kpi kpi-click" onclick="openStatsBreakdown('focus')" aria-label="Fókuszált idő napi bontása">
       <span class="kpi-label">Fókusz a héten</span>
       <span class="kpi-value">${fmtDuration(thisWeek)}</span>
       ${deltaHtml}
-    </div>`);
+    </button>`);
 }
 
 /* ── Konzisztencia hőtérkép ── */
@@ -198,6 +198,7 @@ function renderMaturity() {
       <button onclick="openWordInspector('practice')"><b>${fmtNum(practiceLearned)}</b><span>5× helyes gyakorlás</span></button>
       <button onclick="openWordInspector('review')"><b>${fmtNum(activeReview)}</b><span>Aktív ismétlés</span></button>
     </div>
+    <button class="link-btn stats-calc-open" onclick="openStatsExplanation()">Hogyan számoljuk a megtanult szavakat?</button>
     <p class="viz-caption">Az ismétlési köz szerint, mint az Ankiban. Rögzült: legalább 21 nap. Gyakorlás alatt: 7-20 nap. Ismerkedés: 7 napnál rövidebb.</p>`;
 
   const bar = host.querySelector('.mat-bar');
