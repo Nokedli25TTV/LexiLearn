@@ -61,6 +61,25 @@ window.addEventListener('resize', () => {
   _statsResizeTimer = setTimeout(() => { if (document.body.dataset.screen === 'stats') renderStats(); }, 150);
 });
 
+/* ── Változás-jelvény (KPI sáv, Heti összefoglaló) ──
+   Pilla vastag nyíllal és előjeles értékkel, hogy a változás iránya elsőre látsszon. Felfelé zöld, lefelé
+   semleges (a kevesebb nem hiba), változatlannál vízszintes vonal: az irányt a nyíl alakja is hordozza,
+   nem csak a szín. A nyíl megjelenéskor egyszer a saját irányába csúszik (style.css: delta-in). */
+const DELTA_ICONS = {
+  up: '<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
+  down: '<path d="M7 7l10 10"/><path d="M17 8v9H8"/>',
+  flat: '<path d="M6 12h12"/>'
+};
+function deltaChip(diff, text) {
+  const dir = diff > 0 ? 'up' : diff < 0 ? 'down' : 'flat';
+  const sign = diff > 0 ? '+' : diff < 0 ? '−' : '';
+  return `<span class="delta is-${dir}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${DELTA_ICONS[dir]}</svg>${sign}${text}</span>`;
+}
+// A jelvény és mellette a viszonyítási alap ("előző héten 64"): a KPI csempe alsó sora
+function trendHtml(diff, text, note) {
+  return `<span class="kpi-sub kpi-trend">${deltaChip(diff, text)}<span>${note}</span></span>`;
+}
+
 function renderKpis(idx, goal) {
   const streak = calcStreak();
   const record = Math.max(state.globalStats.recordStreak || 0, streak);
@@ -71,11 +90,8 @@ function renderKpis(idx, goal) {
   const lastWeek = weekFocusSeconds(idx, -1);
   const delta = Math.round((thisWeek - lastWeek) / 60);
   const deltaHtml = delta === 0
-    ? `<span class="kpi-sub">Ugyanannyi, mint múlt héten</span>`
-    : `<span class="kpi-sub kpi-delta ${delta > 0 ? 'is-up' : 'is-down'}">
-         <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="${delta > 0 ? 'M5 1 9 8H1z' : 'M5 9 1 2h8z'}"/></svg>
-         ${delta > 0 ? '+' : '−'}${fmtDuration(Math.abs(delta) * 60)} a múlt héthez képest
-       </span>`;
+    ? trendHtml(0, 'ugyanannyi', 'mint múlt héten')
+    : trendHtml(delta, fmtDuration(Math.abs(delta) * 60), `múlt héten ${fmtDuration(lastWeek)}`);
 
   setHtml('kpi-strip', `
     <button class="kpi kpi-click" onclick="openStatsBreakdown('consistency')" aria-label="Konzisztencia napi bontása">
@@ -483,4 +499,4 @@ function switchStatsTab(tab) {
   if (tab === 'dekiru') renderDekiruLessonStats();
 }
 
-export { HEAT_LEVEL_LABELS, _statsResizeTimer, dataTable, hideVizTip, niceMaxMinutes, perfRowsHtml, renderAccuracyChart, renderConsistencyHeatmap, renderDekiruLessonStats, renderFocusChart, renderKpis, renderMaturity, renderStats, renderStatsDetails, setHtml, setText, showVizTip, switchStatsTab, vizEmpty, xDayLabels };
+export { HEAT_LEVEL_LABELS, _statsResizeTimer, dataTable, deltaChip, hideVizTip, niceMaxMinutes, perfRowsHtml, renderAccuracyChart, renderConsistencyHeatmap, renderDekiruLessonStats, renderFocusChart, renderKpis, renderMaturity, renderStats, renderStatsDetails, setHtml, setText, showVizTip, switchStatsTab, trendHtml, vizEmpty, xDayLabels };

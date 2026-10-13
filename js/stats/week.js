@@ -15,7 +15,7 @@ import { DEFAULT_DAILY_GOAL } from '../habit/goal.js';
 import { dueForecast } from '../srs/schedule.js';
 import { WEEK_CHECK_ICON } from '../features/streak.js';
 import { activityLevel, buildDailyIndex } from './model.js';
-import { dataTable } from './view.js';
+import { dataTable, deltaChip, trendHtml } from './view.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 
@@ -129,32 +129,30 @@ let _weekOffset = 0;
 const ARROW = dir => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="${dir < 0 ? '15 18 9 12 15 6' : '9 6 15 12 9 18'}"/></svg>`;
 const CHEVRON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
 
-// Változás az előző héthez képest: felfelé zöld, lefelé semleges, mindig nyíllal (nem csak színnel)
-function deltaHtml(diff, text, prevHasData) {
+// Változás az előző héthez képest: jelvény (nyíl + előjeles érték), mellette az előző heti érték
+function deltaHtml(diff, text, prevText, prevHasData) {
   if (!prevHasData) return '<span class="kpi-sub">Az előző hétről nincs adat</span>';
-  if (diff === 0) return '<span class="kpi-sub">Ugyanannyi, mint az előző héten</span>';
-  return `<span class="kpi-sub kpi-delta ${diff > 0 ? 'is-up' : 'is-down'}">
-      <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><path d="${diff > 0 ? 'M5 1 9 8H1z' : 'M5 9 1 2h8z'}"/></svg>
-      ${diff > 0 ? '+' : '−'}${text} az előző héthez képest
-    </span>`;
+  return diff === 0
+    ? trendHtml(0, 'ugyanannyi', 'mint az előző héten')
+    : trendHtml(diff, text, `előző héten ${prevText}`);
 }
 
 function kpisHtml(cur, prev, unit) {
   const prevOk = hasData(prev);
   const accDelta = cur.accuracy !== null && prev.accuracy !== null
-    ? deltaHtml(cur.accuracy - prev.accuracy, `${Math.abs(cur.accuracy - prev.accuracy)} pont`, true)
+    ? deltaHtml(cur.accuracy - prev.accuracy, `${Math.abs(cur.accuracy - prev.accuracy)} pont`, `${prev.accuracy}%`, true)
     : `<span class="kpi-sub">${cur.accuracy === null ? 'Még kevés a válasz' : 'Az előző hétről nincs adat'}</span>`;
   const focusDiff = Math.round((cur.seconds - prev.seconds) / 60);
   return `
     <div class="kpi">
       <span class="kpi-label">Megtanult ${unit}</span>
       <span class="kpi-value">${fmtNum(cur.learned)}</span>
-      ${deltaHtml(cur.learned - prev.learned, fmtNum(Math.abs(cur.learned - prev.learned)), prevOk)}
+      ${deltaHtml(cur.learned - prev.learned, fmtNum(Math.abs(cur.learned - prev.learned)), fmtNum(prev.learned), prevOk)}
     </div>
     <div class="kpi">
       <span class="kpi-label">Válasz és kártya</span>
       <span class="kpi-value">${fmtNum(cur.answers)}</span>
-      ${deltaHtml(cur.answers - prev.answers, fmtNum(Math.abs(cur.answers - prev.answers)), prevOk)}
+      ${deltaHtml(cur.answers - prev.answers, fmtNum(Math.abs(cur.answers - prev.answers)), fmtNum(prev.answers), prevOk)}
     </div>
     <div class="kpi">
       <span class="kpi-label">Pontosság</span>
@@ -164,7 +162,7 @@ function kpisHtml(cur, prev, unit) {
     <div class="kpi">
       <span class="kpi-label">Fókuszált idő</span>
       <span class="kpi-value">${fmtDuration(cur.seconds)}</span>
-      ${deltaHtml(focusDiff, fmtDuration(Math.abs(focusDiff) * 60), prevOk)}
+      ${deltaHtml(focusDiff, fmtDuration(Math.abs(focusDiff) * 60), fmtDuration(prev.seconds), prevOk)}
     </div>`;
 }
 
@@ -182,7 +180,7 @@ function jlptHtml(startKey, endKey) {
     const t = jlptWeek(appData[mode].words || [], kind, startKey, endKey);
     return `<li class="wk-row">
       <span class="wk-row-name">${label}</span>
-      <span class="wk-row-gain">${t.gained > 0 ? `+${fmtNum(t.gained)}` : '0'}</span>
+      ${deltaChip(t.gained, fmtNum(t.gained))}
       <span class="wk-row-meta">${fmtNum(t.atEnd)} / ${fmtNum(t.target)} · ${t.pct}%</span>
     </li>`;
   }).join('');
