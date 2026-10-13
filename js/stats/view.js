@@ -63,7 +63,7 @@ window.addEventListener('resize', () => {
 
 /* ── Változás-jelvény (KPI sáv, Heti összefoglaló) ──
    Pilla vastag nyíllal és előjeles értékkel, hogy a változás iránya elsőre látsszon. Felfelé zöld, lefelé
-   semleges (a kevesebb nem hiba), változatlannál vízszintes vonal: az irányt a nyíl alakja is hordozza,
+   piros, változatlannál semleges vízszintes vonal: az irányt a nyíl alakja és az előjel is hordozza,
    nem csak a szín. A nyíl megjelenéskor egyszer a saját irányába csúszik (style.css: delta-in). */
 const DELTA_ICONS = {
   up: '<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
