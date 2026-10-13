@@ -278,7 +278,7 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 
 ### Statisztika dashboard (Signature Component)
 - **KPI sáv:** egyetlen felület 1px-es elválasztókkal (nem kártyarács), mobilon 2×2, asztalon 4 oszlop: Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten. Címke 13px 700, érték a Stat stílusban, alatta 12px-es magyarázat vagy előző heti eltérés (▲ zöld / ▼ semleges, mindig nyíllal, nem csak színnel).
-- **Konzisztencia hőtérkép:** GitHub-stílusú naptárháló, 13px-es cellák 3px réssel, a hetek száma a szélességhez igazodik (mobilon ~19, asztalon ~42). Hónap- és napcímkék (H, Sz, P), a mai nap 1,5px-es kerettel. Skálajelmagyarázat: "Kevesebb … Több".
+- **Konzisztencia hőtérkép:** GitHub-stílusú naptárháló, 13px-es cellák 3px réssel, a hetek száma a szélességhez igazodik (mobilon ~19, asztalon ~42). Hónapcímkék felül, balra mind a hét nap címkéje (H, K, Sz, Cs, P, Szo, V; V13.14 óta, a csak minden második sort címkéző változat hiányosnak hatott), a mai nap 1,5px-es kerettel. Skálajelmagyarázat: "Kevesebb … Több".
 - **Tudás-érettség:** 20px magas, 100%-os sáv három szakasszal (Ismerkedés, Gyakorlás alatt, Rögzült), 2px felületrés köztük, csak a jobb vége lekerekített; alatta jelmagyarázat darabszámmal és aránnyal.
 - **Pontosság (14 nap):** 2px-es vonal, 8px-es pontok 2px felület-gyűrűvel, kihagyott napnál megszakad (nincs terület-kitöltés), 80%-os referencia hajszálvonal, végérték-címke. Crosshair tooltip.
 - **Fókuszált idő (14 nap):** legfeljebb 24px széles oszlopok, 4px-es lekerekített tetővel, szögletes alappal; csak a csúcsérték kap címkét.

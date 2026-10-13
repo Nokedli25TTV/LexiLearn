@@ -131,8 +131,9 @@ function renderConsistencyHeatmap(idx, goal) {
       cells += `<rect class="hm-cell l${level}${key === todayK ? ' is-today' : ''}" x="${LEFT + w * STEP}" y="${TOP + d * STEP}" width="${CELL}" height="${CELL}" rx="3" data-k="${key}"/>`;
     }
   }
-  const weekdayLabels = [[0, 'H'], [2, 'Sz'], [4, 'P']]
-    .map(([row, label]) => `<text class="hm-label" x="0" y="${TOP + row * STEP + CELL - 3}">${label}</text>`).join('');
+  // Mind a hét nap ki van írva: a csak minden második sort címkéző (GitHub-féle) változat hiányosnak hatott
+  const weekdayLabels = ['H', 'K', 'Sz', 'Cs', 'P', 'Szo', 'V']
+    .map((label, row) => `<text class="hm-label" x="0" y="${TOP + row * STEP + CELL - 3}">${label}</text>`).join('');
   const svgW = LEFT + weeks * STEP - GAP, svgH = TOP + 7 * STEP - GAP;
   wrap.innerHTML = `<svg width="${svgW}" height="${svgH}" viewBox="0 0 ${svgW} ${svgH}" role="img" aria-label="Konzisztencia az elmúlt ${weeks} hétben">${months}${weekdayLabels}${cells}</svg>`;
 
