@@ -5,8 +5,8 @@ import { dateKey, todayKey, parseHuDateKey, fmtDuration, lastNDays, startOfWeek,
 import { appData, setCurrentMode, createEmptyState } from '../../js/core/state.js';
 import { activityLevel, computeMaturity, buildDailyIndex } from '../../js/stats/model.js';
 import { getCurrentLessonProgress, isNewWord, getNewWordPool, logActivity, getDailyGoal } from '../../js/habit/goal.js';
-import { getLessonOptions, lessonLabel, wordMatchesFilters } from '../../js/library/filters.js';
-import { lessonMenuHtml, tagChipsHtml } from '../../js/library/menus.js';
+import { getLessonOptions, getStatusCounts, hasActiveFilters, lessonLabel, lessonsLabel, selectedLessons, wordMatchesFilters } from '../../js/library/filters.js';
+import { clearLessons, lessonMenuHtml, setLessonFilter, setStatusFilter, statusMenuHtml, tagChipsHtml, toggleLesson } from '../../js/library/menus.js';
 
 const NOW = new Date(2026, 8, 29, 10, 0, 0); // kedd
 
@@ -179,5 +179,96 @@ describe('többleckés Dekiru-szűrés', () => {
   it('a 25. leckétől látható a második könyv jelölése', () => {
     expect(lessonLabel('25')).toBe('Dekiru 25. lecke · 2. könyv');
     expect(lessonMenuHtml()).toContain('Dekiru 2. könyv · 25. leckétől');
+  });
+});
+
+describe('több lecke egyszerre és az állapot szűrő', () => {
+  const ids = () => appData.japanese.words.filter(w => wordMatchesFilters(w)).map(w => w.id);
+  beforeEach(() => {
+    appData.japanese.words = [
+      word('l1-uj', { lesson: [1] }),
+      word('l1-tanult', { lesson: [1] }, { learnedAt: '2026-09-20' }),
+      word('l2-uj', { lesson: [2] }, { totalCorrect: 4 }),
+      word('l2-gyakorolt', { lesson: [2] }, { totalCorrect: 5 }),
+      word('l3-uj', { lesson: [3] }),
+      word('lecke-nelkul', {})
+    ];
+  });
+
+  it('több kiválasztott lecke szavai együtt jelennek meg', () => {
+    toggleLesson('1');
+    toggleLesson('3');
+    expect(selectedLessons()).toEqual(['1', '3']);
+    expect(ids()).toEqual(['l1-uj', 'l1-tanult', 'l3-uj']);
+    toggleLesson('1');
+    expect(ids()).toEqual(['l3-uj']);
+    toggleLesson('3');
+    expect(appData.japanese.filters.lesson).toBe('all');
+    expect(ids()).toHaveLength(6);
+  });
+
+  it('a régi, egyetlen értékű mentett lecke-szűrő is működik', () => {
+    appData.japanese.filters.lesson = '2';
+    expect(selectedLessons()).toEqual(['2']);
+    expect(ids()).toEqual(['l2-uj', 'l2-gyakorolt']);
+    toggleLesson('1'); // bővíthető
+    expect(selectedLessons()).toEqual(['2', '1']);
+    clearLessons();
+    expect(selectedLessons()).toEqual([]);
+  });
+
+  it('a Kezdőlap leckekártyája egyetlen leckére szűr', () => {
+    toggleLesson('1');
+    setLessonFilter('3');
+    expect(selectedLessons()).toEqual(['3']);
+  });
+
+  it('állapot: a megtanult a napi tanulás vagy 5 helyes gyakorlóválasz, a többi még nem tanult', () => {
+    setStatusFilter('new');
+    expect(ids()).toEqual(['l1-uj', 'l2-uj', 'l3-uj', 'lecke-nelkul']);
+    setStatusFilter('learned');
+    expect(ids()).toEqual(['l1-tanult', 'l2-gyakorolt']);
+    setStatusFilter('all');
+    expect(ids()).toHaveLength(6);
+  });
+
+  it('az állapot darabszámai a kiválasztott leckékre vonatkoznak', () => {
+    expect(getStatusCounts()).toEqual({ all: 6, new: 4, learned: 2 });
+    toggleLesson('1');
+    toggleLesson('2');
+    setStatusFilter('new');
+    expect(getStatusCounts()).toEqual({ all: 4, new: 2, learned: 2 });
+    expect(ids()).toEqual(['l1-uj', 'l2-uj']);
+    const html = statusMenuHtml();
+    expect(html).toContain('Még nem tanult');
+    expect(html).toContain('összesen 5 helyes válaszod');
+  });
+
+  it('a Lecke pilla felirata összefoglalja a kijelölést', () => {
+    expect(lessonsLabel([])).toBe('Lecke');
+    expect(lessonsLabel(['3'])).toBe('Dekiru 3. lecke');
+    expect(lessonsLabel(['4', '3'])).toBe('3., 4. lecke');
+    expect(lessonsLabel(['5', '3', '4', '6'])).toBe('3–6. lecke');
+    expect(lessonsLabel(['1', '3', '7'])).toBe('3 lecke');
+  });
+
+  it('a Lecke menü többválasztós, és jelöli a kiválasztott leckéket', () => {
+    toggleLesson('2');
+    const html = lessonMenuHtml();
+    expect(html).toContain('aria-multiselectable="true"');
+    expect(html).toContain('Több is választható');
+    expect(html).toMatch(/class="menu-opt is-selected" data-lesson="2" role="option" aria-selected="true" onclick="toggleLesson\(/);
+    expect(html).toMatch(/class="menu-opt " data-lesson="1" role="option" aria-selected="false"/);
+  });
+
+  it('van aktív szűrő, ha lecke vagy állapot be van állítva (a keresés nem számít)', () => {
+    expect(hasActiveFilters()).toBe(false);
+    appData.japanese.filters.search = 'valami';
+    expect(hasActiveFilters()).toBe(false);
+    setStatusFilter('learned');
+    expect(hasActiveFilters()).toBe(true);
+    setStatusFilter('all');
+    toggleLesson('1');
+    expect(hasActiveFilters()).toBe(true);
   });
 });

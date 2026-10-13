@@ -27,7 +27,7 @@ it('minden inline eseménykezelő létező window függvényt hív', async () =>
   const ja = win.appData.japanese;
   for (const screen of ['home', 'dashboard', 'stats', 'profile']) { api.showScreen(screen); snap(); }
   api.showScreen('dashboard');
-  for (const menu of ['lesson', 'day', 'tags', 'diff', 'list', 'sort']) { api.toggleFilterMenu(menu); snap(); api.closeFilterMenu(); }
+  for (const menu of ['lesson', 'status', 'day', 'tags', 'diff', 'list', 'sort']) { api.toggleFilterMenu(menu); snap(); api.closeFilterMenu(); }
   api.toggleDockSettings(true); snap(); api.toggleDockSettings(false);
   api.switchViewTab('sentences'); snap(); api.switchViewTab('words');
   ['topics', 'words', 'history', 'dekiru'].forEach(t => { api.showScreen('stats'); api.switchStatsTab(t); snap(); });

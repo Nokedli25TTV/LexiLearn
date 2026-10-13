@@ -159,7 +159,7 @@ function openCurrentLesson(lesson) {
 
 // Minden szerkezeti szűrő törlése (Kezdőlap és Gyakorlás fül közös)
 function clearFilters() {
-  Object.assign(state.filters, { tags: [], diff: new Set(), lesson: 'all', day: 'all', list: 'all' });
+  Object.assign(state.filters, { tags: [], diff: new Set(), lesson: 'all', status: 'all', day: 'all', list: 'all' });
   closeFilterMenu();
   renderFilterBar();
   applyFilters();

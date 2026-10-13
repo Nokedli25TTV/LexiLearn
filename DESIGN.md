@@ -252,6 +252,9 @@ Hibrid rendszer: a tartalom tonális rétegekkel él (háttér → felület → 
 ### Chips
 - **Szűrő pilla:** 40px magas kapszula, jobb oldalt lefelé mutató nyíl, ami nyitáskor megfordul. Aktívan erdő-köd háttér és zöld felirat, a kiválasztott érték a címkében ("Dekiru 3. lecke").
 - **Választó chip** (témakör, szint, sorrend): 40px kapszula, mellette halvány darabszám; kijelölve zöld.
+- **Többválasztós menü** (Lecke, Témakör, Szint): a fejlécben "Több is választható", a menü a "Kész" gombig nyitva marad, alul "Összes törlése". A Lecke sorai kapcsolók (pipa + zöld háttér), a pilla összefoglal: egy lecke névvel ("Dekiru 3. lecke"), kettő felsorolva ("3., 4. lecke"), összefüggő sor tartományként ("3–6. lecke"), különben darabszám ("5 lecke").
+- **Állapot pilla** (V13.12): egyválasztós menü darabszámokkal (Minden szó, Még nem tanult, Megtanult); a számok a többi aktív szűrőre vonatkoznak. Alatta egy mondat arról, mi számít megtanultnak, hogy a határ ott derüljön ki, ahol használod.
+- **Szűrők törlése:** szaggatott keretű pilla a sor végén, csak aktív szűrő mellett; ugyanez a gomb áll az üres találati lista alatt.
 
 ### Cards / Containers
 - **Corner Style:** 20-28px (lista 20px, menü 22px, tanuló kártya 28px).

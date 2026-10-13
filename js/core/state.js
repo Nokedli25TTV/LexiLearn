@@ -7,7 +7,8 @@
 function createEmptyState() {
   return {
     words: [], playlists: [], selectedIds: new Set(),
-    filters: { search: '', tags: [], diff: new Set(), lesson: 'all', day: 'all', sort: 'az', list: 'all' },
+    // lesson: 'all' vagy a kiválasztott leckék tömbje; status: 'all' | 'new' | 'learned'
+    filters: { search: '', tags: [], diff: new Set(), lesson: 'all', status: 'all', day: 'all', sort: 'az', list: 'all' },
     direction: 'en-hu', activeViewTab: 'words',
     practiceOptions: { type: 'classic', count: 20, order: 'random' }, // V13.1: a Gyakorlás dokk beállításai
     practice: { roundNumber: 0, roundWords: [], currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0, roundStartTime: 0, sessionStartTime: 0, sessionCorrect: 0, sessionWrong: 0, type: 'classic', currentSentenceObj: null },

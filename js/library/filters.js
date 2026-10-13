@@ -23,7 +23,17 @@ const wordLessons = w => (Array.isArray(w.lesson) ? w.lesson : [w.lesson])
   .filter(value => value !== undefined && value !== null && value !== '')
   .map(String);
 
-function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false } = {}) {
+// A lecke-szűrő több leckét is tartalmazhat (tömb). Régi mentésben egyetlen érték ('3') is állhat ott.
+function selectedLessons(f = state.filters) {
+  if (Array.isArray(f.lesson)) return f.lesson.map(String);
+  return f.lesson && f.lesson !== 'all' ? [String(f.lesson)] : [];
+}
+
+// Állapot szerinti szűrés: ugyanaz a "megtanult", mint a Kezdőlap leckekártyáján és a JLPT haladásban
+const STATUS_OPTIONS = [['all', 'Minden'], ['new', 'Még nem tanult'], ['learned', 'Megtanult']];
+const statusFilter = (f = state.filters) => (STATUS_OPTIONS.some(([v]) => v === f.status) ? f.status : 'all');
+
+function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false, ignoreStatus = false } = {}) {
   const f = state.filters;
   if (!ignoreSearch && f.search) {
     const s = f.search;
@@ -36,7 +46,14 @@ function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false } = {}
   }
   if (!ignoreTags && f.tags.length > 0 && !f.tags.some(t => w.tags.includes(t))) return false;
   if (f.diff.size > 0 && !f.diff.has(w.diff)) return false;
-  if ((currentMode === 'kanji' || currentMode === 'japanese') && f.lesson !== 'all' && !wordLessons(w).includes(String(f.lesson))) return false;
+  if (currentMode === 'kanji' || currentMode === 'japanese') {
+    const lessons = selectedLessons(f);
+    if (lessons.length > 0 && !wordLessons(w).some(l => lessons.includes(l))) return false;
+  }
+  if (!ignoreStatus) {
+    const status = statusFilter(f);
+    if (status !== 'all' && (status === 'new') !== isNewWord(w)) return false;
+  }
 
   // Úti terv (Nap) szűrő – Japán (TRAVEL_PLAN) és Kandzsi (TRAVEL_PLAN_KANJI) mód
   if ((currentMode === 'japanese' || currentMode === 'kanji') && f.day && f.day !== 'all') {
@@ -74,6 +91,30 @@ function lessonLabel(v) {
   return `${prefix} ${v}. lecke${book}`;
 }
 
+// A Lecke pilla felirata: egy lecke névvel, kettő felsorolva, összefüggő sor tartományként, különben darabszám
+function lessonsLabel(values) {
+  if (values.length === 0) return 'Lecke';
+  if (values.length === 1) return lessonLabel(values[0]);
+  const nums = values.map(Number).sort((a, b) => a - b);
+  if (nums.some(Number.isNaN)) return `${values.length} lecke`;
+  if (nums.length === 2) return `${nums[0]}., ${nums[1]}. lecke`;
+  const contiguous = nums.every((n, i) => i === 0 || n === nums[i - 1] + 1);
+  return contiguous ? `${nums[0]}–${nums[nums.length - 1]}. lecke` : `${nums.length} lecke`;
+}
+
+// Van-e szerkezeti szűrő a Gyakorlás fülön (a szabad szöveges keresés nem számít ide)
+function hasActiveFilters(f = state.filters) {
+  return f.tags.length > 0 || f.diff.size > 0 || selectedLessons(f).length > 0 || statusFilter(f) !== 'all' ||
+    (!!f.day && f.day !== 'all') || (!!f.list && f.list !== 'all');
+}
+
+// Hány szó esik az egyes állapotokba a többi szűrő (lecke, témakör, szint, lista, keresés) mellett
+function getStatusCounts() {
+  const pool = state.words.filter(w => wordMatchesFilters(w, { ignoreStatus: true }));
+  const fresh = pool.filter(isNewWord).length;
+  return { all: pool.length, new: fresh, learned: pool.length - fresh };
+}
+
 function getLessonOptions() {
   if (currentMode === 'english') return [];
   const map = new Map();
@@ -108,4 +149,4 @@ function listLabel(id) {
   return (state.playlists || []).find(p => p.id === id)?.name || 'Lista';
 }
 
-export { SORT_OPTIONS, getDayOptions, getLessonOptions, getTravelPlan, lessonLabel, listLabel, validateDayFilter, wordLessons, wordMatchesFilters };
+export { SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonOptions, getStatusCounts, getTravelPlan, hasActiveFilters, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordLessons, wordMatchesFilters };

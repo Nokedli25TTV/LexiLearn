@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.11)
+// LexiLearn – belépési pont (V13.12)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -24,7 +24,7 @@ import { setGoalDate, showGoalScreen } from './goal/view.js';
 import { setDirection, setPracticeOption, toggleDockSettings } from './library/dock.js';
 import './library/filters.js';
 import { applyFilters, initLibraryEvents, renderDashboard, selectNone, switchViewTab, toggleSelectAll } from './library/list.js';
-import { clearDiff, closeFilterMenu, closeLibraryOverlays, onTagSearch, setDayFilter, setLessonFilter, setListFilter, setSort, setTags, toggleDiff, toggleFilterMenu, toggleTag } from './library/menus.js';
+import { clearDiff, clearLessons, closeFilterMenu, closeLibraryOverlays, onTagSearch, setDayFilter, setLessonFilter, setListFilter, setSort, setStatusFilter, setTags, toggleDiff, toggleFilterMenu, toggleLesson, toggleTag } from './library/menus.js';
 import { deletePlaylist, expandPlaylist, savePlaylist } from './library/playlists.js';
 import { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, finishSession, manualNextQuestion, revealHardcoreAnswer, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation } from './practice/engine.js';
 import { prevFlashcard3D, rateFlashcard3D, speakFlashcard3D } from './practice/flashcard.js';
@@ -47,6 +47,7 @@ Object.assign(window, {
   clearAllBookmarks,
   clearDiff,
   clearFilters,
+  clearLessons,
   closeFilterMenu,
   closeLibraryOverlays,
   closeModal,
@@ -96,6 +97,7 @@ Object.assign(window, {
   setMode,
   setPracticeOption,
   setSort,
+  setStatusFilter,
   setTags,
   showScreen,
   showToast,
@@ -122,6 +124,7 @@ Object.assign(window, {
   toggleDockSettings,
   toggleEye,
   toggleFilterMenu,
+  toggleLesson,
   toggleSelectAll,
   toggleSentenceTranslation,
   toggleTag,
@@ -130,7 +133,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.11 indítása...");
+console.log("[LexiLearn] V13.12 indítása...");
 initV6Features();
 initLibraryEvents();
 

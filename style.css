@@ -1781,6 +1781,9 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+/* A lista élén álló szakaszcím fölé nem kell elválasztó (a menü fejléce már ott van) */
+.menu-list > .menu-section-label:first-child { margin-top: 0; padding-top: 2px; border-top: none; }
+.menu-note { max-width: 46ch; padding: 10px 12px 6px; font-size: 13px; font-weight: 600; line-height: 1.45; color: var(--text-2); }
 .menu-row { display: flex; align-items: center; gap: 2px; }
 .menu-opt {
   flex: 1;

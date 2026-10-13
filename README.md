@@ -6,13 +6,13 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.11" src="https://img.shields.io/badge/verzi%C3%B3-13.11-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.12" src="https://img.shields.io/badge/verzi%C3%B3-13.12-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
   <img alt="Vanilla JS, ES modulok" src="https://img.shields.io/badge/vanilla%20JS-ES%20modulok-de9300?style=for-the-badge&logo=javascript&logoColor=white&labelColor=171c1a">
   <img alt="Firebase felhő szinkron" src="https://img.shields.io/badge/Firebase-felh%C5%91%20szinkron-1a73e8?style=for-the-badge&logo=firebase&logoColor=white&labelColor=171c1a">
-  <img alt="Vitest, 79 teszt" src="https://img.shields.io/badge/Vitest-79%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
+  <img alt="Vitest, 87 teszt" src="https://img.shields.io/badge/Vitest-87%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
   <img alt="KanjiVG, CC BY-SA 3.0" src="https://img.shields.io/badge/KanjiVG-CC%20BY--SA%203.0-7a837e?style=for-the-badge&labelColor=171c1a">
 </p>
 
@@ -127,7 +127,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 
 ### Gyakorlás: a teljes szótár kézben
 
-- **Keresés** szóra, jelentésre és olvasatra; **lenyíló szűrőpillák:** Lecke (Dekiru), Úti terv (nap), Témakör, Szint, Lista, Rendezés. A témakörök darabszámai a többi aktív szűrő (például a kiválasztott lecke) találataiból számolódnak, a leckelistában pedig külön jelölés mutatja a Dekiru 2. könyv kezdetét a 25. leckénél.
+- **Keresés** szóra, jelentésre és olvasatra; **lenyíló szűrőpillák:** Lecke (Dekiru), Állapot, Úti terv (nap), Témakör, Szint, Lista, Rendezés. Egyszerre **több lecke** is kijelölhető, az **Állapot** szűrővel pedig csak a még nem tanult (vagy csak a megtanult) szavak maradnak a listán. A témakörök darabszámai a többi aktív szűrő (például a kiválasztott lecke) találataiból számolódnak, a leckelistában pedig külön jelölés mutatja a Dekiru 2. könyv kezdetét a 25. leckénél.
 - Szavak és Mondatok nézet, kijelölés, csillag (könyvjelző), saját listák.
 - **Lebegő dokk** a képernyő alján: a kijelöltek száma, a beállítások összefoglalója és a korall Indítás gomb.
 - **Négy gyakorlástípus:**
@@ -211,7 +211,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **79 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **87 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 
 ```bash
 npm install        # csak a fejlesztői eszközök (tesztek, lint)

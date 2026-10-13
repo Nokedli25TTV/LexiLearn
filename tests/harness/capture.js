@@ -55,7 +55,7 @@ const FILTER_COMBOS = {
 };
 
 function applyCombo(filters, combo) {
-  Object.assign(filters, { search: '', tags: [], diff: new Set(), lesson: 'all', day: 'all', list: 'all', sort: 'az' });
+  Object.assign(filters, { search: '', tags: [], diff: new Set(), lesson: 'all', status: 'all', day: 'all', list: 'all', sort: 'az' });
   if (combo.lesson) filters.lesson = combo.lesson;
   if (combo.day) filters.day = combo.day;
   if (combo.tags) filters.tags = [...combo.tags];
@@ -124,7 +124,7 @@ export async function capture(api, win, reseed) {
   out.library.firstRowHtml = firstRow ? firstRow.outerHTML.replace(/\s+/g, ' ') : null;
   api.renderFilterBar();
   out.library.pills = html(win, 'filter-pills');
-  for (const menu of ['lesson', 'day', 'tags', 'diff', 'list', 'sort']) {
+  for (const menu of ['lesson', 'status', 'day', 'tags', 'diff', 'list', 'sort']) {
     api.toggleFilterMenu(menu);
     out.library['menu_' + menu] = hash(html(win, 'filter-menu'));
     api.closeFilterMenu();

@@ -3,9 +3,9 @@
 import { currentMode, diffOrder, state } from '../core/state.js';
 import { escHtml, jsArg } from '../core/util.js';
 import { getBookmarkedWords } from '../features/bookmarks.js';
-import { hasPoolFilters } from '../habit/goal.js';
+import { PRACTICE_LEARNED_CORRECT } from '../goal/jlpt.js';
 import { _dockOpen, toggleDockSettings } from './dock.js';
-import { SORT_OPTIONS, getDayOptions, getLessonOptions, lessonLabel, listLabel, validateDayFilter, wordMatchesFilters } from './filters.js';
+import { SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonOptions, getStatusCounts, hasActiveFilters, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordMatchesFilters } from './filters.js';
 import { applyFilters } from './list.js';
 
 /* ── Ikonok és segédek a menükhöz ── */
@@ -25,7 +25,10 @@ function renderFilterBar() {
   validateDayFilter();
   const f = state.filters;
   const pills = [];
-  if (getLessonOptions().length > 0) pills.push(['lesson', f.lesson !== 'all' ? lessonLabel(f.lesson) : 'Lecke', f.lesson !== 'all']);
+  const lessons = selectedLessons(f);
+  const status = statusFilter(f);
+  if (getLessonOptions().length > 0) pills.push(['lesson', lessonsLabel(lessons), lessons.length > 0]);
+  pills.push(['status', status === 'all' ? 'Állapot' : STATUS_OPTIONS.find(([v]) => v === status)[1], status !== 'all']);
   if (getDayOptions().length > 0) pills.push(['day', f.day !== 'all' ? `Úti terv: ${f.day}. nap` : 'Úti terv', f.day !== 'all']);
   pills.push(['tags', f.tags.length === 0 ? 'Témakör' : f.tags.length === 1 ? f.tags[0] : `${f.tags.length} témakör`, f.tags.length > 0]);
   pills.push(['diff', f.diff.size > 0 ? [...f.diff].sort((a, b) => diffOrder(a) - diffOrder(b)).join(' · ') : 'Szint', f.diff.size > 0]);
@@ -35,7 +38,7 @@ function renderFilterBar() {
     <button class="pill ${active ? 'is-active' : ''}" data-menu="${key}" aria-haspopup="true" aria-expanded="${_openMenu === key}" onclick="toggleFilterMenu('${key}')">
       <span class="pill-label">${escHtml(label)}</span>${UI_ICONS.chevron}
     </button>`).join('') +
-    (hasPoolFilters() ? `<button class="pill pill-clear" onclick="clearFilters()">Szűrők törlése</button>` : '');
+    (hasActiveFilters(f) ? `<button class="pill pill-clear" onclick="clearFilters()">Szűrők törlése</button>` : '');
 
   const sortLabel = document.getElementById('sort-label');
   if (sortLabel) sortLabel.textContent = (SORT_OPTIONS.find(([v]) => v === f.sort) || SORT_OPTIONS[0])[1];
@@ -92,7 +95,7 @@ function syncMenuTriggers() {
 function renderFilterMenu() {
   const menu = document.getElementById('filter-menu');
   if (!menu || !_openMenu) return;
-  const builders = { lesson: lessonMenuHtml, day: dayMenuHtml, tags: tagsMenuHtml, diff: diffMenuHtml, list: listMenuHtml, sort: sortMenuHtml };
+  const builders = { lesson: lessonMenuHtml, status: statusMenuHtml, day: dayMenuHtml, tags: tagsMenuHtml, diff: diffMenuHtml, list: listMenuHtml, sort: sortMenuHtml };
   const prevScroll = menu.querySelector('.menu-body')?.scrollTop || 0;
   menu.innerHTML = builders[_openMenu]();
   menu.hidden = false;
@@ -124,10 +127,10 @@ function menuShell(title, meta, body, foot = '') {
     ${foot ? `<div class="menu-foot">${foot}</div>` : ''}`;
 }
 
-function menuOption({ selected, label, meta = '', action, extra = '' }) {
+function menuOption({ selected, label, meta = '', action, extra = '', attrs = '' }) {
   return `
     <div class="menu-row">
-      <button class="menu-opt ${selected ? 'is-selected' : ''}" role="option" aria-selected="${selected}" onclick="${action}">
+      <button class="menu-opt ${selected ? 'is-selected' : ''}" ${attrs ? `${attrs} ` : ''}role="option" aria-selected="${selected}" onclick="${action}">
         <span class="menu-check">${selected ? UI_ICONS.check : ''}</span>
         <span class="menu-opt-label">${label}</span>
         ${meta !== '' ? `<span class="menu-opt-meta">${meta}</span>` : ''}
@@ -139,25 +142,40 @@ function menuIconBtn(action, label, icon, disabled = false) {
   return `<button class="menu-icon-btn" onclick="${action}" aria-label="${escHtml(label)}" title="${escHtml(label)}" ${disabled ? 'disabled' : ''}>${icon}</button>`;
 }
 
+// Több lecke is kijelölhető (mint a témaköröknél): a sorok kapcsolók, a menü a Kész gombig nyitva marad
 function lessonMenuHtml() {
-  const f = state.filters;
+  const selected = selectedLessons();
   const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
   const opts = getLessonOptions();
   let previousBook = null;
-  const optionRows = opts.map(o => {
+  const rows = opts.map(o => {
     const book = currentMode === 'japanese' && Number(o.value) >= 25 ? 2 : 1;
     const divider = currentMode === 'japanese' && book !== previousBook
       ? `<div class="menu-section-label">Dekiru ${book}. könyv${book === 2 ? ' · 25. leckétől' : ''}</div>` : '';
     previousBook = book;
     return divider + menuOption({
-      selected: String(f.lesson) === o.value,
+      selected: selected.includes(o.value),
       label: escHtml(lessonLabel(o.value)),
       meta: o.fresh > 0 ? `${o.total} ${unit} · <b>${o.fresh} új</b>` : `${o.total} ${unit}`,
-      action: `setLessonFilter(${jsArg(o.value)})`
+      action: `toggleLesson(${jsArg(o.value)})`,
+      attrs: `data-lesson="${escHtml(o.value)}"`
     });
   }).join('');
-  const rows = menuOption({ selected: f.lesson === 'all', label: 'Minden lecke', action: `setLessonFilter('all')` }) + optionRows;
-  return menuShell('Lecke', `${opts.length} lecke`, `<div role="listbox" aria-label="Lecke">${rows}</div>`);
+  return menuShell('Lecke', 'Több is választható',
+    `<div class="menu-list" role="listbox" aria-multiselectable="true" aria-label="Lecke">${rows}</div>`,
+    `<button class="menu-link" onclick="clearLessons()">Összes törlése</button><button class="menu-done" onclick="closeFilterMenu()">Kész</button>`);
+}
+
+// Megtanult / még nem tanult: ugyanaz a határ, mint a Kezdőlap leckekártyáján és a JLPT haladásban
+function statusMenuHtml() {
+  const status = statusFilter();
+  const counts = getStatusCounts();
+  const labels = { all: currentMode === 'kanji' ? 'Minden kanji' : 'Minden szó', new: 'Még nem tanult', learned: 'Megtanult' };
+  const rows = STATUS_OPTIONS.map(([v]) => menuOption({
+    selected: status === v, label: labels[v], meta: counts[v].toLocaleString('hu-HU'), action: `setStatusFilter('${v}')`
+  })).join('');
+  const note = `<p class="menu-note">Megtanultnak számít, ami a napi tanulásban már ment, vagy amire gyakorlásban összesen ${PRACTICE_LEARNED_CORRECT} helyes válaszod van.</p>`;
+  return menuShell('Állapot', '', `<div role="listbox" aria-label="Állapot">${rows}</div>${note}`);
 }
 
 function dayMenuHtml() {
@@ -273,7 +291,39 @@ function sortMenuHtml() {
   return menuShell('Rendezés', '', `<div role="listbox" aria-label="Rendezés">${rows}</div>`);
 }
 
-function setLessonFilter(v) { state.filters.lesson = v; onFiltersChanged({ close: true }); }
+// Egyetlen lecke beállítása (a Kezdőlap leckekártyája hívja), vagy 'all' a törléshez
+function setLessonFilter(v) { state.filters.lesson = v === 'all' ? 'all' : [String(v)]; onFiltersChanged({ close: true }); }
+
+// Lecke be- / kikapcsolása. A sorokat helyben frissítjük (nem rajzoljuk újra a menüt),
+// így a görgetés és a billentyűzet-fókusz a helyén marad.
+function toggleLesson(v) {
+  const lessons = selectedLessons();
+  const value = String(v);
+  const i = lessons.indexOf(value);
+  if (i >= 0) lessons.splice(i, 1); else lessons.push(value);
+  state.filters.lesson = lessons.length > 0 ? lessons : 'all';
+  onLessonsChanged();
+}
+
+function clearLessons() {
+  state.filters.lesson = 'all';
+  onLessonsChanged();
+}
+
+function onLessonsChanged() {
+  renderFilterBar();
+  applyFilters();
+  const selected = selectedLessons();
+  document.querySelectorAll('#filter-menu .menu-opt[data-lesson]').forEach(btn => {
+    const on = selected.includes(btn.dataset.lesson);
+    btn.classList.toggle('is-selected', on);
+    btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    const check = btn.querySelector('.menu-check');
+    if (check) check.innerHTML = on ? UI_ICONS.check : '';
+  });
+}
+
+function setStatusFilter(v) { state.filters.status = v; onFiltersChanged({ close: true }); }
 function setDayFilter(v)    { state.filters.day = v;    onFiltersChanged({ close: true }); }
 function setListFilter(id)  { state.filters.list = id || 'all'; onFiltersChanged({ close: true }); }
 function setSort(s)         { state.filters.sort = s;   onFiltersChanged({ close: true }); }
@@ -296,4 +346,4 @@ window.addEventListener('resize', () => { if (_openMenu) positionFilterMenu(); }
 
 function resetTagQuery() { _tagQuery = ''; }
 
-export { UI_ICONS, _openMenu, _tagQuery, clearDiff, closeFilterMenu, closeLibraryOverlays, dayMenuHtml, diffMenuHtml, lessonMenuHtml, listMenuHtml, menuIconBtn, menuOption, menuShell, onFiltersChanged, onTagSearch, positionFilterMenu, refreshLibraryChrome, renderFilterBar, renderFilterMenu, resetTagQuery, setDayFilter, setLessonFilter, setListFilter, setScrim, setSort, setTags, sortMenuHtml, syncMenuTriggers, tagChipsHtml, tagsMenuHtml, toggleDiff, toggleFilterMenu, toggleTag };
+export { UI_ICONS, _openMenu, _tagQuery, clearDiff, clearLessons, closeFilterMenu, closeLibraryOverlays, dayMenuHtml, diffMenuHtml, lessonMenuHtml, listMenuHtml, menuIconBtn, menuOption, menuShell, onFiltersChanged, onTagSearch, positionFilterMenu, refreshLibraryChrome, renderFilterBar, renderFilterMenu, resetTagQuery, setDayFilter, setLessonFilter, setListFilter, setScrim, setSort, setStatusFilter, setTags, sortMenuHtml, statusMenuHtml, syncMenuTriggers, tagChipsHtml, tagsMenuHtml, toggleDiff, toggleFilterMenu, toggleLesson, toggleTag };

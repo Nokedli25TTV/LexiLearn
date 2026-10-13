@@ -5,9 +5,8 @@ import { appData, currentMode, diffOrder, state } from '../core/state.js';
 import { saveSettings } from '../core/storage.js';
 import { escHtml, escRegex } from '../core/util.js';
 import { toggleBookmark } from '../features/bookmarks.js';
-import { hasPoolFilters } from '../habit/goal.js';
 import { renderPracticeDock } from './dock.js';
-import { wordMatchesFilters } from './filters.js';
+import { hasActiveFilters, wordMatchesFilters } from './filters.js';
 import { UI_ICONS, _openMenu, renderFilterBar, renderFilterMenu } from './menus.js';
 import { showToast } from '../ui/toast.js';
 
@@ -82,8 +81,8 @@ function renderActiveList() {
     container.innerHTML = `
       <div class="list-empty">
         <p class="list-empty-title">Nincs találat.</p>
-        <p class="list-empty-sub">${hasPoolFilters() || state.filters.search ? 'Próbálj más keresést, vagy töröld a szűrőket.' : 'Ebben a módban még nincs szó.'}</p>
-        ${hasPoolFilters() ? '<button class="menu-link" onclick="clearFilters()">Szűrők törlése</button>' : ''}
+        <p class="list-empty-sub">${hasActiveFilters() || state.filters.search ? 'Próbálj más keresést, vagy töröld a szűrőket.' : 'Ebben a módban még nincs szó.'}</p>
+        ${hasActiveFilters() ? '<button class="menu-link" onclick="clearFilters()">Szűrők törlése</button>' : ''}
       </div>`;
     return;
   }
