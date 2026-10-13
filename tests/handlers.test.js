@@ -55,10 +55,29 @@ it('minden inline eseménykezelő létező window függvényt hív', async () =>
   // V13.6: JLPT haladás képernyő (Statisztika kártya már a stats képernyőn látszik japán módban)
   api.showScreen('goal'); snap();
 
+  // V13.13: heti összefoglaló (lapozó, "Gyakorlás ezekkel" gomb) és a Kezdőlap múlt heti sora
+  Object.assign(ja.words[5].stats, { totalWrong: 2, streak: 0, lastAttempt: new Date(2026, 8, 22, 12).getTime() });
+  ja.globalStats.daily = { ...(ja.globalStats.daily || {}), '2026-09-22': { a: 6, c: 4, k: 0, g: 0, s: 200 } };
+  ja.globalStats.studyDays = { ...(ja.globalStats.studyDays || {}), '2026-09-22': true };
+  api.showScreen('home'); snap();
+  expect(win.document.querySelector('#home-actions .wk-link')).not.toBeNull();
+  api.showWeekScreen(-1); snap();
+  expect(win.document.querySelector('#week-body .wk-practice')).not.toBeNull();
+  api.showScreen('home');
+  expect(win.document.querySelector('#home-actions .wk-link')).toBeNull(); // megnézted, eltűnik
+
   // V13.9: kandzsi kártya (a hátoldalon a vonássorrend újrajátszás gombja)
   api.setMode('kanji');
   api.showScreen('home'); api.startLearnSession(); snap();
   expect(win.document.querySelector('#learn-card .ks-replay')).not.toBeNull();
+
+  // V13.13: írásgyakorlás (Körvonal, Segítség, Elölről, Nem tudom) és a kandzsi dokk öt típusa
+  const kj = win.appData.kanji;
+  kj.words.slice(0, 4).forEach(w => kj.selectedIds.add(w.id));
+  kj.practiceOptions = { type: 'writing', count: 10, order: 'random' };
+  api.showScreen('dashboard'); api.toggleDockSettings(true); snap(); api.toggleDockSettings(false);
+  api.startPractice(); snap();
+  expect(win.document.querySelector('#question-area .wr-tools')).not.toBeNull();
   api.setMode('japanese');
 
   expect(seen.size).toBeGreaterThan(40);

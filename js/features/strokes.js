@@ -30,6 +30,9 @@ function loadLevel(level) {
   return files.get(level);
 }
 
+// Van-e vonásadat ehhez a kandzsihoz (a saját, kézzel felvett kandzsikhoz nincs)
+const hasStrokeData = kanji => levelOf.has(kanji);
+
 // A kandzsi vonásai ([útvonal, számozás x, számozás y] vonásonként), vagy null, ha nincs adat
 function loadStrokes(kanji) {
   const level = levelOf.get(kanji);
@@ -141,4 +144,4 @@ function replayStrokes(btn) {
   playStrokes(btn && btn.closest('.ks'), 0);
 }
 
-export { loadStrokes, mountStrokes, playStrokes, replayStrokes, stopStrokes, strokeFigureHtml, warmStrokeCache };
+export { hasStrokeData, loadStrokes, mountStrokes, playStrokes, replayStrokes, stopStrokes, strokeFigureHtml, warmStrokeCache };

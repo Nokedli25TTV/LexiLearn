@@ -7,6 +7,7 @@ import { calcStreak } from '../features/streak.js';
 import { getDailyGoal } from '../habit/goal.js';
 import { accuracyOf, activityLevel, buildDailyIndex, computeMaturity, weekFocusSeconds } from './model.js';
 import { renderJlptCard } from '../goal/view.js';
+import { renderWeekLink } from './week.js';
 
 const HEAT_LEVEL_LABELS = ['Nem tanultál', 'Aktív nap', 'Napi penzum', 'Penzum + ismétlés', 'Intenzív nap'];
 
@@ -44,6 +45,7 @@ function renderStats() {
   const idx = buildDailyIndex();
   const goal = getDailyGoal();
   setText('stats-scope', `${MODE_LABELS[currentMode]} mód`);
+  renderWeekLink();
   renderJlptCard();
   renderKpis(idx, goal);
   renderConsistencyHeatmap(idx, goal);

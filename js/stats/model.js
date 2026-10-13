@@ -9,8 +9,9 @@ import { MATURE_DAYS, srsInterval } from '../goal/jlpt.js';
    A részletes napló (globalStats.daily) a V13.2-vel indult. Az azelőtti napokra a
    befejezett gyakorlások (sessionHistory) és a studyDays adnak becslést. Az új szavak
    száma mindig a szavak learnedAt mezőjéből jön (pontos, nem kell naplózni). */
-function buildDailyIndex() {
-  const gs = state.globalStats;
+// src: alapból az aktuális mód; a heti összefoglaló a többi mód állapotát is átadja
+function buildDailyIndex(src = state) {
+  const gs = src.globalStats;
   const idx = {};
   const entry = k => idx[k] || (idx[k] = { a: 0, c: 0, k: 0, g: 0, s: 0, n: 0, studied: false });
   const since = gs.dailySince || '9999-12-31';
@@ -27,7 +28,7 @@ function buildDailyIndex() {
     e.c += h.correct || 0;
     e.s += h.duration || 0;
   });
-  state.words.forEach(w => { const k = w.stats && w.stats.learnedAt; if (k) entry(k).n++; });
+  src.words.forEach(w => { const k = w.stats && w.stats.learnedAt; if (k) entry(k).n++; });
   Object.keys(gs.studyDays || {}).forEach(k => { if (gs.studyDays[k]) entry(k).studied = true; });
   return idx;
 }

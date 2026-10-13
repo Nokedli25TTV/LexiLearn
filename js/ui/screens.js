@@ -9,6 +9,7 @@ import { renderDashboard } from '../library/list.js';
 import { closeLibraryOverlays, resetTagQuery } from '../library/menus.js';
 import { renderStats } from '../stats/view.js';
 import { renderGoalScreen } from '../goal/view.js';
+import { renderWeekScreen } from '../stats/week.js';
 
 /* ══════════════════════════════════════════════════════
    MÓD VÁLTÁSA ÉS ZÁSZLÓK CSERÉJE
@@ -37,6 +38,7 @@ function setMode(mode, isInit = false) {
     if (active === 'stats')   renderStats();
     if (active === 'profile') renderProfile();
     if (active === 'goal')    renderGoalScreen();
+    if (active === 'week')    renderWeekScreen();
   }
 }
 
@@ -46,9 +48,10 @@ function setMode(mode, isInit = false) {
 const SCREENS = {
   home: 'screen-home', dashboard: 'screen-dashboard', practice: 'screen-practice',
   roundend: 'screen-round-end', stats: 'screen-stats', profile: 'screen-profile',
-  goal: 'screen-goal' // V13.6: a Statisztika alképernyője (a navigációban a Statisztika marad kiemelve)
+  goal: 'screen-goal', // V13.6: a Statisztika alképernyője (a navigációban a Statisztika marad kiemelve)
+  week: 'screen-week'  // V13.13: heti összefoglaló, szintén a Statisztika alatt
 };
-const NAV_PARENT = { goal: 'stats' };
+const NAV_PARENT = { goal: 'stats', week: 'stats' };
 
 function showScreen(name) {
   const key = SCREENS[name] ? name : 'home';
@@ -77,6 +80,7 @@ function showScreen(name) {
   if (key === 'stats') renderStats();
   if (key === 'profile') renderProfile();
   if (key === 'goal') renderGoalScreen();
+  if (key === 'week') renderWeekScreen();
 }
 
 export { SCREENS, setMode, showScreen };

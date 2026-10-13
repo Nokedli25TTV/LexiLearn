@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.12)
+// LexiLearn – belépési pont (V13.13)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -29,8 +29,10 @@ import { deletePlaylist, expandPlaylist, savePlaylist } from './library/playlist
 import { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, finishSession, manualNextQuestion, revealHardcoreAnswer, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation } from './practice/engine.js';
 import { prevFlashcard3D, rateFlashcard3D, speakFlashcard3D } from './practice/flashcard.js';
 import './practice/tts.js';
+import { writingHint, writingRestart, writingReveal, writingToggleOutline } from './practice/writing.js';
 import './stats/model.js';
 import { renderDekiruLessonStats, renderStats, switchStatsTab } from './stats/view.js';
+import { practiceWeekWords, shiftWeek, showWeekScreen } from './stats/week.js';
 import './ui/confetti.js';
 import { setMode, showScreen } from './ui/screens.js';
 import './ui/swipe.js';
@@ -75,6 +77,7 @@ Object.assign(window, {
   openStatsExplanation,
   openWordInspector,
   postponeReviewWord,
+  practiceWeekWords,
   prevFlashcard3D,
   rateFlashcard3D,
   renderDashboard,
@@ -99,8 +102,10 @@ Object.assign(window, {
   setSort,
   setStatusFilter,
   setTags,
+  shiftWeek,
   showScreen,
   showToast,
+  showWeekScreen,
   signOutCloud,
   speakFlashcard3D,
   speakLearnWord,
@@ -129,11 +134,15 @@ Object.assign(window, {
   toggleSentenceTranslation,
   toggleTag,
   toggleTheme,
+  writingHint,
+  writingRestart,
+  writingReveal,
+  writingToggleOutline,
 });
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.12 indítása...");
+console.log("[LexiLearn] V13.13 indítása...");
 initV6Features();
 initLibraryEvents();
 

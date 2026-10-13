@@ -1295,6 +1295,67 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
   .ks-replay { display: none; }
 }
 
+/* ── V13.13: Kandzsi írásgyakorlás (Gyakorlás → Írás) ──
+   Nagy írásgyakorló négyzet: az ujj vonala zöld (épp rajzolódik), a jó vonás tintaszínű szabályos
+   alakjára vált, a hibás halványan eltűnik (piros nincs: a javítás a gyakorlás része). */
+.wr-prompt { margin-bottom: 14px; }
+.wr-meaning { font-size: 26px; font-weight: 900; line-height: 1.2; color: var(--text); overflow-wrap: anywhere; }
+.wr-readings { margin-top: 6px; font-size: 14px; font-weight: 700; color: var(--primary-h); }
+.wr-stage {
+  width: min(100%, 300px, 44vh);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border-radius: 20px;
+  background: var(--surface-2);
+}
+.wr-svg {
+  --ks-ghost: color-mix(in oklab, var(--text) 16%, var(--surface-2));
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none; /* rajzolás közben ne görgessen az oldal */
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.wr-svg path, .wr-svg polyline { fill: none; stroke-width: 3.4; stroke-linecap: round; stroke-linejoin: round; }
+.wr-outline[hidden] { display: none; }
+.wr-outline path { stroke: var(--ks-ghost); }
+.wr-done path { stroke: var(--text); }
+.wr-done path.is-new { animation: wr-in 180ms var(--ease-out); }
+.wr-done path.is-reveal { stroke-dasharray: 1 2; animation: ks-draw 280ms cubic-bezier(0.4, 0, 0.2, 1) var(--d, 0ms) both; }
+.wr-live { stroke: var(--primary-h); }
+.wr-live.is-miss { stroke: var(--text-3); animation: wr-miss 340ms var(--ease-out) forwards; }
+.wr-hint path { stroke: var(--primary-h); stroke-opacity: 0.55; stroke-dasharray: 1 2; animation: ks-draw 700ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.wr-hint circle { fill: var(--primary-h); }
+@keyframes wr-in { from { opacity: 0.25; } }
+@keyframes wr-miss { to { opacity: 0; } }
+.wr-status { min-height: 21px; margin-top: 12px; font-size: 14px; font-weight: 700; line-height: 1.5; color: var(--text-2); }
+.wr-status.is-good { color: var(--success); }
+.wr-tools { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px; }
+.wr-tool {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font: 800 14px 'Nunito', sans-serif;
+  cursor: pointer;
+  transition: transform 140ms var(--ease-out), border-color 0.18s, color 0.18s;
+}
+.wr-tool:active { transform: scale(0.96); }
+.wr-tool[aria-pressed="true"] { background: var(--primary-dim); border-color: color-mix(in oklch, var(--primary-h) 45%, transparent); color: var(--primary-h); }
+.wr-tool:disabled, #wr-reveal-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+@media (hover: hover) { .wr-tool:not(:disabled):hover { border-color: var(--primary-h); color: var(--text); } }
+/* Kandzsi módban öt gyakorlástípus van: az utolsó (Írás) teljes szélességű */
+.type-opt:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (prefers-reduced-motion: reduce) {
+  .wr-done path.is-new, .wr-live.is-miss { animation: none; }
+  .wr-done path.is-reveal, .wr-hint path { animation: none; stroke-dasharray: none; }
+}
+
 /* Húzás közben megjelenő pecsétek (átlátszóság = húzás mértéke, JS állítja) */
 .swipe-stamp {
   position: absolute;
@@ -2486,6 +2547,30 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .goal-track .home-section-title { margin-bottom: 10px; }
 .jl-mature { margin: 2px 0 14px; font-size: 13px; font-weight: 600; color: var(--text-2); }
 .jl-calc-open { margin: -8px 0 10px; }
+
+/* ── V13.13: Heti összefoglaló (a Statisztika alképernyője) ──
+   A meglévő elemekből épül: heti pöttysor, KPI sáv, semleges lista, csendes sor. Új szín nincs. */
+.wk-body { display: flex; flex-direction: column; gap: 16px; }
+.wk-switch { display: flex; align-items: center; gap: 12px; }
+.wk-when { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; }
+.wk-tag { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.wk-range { font-size: 22px; font-weight: 900; line-height: 1.2; color: var(--text); }
+.wk-nav:disabled { opacity: 0.35; cursor: not-allowed; }
+.wk-days { margin: 2px 0 0; gap: 8px; }
+.wk-days .week-day.is-future { opacity: 0.45; }
+.wk-sentence { font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
+.wk-section { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+.wk-section .home-section-title { margin-bottom: 2px; }
+.wk-note { max-width: 65ch; font-size: 13px; font-weight: 600; line-height: 1.45; color: var(--text-2); }
+.wk-row { display: flex; align-items: baseline; gap: 12px; padding: 13px 16px; }
+.wk-row + .wk-row { border-top: 1px solid var(--border); }
+.wk-row-name { flex: 1; min-width: 0; font-size: 15px; font-weight: 800; color: var(--text); }
+.wk-row.is-current .wk-row-name { color: var(--primary-h); }
+.wk-row-gain { font-size: 15px; font-weight: 800; color: var(--primary-h); font-variant-numeric: tabular-nums; }
+.wk-row-meta { font-size: 13px; font-weight: 600; color: var(--text-2); text-align: right; font-variant-numeric: tabular-nums; }
+.wk-practice { align-self: flex-start; min-height: 46px; margin-top: 4px; }
+.wk-ahead { max-width: 65ch; font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
+.wk-ahead b { font-weight: 800; color: var(--text); }
 
 .jl-pace {
   display: grid;

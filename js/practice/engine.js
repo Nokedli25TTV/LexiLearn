@@ -10,7 +10,10 @@ import { getPracticeOptions } from '../library/dock.js';
 import { closeLibraryOverlays } from '../library/menus.js';
 import { markPracticeLearned } from '../goal/jlpt.js';
 import { initFlashcard3DSwipe, resetFlashcardState } from './flashcard.js';
+import { hasStrokeData } from '../features/strokes.js';
+import { logActivity } from '../habit/goal.js';
 import { _currentTTSAudio, setTtsOnEnd, speakWord } from './tts.js';
+import { initWriting, isWritingCorrect, resetWritingOutline, writingHtml } from './writing.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { practiceLapse } from '../srs/schedule.js';
@@ -35,9 +38,19 @@ function startPractice() {
   const o = getPracticeOptions();
   const qCount = o.count === 'all' ? selectedWords.length : Math.min(Number(o.count) || 20, selectedWords.length);
   const order = o.order || 'random';
-  const type = o.type || 'classic';
-  
+  // Az írásgyakorlás csak kandzsi módban van (ott érhető el vonásadat)
+  const type = o.type === 'writing' && currentMode !== 'kanji' ? 'classic' : (o.type || 'classic');
+
   let orderedWords = [...selectedWords];
+
+  if (type === 'writing') {
+    orderedWords = orderedWords.filter(w => hasStrokeData(w.en));
+    if (orderedWords.length === 0) {
+      showToast('A kiválasztott kandzsikhoz nincs vonásadat.');
+      return;
+    }
+    resetWritingOutline(); // minden gyakorlás emlékezetből indul; a körvonal menet közben kapcsolható be
+  }
 
   if (type === 'sentenceFill') {
     // BUG #1 JAVÍTVA: Angol mód most már támogatott – english_sentences2-t használja
@@ -215,6 +228,11 @@ function showQuestion() {
       <button class="dont-know" onclick="checkAnswer(null,null,'${escHtml(correctText)}')">Nem tudom</button>
     `;
   }
+  else if (p.type === 'writing') {
+    /* ══ V13.13: ÍRÁSGYAKORLÁS (a rajzfelületet a writing.js kezeli) ══ */
+    hintText = 'ÍRÁS · MAGYAR &rarr; KANJI';
+    contentHtml = writingHtml(word);
+  }
   else if (p.type === 'flashcard3d') {
     /* ══ V11: 3D FLASHCARD MÓD ══════════════════════════ */
     hintText = `3D KÁRTYA`;
@@ -350,6 +368,45 @@ function showQuestion() {
   if (p.type === 'flashcard3d') {
     initFlashcard3DSwipe();
     if (isEnHu) setTimeout(() => { speakWord(questionText, false); }, 300);
+  }
+
+  if (p.type === 'writing') initWriting(word, result => finishWriting(word, result));
+}
+
+// V13.13: egy kandzsi megrajzolásának vége. Hibátlanul vagy javítással kész: helyes válasz;
+// segítséggel vagy "Nem tudom" után: hibás, a következő körbe kerül. Körvonallal átrajzolva
+// (vagy ha nincs vonásadat) nem pontozunk: gyakorlás volt, a szó statisztikája nem változik.
+function finishWriting(word, result) {
+  const p = state.practice;
+  if (!p || p.type !== 'writing' || p.roundWords[p.currentIdx] !== word.id) return;
+  checkDailyReset();
+  const isCorrect = isWritingCorrect(result);
+  if (result === 'traced' || result === 'skipped') {
+    if (result === 'traced') p.roundCorrect++; // a kör végi sávban késznek számít
+    logActivity();                             // csak az aktív időt növeli
+  } else {
+    if (isCorrect) { word.stats.streak++; word.stats.totalCorrect++; p.roundCorrect++; p.sessionCorrect++; }
+    else { word.stats.streak = 0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; if (!p.errorList.includes(word.id)) p.errorList.push(word.id); }
+    word.stats.lastAttempt = Date.now();
+    registerPracticeMastery(word, isCorrect);
+    if (!isCorrect) practiceLapse(word);
+    updateQuestProgress('wordAnswered', { word, isCorrect });
+  }
+  if (result !== 'skipped') speakWord(word.en, false);
+  const qCard = document.getElementById('q-card');
+  if (qCard && isCorrect) qCard.classList.add('bounce');
+
+  if (isCorrect || result === 'traced') {
+    setTimeout(() => {
+      if (state.practice !== p || p.roundWords[p.currentIdx] !== word.id) return; // közben kiléptek
+      p.currentIdx++;
+      if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
+    }, 1100);
+  } else {
+    setTimeout(() => {
+      const nextBtn = document.getElementById('next-btn-container');
+      if (nextBtn) nextBtn.style.display = 'block';
+    }, 500);
   }
 }
 // A kérdés szavának felolvasása (állapotból, így az aposztrófos szavak sem törik el az onclick-et)
@@ -792,4 +849,4 @@ function getExampleSentence(word) {
   return { html, hu };
 }
 
-export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, finishSession, getExampleSentence, getSmartDistractors, manualNextQuestion, normalizeRomaji, practiceDir, revealHardcoreAnswer, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation, updatePracticeTop };
+export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, finishSession, finishWriting, getExampleSentence, getSmartDistractors, manualNextQuestion, normalizeRomaji, practiceDir, revealHardcoreAnswer, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation, updatePracticeTop };

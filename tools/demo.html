@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>LexiLearn – demó</title>
+<style>body { margin: 0; background: #0e1311; color: #acb3af; font: 600 15px/1.5 system-ui, sans-serif; display: grid; place-items: center; min-height: 100vh; }</style>
+</head>
+<body>
+<p>Demó betöltése…</p>
+<!--
+  LexiLearn demó (README képernyőképekhez és kipróbáláshoz).
+  Az igazi index.html-t tölti be, három cserével:
+    1. a tárolók memóriabeli másolatok (tools/demo-storage.js): semmi nem kerül a böngésző tárhelyébe,
+    2. a felhő szinkron (firebase-sync.js) kimarad,
+    3. betöltés után a tools/demo-seed.js kb. 110 napnyi generált előzményt tesz az állapotba.
+  Világos téma: tools/demo.html?theme=light
+-->
+<script>
+(async () => {
+  const res = await fetch('../index.html', { cache: 'no-store' });
+  let html = await res.text();
+  const swap = (pattern, replacement) => {
+    if (!pattern.test(html)) throw new Error('A demó nem találja az index.html várt részét: ' + pattern);
+    html = html.replace(pattern, replacement);
+  };
+  swap(/<head>/, '<head><base href="../"><script src="tools/demo-storage.js"><\/script>');
+  swap(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/localforage[^"]*"><\/script>/, '');
+  swap(/<script type="module" src="firebase-sync\.js[^"]*"><\/script>/, '');
+  swap(/<\/body>/, '<script type="module" src="tools/demo-seed.js"><\/script></body>');
+  document.open();
+  document.write(html);
+  document.close();
+})().catch(err => { document.body.textContent = String(err.message || err); });
+</script>
+</body>
+</html>
