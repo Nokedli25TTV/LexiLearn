@@ -330,6 +330,27 @@ A tanulás / ismétlés vége képernyők családja, közös komponensekből, eg
 - **Betöltés:** amíg az adat nincs meg (vagy egy saját kandzsihoz nincs), a négyzetben a kandzsi betűként áll: a hátoldal sosem üres. Az adat szintenként lustán töltődik, a service worker külön cache-ben tartja (offline is megvan).
 - **Hosszú tartalom:** a hátoldal auto margóval zár középre, így ha nem fér ki, felülről görgethető (a teteje nem vágódik le).
 
+### Kandzsi írásgyakorlás (Signature Component, V13.13)
+- **Helye:** a Gyakorlás dokk „Írás” típusa, csak kandzsi módban; a típuslistában az ötödik, páratlan elem teljes szélességű. Írásnál nincs irányválasztó: mindig a jelentésből kell megrajzolni a kandzsit.
+- **Kérdés:** fölül a jelentés (26px, 900) és az olvasatok (14px, erdőzöld). A kandzsi maga sehol nem látszik: a felidézés a feladat.
+- **Rajzfelület:** a vonássorrend négyzetének nagy változata (`min(100%, 300px, 44vh)`), ugyanazokkal a szaggatott középvonalakkal és 3,4 egységes, kerek végű vonásokkal. `touch-action: none`, így rajzolás közben az oldal nem görög.
+- **Visszajelzés, szín szerint:** az épp húzott vonal erdőzöld; elfogadáskor a szabályos vonás tintaszínnel a helyére kerül (180 ms), így a kész kandzsi mindig szép. A hibás vonal Köd színre vált és 340 ms alatt eltűnik: piros és rázkódás nincs, a hiba itt a tanulás része. A segítség a következő vonás halvány zöld, szaggatott vonala, kezdőpontján egy ponttal.
+- **Állapotsor:** a négyzet alatt egy rövid mondat (14px, 700): „Rajzold meg vonásonként · 14 vonás”, „7 / 14 vonás”, „Nem ez a vonás következik.”, „Jó helyen van, de a másik irányba húzd.”. A kész kandzsinál zöldre vált („Hibátlan.”).
+- **Eszközök:** három csendes pilla (Körvonal, Segítség, Elölről), alattuk a szokásos „Nem tudom”. A bekapcsolt Körvonal erdő-köd hátteret kap (`aria-pressed`). Korall nincs a képernyőn.
+- **Csökkentett mozgás:** a vonások animáció nélkül jelennek meg, a hibás vonal azonnal eltűnik.
+
+### Heti összefoglaló (V13.13)
+A Statisztika alképernyője (a navigációban a Statisztika marad kiemelve), vissza gombbal; meglévő komponensekből áll, egyedi kártya nélkül.
+- **Hétváltó:** két kerek nyílgomb között a címke („EZ A HÉT · JAPÁN MÓD”, Label stílus) és a dátumtartomány (22px, 900: „okt. 5–11.”). A jövő felé és az első tanulási hét elé nem lehet lapozni (a gomb 35%-ra halványul).
+- **Napok:** a Kezdőlap heti pöttysora (H … V); a még el nem jött napok 45%-on.
+- **Egy mondat:** „7 aktív nap a 7-ből. A pontosság 92%.” (15px, 600), a számok előtt.
+- **Négy szám:** a Statisztika KPI sávja 2×2-ben: Megtanult szó, Válasz és kártya, Pontosság, Fókuszált idő; mindegyik alatt az előző heti eltérés nyíllal (▲ zöld / ▼ semleges). Három válasz alatt a pontosság helyén gondolatjel áll.
+- **Szakaszok:** „N3 felé a héten” (soronként szint, a heti növekmény zölddel, jobbra az állás), „Még bizonytalan” (a héten elrontott, azóta nem javított szavak semleges listája és egy másodlagos „Gyakorlás ezekkel” gomb), „Előtted” (a következő hét ismétlései egy mondatban), „Módonként” és a napi táblázat `<details>`-ben.
+- **Belépés:** a Statisztika tetején és (a lezárt múlt hétről, amíg meg nem nézted) a Kezdőlapon egy csendes, 48px-es sor, a „N3 FELÉ” sor mintájára. Értesítés, jelvény és konfetti nincs.
+
+### README képek (V13.13)
+A GitHub-oldal „Így néz ki” képei (`tools/showcase.html`): erdőzöld átmenet egy korall és egy levélzöld fényfolttal, mögötte nagy, halvány írásjegyek (7,5%); soronként négy telefonkeret az élő demó egy-egy jelenetével, soronként egy világos témában. A feliratok Nunito 800 / 600, fehérrel és halvány zölddel. A keret és az átmenet csak itt él: az appban nincs díszítő átmenet.
+
 ## 6. Do's and Don'ts
 
 ### Do:

@@ -9,7 +9,7 @@ for (let i = 0; i < 400; i++) {
 }
 await wait(200); // a betöltés utáni első kirajzolás és mentés lefut
 
-let seed = 20261013;
+let seed = Number(new URLSearchParams(location.search).get('seed')) || 2026; // ?seed=… más előzményt ad
 const rnd = () => { seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 const rr = (a, b) => a + rnd() * (b - a);
 const ri = (a, b) => Math.floor(rr(a, b + 1));
@@ -128,5 +128,8 @@ await window.saveStats();
 if (window.selectNone) window.selectNone();
 window.setMode('japanese');
 window.showScreen('home');
+// A téma a címből jön (?theme=light); a betöltött beállítás alapból sötét
+const theme = new URLSearchParams(location.search).get('theme') === 'light' ? 'light' : 'dark';
+if (document.documentElement.getAttribute('data-theme') !== theme) window.toggleTheme();
 window.__demoReady = true;
 if (window.showToast && !new URLSearchParams(location.search).has('quiet')) window.showToast('Demó: generált adatok, semmi nem mentődik.');

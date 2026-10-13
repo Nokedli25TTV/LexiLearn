@@ -15,6 +15,7 @@
     2. a felhő szinkron (firebase-sync.js) kimarad,
     3. betöltés után a tools/demo-seed.js kb. 110 napnyi generált előzményt tesz az állapotba.
   Világos téma: tools/demo.html?theme=light
+  A README képei: tools/showcase.html (négy telefon egy képen), előállítja: node tools/readme-shots.mjs
 -->
 <script>
 (async () => {
@@ -27,7 +28,9 @@
   swap(/<head>/, '<head><base href="../"><script src="tools/demo-storage.js"><\/script>');
   swap(/<script src="https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/localforage[^"]*"><\/script>/, '');
   swap(/<script type="module" src="firebase-sync\.js[^"]*"><\/script>/, '');
-  swap(/<\/body>/, '<script type="module" src="tools/demo-seed.js"><\/script></body>');
+  // ?shot=… a README képeinek egy-egy jelenetét állítja be (tools/demo-shots.js)
+  const shots = new URLSearchParams(location.search).has('shot') ? '<script type="module" src="tools/demo-shots.js"><\/script>' : '';
+  swap(/<\/body>/, '<script type="module" src="tools/demo-seed.js"><\/script>' + shots + '</body>');
   document.open();
   document.write(html);
   document.close();

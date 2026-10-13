@@ -33,17 +33,18 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `js/main.js` | belépési pont: betölti a modulokat, az inline `onclick` kezelőknek a `window`-ra teszi a függvényeket, elindítja az appot |
 | `js/core/` | állapot (`state`), statikus adatok (`data`), mentés / betöltés / migráció (`storage`), dátumok, segédek |
 | `js/library/` | Gyakorlás fül: szűrők, lenyíló menük, szólista, gyakorlás dokk, saját listák |
-| `js/practice/` | gyakorló motor (kvíz, gépelős, mondat), 3D kártya, felolvasás (TTS) |
+| `js/practice/` | gyakorló motor (kvíz, gépelős, mondat), 3D kártya, kandzsi írásgyakorlás (`writing.js`), felolvasás (TTS) |
 | `js/habit/` | napi szokás: napi penzum, új szavak tanulása, esedékes ismétlés (`review.js`), Kezdőlap |
 | `js/goal/` | JLPT haladás: célszámok, mérföldkövek, tempó (`jlpt.js`) és a felületek: Statisztika kártya, Kezdőlap sor, Haladás képernyő (`view.js`) |
 | `js/srs/` | ismétlésütemezés: FSRS-5 algoritmus (`fsrs.js`) és szó-szintű ütemezés, beosztás, előrejelzés (`schedule.js`) |
-| `js/stats/` | statisztika: számítások (`model`) és ábrák (`view`) |
+| `js/stats/` | statisztika: számítások (`model`), ábrák (`view`) és a heti összefoglaló (`week`) |
 | `js/features/`, `js/ui/`, `js/app/` | feladatok, sorozat, könyvjelzők, profil, import/export; képernyők, téma, toast, húzás, konfetti; service worker, bejelentkezés |
 | `firebase-sync.js` | Google bejelentkezés + felhő szinkron (Firestore) |
 | `js/app/cloud-store.js` | a felhő adat felosztása több Firestore dokumentumra (lásd lent) |
 | `sw.js` | service worker (offline gyorsítótár) |
 | `kanjivg/n5.json` … `n1.json` | a kandzsik vonássorrendje (KanjiVG), JLPT-szintenként; a `tools/build-kanjivg.mjs` állítja elő |
 | `js/features/strokes.js` | vonássorrend a tanuló / ismétlő kártya hátoldalán (lusta betöltés, rajzolás, újrajátszás) |
+| `tools/` | fejlesztői eszközök, az app nem tölti be őket: KanjiVG feldolgozás, demó, a README képei (lásd lent) |
 
 ### Új függvény, amit HTML-ből hívsz
 
@@ -113,6 +114,51 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **Betöltés:** a szint fájlja az első ilyen kandzsi kártyánál töltődik le, a többi a háttérben (adatforgalom-kímélő
   módban nem). A service worker külön, verziófüggetlen cache-ben tartja, így az app frissítése nem törli.
 
+## Kandzsi írásgyakorlás
+
+A Gyakorlás dokk „Írás” típusa, csak kandzsi módban (`js/practice/writing.js`; a motor `finishWriting()` függvénye pontoz).
+
+- **Illesztés:** a megrajzolt vonás és a KanjiVG útvonala egyaránt 24 pontra mintavételezett vonal. Egy vonás akkor jó,
+  ha a kezdőpont, a végpont és az átlagos távolság a tűrésen belül van (`TOL`, a vonás hosszával nő), és az iránya egyezik.
+  Ha egy későbbi vonásra jobban illik, az sorrendhiba; ha megfordítva illik, irányhiba.
+- **Tűrések:** mind az 1715 kandzsi 17 641 vonásán bemérve; a `tests/unit/writing.test.js` összesítő tesztje őrzi
+  (pontos vonás: nincs elutasítás; fordított irány: 0,5% alatt; a következő vonás elfogadása: 1% alatt). Ha a `TOL`
+  értékeit állítod, ezt a tesztet nézd.
+- **Eredmény** (`writingResult()`): hibátlanul vagy legfeljebb két javítással kész = helyes válasz. Segítséggel (a gombbal,
+  vagy mert ugyanaz a vonás kétszer nem sikerült), kettőnél több hibával vagy a Nem tudommal = hibás, a szó a következő
+  körbe kerül. A Körvonal mellett rajzolt kandzsi átrajzolás: nem pontozott.
+- A rajzfelület az ujj vonalát mutatja; elfogadáskor a szabályos vonás kerül a helyére, így a kész kandzsi mindig szép.
+
+## Heti összefoglaló
+
+A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig számol, hetenként lapozható.
+
+- **Számok:** a napi naplóból (`globalStats.daily`) és a szavak `learnedAt` / `practiceLearnedAt` dátumából; az előző
+  héttel a `summarizeWeek()` ugyanazt a számítást futtatja le.
+- **Még bizonytalan:** a héten elrontott és azóta nem javított szavak (kvízhiba után 0 a sorozat, vagy visszaesés az
+  ismétlésben, és a köz legfeljebb 1 nap). A „Gyakorlás ezekkel” kijelöli őket a Gyakorlás fülön.
+- **Belépés:** egy sor a Statisztika tetején (ez a hét), és egy sor a Kezdőlapon a lezárt múlt hétről, amíg meg nem
+  nézted (`globalStats.weekSeen`).
+
+## Demó és a README képei
+
+- **`tools/demo.html`:** az igazi `index.html`-t tölti be, de a tárolók memóriabeli másolatok (`tools/demo-storage.js`),
+  a felhő szinkron kimarad, service worker nem települ, és a `tools/demo-seed.js` kb. 110 napnyi, rögzített
+  véletlenszám-magból generált előzményt tesz az állapotba. A böngésző tárhelyébe semmit nem ír; újratöltéskor minden
+  elölről indul. Kapcsolók: `?theme=light`, `?seed=7` (más előzmény), `?quiet` (nincs értesítés).
+- **`tools/demo-shots.js`:** a `?shot=…` egy-egy jelenetet állít be (pl. megfordított kártya, félig megrajzolt kandzsi),
+  megállítja az animációkat, és jelzi, hogy a kép elkészíthető.
+- **`tools/showcase.html`:** négy telefonkeret egy képen, mindegyikben a demó egy jelenete (`?row=1`, `?row=2`).
+- **A README képeinek újragyártása** (felületváltozás után):
+
+  ```bash
+  npm run serve                  # egy másik terminálban
+  node tools/readme-shots.mjs    # docs/readme/igy-nez-ki-1.webp és -2.webp
+  ```
+
+  A szkript egy fej nélküli Edge-et vagy Chrome-ot indít ideiglenes profillal, és a DevTools protokollon át fényképez;
+  külön csomag nem kell hozzá. A képeken a „ma” az előállítás napja, ezért a dátumok és a hét napjai változnak.
+
 ## Tesztek
 
 - **`tests/golden.test.js` – golden master.** A `tests/golden/expected.json` az app kimenete rögzített
@@ -129,6 +175,9 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **`tests/kanji.test.js`** – a kandzsi adatbázis: nincs duplikátum, az olvasatok tiszta kanák (on: katakana,
   kun: hiragana), a romaji minden része egy olvasatból jön, és minden kandzsinak megvan a vonássorrendje.
 - **`tests/unit/strokes.test.js`** – a vonássorrend modul jsdomban: rajzolás, időzítés, újrajátszás, csökkentett mozgás.
+- **`tests/unit/writing.test.js`, `tests/writing-practice.test.js`** – a vonásillesztő (pontos, hanyag, fordított,
+  rossz sorrendű vonások; összesítés minden kandzsin) és egy teljes írásgyakorló kör az appal.
+- **`tests/unit/week.test.js`** – a heti számítások: hétkezdet, aktív napok, megtanult szavak, bizonytalan szavak, JLPT változás.
 - **`tests/sw.test.js`** – a service worker előtöltési listája: minden fájl létezik, minden modul benne van.
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
