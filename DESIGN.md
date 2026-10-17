@@ -10,7 +10,7 @@ colors:
   ember-cta-hover: "#fe8f5b"
   ember-ink: "#22110b"
   terracotta-accent: "#e76f51"
-  terracotta-deep: "#c45a3b"
+  terracotta-deep: "#b1492a"
   paper-bg: "#f7f5f0"
   paper-surface: "#ffffff"
   paper-surface-2: "#f0ede6"
@@ -180,10 +180,10 @@ Visszafogott stratégia (tört semlegesek + egy élénk cselekvésszín), amit a
 
 ### Primary
 - **Parázs korall** (#f57e4d / oklch(0.72 0.16 42)): az egyetlen "nyomd meg" szín. Új szavak tanulása, Indítás, a napi cél elérése után a mai ismétlés. Mindig sötét felirattal (**Parázs tinta**, #22110b), 6,9:1 kontraszt.
-- **Erdőzöld** (#2d6a4f, világos kiemelésben #52b788): haladás és kijelölés. Napi cél sáv, kijelölt sor pipája, aktív szűrő pilla, navigáció lencse, aktív szegmens.
+- **Erdőzöld** (#2d6a4f, világos kiemelésben #52b788): haladás és kijelölés. Napi cél sáv, kijelölt sor pipája, aktív szűrő pilla, navigáció lencse, aktív szegmens. Zöld *szöveg* mindig a `--primary-h` (világosban a mélyebb #1e5038, sötétben #52b788): a `--primary` kitöltés (gomb, értesítés, sáv), szövegként a sötét témában nem éri el az AA-t.
 
 ### Secondary
-- **Terrakotta** (#e76f51, mélyebb: #c45a3b): örökölt akcentus a logóban és a 3D kártya hátoldalán; világos témában az "új szavak száma" is ezzel íródik, mert a korall fehéren nem éri el az AA-t.
+- **Terrakotta** (#e76f51, mélyebb: #b1492a): örökölt akcentus a logóban és a 3D kártya hátoldalán. A mélyebb árnyalat a terrakotta *szöveg* világos témában (példamondatban a kiemelt szó, az "új szavak száma"): minden világos felületen legalább 4,6:1, a Pergamenen is. A korall (#e76f51) és a V13.15-ig használt #c45a3b szövegként nem éri el az AA-t.
 
 ### Neutral
 - **Éjszakai erdő háttér** (#0e1311 / oklch(0.18 0.008 165)): sötét téma háttere, a márka zöldje felé tört.
@@ -197,6 +197,8 @@ Visszafogott stratégia (tört semlegesek + egy élénk cselekvésszín), amit a
 **The One Ember Rule.** Képernyőnként egy korall elem. Ha kettő lenne, az egyik nem fő cselekvés: szürke vagy zöld lesz belőle.
 
 **The Tinted Night Rule.** Sötét módban tiszta szürke tilos; minden semleges az erdőzöld árnyalat felé tört (chroma 0,008-0,012, hue 165).
+
+**The Ink On Fill Rule.** Teli színes felületen (zöld gomb, értesítés, a mai nap pöttye, értékelő gomb hoverben) a felirat `--on-strong`: világos témában szinte fehér, sötétben szinte fekete (oklch 0.17), mert a sötét téma telített zöldjén és pirosán a fehér 4,5:1 alatt marad. Ugyanez a logika, mint a korallon a Parázs tinta.
 
 **The Every Surface Rule.** Egy szövegszín akkor felel meg, ha minden felületen, amin megjelenik (háttér, felület, felület 2, kijelölt sor), eléri a 4,5:1-et, nem csak a háttéren. Áttetszőség (opacity) szövegen csak úgy maradhat, hogy az eredmény is eléri; ha valamit halványítani kell, a jel halványul (pötty, ikon), a felirat nem.
 
@@ -256,6 +258,7 @@ Hibrid rendszer: a tartalom tonális rétegekkel él (háttér → felület → 
 - **Választó chip** (témakör, szint, sorrend): 40px kapszula, mellette halvány darabszám; kijelölve zöld.
 - **Többválasztós menü** (Lecke, Témakör, Szint): a fejlécben "Több is választható", a menü a "Kész" gombig nyitva marad, alul "Összes törlése". A Lecke sorai kapcsolók (pipa + zöld háttér), a pilla összefoglal: egy lecke névvel ("Dekiru 3. lecke"), kettő felsorolva ("3., 4. lecke"), összefüggő sor tartományként ("3–6. lecke"), különben darabszám ("5 lecke").
 - **Állapot pilla** (V13.12): egyválasztós menü darabszámokkal (Minden szó, Még nem tanult, Megtanult); a számok a többi aktív szűrőre vonatkoznak. Alatta egy mondat arról, mi számít megtanultnak, hogy a határ ott derüljön ki, ahol használod.
+- **Szintjel** (N5 … N1, B1 … C2): kis pilla, szintenként saját árnyalattal. A felirat az árnyalat sötét (világos témában) vagy világos (sötétben) változata, ami a pilla halvány hátterén és kijelölt soron is legalább 4,6:1; a sárga N3 felirata ezért barnás narancs.
 - **Szűrők törlése:** szaggatott keretű pilla a sor végén, csak aktív szűrő mellett; ugyanez a gomb áll az üres találati lista alatt.
 
 ### Cards / Containers
@@ -280,7 +283,7 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 
 ### Statisztika dashboard (Signature Component)
 - **KPI sáv:** egyetlen felület 1px-es elválasztókkal (nem kártyarács), mobilon 2×2, asztalon 4 oszlop: Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten. Címke 13px 700, érték a Stat stílusban, alatta 12px-es magyarázat vagy a változás-jelvény.
-- **Változás-jelvény** (`.delta`, V13.15): 24px magas pilla, benne vastag (3-as vonalú) átlós nyíl és az előjeles érték 13px 800-zal („+5”, „−41 p”, „+3 pont”). Felfelé erdő-köd háttér zöld felirattal, lefelé halvány piros háttér piros felirattal (a felhasználó döntése, 2026-10-13; sötét témában a felirat világosabb piros, #ff7b72, hogy meglegyen a 4,5:1), változatlannál semleges Felület 2 pilla vízszintes vonallal és „ugyanannyi”. Az irányt a nyíl alakja és az előjel is hordozza, nem csak a szín. Alatta, külön sorban a viszonyítási alap 12px-en, másodlagos szövegszínnel („előző héten 64”): így minden csempe egyforma, és a felirat új adatot mond, nem ismétli a címkét. A nyíl megjelenéskor egyszer a saját irányába csúszik (6px, 420 ms, 90 ms késleltetéssel); csökkentett mozgásnál nem. Ugyanez a jelvény áll a Heti összefoglaló „N3 felé a héten” soraiban is.
+- **Változás-jelvény** (`.delta`, V13.15): 24px magas pilla, benne vastag (3-as vonalú) átlós nyíl és az előjeles érték 13px 800-zal („+5”, „−41 p”, „+3 pont”). Felfelé erdő-köd háttér zöld felirattal, lefelé halvány piros háttér piros felirattal (a felhasználó döntése, 2026-10-13; sötét témában a hiba piros maga is világosabb, #ff7b72, így a halvány piros háttéren is megvan a 4,5:1), változatlannál semleges Felület 2 pilla vízszintes vonallal és „ugyanannyi”. Az irányt a nyíl alakja és az előjel is hordozza, nem csak a szín. Alatta, külön sorban a viszonyítási alap 12px-en, másodlagos szövegszínnel („előző héten 64”): így minden csempe egyforma, és a felirat új adatot mond, nem ismétli a címkét. A nyíl megjelenéskor egyszer a saját irányába csúszik (6px, 420 ms, 90 ms késleltetéssel); csökkentett mozgásnál nem. Ugyanez a jelvény áll a Heti összefoglaló „N3 felé a héten” soraiban is.
 - **Konzisztencia hőtérkép:** GitHub-stílusú naptárháló, 13px-es cellák 3px réssel, a hetek száma a szélességhez igazodik (mobilon ~19, asztalon ~42). Hónapcímkék felül, balra mind a hét nap címkéje (H, K, Sz, Cs, P, Szo, V; V13.14 óta, a csak minden második sort címkéző változat hiányosnak hatott), a mai nap 1,5px-es kerettel. Skálajelmagyarázat: "Kevesebb … Több".
 - **Tudás-érettség:** 20px magas, 100%-os sáv három szakasszal (Ismerkedés, Gyakorlás alatt, Rögzült), 2px felületrés köztük, csak a jobb vége lekerekített; alatta jelmagyarázat darabszámmal és aránnyal.
 - **Pontosság (14 nap):** 2px-es vonal, 8px-es pontok 2px felület-gyűrűvel, kihagyott napnál megszakad (nincs terület-kitöltés), 80%-os referencia hajszálvonal, végérték-címke. Crosshair tooltip.

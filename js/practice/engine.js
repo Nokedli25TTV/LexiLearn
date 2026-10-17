@@ -612,12 +612,12 @@ function toggleEye(wordId) {
   
   if (currentMode === 'japanese') {
     if (eyeState > 1) eyeState = 0;
-    rt.innerHTML = eyeState === 1 ? `<span style="color:var(--primary)">${word.romaji}</span>` : '';
+    rt.innerHTML = eyeState === 1 ? `<span style="color:var(--primary-h)">${word.romaji}</span>` : '';
   } else if (currentMode === 'kanji') {
     if (eyeState > 2) eyeState = 0;
     if (eyeState === 0) rt.innerHTML = '';
-    if (eyeState === 1) rt.innerHTML = `<span style="color:var(--primary)">On: ${word.onyomi} | Kun: ${word.kunyomi}</span>`;
-    if (eyeState === 2) rt.innerHTML = `<span style="color:var(--primary)">On: ${word.onyomi} | Kun: ${word.kunyomi}</span><br><span style="font-size:13px;color:var(--text-3)">${word.romaji}</span>`;
+    if (eyeState === 1) rt.innerHTML = `<span style="color:var(--primary-h)">On: ${word.onyomi} | Kun: ${word.kunyomi}</span>`;
+    if (eyeState === 2) rt.innerHTML = `<span style="color:var(--primary-h)">On: ${word.onyomi} | Kun: ${word.kunyomi}</span><br><span style="font-size:13px;color:var(--text-3)">${word.romaji}</span>`;
   }
 }
 

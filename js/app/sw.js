@@ -32,7 +32,7 @@ if ('serviceWorker' in navigator) {
 function showUpdateToast(reg) {
   const toast = document.getElementById('toast');
   if (!toast) return;
-  toast.innerHTML = 'Új verzió érhető el. <a href="#" style="color:#fff;text-decoration:underline;margin-left:6px;" onclick="activateNewSW(event)">Frissítés</a>';
+  toast.innerHTML = 'Új verzió érhető el. <a href="#" style="color:inherit;text-decoration:underline;margin-left:6px;" onclick="activateNewSW(event)">Frissítés</a>';
   toast.classList.add('show');
   window._pendingSWReg = reg;
 }
