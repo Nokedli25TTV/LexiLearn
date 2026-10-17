@@ -3,6 +3,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { appData, setCurrentMode, createEmptyState } from '../../js/core/state.js';
 import { earliestWeekKey, fmtRange, jlptWeek, summarizeWeek, unsureWords, weekHomeRowHtml, weekSentence, weekStartKey, weekTag } from '../../js/stats/week.js';
+import { deltaChip, trendHtml } from '../../js/stats/view.js';
 
 const NOW = new Date(2026, 8, 29, 10, 0, 0);
 const TODAY = '2026-09-29';
@@ -124,6 +125,29 @@ describe('heti összefoglaló: még bizonytalan szavak', () => {
     ];
     expect(unsureWords(words, '2026-09-21', '2026-09-27').map(w => w.id)).toEqual(['kviz-hiba', 'ismetles-ujra']);
     expect(unsureWords(words, '2026-09-14', '2026-09-20').map(w => w.id)).toEqual(['masik-het']);
+  });
+});
+
+describe('változás-jelvény', () => {
+  const html = s => { const d = document.createElement('div'); d.innerHTML = s; return d; };
+
+  it('az irányt az osztály, a nyíl és az előjel együtt mutatja', () => {
+    const up = html(deltaChip(5, '5')).querySelector('.delta');
+    const down = html(deltaChip(-41, '41 p')).querySelector('.delta');
+    const flat = html(deltaChip(0, 'ugyanannyi')).querySelector('.delta');
+    expect([up.className, up.textContent]).toEqual(['delta is-up', '+5']);
+    expect([down.className, down.textContent]).toEqual(['delta is-down', '−41 p']);
+    expect([flat.className, flat.textContent]).toEqual(['delta is-flat', 'ugyanannyi']);
+    // Három különböző nyíl, a képernyőolvasó elől rejtve (az előjel szövegként is ott van)
+    const icons = [up, down, flat].map(c => c.querySelector('svg'));
+    expect(new Set(icons.map(i => i.innerHTML)).size).toBe(3);
+    expect(icons.every(i => i.getAttribute('aria-hidden') === 'true')).toBe(true);
+  });
+
+  it('a csempe alsó sorában a jelvény mellett ott a viszonyítási alap', () => {
+    const row = html(trendHtml(3, '3 pont', 'előző héten 89%')).querySelector('.kpi-trend');
+    expect(row.querySelector('.delta').textContent).toBe('+3 pont');
+    expect(row.lastElementChild.textContent).toBe('előző héten 89%');
   });
 });
 

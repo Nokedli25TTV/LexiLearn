@@ -2337,13 +2337,26 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .kpi-click { border: none; color: inherit; font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer; }
 @media (hover: hover) { .kpi-click:hover { background: color-mix(in oklch, var(--surface) 82%, var(--primary-dim)); } }
 .kpi-label { font-size: 13px; font-weight: 700; color: var(--text-2); }
-.kpi-value { font-size: 32px; font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; color: var(--text); white-space: nowrap; }
+.kpi-value { font-size: 30px; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; color: var(--text); white-space: nowrap; }
 .kpi-unit { margin-left: 6px; font-size: 15px; font-weight: 600; letter-spacing: 0; color: var(--text-2); }
 .kpi-sub { font-size: 12px; font-weight: 600; line-height: 1.35; color: var(--text-3); }
-.kpi-delta { display: inline-flex; align-items: center; gap: 4px; }
-.kpi-delta svg { flex: none; fill: currentColor; }
-.kpi-delta.is-up { color: var(--success); }
-.kpi-delta.is-down { color: var(--text-2); }
+/* Változás-jelvény (V13.15): pilla vastag nyíllal és előjeles értékkel, hogy az irány elsőre látsszon.
+   Felfelé zöld, lefelé piros, változatlannál semleges vízszintes vonal. */
+.delta {
+  display: inline-flex; align-items: center; gap: 3px; flex: none;
+  height: 24px; padding: 0 9px 0 6px; border-radius: 999px;
+  font-size: 13px; font-weight: 800; line-height: 1; white-space: nowrap;
+}
+.delta svg { flex: none; animation: delta-in 420ms var(--ease-out) 90ms both; }
+.delta.is-up { --dx: -6px; --dy: 6px; background: var(--success-bg); color: var(--success); }
+.delta.is-down { --dx: -6px; --dy: -6px; background: var(--error-bg); color: var(--error); }
+[data-theme="dark"] .delta.is-down { color: #ff7b72; } /* a sötét --error ezen a háttéren nem éri el a 4,5:1-et */
+.delta.is-flat { --dx: -6px; --dy: 0px; background: var(--surface-2); color: var(--text-2); }
+/* A nyíl megjelenéskor egyszer a saját irányába csúszik: a mozgás itt az irányt mutatja */
+@keyframes delta-in { from { opacity: 0; transform: translate(var(--dx), var(--dy)); } }
+/* A viszonyítási alap mindig a jelvény alatt áll: így a csempék egyformák, akármilyen hosszú az érték */
+.kpi-trend { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; margin-top: 2px; color: var(--text-2); }
+@media (prefers-reduced-motion: reduce) { .delta svg { animation: none; } }
 @media (min-width: 720px) { .kpi-strip { grid-template-columns: repeat(4, 1fr); } }
 
 /* Ábra kártyák */
@@ -2459,7 +2472,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .jl-track-label { font-size: 13px; font-weight: 700; color: var(--text-2); }
 .jl-track-value { margin-right: auto; }
 .jl-track-label + .jl-track-value { margin-left: auto; margin-right: 0; }
-.jl-track-value { font-size: 22px; font-weight: 300; line-height: 1.1; letter-spacing: -0.01em; color: var(--text); }
+.jl-track-value { font-size: 21px; font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; color: var(--text); }
 .jl-track-open { padding: 0; border: none; background: none; font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer; }
 .jl-track-open:hover { color: var(--primary-h); }
 .jl-track-value.is-big { font-size: 32px; }
@@ -2565,7 +2578,6 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .wk-row + .wk-row { border-top: 1px solid var(--border); }
 .wk-row-name { flex: 1; min-width: 0; font-size: 15px; font-weight: 800; color: var(--text); }
 .wk-row.is-current .wk-row-name { color: var(--primary-h); }
-.wk-row-gain { font-size: 15px; font-weight: 800; color: var(--primary-h); font-variant-numeric: tabular-nums; }
 .wk-row-meta { font-size: 13px; font-weight: 600; color: var(--text-2); text-align: right; font-variant-numeric: tabular-nums; }
 .wk-practice { align-self: flex-start; min-height: 46px; margin-top: 4px; }
 .wk-ahead { max-width: 65ch; font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
@@ -2638,7 +2650,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 
 /* Kezdőlap: konzisztencia szám + címke (láng emoji helyett) */
 .streak-line { align-items: baseline; gap: 8px; }
-.streak-value { font-size: 34px; font-weight: 300; letter-spacing: -0.01em; color: var(--text); }
+.streak-value { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: var(--text); }
 .streak-label { font-size: 15px; font-weight: 700; color: var(--text-2); }
 .home-quests .quest-daily-word { color: var(--text-2); background: var(--surface-2); }
 

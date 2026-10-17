@@ -75,10 +75,10 @@ typography:
     letterSpacing: "0.08em"
   stat:
     fontFamily: "Nunito, sans-serif"
-    fontSize: "32px"
-    fontWeight: 300
-    lineHeight: 1.1
-    letterSpacing: "-0.01em"
+    fontSize: "30px"
+    fontWeight: 800
+    lineHeight: 1.15
+    letterSpacing: "-0.02em"
   brand:
     fontFamily: "Lora, Georgia, serif"
     fontSize: "20px"
@@ -221,9 +221,9 @@ Visszafogott stratégia (tört semlegesek + egy élénk cselekvésszín), amit a
 - **Title** (900, 19px, 1.2): fő gombok felirata, kártyán a jelentés 32px-es változata.
 - **Body** (600, 15px, 1.5): leírások, menü-opciók (700, 15px); hosszabb szöveg legfeljebb 60-70ch.
 - **Label** (800, 12px, 0.08em, NAGYBETŰ): szekciócímek ("NAPI PENZUM", "LECKE"), számlálók.
-- **Stat** (300, 32-34px, 1.1, -0.01em): a nagy számok (KPI sáv, Kezdőlap konzisztencia). Vékony, nyugodt számjegyek, arányos (nem tabuláris) számokkal; mellette 15px-es 600-as mértékegység ("nap", "/ 30").
+- **Stat** (800, 30-32px, 1.15, -0.02em): a nagy számok (KPI sáv, Kezdőlap konzisztencia, JLPT sorok 21px-en). Vastag, határozott számjegyek, ugyanazzal a súllyal, mint a Napi penzum száma; arányos (nem tabuláris) számokkal, mellette 15px-es 600-as mértékegység ("nap", "/ 30").
 
-**The Quiet Numbers Rule.** A nagy számok könnyű (300) súlyúak; a hangsúlyt a méret adja, nem a vastagság. Tabuláris számjegy csak oszlopba rendezett értékeknél (táblázat, tengely).
+**The Solid Numbers Rule.** A nagy számok vastagok (800), mint a felület többi hangsúlyos eleme; a mértékegység és a felirat marad könnyebb, így a szám és a kísérőszöveg súlya válik el élesen. A korábbi vékony (300) számjegyeket a felhasználó 2026-10-13-án elvetette: vékony számot ne használj. Tabuláris számjegy csak oszlopba rendezett értékeknél (táblázat, tengely).
 
 ### Named Rules
 **The 16px Input Rule.** Minden szövegbeviteli mező legalább 16px, különben iOS ráközelít fókuszkor.
@@ -279,7 +279,8 @@ Lebegő üveg sáv a navigáció fölött: kijelölt szavak száma (törlés ×-
 Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jelentés és olvasat, egymás utáni helyes válaszok ("3×") / pontosság / szint, és külön csillag gomb. Kijelölve a sor zöldes hátteret kap. Lapozva renderel (120 sor adagonként), belső görgetősáv nincs.
 
 ### Statisztika dashboard (Signature Component)
-- **KPI sáv:** egyetlen felület 1px-es elválasztókkal (nem kártyarács), mobilon 2×2, asztalon 4 oszlop: Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten. Címke 13px 700, érték a Stat stílusban, alatta 12px-es magyarázat vagy előző heti eltérés (▲ zöld / ▼ semleges, mindig nyíllal, nem csak színnel).
+- **KPI sáv:** egyetlen felület 1px-es elválasztókkal (nem kártyarács), mobilon 2×2, asztalon 4 oszlop: Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten. Címke 13px 700, érték a Stat stílusban, alatta 12px-es magyarázat vagy a változás-jelvény.
+- **Változás-jelvény** (`.delta`, V13.15): 24px magas pilla, benne vastag (3-as vonalú) átlós nyíl és az előjeles érték 13px 800-zal („+5”, „−41 p”, „+3 pont”). Felfelé erdő-köd háttér zöld felirattal, lefelé halvány piros háttér piros felirattal (a felhasználó döntése, 2026-10-13; sötét témában a felirat világosabb piros, #ff7b72, hogy meglegyen a 4,5:1), változatlannál semleges Felület 2 pilla vízszintes vonallal és „ugyanannyi”. Az irányt a nyíl alakja és az előjel is hordozza, nem csak a szín. Alatta, külön sorban a viszonyítási alap 12px-en, másodlagos szövegszínnel („előző héten 64”): így minden csempe egyforma, és a felirat új adatot mond, nem ismétli a címkét. A nyíl megjelenéskor egyszer a saját irányába csúszik (6px, 420 ms, 90 ms késleltetéssel); csökkentett mozgásnál nem. Ugyanez a jelvény áll a Heti összefoglaló „N3 felé a héten” soraiban is.
 - **Konzisztencia hőtérkép:** GitHub-stílusú naptárháló, 13px-es cellák 3px réssel, a hetek száma a szélességhez igazodik (mobilon ~19, asztalon ~42). Hónapcímkék felül, balra mind a hét nap címkéje (H, K, Sz, Cs, P, Szo, V; V13.14 óta, a csak minden második sort címkéző változat hiányosnak hatott), a mai nap 1,5px-es kerettel. Skálajelmagyarázat: "Kevesebb … Több".
 - **Tudás-érettség:** 20px magas, 100%-os sáv három szakasszal (Ismerkedés, Gyakorlás alatt, Rögzült), 2px felületrés köztük, csak a jobb vége lekerekített; alatta jelmagyarázat darabszámmal és aránnyal.
 - **Pontosság (14 nap):** 2px-es vonal, 8px-es pontok 2px felület-gyűrűvel, kihagyott napnál megszakad (nincs terület-kitöltés), 80%-os referencia hajszálvonal, végérték-címke. Crosshair tooltip.
@@ -295,7 +296,7 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 A tanulás / ismétlés vége képernyők családja, közös komponensekből, egyedi stílus nélkül:
 - **Cím és alcím:** Nunito 900, 26px ("1. kör vége", "Hibátlan kör"), alatta egy mondat 15px-en ("Stabil tudás.").
 - **Pontosság:** a Kezdőlap "Napi penzum" kártyája (`.goal`): balra "PONTOSSÁG" címke, jobbra a százalék, alatta egyszínű zöld sáv. Piros szakasz, körgrafikon és "hős-szám" nincs.
-- **Számsor:** a Statisztika KPI sávja 3 oszlopban (Helyes, Hibás, Idő), vékony számokkal; a mértékegység kisebb ("14 mp", "2:05 p"). Színes (zöld / piros / kék) doboz nincs.
+- **Számsor:** a Statisztika KPI sávja 3 oszlopban (Helyes, Hibás, Idő), a Stat stílus vastag számaival; a mértékegység kisebb ("14 mp", "2:05 p"). Színes (zöld / piros / kék) doboz nincs.
 - **Hibás szavak:** "Következő körbe kerül" (gyors ismétlésnél "Elsőre nem ment") részletcím, alatta semleges lista (kana balra, jelentés jobbra), piros háttér nélkül.
 - **Műveletek alul, a hüvelykujj alatt:** ha van következő kör, az a korall fő gomb a szavak számával ("Következő kör · 3 szó"), mellette csendes "Befejezés"; ha nincs, a "Befejezés" a korall gomb.
 - A kérdés fölötti irány-felirat csak szöveg ("KANA → MAGYAR"): külső szerverről betöltött kép (zászló) offline nem működik, ezért tilos.
@@ -346,8 +347,8 @@ A Statisztika alképernyője (a navigációban a Statisztika marad kiemelve), vi
 - **Hétváltó:** két kerek nyílgomb között a címke („EZ A HÉT · JAPÁN MÓD”, Label stílus) és a dátumtartomány (22px, 900: „okt. 5–11.”). A jövő felé és az első tanulási hét elé nem lehet lapozni (a gomb 35%-ra halványul).
 - **Napok:** a Kezdőlap heti pöttysora (H … V); a még el nem jött napok pöttye 45%-on, a betűjelük teljes erővel (olvasható marad).
 - **Egy mondat:** „7 aktív nap a 7-ből. A pontosság 92%.” (15px, 600), a számok előtt.
-- **Négy szám:** a Statisztika KPI sávja 2×2-ben: Megtanult szó, Válasz és kártya, Pontosság, Fókuszált idő; mindegyik alatt az előző heti eltérés nyíllal (▲ zöld / ▼ semleges). Három válasz alatt a pontosság helyén gondolatjel áll.
-- **Szakaszok:** „N3 felé a héten” (soronként szint, a heti növekmény zölddel, jobbra az állás), „Még bizonytalan” (a héten elrontott, azóta nem javított szavak semleges listája és egy másodlagos „Gyakorlás ezekkel” gomb), „Előtted” (a következő hét ismétlései egy mondatban), „Módonként” és a napi táblázat `<details>`-ben.
+- **Négy szám:** a Statisztika KPI sávja 2×2-ben: Megtanult szó, Válasz és kártya, Pontosság, Fókuszált idő; mindegyik alatt a változás-jelvény és az előző heti érték. Három válasz alatt a pontosság helyén gondolatjel áll.
+- **Szakaszok:** „N3 felé a héten” (soronként szint, a heti növekmény változás-jelvényben, jobbra az állás), „Még bizonytalan” (a héten elrontott, azóta nem javított szavak semleges listája és egy másodlagos „Gyakorlás ezekkel” gomb), „Előtted” (a következő hét ismétlései egy mondatban), „Módonként” és a napi táblázat `<details>`-ben.
 - **Belépés:** a Statisztika tetején és (a lezárt múlt hétről, amíg meg nem nézted) a Kezdőlapon egy csendes, 48px-es sor, a „N3 FELÉ” sor mintájára. Értesítés, jelvény és konfetti nincs.
 
 ### README képek (V13.13)
