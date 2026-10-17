@@ -37,7 +37,7 @@
   --bg: oklch(0.18 0.008 165); --surface: oklch(0.22 0.009 165); --surface-2: oklch(0.265 0.011 165); --border: oklch(0.32 0.012 165);
   --primary: #40916c; --primary-h: #52b788; --primary-light: #2d6a4f; --primary-dim: rgba(82, 183, 136, 0.15);
   --accent: #e76f51; --accent-h: #f4a261; --accent-dim: rgba(231, 111, 81, 0.15);
-  --text: oklch(0.935 0.008 165); --text-2: oklch(0.76 0.01 165); --text-3: oklch(0.6 0.012 165);
+  --text: oklch(0.935 0.008 165); --text-2: oklch(0.76 0.01 165); --text-3: oklch(0.67 0.012 165); /* AA a felületeken és a kijelölt soron is */
   --glass-bg: oklch(0.27 0.012 165 / 0.6);
   --glass-sheen: oklch(0.98 0.005 165 / 0.07);
   --glass-edge: oklch(0.98 0.005 165 / 0.13);

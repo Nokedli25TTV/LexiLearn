@@ -24,7 +24,7 @@ colors:
   night-border: "#2d3531"
   night-text: "#e5ebe8"
   night-text-2: "#acb3af"
-  night-text-3: "#7a837e"
+  night-text-3: "#8f9893"
   error-red: "#b5272a"
   info-blue: "#1a73e8"
   star-gold: "#de9300"
@@ -189,9 +189,9 @@ Visszafogott stratégia (tört semlegesek + egy élénk cselekvésszín), amit a
 - **Éjszakai erdő háttér** (#0e1311 / oklch(0.18 0.008 165)): sötét téma háttere, a márka zöldje felé tört.
 - **Éjszakai felület** (#171c1a) és **Éjszakai felület 2** (#202724): listák, kártyák, menük; sávok és beágyazott mezők.
 - **Éjszakai szegély** (#2d3531): 1px elválasztók, pillák kerete.
-- **Holdfény szöveg** (#e5ebe8), **Köd** (#acb3af), **Pala** (#7a837e): elsődleges, másodlagos, harmadlagos szöveg; a Pala a háttéren 4,8:1.
+- **Holdfény szöveg** (#e5ebe8), **Köd** (#acb3af), **Pala** (#8f9893 / oklch(0.67 0.012 165)): elsődleges, másodlagos, harmadlagos szöveg. A Pala minden sötét felületen eléri az AA-t: háttér 6,3:1, felület 5,8:1, felület 2 5,1:1, kijelölt sor 4,5:1. V13.15-ig #7a837e volt, ami csak a háttéren érte el (felületen 4,4:1, felület 2-n 3,9:1).
 - **Papír** (#f7f5f0), **Tiszta lap** (#ffffff), **Pergamen** (#f0ede6), **Pergamen szegély** (#e4ddd0): világos téma rétegei.
-- **Tinta** (#1a1a2e), **Szilva szürke** (#5a5470), **Lila köd** (#6c667f / oklch(0.525 0.039 296)): világos téma szövegei. A Lila köd a harmadlagos szöveg (feliratok, tengelycímkék, darabszámok, placeholder), egy fokkal világosabb a Szilva szürkénél, és minden világos felületen eléri az AA-t: Tiszta lap 5,5:1, Papír 5,0:1, Pergamen 4,7:1, kijelölt sor (Erdő-köd) 4,6:1. V13.14-ig #9e99b0 volt (2,4-2,8:1), ami szövegre kevés.
+- **Tinta** (#1a1a2e), **Szilva szürke** (#5a5470), **Lila köd** (#6c667f / oklch(0.525 0.039 296)): világos téma szövegei. A Lila köd a harmadlagos szöveg (feliratok, tengelycímkék, darabszámok, placeholder), egy fokkal világosabb a Szilva szürkénél, és minden világos felületen eléri az AA-t: Tiszta lap 5,5:1, Papír 5,0:1, Pergamen 4,7:1, kijelölt sor (Erdő-köd) 4,6:1. V13.15-ig #9e99b0 volt (2,4-2,8:1), ami szövegre kevés.
 
 ### Named Rules
 **The One Ember Rule.** Képernyőnként egy korall elem. Ha kettő lenne, az egyik nem fő cselekvés: szürke vagy zöld lesz belőle.
