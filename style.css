@@ -4,7 +4,7 @@
   --primary: #2d6a4f; --primary-h: #1e5038; --primary-light: #52b788; --primary-dim: #d8f3dc;
   --accent: #e76f51; --accent-h: #c45a3b; --accent-dim: #fceae4;
   --yellow: #f4a261; --yellow-dim: #fff3e0;
-  --text: #1a1a2e; --text-2: #5a5470; --text-3: #9e99b0;
+  --text: #1a1a2e; --text-2: #5a5470; --text-3: #6c667f; /* --text-3: legalább 4,5:1 mindhárom felületen (AA) */
   --success: #2d6a4f; --success-bg: #d8f3dc; --error: #b5272a; --error-bg: #fde8e8;
   --info: #1a73e8; --info-bg: #e3f0ff; 
   --radius: 16px; --radius-sm: 10px;
@@ -588,7 +588,6 @@ rt {
   font-size: 11px;
   color: var(--text-3);
   font-weight: 700;
-  opacity: 0.7;
 }
 
 /* Nav sor: Vissza gomb + Rating gombok */
@@ -2557,7 +2556,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .wk-range { font-size: 22px; font-weight: 900; line-height: 1.2; color: var(--text); }
 .wk-nav:disabled { opacity: 0.35; cursor: not-allowed; }
 .wk-days { margin: 2px 0 0; gap: 8px; }
-.wk-days .week-day.is-future { opacity: 0.45; }
+.wk-days .week-day.is-future .week-day-dot { opacity: 0.45; } /* a nap betűjele olvasható marad (AA) */
 .wk-sentence { font-size: 15px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
 .wk-section { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
 .wk-section .home-section-title { margin-bottom: 2px; }

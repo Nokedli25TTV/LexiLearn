@@ -17,7 +17,7 @@ colors:
   paper-border: "#e4ddd0"
   ink-text: "#1a1a2e"
   ink-text-2: "#5a5470"
-  ink-text-3: "#9e99b0"
+  ink-text-3: "#6c667f"
   night-bg: "#0e1311"
   night-surface: "#171c1a"
   night-surface-2: "#202724"
@@ -191,12 +191,14 @@ Visszafogott stratégia (tört semlegesek + egy élénk cselekvésszín), amit a
 - **Éjszakai szegély** (#2d3531): 1px elválasztók, pillák kerete.
 - **Holdfény szöveg** (#e5ebe8), **Köd** (#acb3af), **Pala** (#7a837e): elsődleges, másodlagos, harmadlagos szöveg; a Pala a háttéren 4,8:1.
 - **Papír** (#f7f5f0), **Tiszta lap** (#ffffff), **Pergamen** (#f0ede6), **Pergamen szegély** (#e4ddd0): világos téma rétegei.
-- **Tinta** (#1a1a2e), **Szilva szürke** (#5a5470), **Lila köd** (#9e99b0): világos téma szövegei.
+- **Tinta** (#1a1a2e), **Szilva szürke** (#5a5470), **Lila köd** (#6c667f / oklch(0.525 0.039 296)): világos téma szövegei. A Lila köd a harmadlagos szöveg (feliratok, tengelycímkék, darabszámok, placeholder), egy fokkal világosabb a Szilva szürkénél, és minden világos felületen eléri az AA-t: Tiszta lap 5,5:1, Papír 5,0:1, Pergamen 4,7:1, kijelölt sor (Erdő-köd) 4,6:1. V13.14-ig #9e99b0 volt (2,4-2,8:1), ami szövegre kevés.
 
 ### Named Rules
 **The One Ember Rule.** Képernyőnként egy korall elem. Ha kettő lenne, az egyik nem fő cselekvés: szürke vagy zöld lesz belőle.
 
 **The Tinted Night Rule.** Sötét módban tiszta szürke tilos; minden semleges az erdőzöld árnyalat felé tört (chroma 0,008-0,012, hue 165).
+
+**The Every Surface Rule.** Egy szövegszín akkor felel meg, ha minden felületen, amin megjelenik (háttér, felület, felület 2, kijelölt sor), eléri a 4,5:1-et, nem csak a háttéren. Áttetszőség (opacity) szövegen csak úgy maradhat, hogy az eredmény is eléri; ha valamit halványítani kell, a jel halványul (pötty, ikon), a felirat nem.
 
 ### Adatábrák
 - **Egy vezérszín:** minden ábra az erdőzöld egyetlen árnyalatsorából dolgozik; szivárvány, kategóriaszínek, státuszszínek (piros / sárga) az ábrákon tilosak.
@@ -342,7 +344,7 @@ A tanulás / ismétlés vége képernyők családja, közös komponensekből, eg
 ### Heti összefoglaló (V13.13)
 A Statisztika alképernyője (a navigációban a Statisztika marad kiemelve), vissza gombbal; meglévő komponensekből áll, egyedi kártya nélkül.
 - **Hétváltó:** két kerek nyílgomb között a címke („EZ A HÉT · JAPÁN MÓD”, Label stílus) és a dátumtartomány (22px, 900: „okt. 5–11.”). A jövő felé és az első tanulási hét elé nem lehet lapozni (a gomb 35%-ra halványul).
-- **Napok:** a Kezdőlap heti pöttysora (H … V); a még el nem jött napok 45%-on.
+- **Napok:** a Kezdőlap heti pöttysora (H … V); a még el nem jött napok pöttye 45%-on, a betűjelük teljes erővel (olvasható marad).
 - **Egy mondat:** „7 aktív nap a 7-ből. A pontosság 92%.” (15px, 600), a számok előtt.
 - **Négy szám:** a Statisztika KPI sávja 2×2-ben: Megtanult szó, Válasz és kártya, Pontosság, Fókuszált idő; mindegyik alatt az előző heti eltérés nyíllal (▲ zöld / ▼ semleges). Három válasz alatt a pontosság helyén gondolatjel áll.
 - **Szakaszok:** „N3 felé a héten” (soronként szint, a heti növekmény zölddel, jobbra az állás), „Még bizonytalan” (a héten elrontott, azóta nem javított szavak semleges listája és egy másodlagos „Gyakorlás ezekkel” gomb), „Előtted” (a következő hét ismétlései egy mondatban), „Módonként” és a napi táblázat `<details>`-ben.

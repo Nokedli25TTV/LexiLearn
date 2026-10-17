@@ -339,6 +339,11 @@
         "section": "colors"
       },
       {
+        "name": "The Every Surface Rule",
+        "body": "Egy szövegszín akkor felel meg, ha minden felületen, amin megjelenik (háttér, felület, felület 2, kijelölt sor), eléri a 4,5:1-et, nem csak a háttéren. Áttetszőség (opacity) szövegen csak úgy maradhat, hogy az eredmény is eléri; ha valamit halványítani kell, a jel halványul (pötty, ikon), a felirat nem.",
+        "section": "colors"
+      },
+      {
         "name": "The One Hue Data Rule",
         "body": "Egy ábra, egy szín. Ha valamit ki kell emelni, világosság vagy vastagság, nem új szín.",
         "section": "colors"
