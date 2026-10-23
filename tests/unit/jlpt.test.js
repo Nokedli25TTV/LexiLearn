@@ -57,6 +57,14 @@ describe('sáv állapota', () => {
     expect(isLearnedWord(ready)).toBe(true);
     expect(markPracticeLearned(ready, '2026-10-01')).toBe(false);
   });
+  it('a napi tanulásból ismétlésbe (SRS) került szó a gyakorlási sorozattól függetlenül megtanult', () => {
+    const srsWord = w('N5', { learnedAt: '2026-09-01', totalCorrect: 0, totalWrong: 3, streak: 0,
+      srs: { due: '2026-09-30', s: 4, d: 6, last: '2026-09-26', reps: 3, lapses: 1 } });
+    expect(isLearnedWord(srsWord)).toBe(true);
+    expect(markPracticeLearned(srsWord, TODAY)).toBe(false); // nem kap külön gyakorlási dátumot
+    expect(backfillPracticeLearned([srsWord])).toBe(0);
+    expect(srsWord.stats.practiceLearnedAt).toBeUndefined();
+  });
   it('a régi szabállyal (összesen 5 helyes) megtanult szó az átálláskor dátum nélkül megmarad', () => {
     const legacy = w('N5', { totalCorrect: 7, totalWrong: 2, streak: 1, lastAttempt: new Date(2026, 8, 29).getTime() });
     const fresh = w('N5', { totalCorrect: 4, streak: 4 });
