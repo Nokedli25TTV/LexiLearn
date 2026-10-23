@@ -7,6 +7,7 @@ import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, escRegex, shuffle } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests, updateQuestProgress } from '../features/quests.js';
 import { getPracticeOptions } from '../library/dock.js';
+import { statusFilter } from '../library/filters.js';
 import { closeLibraryOverlays } from '../library/menus.js';
 import { markPracticeLearned } from '../goal/jlpt.js';
 import { initFlashcard3DSwipe, resetFlashcardState } from './flashcard.js';
@@ -25,8 +26,10 @@ let eyeState = 0;
 
 // Az ötödik helyes szabad gyakorlóválasznál a szó belép a JLPT-haladásba.
 // SRS-ismétlést csak a napi, Dekiru-sorrendű tanulás hoz létre.
+// Ha a „Még nem tanult” szűrővel jelölted ki a szavakat, a megtanult szó kikerül a
+// kijelölésből is (a listából már eltűnik), így a dokk számlálója vele együtt csökken.
 function registerPracticeMastery(word, isCorrect) {
-  if (isCorrect) markPracticeLearned(word);
+  if (isCorrect && markPracticeLearned(word) && statusFilter() === 'new') state.selectedIds.delete(word.id);
 }
 
 function startPractice() {
