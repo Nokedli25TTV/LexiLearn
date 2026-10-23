@@ -25,6 +25,12 @@ function seedWordStats(words, today) {
   });
 }
 
+// A régi formátumú (összesítve 5 helyes) statisztikák betöltéskori átállása (V13.17), ha a kód ismeri
+const seedLegacyWordStats = (api, words, today) => {
+  seedWordStats(words, today);
+  if (api.backfillPracticeLearned) api.backfillPracticeLearned(words);
+};
+
 function seedGlobalStats(gs) {
   gs.studyDays = {};
   ['2026-09-29', '2026-09-28', '2026-09-27', '2026-09-25', '2026-09-20', '2026-08-15'].forEach(k => { gs.studyDays[k] = true; });
@@ -82,7 +88,7 @@ export async function capture(api, win, reseed) {
   api.setMode('japanese');
   const ja = appData.japanese;
   const today = api.todayKey();
-  seedWordStats(ja.words, today);
+  seedLegacyWordStats(api, ja.words, today);
   seedGlobalStats(ja.globalStats);
   out.basics.streak = api.calcStreak();
   out.basics.week = api.getWeekDays();
@@ -213,7 +219,7 @@ export async function capture(api, win, reseed) {
   for (const mode of ['english', 'kanji']) {
     api.setMode(mode);
     const st = appData[mode];
-    seedWordStats(st.words, today);
+    seedLegacyWordStats(api, st.words, today);
     api.showScreen('home');
     out[mode] = {
       pool: api.getNewWordPool().length,

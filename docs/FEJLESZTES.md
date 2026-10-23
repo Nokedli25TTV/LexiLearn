@@ -93,7 +93,7 @@ A stats-szal együtt mentődik és szinkronizálódik.
   Az N5-N3 szintű szavak együtt számítanak.
 - **Megtanult:** elkezdett szó. **Rögzült:** az ismétlési köz (a stabilitásból, `intervalFor(s)`) legalább 21 nap;
   ugyanez a definíció a Statisztika érettség-sávjában és KPI-jában.
-- **Mérföldkövek:** a napi tanulásban sikerült, illetve szabad gyakorlásban legalább ötször helyesen megválaszolt szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
+- **Mérföldkövek:** a napi tanulásban sikerült, illetve szabad gyakorlásban ötször egymás után helyesen megválaszolt szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
 - **Célidőpont:** `appData.japanese.globalStats.jlptGoal` (szinkronizált), alapból 2027-07-04.
 
 ## Kandzsi vonássorrend (KanjiVG)

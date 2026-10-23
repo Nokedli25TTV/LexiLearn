@@ -54,7 +54,7 @@ describe('heti összefoglaló: számok', () => {
       word('mult-het-2', { learnedAt: '2026-09-23' }, { diff: 'N4' }),
       word('gyakorlasbol', { totalCorrect: 5, practiceLearnedAt: '2026-09-23' }),
       word('e-heten', { learnedAt: '2026-09-28' }),
-      word('regi-datum-nelkul', { totalCorrect: 9 }),
+      word('regi-datum-nelkul', { totalCorrect: 9, practiceLearnedLegacy: true }),
       word('n1-szo', { learnedAt: '2026-09-28' }, { diff: 'N1' }),
       word('uj', {})
     ];

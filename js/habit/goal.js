@@ -7,7 +7,7 @@ import { isLearnedWord } from '../goal/jlpt.js';
 
 /* ══════════════════════════════════════════════════════
    V13: NAPI SZOKÁS MOTOR – új szavak, napi cél, mai ismétlés
-   - Egy szó "új", ha a napi tanulásban még nem sikerült és nincs 5 helyes gyakorlóválasza.
+   - Egy szó "új", ha a napi tanulásban még nem sikerült és gyakorlásban sem válaszoltál rá 5-ször egymás után helyesen.
    - Tanuláskor ("Tudom" / jobbra húzás) a szó stats.learnedAt = mai nap (helyi dátum).
      A stats objektumban van, így a felhő szinkron módosítás nélkül viszi.
    - A napi cél módonként állítható (globalStats.dailyGoal, szinkronizált).

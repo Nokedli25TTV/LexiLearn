@@ -63,7 +63,7 @@ describe('konzisztencia hőtérkép fokozatai', () => {
 describe('tudás-érettség (ismétlési köz szerint)', () => {
   it('ismerkedés < 7 nap · gyakorlás alatt 7-20 nap · rögzült 21+ nap · még nem kezdett', () => {
     // A köz a stabilitásból jön (90%-os megtartásnál köz = stabilitás), nem a due - last különbségből
-    const srs = s => ({ totalCorrect: 5, srs: { last: '2026-08-01', due: '2026-12-01', s, d: 5, reps: 2, lapses: 0 } });
+    const srs = s => ({ totalCorrect: 5, practiceLearnedAt: '2026-08-01', srs: { last: '2026-08-01', due: '2026-12-01', s, d: 5, reps: 2, lapses: 0 } });
     appData.japanese.words = [
       word('uj'),                                    // még nem kezdett
       word('tanult', {}, { learnedAt: '2026-09-29' }), // még nincs ütemezve
@@ -97,11 +97,13 @@ describe('napi index (napló + visszamenőleges becslés)', () => {
 });
 
 describe('új szavak és napi napló', () => {
-  it('isNewWord: a napi tanulás vagy 5 helyes gyakorlóválasz után már nem új', () => {
+  it('isNewWord: a napi tanulás vagy 5 egymás utáni helyes gyakorlóválasz után már nem új', () => {
     expect(isNewWord(word('x'))).toBe(true);
     expect(isNewWord(word('x', {}, { learnedAt: '2026-09-01' }))).toBe(false);
     expect(isNewWord(word('x', {}, { totalWrong: 8, totalCorrect: 4 }))).toBe(true);
-    expect(isNewWord(word('x', {}, { totalCorrect: 5 }))).toBe(false);
+    expect(isNewWord(word('x', {}, { totalCorrect: 9, totalWrong: 1, streak: 4 }))).toBe(true);
+    expect(isNewWord(word('x', {}, { totalCorrect: 5, streak: 5, practiceLearnedAt: '2026-09-20' }))).toBe(false);
+    expect(isNewWord(word('x', {}, { totalCorrect: 7, practiceLearnedLegacy: true }))).toBe(false);
   });
   it('a napi japán szavak csak a Dekiru leckéiből, szűrőktől függetlenül és leckesorban jönnek', () => {
     appData.japanese.words = [
@@ -110,7 +112,7 @@ describe('új szavak és napi napló', () => {
       word('l1-b', { source: 'dekiru', lesson: [1] }),
       word('l2-b', { source: 'dekiru', lesson: [2] }),
       word('nem-dekiru', {}),
-      word('mar-megy', { source: 'dekiru', lesson: [1] }, { totalCorrect: 5 })
+      word('mar-megy', { source: 'dekiru', lesson: [1] }, { totalCorrect: 5, practiceLearnedAt: '2026-09-20' })
     ];
     appData.japanese.filters.lesson = '2';
     expect(getNewWordPool().map(w => w.id)).toEqual(['l1-a', 'l1-b', 'l2-a', 'l2-b']);
@@ -189,7 +191,7 @@ describe('több lecke egyszerre és az állapot szűrő', () => {
       word('l1-uj', { lesson: [1] }),
       word('l1-tanult', { lesson: [1] }, { learnedAt: '2026-09-20' }),
       word('l2-uj', { lesson: [2] }, { totalCorrect: 4 }),
-      word('l2-gyakorolt', { lesson: [2] }, { totalCorrect: 5 }),
+      word('l2-gyakorolt', { lesson: [2] }, { totalCorrect: 5, practiceLearnedAt: '2026-09-20' }),
       word('l3-uj', { lesson: [3] }),
       word('lecke-nelkul', {})
     ];
@@ -241,7 +243,7 @@ describe('több lecke egyszerre és az állapot szűrő', () => {
     expect(ids()).toEqual(['l1-uj', 'l2-uj']);
     const html = statusMenuHtml();
     expect(html).toContain('Még nem tanult');
-    expect(html).toContain('összesen 5 helyes válaszod');
+    expect(html).toContain('5-ször egymás után helyesen válaszoltál');
   });
 
   it('a Lecke pilla felirata összefoglalja a kijelölést', () => {

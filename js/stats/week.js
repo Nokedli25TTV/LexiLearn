@@ -271,7 +271,7 @@ function renderWeekScreen() {
     ${daysHtml(cur)}
     <p class="wk-sentence">${weekSentence(cur, isCurrent)}</p>
     <section class="kpi-strip wk-kpis" aria-label="A hét számai">${kpisHtml(cur, prev, unit)}</section>
-    ${cur.fromPractice > 0 ? `<p class="wk-note">A megtanultból ${fmtNum(cur.fromPractice)} szabad gyakorlásból jött (5 helyes válasz).</p>` : ''}
+    ${cur.fromPractice > 0 ? `<p class="wk-note">A megtanultból ${fmtNum(cur.fromPractice)} szabad gyakorlásból jött (5 helyes válasz egymás után).</p>` : ''}
     ${jlptHtml(cur.startKey, cur.endKey)}
     ${unsureHtml(unsureWords(state.words, cur.startKey, cur.endKey))}
     ${_weekOffset >= -1 ? aheadHtml() : ''}

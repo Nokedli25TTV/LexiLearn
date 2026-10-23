@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.16)
+// LexiLearn – belépési pont (V13.17)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -142,7 +142,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.16 indítása...");
+console.log("[LexiLearn] V13.17 indítása...");
 initV6Features();
 initLibraryEvents();
 

@@ -174,7 +174,7 @@ function statusMenuHtml() {
   const rows = STATUS_OPTIONS.map(([v]) => menuOption({
     selected: status === v, label: labels[v], meta: counts[v].toLocaleString('hu-HU'), action: `setStatusFilter('${v}')`
   })).join('');
-  const note = `<p class="menu-note">Megtanultnak számít, ami a napi tanulásban már ment, vagy amire gyakorlásban összesen ${PRACTICE_LEARNED_CORRECT} helyes válaszod van.</p>`;
+  const note = `<p class="menu-note">Megtanultnak számít, ami a napi tanulásban már ment, vagy amire gyakorlásban ${PRACTICE_LEARNED_CORRECT}-ször egymás után helyesen válaszoltál. Egy hiba újraindítja a számolást.</p>`;
   return menuShell('Állapot', '', `<div role="listbox" aria-label="Állapot">${rows}</div>${note}`);
 }
 

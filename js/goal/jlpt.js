@@ -4,7 +4,7 @@
 // Viszonyítás: a JLPT-hez általánosan megadott, halmozott célszámok (N3-hoz összesen kb. 3750 szó
 // és 650 kandzsi). Az N5-N3 szintű szavak együtt számítanak, így a vártnál több N5 szó is előrevisz.
 // Egy szó "megtanult", ha a napi tanulásban már sikerült, vagy szabad gyakorlásban legalább
-// ötször helyesen válaszoltál rá. "Rögzült", ha az ismétlési köze legalább 21 nap.
+// ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást). "Rögzült", ha az ismétlési köze legalább 21 nap.
 import { addDays, dateKey, keyToDate } from '../core/dates.js';
 import { intervalFor } from '../srs/fsrs.js';
 
@@ -33,18 +33,38 @@ function buildMilestones(kind) {
   return out;
 }
 
-function isLearnedWord(w) {
+// A gyakorlásból megtanult szó a küszöb átlépésekor practiceLearnedAt dátumot kap (markPracticeLearned),
+// így egy későbbi hiba, ami a sorozatot nullázza, már nem veszi ki a megtanultak közül.
+// practiceLearnedLegacy: a régi (összesítve 5 helyes) szabállyal, dátum nélkül megtanult szó.
+function isPracticeLearned(w) {
   const s = w.stats || {};
-  return !!s.learnedAt || (s.totalCorrect || 0) >= PRACTICE_LEARNED_CORRECT;
+  return !!s.practiceLearnedAt || !!s.practiceLearnedLegacy;
+}
+
+function isLearnedWord(w) {
+  return !!(w.stats && w.stats.learnedAt) || isPracticeLearned(w);
 }
 
 // A küszöb átlépésének dátuma kell a 14 napos tempóhoz és a mérföldkövekhez.
-// Régi adatoknál, ahol ez még nincs eltárolva, a learnedDate a lastAttempt dátumára esik vissza.
 function markPracticeLearned(w, today = dateKey(new Date())) {
   const s = w.stats || (w.stats = {});
-  if (s.learnedAt || (s.totalCorrect || 0) < PRACTICE_LEARNED_CORRECT || s.practiceLearnedAt) return false;
+  if (s.learnedAt || isPracticeLearned(w) || (s.streak || 0) < PRACTICE_LEARNED_CORRECT) return false;
   s.practiceLearnedAt = today;
   return true;
+}
+
+// V13.17 előtt az összesen 5 helyes válasz is elég volt. Az így megtanult, de dátum nélkül maradt
+// szavak egyszer jelzőt kapnak, hogy az egymás utáni szabály bevezetésekor se essenek ki a
+// megtanultak közül. Dátumot nem kapnak: a heti összesítőben továbbra sem számítanak újnak.
+function backfillPracticeLearned(words) {
+  let marked = 0;
+  words.forEach(w => {
+    const s = w.stats;
+    if (!s || s.learnedAt || isPracticeLearned(w) || (s.totalCorrect || 0) < PRACTICE_LEARNED_CORRECT) return;
+    s.practiceLearnedLegacy = true;
+    marked++;
+  });
+  return marked;
 }
 
 // A kártya saját ismétlési köze (a stabilitásból). Nem a due - last különbség: a beosztás és a
@@ -133,6 +153,6 @@ function getGoal(globalStats) {
   return { ...DEFAULT_GOAL, ...(g || {}) };
 }
 
-export { DEFAULT_GOAL, LEVELS, MATURE_DAYS, PRACTICE_LEARNED_CORRECT, STEPS, TARGETS, buildMilestones,
-  crossedMilestones, getGoal, isLearnedWord, isMatureWord, learnedDate, markPracticeLearned, paceFor,
+export { DEFAULT_GOAL, LEVELS, MATURE_DAYS, PRACTICE_LEARNED_CORRECT, STEPS, TARGETS, backfillPracticeLearned, buildMilestones,
+  crossedMilestones, getGoal, isLearnedWord, isMatureWord, isPracticeLearned, learnedDate, markPracticeLearned, paceFor,
   srsInterval, trackProgress };

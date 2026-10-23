@@ -6,6 +6,7 @@ import { renderHome } from '../habit/home.js';
 import { renderDashboard } from '../library/list.js';
 import { setMode } from '../ui/screens.js';
 import { clearPracticeOnlySchedules, seedMissing } from '../srs/schedule.js';
+import { backfillPracticeLearned } from '../goal/jlpt.js';
 import { applyTheme } from '../ui/theme.js';
 
 /* ══════════════════════════════════════════════════════
@@ -293,14 +294,23 @@ async function renderStorageInfo() {
 // V13.5: a már tanult, de még ütemezés nélküli szavak beosztása (az SRS bevezetésekor egyszer,
 // utána csak ha pl. régi eszközről szinkronizált szó érkezik)
 function seedSrsAll() {
-  let seeded = 0, cleared = 0;
+  let seeded = 0, cleared = 0, backfilled = 0;
   ['english', 'japanese', 'kanji'].forEach(lang => {
+    // V13.17: egyszeri átállás az egymás utáni 5 helyes válasz szabályára (a régi, összesítve
+    // megtanult szavak megmaradnak). A jelző a statisztikával együtt a felhőbe is szinkronizálódik.
+    const gs = appData[lang].globalStats;
+    if (gs && !gs.practiceStreakRule) {
+      backfilled += backfillPracticeLearned(appData[lang].words);
+      gs.practiceStreakRule = true;
+    }
     cleared += clearPracticeOnlySchedules(appData[lang].words);
     seeded += seedMissing(appData[lang].words);
   });
   if (cleared > 0) console.log(`[LexiLearn] Ismétlési sor javítása: ${cleared} csak gyakorlásból bekerült kártya eltávolítva.`);
   if (seeded > 0) console.log(`[LexiLearn] Ismétlésütemezés: ${seeded} napi tanulásból származó szó beosztva.`);
-  if (cleared > 0 || seeded > 0) saveWords();
+  if (backfilled > 0) console.log(`[LexiLearn] Átállás: ${backfilled} gyakorlásból már megtanult szó megtartva.`);
+  if (cleared > 0 || seeded > 0 || backfilled > 0) saveWords();
+  if (backfilled > 0) saveStats();
   return seeded;
 }
 
