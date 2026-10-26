@@ -8,7 +8,8 @@ import { escHtml, escRegex, shuffle } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests, updateQuestProgress } from '../features/quests.js';
 import { getPracticeOptions } from '../library/dock.js';
 import { statusFilter } from '../library/filters.js';
-import { closeLibraryOverlays } from '../library/menus.js';
+import { UI_ICONS, closeLibraryOverlays } from '../library/menus.js';
+import { hasLessonFocus, lessonFocusTitle } from '../features/bookmarks.js';
 import { markPracticeLearned } from '../goal/jlpt.js';
 import { initFlashcard3DSwipe, resetFlashcardState } from './flashcard.js';
 import { hasStrokeData } from '../features/strokes.js';
@@ -329,9 +330,16 @@ function showQuestion() {
       </button>
     `;
 
+    // V13.17: zászló – a nehéz szó a saját leckéjének fókusz listájába kerül
+    const focusTitle = hasLessonFocus() ? escHtml(lessonFocusTitle(word)) : '';
+    const lessonFocusBtnHtml = focusTitle ? `
+      <button class="bookmark-btn lesson-focus-btn ${word.lessonFocus ? 'is-on' : ''}" id="lesson-focus-btn-${word.id}"
+              onclick="event.stopPropagation(); toggleLessonFocus('${word.id}')"
+              aria-pressed="${!!word.lessonFocus}" aria-label="${focusTitle}" title="${focusTitle}">${UI_ICONS.flag}</button>` : '';
+
     qArea.innerHTML = `
       <div class="q-card" id="q-card">
-        ${bookmarkBtnHtml}
+        ${bookmarkBtnHtml}${lessonFocusBtnHtml}
         <div class="q-hint" style="display:flex; justify-content:center; align-items:center; margin-bottom:14px;">
           <span style="letter-spacing:0.1em; color:var(--text-3); font-weight:800; font-size:11px; text-transform:uppercase;">${hintText}</span>
           <span style="margin: 0 8px; color: var(--border);">|</span>

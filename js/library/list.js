@@ -4,7 +4,7 @@ import { JAPANESE_SENTENCES, english_sentences2 } from '../core/data.js';
 import { appData, currentMode, diffOrder, state } from '../core/state.js';
 import { saveSettings } from '../core/storage.js';
 import { escHtml, escRegex } from '../core/util.js';
-import { toggleBookmark } from '../features/bookmarks.js';
+import { hasLessonFocus, lessonFocusTitle, toggleBookmark, toggleLessonFocus } from '../features/bookmarks.js';
 import { renderPracticeDock } from './dock.js';
 import { hasActiveFilters, wordMatchesFilters } from './filters.js';
 import { UI_ICONS, _openMenu, renderFilterBar, renderFilterMenu } from './menus.js';
@@ -116,6 +116,7 @@ function wordRowHtml(w) {
   if (currentMode === 'japanese' && w.romaji) sub = `${w.hu} · ${w.romaji}`;
   if (currentMode === 'kanji') sub = `${w.hu} · ${w.onyomi || '–'} / ${w.kunyomi || '–'}`;
   const starLabel = w.bookmarked ? 'Eltávolítás a Fókusz Listából' : 'Hozzáadás a Fókusz Listához';
+  const flagLabel = hasLessonFocus() ? lessonFocusTitle(w) : '';
   return `
     <div class="word-row ${selected ? 'is-selected' : ''}" data-id="${escHtml(w.id)}">
       <button class="word-toggle" role="checkbox" aria-checked="${selected}">
@@ -130,6 +131,7 @@ function wordRowHtml(w) {
           <span class="diff-pill d${escHtml(w.diff)}">${escHtml(w.diff)}</span>
         </span>
       </button>
+      ${flagLabel ? `<button class="word-flag ${w.lessonFocus ? 'is-on' : ''}" aria-pressed="${!!w.lessonFocus}" aria-label="${escHtml(flagLabel)}" title="${escHtml(flagLabel)}">${UI_ICONS.flag}</button>` : ''}
       <button class="word-star ${w.bookmarked ? 'is-on' : ''}" aria-pressed="${!!w.bookmarked}" aria-label="${starLabel}" title="${starLabel}">${UI_ICONS.star}</button>
     </div>`;
 }
@@ -257,6 +259,7 @@ function initLibraryEvents() {
       const row = e.target.closest('.word-row');
       if (!row) return;
       if (e.target.closest('.word-star')) toggleBookmark(row.dataset.id);
+      else if (e.target.closest('.word-flag')) toggleLessonFocus(row.dataset.id);
       else if (e.target.closest('.word-toggle')) toggleWordSelection(row.dataset.id);
     });
   }

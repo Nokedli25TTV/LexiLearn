@@ -2,10 +2,10 @@
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { currentMode, diffOrder, state } from '../core/state.js';
 import { escHtml, jsArg } from '../core/util.js';
-import { getBookmarkedWords } from '../features/bookmarks.js';
+import { getBookmarkedWords, hasLessonFocus } from '../features/bookmarks.js';
 import { PRACTICE_LEARNED_CORRECT } from '../goal/jlpt.js';
 import { _dockOpen, toggleDockSettings } from './dock.js';
-import { SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonOptions, getStatusCounts, hasActiveFilters, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordMatchesFilters } from './filters.js';
+import { SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonFocusGroups, getLessonOptions, getStatusCounts, hasActiveFilters, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordMatchesFilters } from './filters.js';
 import { applyFilters } from './list.js';
 
 /* ── Ikonok és segédek a menükhöz ── */
@@ -15,6 +15,7 @@ const UI_ICONS = {
   plus:    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
   trash:   '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>',
   star:    '<svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  flag:    '<svg width="19" height="19" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4.5L17 13H5z"/></svg>',
   search:  '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
 };
 
@@ -267,6 +268,20 @@ function listMenuHtml() {
       extra: bmCount > 0 ? menuIconBtn('clearAllBookmarks()', 'Összes csillag törlése', UI_ICONS.trash) : ''
     })
   ];
+  // V13.17: leckénkénti fókusz listák (a gyakorlókártya zászlójával jelölt nehéz szavak)
+  let lessonNote = '';
+  if (hasLessonFocus()) {
+    const groups = getLessonFocusGroups();
+    if (groups.length > 0) {
+      rows.push('<div class="menu-section-label">Leckék fókusz listái</div>');
+      groups.forEach(g => rows.push(menuOption({
+        selected: f.list === g.id, label: escHtml(g.label), meta: g.count, action: `setListFilter(${jsArg(g.id)})`,
+        extra: menuIconBtn(`clearLessonFocus(${jsArg(g.key)})`, `${g.label} fókusz listájának kiürítése`, UI_ICONS.trash)
+      })));
+    } else {
+      lessonNote = '<p class="menu-note">Gyakorlás közben a kártya zászlójával egy nehéz szót a saját leckéje fókusz listájába tehetsz, és itt leckénként külön gyakorolhatod.</p>';
+    }
+  }
   (state.playlists || []).forEach(p => {
     const fromFile = p.source === 'data_js';
     const extra = fromFile ? '' :
@@ -283,7 +298,7 @@ function listMenuHtml() {
         placeholder="${sel > 0 ? `${sel} kijelölt szó mentése új listaként` : 'Jelölj ki szavakat egy új listához'}" ${sel > 0 ? '' : 'disabled'}>
       <button type="submit" class="menu-done" ${sel > 0 ? '' : 'disabled'}>Mentés</button>
     </form>`;
-  return menuShell('Lista', 'Szűrés listára', `<div role="listbox" aria-label="Lista">${rows.join('')}</div>`, foot);
+  return menuShell('Lista', 'Szűrés listára', `<div role="listbox" aria-label="Lista">${rows.join('')}</div>${lessonNote}`, foot);
 }
 
 function sortMenuHtml() {

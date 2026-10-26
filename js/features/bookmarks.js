@@ -1,7 +1,8 @@
 // LexiLearn – features/bookmarks.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
-import { state } from '../core/state.js';
+import { currentMode, state } from '../core/state.js';
 import { saveWords } from '../core/storage.js';
+import { LESSON_FOCUS_PREFIX, lessonFocusKeys, lessonFocusLabel } from '../library/filters.js';
 import { applyFilters } from '../library/list.js';
 import { refreshLibraryChrome } from '../library/menus.js';
 import { showToast } from '../ui/toast.js';
@@ -57,4 +58,56 @@ function clearAllBookmarks() {
   showToast('Fókusz Lista kiürítve.');
 }
 
-export { clearAllBookmarks, getBookmarkedWords, toggleBookmark };
+/* ══════════════════════════════════════════════════════
+   V13.17: LECKE FÓKUSZ LISTA – a gyakorlókártya zászlójával
+   a nehéz szó a saját leckéjének fókusz listájába kerül
+   (state.words[].lessonFocus = true), a csillagos Fókusz Listától külön.
+══════════════════════════════════════════════════════ */
+const hasLessonFocus = () => currentMode !== 'english';
+
+function lessonFocusTitle(w) {
+  const where = lessonFocusKeys(w).map(lessonFocusLabel).join(', ');
+  return w.lessonFocus ? `Eltávolítás a lecke fókusz listájából (${where})` : `Hozzáadás a lecke fókusz listájához (${where})`;
+}
+
+function toggleLessonFocus(wordId) {
+  const w = state.words.find(x => x.id === wordId);
+  if (!w || !hasLessonFocus()) return;
+  w.lessonFocus = !w.lessonFocus;
+  saveWords();
+
+  const title = lessonFocusTitle(w);
+  const btn = document.getElementById('lesson-focus-btn-' + wordId);
+  if (btn) {
+    btn.classList.toggle('is-on', w.lessonFocus);
+    btn.setAttribute('aria-pressed', w.lessonFocus ? 'true' : 'false');
+    btn.setAttribute('aria-label', title);
+    btn.setAttribute('title', title);
+  }
+  const flag = document.querySelector(`.word-row[data-id="${CSS.escape(wordId)}"] .word-flag`);
+  if (flag) {
+    flag.classList.toggle('is-on', w.lessonFocus);
+    flag.setAttribute('aria-pressed', w.lessonFocus ? 'true' : 'false');
+    flag.setAttribute('aria-label', title);
+    flag.setAttribute('title', title);
+  }
+
+  refreshLibraryChrome();
+  const where = lessonFocusKeys(w).map(lessonFocusLabel).join(', ');
+  showToast(w.lessonFocus ? `Hozzáadva: ${where} fókusz listája` : `Eltávolítva: ${where} fókusz listája`);
+}
+
+function clearLessonFocus(key) {
+  const words = state.words.filter(w => w.lessonFocus && lessonFocusKeys(w).includes(key));
+  if (words.length === 0) return;
+  const label = lessonFocusLabel(key);
+  if (!confirm(`Biztosan kiüríted a(z) ${label} fókusz listáját (${words.length} szó)?`)) return;
+  words.forEach(w => { w.lessonFocus = false; });
+  saveWords();
+  if (state.filters.list === LESSON_FOCUS_PREFIX + key) state.filters.list = 'all';
+  applyFilters();
+  refreshLibraryChrome();
+  showToast(`${label} fókusz listája kiürítve.`);
+}
+
+export { clearAllBookmarks, clearLessonFocus, getBookmarkedWords, hasLessonFocus, lessonFocusTitle, toggleBookmark, toggleLessonFocus };

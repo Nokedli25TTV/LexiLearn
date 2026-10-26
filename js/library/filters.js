@@ -23,6 +23,22 @@ const wordLessons = w => (Array.isArray(w.lesson) ? w.lesson : [w.lesson])
   .filter(value => value !== undefined && value !== null && value !== '')
   .map(String);
 
+// V13.17: Lecke fókusz lista – a gyakorlásban nehéznek jelölt szavak (w.lessonFocus) a saját
+// leckéjük szerint csoportosítva, a Fókusz Listától (csillag) külön. Lista-azonosító: '__lesson:3';
+// a lecke nélküli szavak csoportja '__lesson:'. Angol módban nincs lecke, ott nem jelenik meg.
+const LESSON_FOCUS_PREFIX = '__lesson:';
+const isLessonFocusList = id => typeof id === 'string' && id.startsWith(LESSON_FOCUS_PREFIX);
+const lessonFocusKeys = w => { const l = wordLessons(w); return l.length ? l : ['']; };
+const lessonFocusLabel = key => (key === '' ? 'Lecke nélkül' : lessonLabel(key));
+
+function getLessonFocusGroups(words = state.words) {
+  const counts = new Map();
+  words.forEach(w => { if (w.lessonFocus) lessonFocusKeys(w).forEach(k => counts.set(k, (counts.get(k) || 0) + 1)); });
+  return [...counts.entries()]
+    .map(([key, count]) => ({ key, id: LESSON_FOCUS_PREFIX + key, label: lessonFocusLabel(key), count }))
+    .sort((a, b) => (a.key === '') - (b.key === '') || (Number(a.key) - Number(b.key)) || a.key.localeCompare(b.key, 'hu'));
+}
+
 // A lecke-szűrő több leckét is tartalmazhat (tömb). Régi mentésben egyetlen érték ('3') is állhat ott.
 function selectedLessons(f = state.filters) {
   if (Array.isArray(f.lesson)) return f.lesson.map(String);
@@ -69,6 +85,8 @@ function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false, ignor
   if (f.list && f.list !== 'all') {
     if (f.list === '__focus') {
       if (!w.bookmarked) return false;
+    } else if (isLessonFocusList(f.list)) {
+      if (!w.lessonFocus || !lessonFocusKeys(w).includes(f.list.slice(LESSON_FOCUS_PREFIX.length))) return false;
     } else {
       const pl = state.playlists ? state.playlists.find(p => p.id === f.list) : null;
       if (!pl || !pl.wordIds.includes(w.id)) return false;
@@ -146,7 +164,8 @@ function validateDayFilter() {
 function listLabel(id) {
   if (!id || id === 'all') return 'Lista';
   if (id === '__focus') return 'Fókusz Lista';
+  if (isLessonFocusList(id)) return `${lessonFocusLabel(id.slice(LESSON_FOCUS_PREFIX.length))} · fókusz`;
   return (state.playlists || []).find(p => p.id === id)?.name || 'Lista';
 }
 
-export { SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonOptions, getStatusCounts, getTravelPlan, hasActiveFilters, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordLessons, wordMatchesFilters };
+export { LESSON_FOCUS_PREFIX, SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonFocusGroups, getLessonOptions, getStatusCounts, getTravelPlan, hasActiveFilters, isLessonFocusList, lessonFocusKeys, lessonFocusLabel, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordLessons, wordMatchesFilters };

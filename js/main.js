@@ -8,7 +8,7 @@ import './core/dates.js';
 import './core/state.js';
 import { loadState, savePlaylists, saveStats, saveWords } from './core/storage.js';
 import { escHtml, jsArg } from './core/util.js';
-import { clearAllBookmarks, toggleBookmark } from './features/bookmarks.js';
+import { clearAllBookmarks, clearLessonFocus, toggleBookmark, toggleLessonFocus } from './features/bookmarks.js';
 import { doAddWord, doImport, exportData, importData, openAddModal, openImportModal } from './features/import-export.js';
 import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
 import { setDailyGoal } from './features/profile.js';
@@ -47,6 +47,7 @@ Object.assign(window, {
   checkHardcoreAnswer,
   checkSentenceAnswer,
   clearAllBookmarks,
+  clearLessonFocus,
   clearDiff,
   clearFilters,
   clearLessons,
@@ -125,6 +126,7 @@ Object.assign(window, {
   switchViewTab,
   suspendReviewWord,
   toggleBookmark,
+  toggleLessonFocus,
   toggleDiff,
   toggleDockSettings,
   toggleEye,

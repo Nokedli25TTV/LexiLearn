@@ -157,7 +157,7 @@ const MAX_SESSION_HISTORY = 100;
 
 function _isWordModified(w) {
   if (!w) return false;
-  if (w.bookmarked) return true;
+  if (w.bookmarked || w.lessonFocus) return true;
   const s = w.stats || {};
   // V13: a "Tudom"-mal megtanult (még nem kvízelt) szó is módosult → learnedAt a stats-ban utazik
   return (s.totalCorrect > 0) || (s.totalWrong > 0) || (s.streak > 0) || (s.lastAttempt > 0) || !!s.learnedAt;
@@ -194,11 +194,12 @@ function buildCloudSnapshot() {
             en: w.en,
             source: w.source,
             stats: w.stats,
-            bookmarked: !!w.bookmarked
+            bookmarked: !!w.bookmarked,
+            lessonFocus: !!w.lessonFocus
           };
         }
         // Manuális/importált: teljes objektum
-        return { ...w, bookmarked: !!w.bookmarked };
+        return { ...w, bookmarked: !!w.bookmarked, lessonFocus: !!w.lessonFocus };
       });
 
     // ── STATS (globalStats + dailyQuests) ── sessionHistory limit
@@ -254,6 +255,7 @@ function applyCloudSnapshot(snap) {
         // stats + bookmarked mindig átvesszük
         if (cw.stats)      localW.stats = cw.stats;
         if (cw.bookmarked !== undefined) localW.bookmarked = cw.bookmarked;
+        if (cw.lessonFocus !== undefined) localW.lessonFocus = cw.lessonFocus;
         // Ha NEM beépített, a teljes szót átvesszük (felhasználói módosítás)
         if (localW.source !== 'data_js' && localW.source !== 'dekiru') {
           ['en','hu','tags','diff','syn','sentence','romaji','onyomi','kunyomi','lesson']

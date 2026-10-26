@@ -418,6 +418,13 @@ rt {
   background: rgba(244,196,48,0.18);
   color: #f4c430;
 }
+/* V13.17: lecke fókusz zászló a bal felső sarokban, a csillaggal szemben (így a középre zárt
+   fejléc egyik oldalon sem ütközik); terrakotta, hogy ne keveredjen a csillaggal */
+.lesson-focus-btn { right: auto; left: 14px; }
+.lesson-focus-btn svg { fill: none; }
+.lesson-focus-btn:hover { background: var(--accent-dim); color: var(--accent-h); }
+.lesson-focus-btn.is-on { background: var(--accent-dim); color: var(--accent-h); animation: bookmarkPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.lesson-focus-btn.is-on svg { fill: currentColor; }
 @keyframes bookmarkPop {
   0%   { transform: scale(0.6) rotate(-15deg); }
   60%  { transform: scale(1.25) rotate(8deg); }
@@ -2029,7 +2036,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .word-sub { overflow: hidden; font-size: 13px; font-weight: 600; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
 .word-meta { flex: none; display: flex; align-items: center; gap: 8px; }
 .word-stat { font-size: 12px; font-weight: 700; color: var(--text-3); font-variant-numeric: tabular-nums; }
-.word-star {
+.word-star, .word-flag {
   flex: none;
   width: 48px;
   border: none;
@@ -2042,7 +2049,11 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
   -webkit-tap-highlight-color: transparent;
   transition: color 0.15s, opacity 0.15s, transform 160ms var(--ease-out);
 }
-.word-star svg { fill: none; }
+.word-star svg, .word-flag svg { fill: none; }
+.word-flag { width: 44px; }
+.word-flag.is-on { color: var(--accent-h); opacity: 1; }
+.word-flag.is-on svg { fill: currentColor; }
+.word-flag:active { transform: scale(0.82); }
 .word-star.is-on { color: var(--star); opacity: 1; }
 .word-star.is-on svg { fill: currentColor; }
 .word-star:active { transform: scale(0.82); }
