@@ -5,6 +5,7 @@ import { renderStorageInfo, saveStats } from '../core/storage.js';
 import { REVIEW_BATCH_OPTIONS, getDailyGoal, getReviewBatch } from '../habit/goal.js';
 import { canMixWithMusic, isMixWithMusic, setMixWithMusic } from '../practice/tts.js';
 import { renderReminder } from './reminder.js';
+import { toggleViewportDebug } from '../ui/viewport-fix.js';
 import { showToast } from '../ui/toast.js';
 
 /* ── PROFIL ───────────────────────────────────────────── */
@@ -29,7 +30,27 @@ function renderProfile() {
   if (sw) sw.setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false');
   renderMixAudio();
   renderReminder();
+  const ver = document.getElementById('pf-version');
+  if (ver) ver.textContent = `LexiLearn ${APP_VERSION}`;
   renderStorageInfo();
+}
+
+// V13.22: a futó verzió (a main.js ?v= paraméteréből, így nincs külön léptetendő hely)
+const APP_VERSION = (() => {
+  const main = document.querySelector('script[src*="js/main.js"]');
+  const v = main && new URL(main.getAttribute('src'), location.href).searchParams.get('v');
+  return v ? `v${v}` : 'fejlesztői változat';
+})();
+
+// Ötször egymás után a verziószámra koppintva: a képernyő-diagnosztika be/ki (hibakereséshez)
+let _versionTaps = 0, _versionTapTimer = null;
+function tapVersion() {
+  _versionTaps++;
+  clearTimeout(_versionTapTimer);
+  _versionTapTimer = setTimeout(() => { _versionTaps = 0; }, 1500);
+  if (_versionTaps < 5) return;
+  _versionTaps = 0;
+  showToast(toggleViewportDebug() ? 'Képernyő-diagnosztika bekapcsolva' : 'Képernyő-diagnosztika kikapcsolva');
 }
 
 // V13.18: egy ismétlési alkalom mérete (módonként, szinkronizált)
@@ -68,4 +89,4 @@ function setDailyGoal(n) {
   showToast(`Napi cél (${MODE_LABELS[currentMode]}): ${n} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}`);
 }
 
-export { renderMixAudio, renderProfile, setDailyGoal, setReviewBatch, toggleMixAudio };
+export { APP_VERSION, renderMixAudio, renderProfile, setDailyGoal, setReviewBatch, tapVersion, toggleMixAudio };

@@ -7,7 +7,7 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-21';
+const CACHE_NAME = 'lexilearn-v13-22';
 // A vonássorrend-adat (1,7 MB) igény szerint töltődik le, és az app frissítései túlélik.
 // Ha a tools/build-kanjivg.mjs újragenerálja a fájlokat, ezt a nevet kell léptetni.
 const KANJIVG_CACHE = 'lexilearn-kanjivg-1';
@@ -87,7 +87,10 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME).then(cache => {
       const local    = STATIC_ASSETS.filter(u => !u.startsWith('http'));
       const external = STATIC_ASSETS.filter(u =>  u.startsWith('http'));
-      return cache.addAll(local).then(() =>
+      // V13.22: cache: 'reload' – a böngésző HTTP-gyorsítótárát (GitHub Pages: 10 perc) megkerülve, különben
+      // egy friss kiadás után a verziószám nélküli modulok régi példánya kerülhetne az új cache-be,
+      // és a következő verzióig ott is maradna (cache-first)
+      return cache.addAll(local.map(u => new Request(u, { cache: 'reload' }))).then(() =>
         Promise.allSettled(
           external.map(url =>
             cache.add(new Request(url, { mode: 'no-cors' })).catch(() =>

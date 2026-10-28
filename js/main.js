@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.21)
+// LexiLearn – belépési pont (V13.22)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -12,7 +12,7 @@ import { clearAllBookmarks, clearLessonFocus, toggleBookmark, toggleLessonFocus 
 import { openLeeches, practiceLessonHard } from './features/leeches.js';
 import { doAddWord, doImport, exportData, exportSelectedToAnki, importData, openAddModal, openImportModal } from './features/import-export.js';
 import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
-import { setDailyGoal, setReviewBatch, toggleMixAudio } from './features/profile.js';
+import { setDailyGoal, setReviewBatch, tapVersion, toggleMixAudio } from './features/profile.js';
 import { downloadReminder, setReminderTime } from './features/reminder.js';
 import { replayStrokes } from './features/strokes.js';
 import './features/quests.js';
@@ -102,6 +102,7 @@ Object.assign(window, {
   selectNone,
   setDailyGoal,
   setReviewBatch,
+  tapVersion,
   toggleMixAudio,
   downloadReminder,
   setReminderTime,
@@ -159,7 +160,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.21 indítása...");
+console.log("[LexiLearn] V13.22 indítása...");
 initV6Features();
 initViewportFix(); // V13.20: iOS 26 standalone – a fix sávok ne csússzanak el a billentyűzet után
 initLibraryEvents();

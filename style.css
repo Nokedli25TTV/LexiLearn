@@ -1670,6 +1670,12 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .page-title { margin-bottom: 18px; font-size: 28px; font-weight: 900; color: var(--text); }
 .pf-section { padding: 20px 0; border-top: 1px solid var(--border); }
 .pf-section:first-of-type { padding-top: 0; border-top: none; }
+.pf-version { padding: 16px 0 8px; text-align: center; font-size: 12px; font-weight: 700; color: var(--text-3); user-select: none; -webkit-user-select: none; } /* V13.22 */
+.vv-debug {
+  position: fixed; top: calc(var(--safe-t) + 4px); left: 8px; right: 8px; z-index: 900; margin: 0; padding: 8px 10px;
+  border-radius: 10px; background: rgba(0, 0, 0, 0.82); color: #9dffb0; font: 600 11px/1.45 ui-monospace, Menlo, monospace;
+  white-space: pre-wrap; pointer-events: none;
+}
 .pf-title { margin-bottom: 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
 .pf-text { max-width: 60ch; margin-bottom: 12px; font-size: 14px; line-height: 1.5; color: var(--text-2); }
 .pf-text a { color: var(--primary-h); font-weight: 700; text-underline-offset: 2px; }
