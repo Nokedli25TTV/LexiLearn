@@ -1264,6 +1264,10 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .kl-item.is-main { box-shadow: inset 0 0 0 2px var(--primary-h); }
 .kl-item span[lang="ja"] { color: var(--text); }
 .kl-more { align-self: center; font-size: 13px; font-weight: 700; color: var(--text-3); }
+/* V13.26: a már megtanult radikál a kandzsi kártyáján (pipa + zöld árnyalat, nem csak színnel jelezve) */
+.kl-item.is-known { background: var(--primary-dim); }
+.kl-check { align-self: center; flex-shrink: 0; color: var(--primary-h); }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .learn-example {
   width: 100%;
   margin-top: 18px;
@@ -2784,6 +2788,8 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .rp-how .jl-coverage + .jl-coverage { margin-top: 8px; }
 
 /* Tanulás vége: elért mérföldkő (csendes, nem ünnepi) */
+.learn-milestone + .learn-milestone { margin-top: 8px; } /* V13.26: kész lecke + új kandzsik */
+.learn-unlock span[lang="ja"] { font-size: 16px; letter-spacing: 0.08em; }
 .learn-milestone {
   min-height: 40px;
   padding: 8px 16px;

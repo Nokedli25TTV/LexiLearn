@@ -1,9 +1,10 @@
 // LexiLearn – habit/goal.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { todayKey } from '../core/dates.js';
-import { currentMode, diffOrder, state } from '../core/state.js';
+import { appData, currentMode, diffOrder, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { isLearnedWord } from '../goal/jlpt.js';
+import { isKanjiReady, knownRadicals } from '../goal/radical-path.js';
 import { REVIEW_BATCH_SIZE } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
@@ -57,6 +58,14 @@ function getNewWordPool() {
   }
   // V13.24: a radikálok a Radikál-útvonal sorrendjében (a leggyakoribb építőelemek elöl)
   if (currentMode === 'radicals') return pool.sort((a, b) => (a.path || 999) - (b.path || 999) || (order.get(a.id) - order.get(b.id)));
+  // V13.26: ha már tanulsz radikálokat, szintenként előre jönnek a kandzsik, amelyeknek minden radikálját tudod
+  // (a többi utánuk, a szokásos lecke-sorrendben). Radikálok nélkül marad a lecke-sorrend.
+  const known = currentMode === 'kanji' ? knownRadicals(appData.radicals.words || []) : null;
+  if (known && known.size > 0) {
+    const wait = new Map(pool.map(w => [w.id, isKanjiReady(w.en, known) ? 0 : 1]));
+    return pool.sort((a, b) => (diffOrder(a.diff) - diffOrder(b.diff)) || (wait.get(a.id) - wait.get(b.id))
+      || (lessonNum(a) - lessonNum(b)) || (order.get(a.id) - order.get(b.id)));
+  }
   return pool
     .sort((a, b) => (lessonNum(a) - lessonNum(b)) || (diffOrder(a.diff) - diffOrder(b.diff)) || (order.get(a.id) - order.get(b.id)));
 }
@@ -109,8 +118,11 @@ function describePoolSource() {
   const first = getNewWordPool()[0];
   if (currentMode === 'japanese') return first ? `Dekiru ${lessonNum(first)}. lecke · sorrendben` : 'Dekiru leckék';
   if (currentMode === 'radicals') return first ? `Radikál-útvonal ${lessonNum(first)}. lecke · sorrendben` : 'Radikál-útvonal';
-  if (currentMode === 'kanji') return first && Number.isFinite(lessonNum(first))
-    ? `Kanji ${lessonNum(first)}. lecke · sorrendben` : 'Kanji leckék · sorrendben';
+  if (currentMode === 'kanji') {
+    const known = knownRadicals(appData.radicals.words || []);
+    if (first && known.size > 0 && isKanjiReady(first.en, known)) return `Radikálokból kész · ${first.diff}`; // V13.26
+    return first && Number.isFinite(lessonNum(first)) ? `Kanji ${lessonNum(first)}. lecke · sorrendben` : 'Kanji leckék · sorrendben';
+  }
   return 'Teljes angol szótár · szint szerint';
 }
 

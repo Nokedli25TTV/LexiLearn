@@ -7,6 +7,7 @@
 // kandzsik előfordulása az összes kandzsi-előfordulásból (Wikinews + Wikipédia, scriptin/kanji-frequency).
 // A cél egy lefedettségi szint (50/80/90%, vagy mind a 214) egy célidőpontig; ebből jön a célnak megfelelő
 // lecke, a hátralévő radikálok és a szükséges napi tempó. A "megtanult" ugyanaz a szabály, mint mindenhol.
+// V13.26: ugyanez a felbontás mondja meg a Kandzsi módnak, mely kandzsik "készek" (minden radikáljukat tudod).
 import { addDays, dateKey, keyToDate } from '../core/dates.js';
 import { KANJI_DATA, KANJI_FREQ, KANJI_FREQ_TOTAL, KANJI_RADICALS, RADICAL_LESSONS } from '../core/data.js';
 import { isLearnedWord, isMatureWord, learnedDate } from './jlpt.js';
@@ -45,6 +46,35 @@ function kanjiParts() {
   return _parts;
 }
 
+/* ── V13.26: kész kandzsik (minden radikáljuk megtanult) ── */
+let _partsByKanji = null;
+// A kandzsi radikáljai (egyediek); üres, ha nincs felbontása (az ilyen kandzsi nem vár radikálra)
+function partsOf(kanji) {
+  if (!_partsByKanji) _partsByKanji = new Map(kanjiParts().map(x => [x.k, x.parts]));
+  return _partsByKanji.get(kanji) || [];
+}
+const missingRadicals = (kanji, known) => partsOf(kanji).filter(r => !known.has(r));
+const isKanjiReady = (kanji, known) => missingRadicals(kanji, known).length === 0;
+const knownRadicals = radicalWords => new Set(radicalWords.filter(isLearnedWord).map(w => w.en));
+
+/**
+ * A radikálokból kész, még nem megtanult N5–N3 kandzsik, és amit a következő (nem kész) útvonal-lecke nyit meg.
+ * @param {Array} radicalWords a radikál mód szavai
+ * @param {Array} kanjiWords a kandzsi mód szavai
+ */
+function kanjiUnlockStatus(radicalWords, kanjiWords) {
+  const known = knownRadicals(radicalWords);
+  const open = kanjiWords.filter(w => CORE_LEVELS.includes(w.diff) && !isLearnedWord(w));
+  const ready = open.filter(w => isKanjiReady(w.en, known));
+  const lesson = RADICAL_LESSONS.find(l => lessonChars(l).some(r => !known.has(r)));
+  let nextLesson = null;
+  if (lesson) {
+    const after = new Set([...known, ...lessonChars(lesson)]);
+    nextLesson = { lesson: lesson.lesson, unlocks: open.filter(w => !isKanjiReady(w.en, known) && isKanjiReady(w.en, after)) };
+  }
+  return { known: known.size, ready, nextLesson };
+}
+
 /**
  * Lefedettség egy radikál-halmazzal.
  * @param {Set<string>} known a megtanult radikálok
@@ -64,6 +94,8 @@ function coverageOf(known) {
     covered, core, coreTotal
   };
 }
+
+const lessonChars = l => [...l.radicals];
 
 const targetOf = value => PATH_TARGETS.find(t => t.value === value) || PATH_TARGETS.find(t => t.value === DEFAULT_TARGET);
 
@@ -88,7 +120,6 @@ function ensurePathGoal(globalStats, today) {
   return true;
 }
 
-const lessonChars = l => [...l.radicals];
 
 // A teljesen megtanult leckék száma (a tanulás végi jelzéshez)
 function completedLessons(words) {
@@ -161,4 +192,4 @@ function pathPace(words, targetChars, learnedCount, goalDate, today) {
 }
 
 export { DEFAULT_MONTHS, DEFAULT_TARGET, PATH_TARGETS, addMonthsKey, completedLessons, coverageOf, ensurePathGoal, getPathGoal,
-  pathProgress, targetLessonOf };
+  isKanjiReady, kanjiUnlockStatus, knownRadicals, missingRadicals, pathProgress, targetLessonOf };

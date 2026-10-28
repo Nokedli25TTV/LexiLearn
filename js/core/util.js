@@ -26,4 +26,10 @@ function downloadText(filename, text, type = 'text/plain') {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export { downloadText, escHtml, escRegex, japaneseBackLine, jsArg, shuffle };
+// V13.26: határozott névelő egy szám (sorszám) elé: "az 1." (első), "az 5." (ötödik), "a 2." (második)
+function az(n) {
+  const d = String(Math.abs(Math.trunc(Number(n) || 0)));
+  return d === '1' || d[0] === '5' || (d[0] === '1' && (d.length === 4 || d.length === 7)) ? 'az' : 'a';
+}
+
+export { az, downloadText, escHtml, escRegex, japaneseBackLine, jsArg, shuffle };

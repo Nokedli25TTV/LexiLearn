@@ -1,8 +1,8 @@
 // LexiLearn – habit/home.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { todayKey } from '../core/dates.js';
-import { currentMode, MODE_LABELS, state, unitOf } from '../core/state.js';
-import { escHtml } from '../core/util.js';
+import { currentMode, MODE_LABELS, NEW_ITEMS, state, unitOf } from '../core/state.js';
+import { az, escHtml } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests } from '../features/quests.js';
 import { calcStreak, renderWeekTracker } from '../features/streak.js';
 import { LEARN_BATCH_SIZE, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords } from './goal.js';
@@ -104,7 +104,7 @@ function renderHome() {
     const mins = Math.max(1, Math.round(nextBatch * 0.5));
     learnHtml = `
       <button class="${due > 0 ? 'cta-review' : 'cta-learn'}" onclick="startLearnSession()">
-        <span class="cta-main">Új ${currentMode === 'radicals' ? 'radikálok' : 'szavak'} tanulása</span>
+        <span class="cta-main">Új ${NEW_ITEMS[currentMode] || 'szavak'} tanulása</span>
         <span class="cta-sub">${nextBatch} ${unit} · kb. ${mins} perc</span>
         ${due > 0 ? '' : arrow}
       </button>`;
@@ -146,7 +146,7 @@ function renderCurrentLesson() {
   const next = p.complete
     ? (radical ? 'Az útvonal minden radikálja elkezdve.' : 'Minden Dekiru-lecke szava elkezdve.')
     : p.next.length
-      ? `Következő adag: ${p.next.map(x => `${x.count} ${unit} a ${x.lesson}. leckéből`).join(' és ')}`
+      ? `Következő adag: ${p.next.map(x => `${x.count} ${unit} ${az(x.lesson)} ${x.lesson}. leckéből`).join(' és ')}`
       : 'A mai napi penzum teljesítve.';
   host.innerHTML = `
     <button class="lesson-card" onclick="openCurrentLesson(${p.lesson})">

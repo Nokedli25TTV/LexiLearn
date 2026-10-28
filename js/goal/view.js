@@ -6,9 +6,9 @@
 import { HU_MONTHS, keyToDate, todayKey } from '../core/dates.js';
 import { appData, currentMode } from '../core/state.js';
 import { saveStats } from '../core/storage.js';
-import { escHtml } from '../core/util.js';
+import { az, escHtml } from '../core/util.js';
 import { LEVELS, TARGETS, getGoal, isMatureWord as isMature, paceFor, trackProgress } from './jlpt.js';
-import { PATH_TARGETS, ensurePathGoal, getPathGoal, pathProgress } from './radical-path.js';
+import { PATH_TARGETS, coverageOf, ensurePathGoal, getPathGoal, kanjiUnlockStatus, knownRadicals, pathProgress } from './radical-path.js';
 import { dataTable, hideVizTip, showVizTip } from '../stats/view.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
@@ -20,6 +20,7 @@ const TRACKS = [
 
 const fmt = n => Number(n || 0).toLocaleString('hu-HU');
 const pctText = p => `${Math.floor(p * 100)}%`;
+const Az = n => (az(n) === 'az' ? 'Az' : 'A'); // mondat elején
 function fmtDate(key) { const d = keyToDate(key); return `${d.getFullYear()}. ${HU_MONTHS[d.getMonth()]} ${d.getDate()}.`; }
 function fmtMonth(key) { const d = keyToDate(key); return `${d.getFullYear()}. ${HU_MONTHS[d.getMonth()]}`; }
 
@@ -109,7 +110,31 @@ function goalLineHtml() {
     <button class="home-jlpt" onclick="showGoalScreen()">
       <span class="home-jlpt-label">${goal.level} felé</span>
       <span class="home-jlpt-value">szókincs <b>${pctText(w.pct)}</b> · kandzsi <b>${pctText(k.pct)}</b></span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>
+      ${CHEVRON_SVG}
+    </button>${currentMode === 'kanji' ? kanjiUnlockLineHtml() : ''}`;
+}
+
+const CHEVRON_SVG = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+
+// V13.26: Kandzsi módban: hány kandzsi kész a megtanult radikálokból, és mennyit nyit meg a következő radikál-lecke.
+// Koppintásra a Radikálok mód jön.
+function kanjiUnlockLineHtml() {
+  const u = kanjiUnlockStatus(appData.radicals.words || [], appData.kanji.words || []);
+  const next = u.nextLesson && u.nextLesson.unlocks.length ? u.nextLesson : null;
+  let value, label;
+  if (u.known === 0) {
+    if (!next) return '';
+    value = `${Az(next.lesson)} ${next.lesson}. radikál-lecke <b>${fmt(next.unlocks.length)}</b> kandzsit nyit meg`;
+    label = `Radikálok: ${az(next.lesson)} ${next.lesson}. radikál-lecke ${next.unlocks.length} kandzsit nyit meg. Megnyitja a Radikálok módot.`;
+  } else {
+    value = `<b>${fmt(u.ready.length)}</b> kandzsi kész${next ? ` · ${next.lesson}. lecke: +${fmt(next.unlocks.length)}` : ''}`;
+    label = `Radikálokból: ${u.ready.length} kandzsinak már minden radikálját tudod${next ? `, ${az(next.lesson)} ${next.lesson}. radikál-lecke további ${next.unlocks.length}-at nyit meg` : ''}. Megnyitja a Radikálok módot.`;
+  }
+  return `
+    <button class="home-jlpt home-unlock" onclick="setMode('radicals')" aria-label="${escHtml(label)}">
+      <span class="home-jlpt-label">Radikálok</span>
+      <span class="home-jlpt-value">${value}</span>
+      ${CHEVRON_SVG}
     </button>`;
 }
 
@@ -164,8 +189,12 @@ function milestonesHtml(t) {
 function coverageHtml(t) {
   const missing = Math.max(0, t.target - t.inDictionary);
   const perLevel = t.perLevel.map(l => `${l.level}: ${fmt(l.learned)} / ${fmt(l.inDictionary)}`).join(' · ');
+  // V13.26: hány N5–N3 kandzsit raksz össze a megtanult radikálokból
+  const known = t.kind === 'kanji' ? knownRadicals(appData.radicals.words || []) : null;
+  const built = known && known.size ? coverageOf(known) : null;
   return `
     <p class="jl-coverage">Szintenként (megtanult / a szótárban): ${perLevel}.</p>
+    ${built ? `<p class="jl-coverage">A megtanult radikáljaidból ${fmt(built.core)} / ${fmt(built.coreTotal)} N5–N3 kandzsit raksz össze; a napi új kandzsik közül ezek jönnek előre.</p>` : ''}
     ${missing > 0 ? `<p class="jl-coverage">A szótárban ${fmt(t.inDictionary)} ${t.unit} van az N5-N3 szintekből; a ${fmt(t.target)}-hez még kb. ${fmt(missing)}-t kell felvenni.</p>` : ''}`;
 }
 
@@ -292,7 +321,7 @@ function pathLineHtml() {
 
 function pathPaceHtml(p) {
   const pace = p.pace;
-  if (pace.remaining === 0) return `<p class="jl-pace-status">A cél megvan: a ${p.targetLesson}. lecke végéig minden radikált megtanultál.</p>`;
+  if (pace.remaining === 0) return `<p class="jl-pace-status">A cél megvan: ${az(p.targetLesson)} ${p.targetLesson}. lecke végéig minden radikált megtanultál.</p>`;
   // Napi 1 alatt a heti szám a beszédesebb (heti 4,5 új radikál, nem "napi 1")
   const needed = pace.neededDaily === null ? 'a célidőpont elmúlt'
     : pace.neededWeekly < 7 ? `heti ${pace.neededWeekly.toLocaleString('hu-HU')} új radikál` : `napi ${fmt(pace.neededDaily)} új radikál`;
@@ -333,7 +362,7 @@ function renderPathScreen(host) {
     <span class="goal-days">${p.pace.daysLeft > 0 ? `<b>${fmt(p.pace.daysLeft)}</b> nap van hátra` : 'A célidőpont elmúlt.'}</span>`;
   const goalText = p.targetShare === null
     ? `Mind a 214 radikál: ${p.lessons.length} lecke, a teljes útvonal. A végére a szövegek kandzsijainak ${pctText(p.goalText)}-át, az N5–N3 kandzsik ${pctText(p.goalKanji)}-át fedi le.`
-    : `A ${p.targetLesson}. lecke végére (${fmt(p.target)} radikál) a szövegekben előforduló kandzsik ${pctText(p.goalText)}-át, az N5–N3 kandzsik ${pctText(p.goalKanji)}-át raksz össze teljesen ismert radikálokból.`;
+    : `${Az(p.targetLesson)} ${p.targetLesson}. lecke végére (${fmt(p.target)} radikál) a szövegekben előforduló kandzsik ${pctText(p.goalText)}-át, az N5–N3 kandzsik ${pctText(p.goalKanji)}-át raksz össze teljesen ismert radikálokból.`;
   const later = p.lessons.filter(l => !l.inTarget);
   host.innerHTML = `
     <section class="goal-track" aria-labelledby="rp-goal-title">

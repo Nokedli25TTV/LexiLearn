@@ -41,6 +41,8 @@ const MODE_LABELS = { english: 'Angol', japanese: 'Japán', kanji: 'Kandzsi', ra
 const isCharMode = (mode = currentMode) => mode === 'kanji' || mode === 'radicals';
 // Mértékegység a szövegekben: „12 kanji”, „12 radikál”, „12 szó”
 const unitOf = (mode = currentMode) => (mode === 'kanji' ? 'kanji' : mode === 'radicals' ? 'radikál' : 'szó');
+// V13.26: a „Új … tanulása” gomb többes száma módonként (alapból: szavak)
+const NEW_ITEMS = { kanji: 'kandzsik', radicals: 'radikálok' };
 
 // V13.3: a módváltás egyetlen helye (ES modulban a state/currentMode élő kötés, kívülről nem írható)
 function setCurrentMode(mode) {
@@ -48,4 +50,4 @@ function setCurrentMode(mode) {
   state = appData[currentMode];
 }
 
-export { MODES, MODE_LABELS, appData, createEmptyState, currentMode, diffOrder, isCharMode, setCurrentMode, state, unitOf };
+export { MODES, MODE_LABELS, NEW_ITEMS, appData, createEmptyState, currentMode, diffOrder, isCharMode, setCurrentMode, state, unitOf };

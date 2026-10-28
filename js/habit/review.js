@@ -5,7 +5,7 @@
 // Egy alkalom legfeljebb getReviewBatch() kártya (alapból 20, a Profilban állítható); minden értékelés azonnal mentődik.
 import { todayKey } from '../core/dates.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
-import { currentMode, isCharMode, state, unitOf } from '../core/state.js';
+import { currentMode, isCharMode, NEW_ITEMS, state, unitOf } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, japaneseBackLine } from '../core/util.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
@@ -198,7 +198,7 @@ function showReviewComplete() {
   if (remaining > 0) {
     next = `<button class="cta-learn cta-compact" onclick="startReviewSession()"><span class="cta-main">Még ${remaining} esedékes</span></button>`;
   } else if (canLearn) {
-    next = `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Új ${currentMode === 'radicals' ? 'radikálok' : 'szavak'} tanulása</span></button>`;
+    next = `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Új ${NEW_ITEMS[currentMode] || 'szavak'} tanulása</span></button>`;
   } else next = '';
 
   const sub = remaining > 0

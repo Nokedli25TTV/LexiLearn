@@ -8,6 +8,7 @@ import { JAPANESE_SENTENCES, KANJI_RADICALS, RADICALS_DATA } from '../core/data.
 import { appData, diffOrder } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { isLearnedWord } from '../goal/jlpt.js';
+import { knownRadicals } from '../goal/radical-path.js';
 
 const KANJI_RE = /[一-龯㐀-䶿々]/g;
 const RUBY_RE = /<ruby>([^<]+)<rt>([^<]+)<\/rt><\/ruby>/g;
@@ -75,11 +76,18 @@ function kanjiWithRadical(radical, limit = RADICAL_KANJI_LIMIT) {
   return { total: all.length, shown: all.slice(0, limit) };
 }
 
+// V13.26: a már megtanult radikál pipát kap (Radikálok mód), így látszik, mi hiányzik még a kandzsihoz
+const CHECK_SVG = '<svg class="kl-check" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+
 function radicalChipsHtml(kanji) {
   const parts = radicalsOf(kanji);
   if (parts.length === 0) return '';
-  return `<div class="kanji-links is-radicals" aria-label="Radikálok a kandzsiban">${parts.map(p =>
-    `<span class="kl-item${p.main ? ' is-main' : ''}"${p.main ? ' title="Szótári radikál"' : ''}><b lang="ja">${escHtml(p.shown)}</b>${p.shown !== p.radical ? `<span lang="ja">${escHtml(p.radical)}</span> ` : ''}${escHtml(p.hu)}</span>`).join('')}</div>`;
+  const known = knownRadicals(appData.radicals.words || []);
+  return `<div class="kanji-links is-radicals" aria-label="Radikálok a kandzsiban">${parts.map(p => {
+    const isKnown = known.has(p.radical);
+    const title = [p.main ? 'Szótári radikál' : '', isKnown ? 'már tudod' : ''].filter(Boolean).join(', ');
+    return `<span class="kl-item${p.main ? ' is-main' : ''}${isKnown ? ' is-known' : ''}"${title ? ` title="${title}"` : ''}>${isKnown ? CHECK_SVG : ''}<b lang="ja">${escHtml(p.shown)}</b>${p.shown !== p.radical ? `<span lang="ja">${escHtml(p.radical)}</span> ` : ''}${escHtml(p.hu)}${isKnown ? '<span class="sr-only"> (már tudod)</span>' : ''}</span>`;
+  }).join('')}</div>`;
 }
 
 // A kártya hátoldalára: japán szónál a kandzsijai, kandzsinál a szavai és a radikáljai,
