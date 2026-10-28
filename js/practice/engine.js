@@ -17,6 +17,7 @@ import { logActivity } from '../habit/goal.js';
 import { _currentTTSAudio, setTtsOnEnd, speakWord } from './tts.js';
 import { initWriting, isWritingCorrect, resetWritingOutline, writingHtml } from './writing.js';
 import { buildableSentences, initSentenceBuild, sentenceBuildHtml } from './sentence-build.js';
+import { hasKatakana, romajiToHiragana, toKatakana } from '../core/romaji.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { practiceLapse } from '../srs/schedule.js';
@@ -353,7 +354,8 @@ function showQuestion() {
     const placeholderText = isEnHu ? "Gépeld be magyarul..." : "Gépeld be japánul vagy romajival...";
     contentHtml = `
       <div class="q-word" style="margin-bottom:26px;">${escHtml(questionText)}</div>
-      <div style="margin-bottom: 20px;"><input type="text" id="hardcore-input" class="search-input" placeholder="${placeholderText}" autocomplete="off" style="text-align:center; font-size:18px; padding: 14px; border-width: 3px;"></div>
+      <div style="margin-bottom: 20px;"><input type="text" id="hardcore-input" class="search-input" placeholder="${placeholderText}" autocomplete="off" autocapitalize="off" spellcheck="false" style="text-align:center; font-size:18px; padding: 14px; border-width: 3px;">
+        ${isJapanMode && !isEnHu ? '<div class="kana-preview" id="kana-preview" aria-live="polite"></div>' : ''}</div>
       <button class="btn btn-primary btn-lg" style="width:100%; justify-content:center; margin-bottom: 10px;" onclick="checkHardcoreAnswer('${word.id}')">Ellenőrzés</button>
       <button class="dont-know" onclick="revealHardcoreAnswer('${word.id}')">Nem tudom</button>
       <div id="hardcore-feedback" style="margin-top: 16px; font-weight: 800; font-size: 16px; display:none;"></div>
@@ -410,6 +412,9 @@ function showQuestion() {
         input.addEventListener('keypress', function (e) {
           if (e.key === 'Enter') checkHardcoreAnswer(word.id);
         });
+        // V13.18: romajival gépelve élőben látszik kanával (katakana szónál katakanával)
+        const preview = document.getElementById('kana-preview');
+        if (preview) input.addEventListener('input', () => updateKanaPreview(input, preview, word));
       }
     }, 100);
   }
@@ -460,6 +465,14 @@ function finishSentenceBuild(word, isCorrect, sObj) {
       if (nextBtn) nextBtn.style.display = 'block';
     }, 500);
   }
+}
+
+function updateKanaPreview(input, preview, word) {
+  const typed = input.value.trim();
+  if (!/[a-z]/i.test(typed)) { preview.textContent = ''; return; }
+  const katakana = hasKatakana(word.en);
+  const kana = romajiToHiragana(typed, { dash: katakana ? 'ー' : '' });
+  preview.textContent = katakana ? toKatakana(kana) : kana;
 }
 
 // V13.13: egy kandzsi megrajzolásának vége. Hibátlanul vagy javítással kész: helyes válasz;

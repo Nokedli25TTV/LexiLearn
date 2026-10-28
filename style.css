@@ -2271,6 +2271,9 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .q-word { margin-bottom: 4px; }
 .reveal-text { min-height: 0; margin: 6px 0 0; }
 .reveal-text:empty { display: none; }
+/* V13.18: Gépelős mód – a romajival gépelt válasz élőben kanával */
+.kana-preview { min-height: 30px; margin-top: 8px; font-size: 22px; font-weight: 700; color: var(--primary-h); }
+.kana-preview:empty { visibility: hidden; }
 /* V13.18: mondatépítő – csempék a magyar mondat alatt; a kirakott sor felül, a készlet alul */
 .sb-prompt { margin: 2px 0 16px; font-size: 18px; font-weight: 800; line-height: 1.45; color: var(--text); }
 .sb-answer {

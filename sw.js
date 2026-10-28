@@ -24,6 +24,7 @@ const STATIC_ASSETS = [
   './js/core/state.js',
   './js/core/storage.js',
   './js/core/util.js',
+  './js/core/romaji.js',
   './js/features/bookmarks.js',
   './js/goal/jlpt.js',
   './js/goal/view.js',
