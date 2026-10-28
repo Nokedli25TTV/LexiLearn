@@ -57,4 +57,25 @@ function openLeeches() {
   showToast(`${leeches.length} makacs szó kijelölve. Válassz típust, és indíthatod.`);
 }
 
-export { LEECH_LAPSES, LEECH_WRONG, getLeeches, isLeech, leechHomeRowHtml, openLeeches };
+/* ── V13.18: Egy lecke nehéz szavai egyben (a Kezdőlap leckekártyájáról, egy koppintással) ──
+   A zászlóval jelölt, a makacs, és az elrontott, de még sorozatban nem menő szavak. */
+const inLesson = (w, lesson) => (Array.isArray(w.lesson) ? w.lesson : [w.lesson]).map(String).includes(String(lesson));
+
+function lessonHardWords(lesson, words = state.words) {
+  return words.filter(w => inLesson(w, lesson) && (w.lessonFocus || isLeech(w) ||
+    ((w.stats?.totalWrong || 0) > 0 && (w.stats?.streak || 0) < LEECH_RECOVERED)));
+}
+
+// A Gyakorlás fül beállításaival (típus, kérdésszám, sorrend) indul, a kijelölésedet nem írja felül,
+// és a kör végén a Kezdőlapra tér vissza
+function practiceLessonHard(lesson) {
+  const words = lessonHardWords(lesson);
+  if (words.length === 0) { showToast('Ebben a leckében most nincs nehéz szó.'); return; }
+  const before = state.practice;
+  const selection = state.selectedIds;
+  state.selectedIds = new Set(words.map(w => w.id));
+  try { window.startPractice(); } finally { state.selectedIds = selection; }
+  if (state.practice !== before) state.practice.origin = 'home';
+}
+
+export { LEECH_LAPSES, LEECH_WRONG, getLeeches, isLeech, leechHomeRowHtml, lessonHardWords, openLeeches, practiceLessonHard };

@@ -64,6 +64,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Konzisztencia:** hány egymást követő napon tanultál, alatta a hét napjai pöttysorban. A kihagyott nap nem büntetés, csak tény.
 - **Napi penzum:** japán módban automatikusan a Dekiru 1. leckétől halad előre, leckénként; ha egy lecke végén kevesebb szó marad a napi célnál, a következő leckéből tölti fel az adagot. A Gyakorlás fül szűrői ezt nem módosítják.
 - **Aktuális lecke:** a Kezdőlapon látszik a lecke haladása, a hátralévő és ismétlés alatt álló szavak száma, valamint a következő napi adag lecke szerinti összetétele.
+- **A lecke nehéz szavai egy koppintással:** a leckekártya alatt, ha a leckében van zászlós, makacs vagy elrontott (még nem sorozatban menő) szó. A Gyakorlás fül beállításaival indul, a kijelölésedhez nem nyúl, és a végén a Kezdőlapra tér vissza.
 - **Előrejelzés:** egy csendes sor arról, mennyi ismétlés jön holnap és a következő héten, hogy ne érjen meglepetés.
 - **Napi feladatok:** naponta három, változó feladat, például egy hibátlan kör, tematikus nap, a nap szava, régen látott szavak vagy a legtöbbször elrontott szavak javítása.
 - **Egyetlen ünneplés:** konfetti csak akkor, ha a napi cél teljesült, és akkor is naponta egyszer.
@@ -197,7 +198,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **125 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **126 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash

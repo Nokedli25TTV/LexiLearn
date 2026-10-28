@@ -12,7 +12,7 @@ import { showToast } from '../ui/toast.js';
 import { REVIEW_BATCH_SIZE, dueForecast } from '../srs/schedule.js';
 import { goalLineHtml } from '../goal/view.js';
 import { weekHomeRowHtml } from '../stats/week.js';
-import { leechHomeRowHtml } from '../features/leeches.js';
+import { leechHomeRowHtml, lessonHardWords } from '../features/leeches.js';
 
 /* ── KEZDŐLAP ─────────────────────────────────────────── */
 function renderHome() {
@@ -152,6 +152,18 @@ function renderCurrentLesson() {
       <span class="lesson-progress" style="--p:${pct}" role="progressbar" aria-label="${p.lesson}. lecke haladása" aria-valuemin="0" aria-valuemax="${p.total}" aria-valuenow="${p.learned}"><i></i></span>
       <span class="lesson-card-meta">${p.remaining} szó van hátra · ${p.reviewing} ismétlés alatt</span>
       <span class="lesson-card-next">${escHtml(next)}</span>
+    </button>${lessonHardButtonHtml(p.lesson)}`;
+}
+
+// V13.18: egy koppintással a lecke nehéz szavai (zászlós, makacs, elrontott), ha van ilyen
+function lessonHardButtonHtml(lesson) {
+  const n = lessonHardWords(lesson).length;
+  if (n === 0) return '';
+  return `
+    <button class="lesson-hard-btn" onclick="practiceLessonHard(${Number(lesson)})">
+      <span class="lesson-hard-main">${lesson}. lecke: nehéz szavak</span>
+      <span class="lesson-hard-sub">${n} szó gyakorlása most</span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>
     </button>`;
 }
 
