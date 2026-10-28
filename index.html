@@ -419,6 +419,15 @@
       </button>
     </section>
 
+    <section class="pf-section" aria-labelledby="pf-reminder-title">
+      <h2 class="pf-title" id="pf-reminder-title">Napi emlékeztető</h2>
+      <p class="pf-text">Egy naponta ismétlődő naptáresemény riasztással, amit a telefonod naptára akkor is jelez, ha az app zárva van. Válassz időpontot, töltsd le, és nyisd meg a hozzáadáshoz. Később a naptáradban módosíthatod vagy törölheted.</p>
+      <div class="pf-row-btns pf-reminder">
+        <label class="pf-time"><span>Időpont</span><input type="time" id="reminder-time" value="20:00" onchange="setReminderTime(this.value)"></label>
+        <button class="btn btn-outline" onclick="downloadReminder()">Hozzáadás a naptárhoz</button>
+      </div>
+    </section>
+
     <section class="pf-section" aria-labelledby="pf-sound-title">
       <h2 class="pf-title" id="pf-sound-title">Hang</h2>
       <button class="pf-toggle" id="mix-audio-switch" role="switch" aria-checked="false" aria-describedby="mix-audio-text" onclick="toggleMixAudio()">

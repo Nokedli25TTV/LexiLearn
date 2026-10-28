@@ -33,4 +33,5 @@ it('a Zene mellett kapcsoló az audioSession típusát állítja, és megmarad',
   api.renderProfile();
   expect(sw.hidden).toBe(true);
   expect(win.document.getElementById('mix-audio-unsupported').hidden).toBe(false);
+  expect(win.document.getElementById('mix-audio-text').hidden).toBe(true);
 });

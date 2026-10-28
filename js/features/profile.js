@@ -4,6 +4,7 @@ import { MODE_LABELS, currentMode, state } from '../core/state.js';
 import { renderStorageInfo, saveStats } from '../core/storage.js';
 import { getDailyGoal } from '../habit/goal.js';
 import { canMixWithMusic, isMixWithMusic, setMixWithMusic } from '../practice/tts.js';
+import { renderReminder } from './reminder.js';
 import { showToast } from '../ui/toast.js';
 
 /* ── PROFIL ───────────────────────────────────────────── */
@@ -19,6 +20,7 @@ function renderProfile() {
   const sw = document.getElementById('theme-switch');
   if (sw) sw.setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false');
   renderMixAudio();
+  renderReminder();
   renderStorageInfo();
 }
 
@@ -32,6 +34,8 @@ function renderMixAudio() {
     sw.setAttribute('aria-checked', supported && isMixWithMusic() ? 'true' : 'false');
   }
   if (note) note.hidden = supported;
+  const text = document.getElementById('mix-audio-text');
+  if (text) text.hidden = !supported;
 }
 
 function toggleMixAudio() {

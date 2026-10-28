@@ -14,4 +14,16 @@ function japaneseBackLine(word, mode, writing = word.kanji) {
   return [writing, word.en, word.romaji].filter(Boolean).join(' · ');
 }
 
-export { escHtml, escRegex, japaneseBackLine, jsArg, shuffle };
+// V13.18: szöveges fájl letöltése (naptár-emlékeztető, Anki export)
+function downloadText(filename, text, type = 'text/plain') {
+  const url = URL.createObjectURL(new Blob([text], { type: `${type};charset=utf-8` }));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+export { downloadText, escHtml, escRegex, japaneseBackLine, jsArg, shuffle };

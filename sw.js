@@ -33,6 +33,7 @@ const STATIC_ASSETS = [
   './js/features/leeches.js',
   './js/features/profile.js',
   './js/features/quests.js',
+  './js/features/reminder.js',
   './js/features/streak.js',
   './js/features/strokes.js',
   './js/habit/goal.js',

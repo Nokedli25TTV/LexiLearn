@@ -157,6 +157,7 @@ Saját szó felvehető kézzel vagy listából importálva.
 ### Kényelem és hozzáférhetőség
 
 - Sötét téma alapból, meleg világos téma egy kapcsolóra.
+- **Napi emlékeztető:** a Profilban egy naponta ismétlődő naptáresemény (.ics, riasztással) tölthető le a választott időpontra; a telefon naptára akkor is jelez, ha az app zárva van.
 - **Kiejtés a zene mellett:** a Profilban bekapcsolva a kiejtés nem állítja meg a háttérben szóló zenét (például Spotify), hanem ráhangzik (iOS 16.4-től, Audio Session API).
 - Egy kéz, egy hüvelykujj: a navigáció és a gyakorlás indítása alul, lebegő sávon.
 - WCAG AA kontraszt mindkét témában, `prefers-reduced-motion` tisztelete, billentyűzetes alternatíva minden húzáshoz, legalább 44 px-es érintési felületek.
@@ -198,7 +199,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **126 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **127 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash
