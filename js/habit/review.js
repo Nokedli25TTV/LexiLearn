@@ -198,7 +198,7 @@ function showReviewComplete() {
   if (remaining > 0) {
     next = `<button class="cta-learn cta-compact" onclick="startReviewSession()"><span class="cta-main">Még ${remaining} esedékes</span></button>`;
   } else if (canLearn) {
-    next = `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Új szavak tanulása</span></button>`;
+    next = `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Új ${currentMode === 'radicals' ? 'radikálok' : 'szavak'} tanulása</span></button>`;
   } else next = '';
 
   const sub = remaining > 0

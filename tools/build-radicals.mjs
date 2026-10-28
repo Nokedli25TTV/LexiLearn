@@ -1,5 +1,6 @@
 // A Radikálok mód adatainak előállítása (V13.23).
 // Használat: node tools/build-radicals.mjs <kicsomagolt KanjiVG mappa (benne kanji/)> <a KanjiRadical repó mappája>
+//            <a scriptin/kanji-frequency repó mappája (benne data/)>
 //
 // Kimenet:
 //   radicals_data.js     – RADICALS_DATA: a 214 Kangxi-radikál (karakter, vonásszám, busu-név, magyar és angol
@@ -9,6 +10,12 @@
 //                          elemfájából: { "休": [["亻","人"],["木","木"]] } – [a kandzsiban látható alak, a radikál];
 //                          az első elem a szótári radikál (kvg:radical), ha ismert.
 //   kanjivg/radicals.json – a kanji_data.js-ben nem szereplő radikálok vonásai, a kanjivg/n5.json formátumában.
+//   V13.24 – Radikál-útvonal: a radikálok sorrendje (path) és 10-es leckéi (lesson). Mohó sorrend: mindig az a
+//   radikál jön, amelyik a legtöbb szövegbeli kandzsi-előfordulást teszi teljesen felismerhetővé (minden
+//   radikál-eleme ismert); döntetlennél a gyakoribb építőelem. A gyakoriság a Wikinews és a Wikipédia
+//   kandzsi-számlálásából (scriptin/kanji-frequency, CC BY 4.0). RADICAL_LESSONS: a halmozott lefedettség
+//   minden lecke után (text: a szövegbeli kandzsi-előfordulások aránya, kanji: az N5–N3 kandzsiké);
+//   KANJI_FREQ: a kandzsik előfordulása, KANJI_FREQ_TOTAL: az összes kandzsi-előfordulás.
 //
 // Licenc: a KanjiVG adatai CC BY-SA 3.0 (© Ulrich Apel); a KANJIDIC (EDRDG) CC BY-SA 4.0.
 // Újragenerálás után léptesd a sw.js KANJIVG_CACHE nevét.
@@ -16,9 +23,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
-const [kvgDir, krDir] = process.argv.slice(2);
-if (!kvgDir || !fs.existsSync(path.join(kvgDir, 'kanji')) || !krDir || !fs.existsSync(path.join(krDir, 'data', 'radicals.ts'))) {
-  console.error('Használat: node tools/build-radicals.mjs <KanjiVG mappa> <KanjiRadical repó mappa>');
+const [kvgDir, krDir, freqDir] = process.argv.slice(2);
+if (!kvgDir || !fs.existsSync(path.join(kvgDir, 'kanji')) || !krDir || !fs.existsSync(path.join(krDir, 'data', 'radicals.ts'))
+  || !freqDir || !fs.existsSync(path.join(freqDir, 'data', 'news_characters.csv'))) {
+  console.error('Használat: node tools/build-radicals.mjs <KanjiVG mappa> <KanjiRadical repó mappa> <kanji-frequency repó mappa>');
   process.exit(1);
 }
 
@@ -123,7 +131,52 @@ for (const k of KANJI) {
   if (parts.length) { KANJI_RADICALS[k] = parts; withParts++; }
 }
 
-/* ── 3. A radikálok vonásai (ami nincs a kandzsi-fájlokban) ── */
+/* ── 3. Radikál-útvonal: gyakoriság, mohó sorrend, leckék ── */
+const LESSON_SIZE = 10;
+const FREQ = {};
+let FREQ_TOTAL = 0;
+for (const file of ['news_characters.csv', 'wikipedia_characters.csv']) {
+  fs.readFileSync(path.join(freqDir, 'data', file), 'utf8').trim().split('\n').slice(1).forEach(line => {
+    const [, , ch, count] = line.split(',');
+    if (ch === 'all') FREQ_TOTAL += Number(count); else FREQ[ch] = (FREQ[ch] || 0) + Number(count);
+  });
+}
+const JLPT_OF = new Map(ctx.__K.map(k => [k.kanji, k.jlpt]));
+const PARTS = Object.entries(KANJI_RADICALS).map(([k, parts]) => ({ k, parts: [...new Set(parts.map(p => p[1]))], f: FREQ[k] || 0 }));
+const N5N3 = PARTS.filter(x => ['N5', 'N4', 'N3'].includes(JLPT_OF.get(x.k)));
+const weight = Object.fromEntries(RADICALS.map(r => [r.radical, PARTS.filter(x => x.parts.includes(r.radical)).reduce((s, x) => s + x.f, 0)]));
+const known = new Set(), order = [];
+while (order.length < RADICALS.length) {
+  let best = null, bestGain = -1, bestWeight = -1;
+  for (const r of RADICALS) {
+    if (known.has(r.radical)) continue;
+    let gain = 0;
+    for (const x of PARTS) if (x.parts.includes(r.radical) && x.parts.every(p => p === r.radical || known.has(p))) gain += x.f;
+    if (gain > bestGain || (gain === bestGain && weight[r.radical] > bestWeight)) { best = r; bestGain = gain; bestWeight = weight[r.radical]; }
+  }
+  known.add(best.radical);
+  order.push(best);
+}
+const coverage = set => {
+  const covered = PARTS.filter(x => x.parts.every(p => set.has(p)));
+  return {
+    text: Math.round(covered.reduce((s, x) => s + x.f, 0) / FREQ_TOTAL * 1000) / 1000,
+    kanji: Math.round(covered.filter(x => N5N3.includes(x)).length / N5N3.length * 1000) / 1000
+  };
+};
+const RADICAL_LESSONS = [];
+const soFar = new Set();
+order.forEach((r, i) => {
+  r.path = i + 1;
+  r.lesson = Math.floor(i / LESSON_SIZE) + 1;
+  soFar.add(r.radical);
+  if (i % LESSON_SIZE === LESSON_SIZE - 1 || i === order.length - 1) {
+    RADICAL_LESSONS.push({ lesson: r.lesson, radicals: order.slice(i - (i % LESSON_SIZE), i + 1).map(x => x.radical).join(''), ...coverage(soFar) });
+  }
+});
+const KANJI_FREQ = Object.fromEntries(PARTS.filter(x => x.f > 0).map(x => [x.k, x.f]));
+
+/* ── 4. A radikálok vonásai (ami nincs a kandzsi-fájlokban) ── */
 const LICENSE = 'KanjiVG (c) Ulrich Apel, CC BY-SA 3.0, https://kanjivg.tagaini.net';
 const radStrokes = { _license: LICENSE };
 const noStrokes = [];
@@ -136,20 +189,28 @@ for (const r of RADICALS) {
 
 /* ── Kiírás ── */
 const header = `/* ══════════════════════════════════════════════════════
-   LexiLearn – Radikálok (V13.23) – GENERÁLT FÁJL, ne szerkeszd kézzel:
-   node tools/build-radicals.mjs <KanjiVG> <KanjiRadical>
+   LexiLearn – Radikálok (V13.23, útvonal: V13.24) – GENERÁLT FÁJL, ne szerkeszd kézzel:
+   node tools/build-radicals.mjs <KanjiVG> <KanjiRadical> <kanji-frequency>
    RADICALS_DATA: a 214 Kangxi-radikál a KanjiRadical projektből (olvasat, JLPT: KANJIDIC, EDRDG, CC BY-SA 4.0).
    KANJI_RADICALS: a kandzsik felbontása radikálokra a KanjiVG elemfájából (© Ulrich Apel, CC BY-SA 3.0):
    [a kandzsiban látható alak, a radikál]; az első a szótári radikál, ha ismert.
+   RADICAL_LESSONS, KANJI_FREQ: a Radikál-útvonal; a gyakoriság a scriptin/kanji-frequency adataiból
+   (Wikinews + Wikipédia, CC BY 4.0, https://github.com/scriptin/kanji-frequency).
 ══════════════════════════════════════════════════════ */
 `;
 const out = header +
   'const RADICALS_DATA = [\n' + RADICALS.map(r => '  ' + JSON.stringify(r)).join(',\n') + '\n];\n\n' +
-  'const KANJI_RADICALS = ' + JSON.stringify(KANJI_RADICALS) + ';\n';
+  'const KANJI_RADICALS = ' + JSON.stringify(KANJI_RADICALS) + ';\n\n' +
+  '// V13.24: Radikál-útvonal (halmozott lefedettség leckénként) és a kandzsik szövegbeli gyakorisága\n' +
+  'const RADICAL_LESSONS = [\n' + RADICAL_LESSONS.map(l => '  ' + JSON.stringify(l)).join(',\n') + '\n];\n' +
+  'const KANJI_FREQ = ' + JSON.stringify(KANJI_FREQ) + ';\n' +
+  `const KANJI_FREQ_TOTAL = ${FREQ_TOTAL};\n`;
 fs.writeFileSync('radicals_data.js', out);
 fs.writeFileSync(path.join('kanjivg', 'radicals.json'), JSON.stringify(radStrokes));
 
 console.log(`Radikálok: ${RADICALS.length} (vonásadat a kandzsikból: ${RADICALS.filter(r => KANJI_SET.has(r.radical)).length}, a radicals.json-ban: ${Object.keys(radStrokes).length - 1})`);
 console.log(`Kandzsik felbontása: ${withParts} / ${KANJI.length} (nincs SVG: ${noSvg})`);
+console.log(`Útvonal: ${RADICAL_LESSONS.length} lecke; lefedettség (szöveg / N5–N3 kandzsi): ` +
+  RADICAL_LESSONS.map(l => `${l.lesson}: ${(l.text * 100).toFixed(0)}/${(l.kanji * 100).toFixed(0)}`).join(' · '));
 console.log(`radicals_data.js: ${(out.length / 1024).toFixed(0)} KB, kanjivg/radicals.json: ${(JSON.stringify(radStrokes).length / 1024).toFixed(0)} KB`);
 if (noStrokes.length) console.log(`Nincs vonásadat (${noStrokes.length}): ${noStrokes.join(' ')}`);

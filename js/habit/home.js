@@ -104,7 +104,7 @@ function renderHome() {
     const mins = Math.max(1, Math.round(nextBatch * 0.5));
     learnHtml = `
       <button class="${due > 0 ? 'cta-review' : 'cta-learn'}" onclick="startLearnSession()">
-        <span class="cta-main">Új szavak tanulása</span>
+        <span class="cta-main">Új ${currentMode === 'radicals' ? 'radikálok' : 'szavak'} tanulása</span>
         <span class="cta-sub">${nextBatch} ${unit} · kb. ${mins} perc</span>
         ${due > 0 ? '' : arrow}
       </button>`;
@@ -139,18 +139,21 @@ function renderCurrentLesson() {
   host.hidden = !p;
   if (!p) { host.innerHTML = ''; return; }
   const pct = p.total ? p.learned / p.total : 0;
-  const book = p.lesson >= 25 ? '2. könyv' : '1. könyv';
+  const unit = unitOf();
+  // V13.24: Radikál módban a saját útvonal leckéi, japánban a Dekiru könyvek
+  const radical = currentMode === 'radicals';
+  const kicker = radical ? 'Radikál-útvonal' : `Dekiru ${p.lesson >= 25 ? '2. könyv' : '1. könyv'}`;
   const next = p.complete
-    ? 'Minden Dekiru-lecke szava elkezdve.'
+    ? (radical ? 'Az útvonal minden radikálja elkezdve.' : 'Minden Dekiru-lecke szava elkezdve.')
     : p.next.length
-      ? `Következő adag: ${p.next.map(x => `${x.count} szó a ${x.lesson}. leckéből`).join(' és ')}`
+      ? `Következő adag: ${p.next.map(x => `${x.count} ${unit} a ${x.lesson}. leckéből`).join(' és ')}`
       : 'A mai napi penzum teljesítve.';
   host.innerHTML = `
     <button class="lesson-card" onclick="openCurrentLesson(${p.lesson})">
-      <span class="lesson-card-kicker">Aktuális lecke · Dekiru ${book}</span>
+      <span class="lesson-card-kicker">Aktuális lecke · ${kicker}</span>
       <span class="lesson-card-head"><b>${p.lesson}. lecke</b><span>${p.learned} / ${p.total} megtanult</span></span>
       <span class="lesson-progress" style="--p:${pct}" role="progressbar" aria-label="${p.lesson}. lecke haladása" aria-valuemin="0" aria-valuemax="${p.total}" aria-valuenow="${p.learned}"><i></i></span>
-      <span class="lesson-card-meta">${p.remaining} szó van hátra · ${p.reviewing} ismétlés alatt</span>
+      <span class="lesson-card-meta">${p.remaining} ${unit} van hátra · ${p.reviewing} ismétlés alatt</span>
       <span class="lesson-card-next">${escHtml(next)}</span>
     </button>${lessonHardButtonHtml(p.lesson)}`;
 }
@@ -161,8 +164,8 @@ function lessonHardButtonHtml(lesson) {
   if (n === 0) return '';
   return `
     <button class="lesson-hard-btn" onclick="practiceLessonHard(${Number(lesson)})">
-      <span class="lesson-hard-main">${lesson}. lecke: nehéz szavak</span>
-      <span class="lesson-hard-sub">${n} szó gyakorlása most</span>
+      <span class="lesson-hard-main">${lesson}. lecke: nehéz ${currentMode === 'radicals' ? 'radikálok' : 'szavak'}</span>
+      <span class="lesson-hard-sub">${n} ${unitOf()} gyakorlása most</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>
     </button>`;
 }

@@ -1,5 +1,5 @@
-// Radikálok mód (V13.23): a 214 Kangxi-radikál a KanjiRadical projektből, napi tanulás vonásszám
-// szerint, írásgyakorlás vonásadattal, és a kandzsi ↔ radikál összekötés a kártyákon.
+// Radikálok mód (V13.23): a 214 Kangxi-radikál a KanjiRadical projektből, napi tanulás a Radikál-útvonal
+// sorrendjében (V13.24), írásgyakorlás vonásadattal, és a kandzsi ↔ radikál összekötés a kártyákon.
 import { expect, it } from 'vitest';
 import { bootApp } from './harness/boot.js';
 
@@ -11,27 +11,28 @@ it('Radikálok mód: adat, napi sorrend, szűrő, kártyák, összekötés, gyak
   const rad = win.appData.radicals;
   expect(rad.words).toHaveLength(214);
   const hito = rad.words.find(w => w.en === '人');
-  expect(hito).toMatchObject({ id: 'rad_人', hu: 'ember', romaji: 'hito', lesson: 2, diff: 'N5', source: 'data_js' });
+  expect(hito).toMatchObject({ id: 'rad_人', hu: 'ember', romaji: 'hito', lesson: 1, path: 4, diff: 'N5', source: 'data_js' });
   expect(hito.tags).toEqual(['önálló kandzsi is']);
   expect(rad.words.find(w => w.en === '丶')).toMatchObject({ diff: '–', tags: ['csak elemként'] });
   expect(doc.getElementById('mode-radicals').classList.contains('active')).toBe(true);
 
-  // Napi sorrend: vonásszám, azon belül Kangxi-sorrend
+  // Napi sorrend: a Radikál-útvonal (V13.24)
   const pool = api.getNewWordPool();
-  expect(pool.slice(0, 3).map(w => w.en)).toEqual(['一', '丨', '丶']);
-  expect(api.describePoolSource()).toContain('1 vonásos radikálok');
+  expect(pool.slice(0, 3).map(w => w.en)).toEqual(['日', '木', '月']);
+  expect(api.describePoolSource()).toBe('Radikál-útvonal 1. lecke · sorrendben');
 
-  // Gyakorlás fül: mértékegység és „vonás” lecke-szűrő
+  // Gyakorlás fül: mértékegység és útvonal-lecke szűrő
   api.showScreen('dashboard');
   expect(doc.getElementById('word-count-label').textContent).toBe('214 radikál');
   api.setLessonFilter('3');
-  expect(doc.getElementById('filter-pills').textContent).toContain('3 vonás');
-  expect(doc.querySelectorAll('#word-list .word-row').length).toBe(rad.words.filter(w => w.lesson === 3).length);
+  expect(doc.getElementById('filter-pills').textContent).toContain('Radikál 3. lecke');
+  expect(doc.querySelectorAll('#word-list .word-row').length).toBe(10);
   api.setLessonFilter('all');
 
-  // A JLPT-haladás nem a radikáloké
+  // A JLPT-haladás nem a radikáloké: a Kezdőlapon az útvonal sora és leckekártyája látszik
   api.showScreen('home');
-  expect(doc.querySelector('#home-actions .home-jlpt:not(.home-leech)')).toBeNull();
+  expect(doc.querySelector('#home-actions .home-jlpt:not(.home-leech):not(.wk-link)').textContent).toContain('Útvonal');
+  expect(doc.querySelector('#home-current-lesson .lesson-card-kicker').textContent).toBe('Aktuális lecke · Radikál-útvonal');
 
   // Tanulókártya: busu-név, olvasat, kandzsik ezzel a radikállal
   rad.practice = { type: 'learn', queue: [hito.id], batchIds: [hito.id], learnedIds: [], againIds: [] };

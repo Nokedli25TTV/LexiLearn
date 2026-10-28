@@ -9,6 +9,7 @@ import { calcStreak } from '../features/streak.js';
 import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordLearned } from './goal.js';
 import { dueForecast, scheduleLearnedWord } from '../srs/schedule.js';
 import { crossedMilestones, isLearnedWord } from '../goal/jlpt.js';
+import { completedLessons, coverageOf } from '../goal/radical-path.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { japaneseBackLine } from '../core/util.js';
 import { renderHome } from './home.js';
@@ -35,7 +36,8 @@ function startLearnSession() {
     roundNumber: 1, roundWords: [], currentIdx: 0, errorList: [],
     roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now(),
     sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0,
-    jlptBefore: jlptLearnedCount() // V13.6: mérföldkő-jelzéshez a tanulás végén
+    jlptBefore: jlptLearnedCount(), // V13.6: mérföldkő-jelzéshez a tanulás végén
+    lessonsBefore: currentMode === 'radicals' ? completedLessons(state.words) : null // V13.24: kész útvonal-lecke jelzése
   };
   showScreen('practice');
   showLearnCard();
@@ -48,6 +50,7 @@ function jlptLearnedCount() {
 }
 
 function milestoneNoteHtml(p) {
+  if (Array.isArray(p.lessonsBefore)) return pathLessonNoteHtml(p);
   if (p.jlptBefore === null || p.jlptBefore === undefined) return '';
   const kind = currentMode === 'kanji' ? 'kanji' : 'words';
   const crossed = crossedMilestones(kind, p.jlptBefore, jlptLearnedCount());
@@ -55,6 +58,16 @@ function milestoneNoteHtml(p) {
   const m = crossed[crossed.length - 1];
   const unit = kind === 'kanji' ? 'kandzsi' : 'szó';
   return `<button class="learn-milestone" onclick="showGoalScreen()">Mérföldkő: ${m.n.toLocaleString('hu-HU')} ${unit}${m.levelEnd ? ` · ${m.level} szint` : ''}</button>`;
+}
+
+// V13.24: ha a tanulással egy Radikál-útvonal lecke teljessé vált, egy csendes sor jelzi a mostani lefedettséggel
+function pathLessonNoteHtml(p) {
+  const before = new Set(p.lessonsBefore);
+  const done = completedLessons(state.words).filter(n => !before.has(n));
+  if (!done.length) return '';
+  const known = new Set(state.words.filter(isLearnedWord).map(w => w.en));
+  const text = Math.floor(coverageOf(known).text * 100);
+  return `<button class="learn-milestone" onclick="showGoalScreen()">Kész a ${done.at(-1)}. lecke · a szövegek kandzsijainak ${text}%-a lefedve</button>`;
 }
 
 function showLearnCard() {
@@ -205,7 +218,7 @@ function showLearnComplete() {
       ${milestoneNoteHtml(p)}
       <div class="learn-done-words">${chips}</div>
       <div class="learn-done-actions">
-        ${nextBatch > 0 ? `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Még ${nextBatch} új szó</span></button>`
+        ${nextBatch > 0 ? `<button class="cta-learn cta-compact" onclick="startLearnSession()"><span class="cta-main">Még ${nextBatch} új ${unitOf()}</span></button>`
           : dueCount > 0 ? `<button class="cta-learn cta-compact" onclick="startReviewSession()"><span class="cta-main">Ismétlés · ${dueCount} esedékes</span></button>` : ''}
         <button class="btn-quiet" onclick="startTodayReview()">Gyors kvíz a mai szavakból</button>
         <button class="btn-quiet" onclick="showScreen('home')">Vissza a kezdőlapra</button>

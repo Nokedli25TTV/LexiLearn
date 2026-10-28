@@ -106,8 +106,7 @@ const SORT_OPTIONS = [
 
 /* ── Szűrő opciók ── */
 function lessonLabel(v) {
-  if (currentMode === 'radicals') return `${v} vonás`; // V13.23: a radikálok „leckéje” a vonásszám
-  const prefix = currentMode === 'kanji' ? 'Kanji' : 'Dekiru';
+  const prefix = currentMode === 'kanji' ? 'Kanji' : currentMode === 'radicals' ? 'Radikál' : 'Dekiru'; // V13.24: útvonal-lecke
   if (Number.isNaN(Number(v))) return `${prefix}: ${v}`;
   const book = currentMode === 'japanese' && Number(v) >= 25 ? ' · 2. könyv' : '';
   return `${prefix} ${v}. lecke${book}`;
@@ -115,15 +114,10 @@ function lessonLabel(v) {
 
 // A Lecke pilla felirata: egy lecke névvel, kettő felsorolva, összefüggő sor tartományként, különben darabszám
 function lessonsLabel(values) {
-  const strokes = currentMode === 'radicals';
-  if (values.length === 0) return strokes ? 'Vonásszám' : 'Lecke';
+  if (values.length === 0) return 'Lecke';
   if (values.length === 1) return lessonLabel(values[0]);
   const nums = values.map(Number).sort((a, b) => a - b);
   if (nums.some(Number.isNaN)) return `${values.length} lecke`;
-  if (strokes) {
-    const contiguous = nums.every((n, i) => i === 0 || n === nums[i - 1] + 1);
-    return contiguous ? `${nums[0]}–${nums[nums.length - 1]} vonás` : `${nums.join(', ')} vonás`;
-  }
   if (nums.length === 2) return `${nums[0]}., ${nums[1]}. lecke`;
   const contiguous = nums.every((n, i) => i === 0 || n === nums[i - 1] + 1);
   return contiguous ? `${nums[0]}–${nums[nums.length - 1]}. lecke` : `${nums.length} lecke`;

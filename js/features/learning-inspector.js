@@ -117,6 +117,7 @@ function restoreReviewWord(id) {
 
 const INSPECTORS = {
   learned: ['JLPT-haladásba számító megtanult szavak', w => LEVELS.includes(w.diff) && isLearnedWord(w)],
+  learnedAll: ['Megtanult', w => isLearnedWord(w)], // V13.24: Radikál-útvonal (a radikálok nem JLPT-szintűek)
   dailyJlpt: ['JLPT-haladás: napi tanulás', w => LEVELS.includes(w.diff) && !!w.stats?.learnedAt],
   practiceJlpt: ['JLPT-haladás: gyakorlásból ismert', w => LEVELS.includes(w.diff) && !w.stats?.learnedAt && isPracticeLearned(w)],
   reviewJlpt: ['JLPT-haladás: aktív ismétlés', w => LEVELS.includes(w.diff) && !!w.stats?.srs],

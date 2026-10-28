@@ -534,14 +534,14 @@ function syncNewWords() {
   );
 
   // --- V13.23: RADIKÁLOK (radicals_data.js) ---
-  // en: a radikál, hu: magyar jelentés, romaji: a busu-név (pl. ninben), lecke: a vonásszám,
-  // diff: a JLPT-szint, ha a radikál önálló kandzsiként is az, különben '–'
+  // en: a radikál, hu: magyar jelentés, romaji: a busu-név (pl. ninben), lecke: a Radikál-útvonal leckéje
+  // (V13.24; path: a helye az útvonalon), diff: a JLPT-szint, ha a radikál önálló kandzsiként is az, különben '–'
   const kanjiChars = new Set(KANJI_DATA.map(k => k.kanji));
   const radicalSet = new Set(RADICALS_DATA.map(r => r.radical));
   RADICALS_DATA.forEach(r => {
     const fields = {
       hu: r.hu, romaji: r.romaji, onyomi: r.onyomi || '', kunyomi: r.kunyomi || '',
-      diff: r.jlpt || '–', lesson: r.strokes, kangxi: r.id,
+      diff: r.jlpt || '–', lesson: r.lesson, path: r.path, strokes: r.strokes, kangxi: r.id,
       tags: [kanjiChars.has(r.radical) ? 'önálló kandzsi is' : 'csak elemként']
     };
     const existing = appData.radicals.words.find(x => x.en === r.radical);

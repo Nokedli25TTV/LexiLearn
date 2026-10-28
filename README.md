@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.23" src="https://img.shields.io/badge/verzi%C3%B3-13.23-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.24" src="https://img.shields.io/badge/verzi%C3%B3-13.24-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -88,7 +88,9 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 ### Radikálok: a 214 Kangxi-radikál (a KanjiRadical projektből)
 
 - Negyedik mód az Angol, Japán és Kandzsi mellett, saját napi penzummal (alapból 5), ismétléssel, statisztikával és haladással; a JLPT-sávba nem számít bele.
-- Minden radikálnál a busu-név (pl. *hito*), a magyar jelentés, az on és kun olvasat és a JLPT-szint, ha önálló kandzsiként is az. A napi új radikálok a hagyományos Kangxi-sorrendben jönnek, a Gyakorlás fülön vonásszám szerint szűrhetők.
+- Minden radikálnál a busu-név (pl. *hito*), a magyar jelentés, az on és kun olvasat és a JLPT-szint, ha önálló kandzsiként is az.
+- **Radikál-útvonal:** 22 lecke, leckénként 10 radikál, olyan sorrendben, hogy minden új radikál a lehető legtöbb gyakori kandzsit tegye teljessé (日 木 月 人 大 一 口 土 寸 丨 az első lecke). A napi új radikálok ebben a sorrendben jönnek, a Gyakorlás fülön leckénként szűrhetők.
+- **Cél és lefedettség:** a Haladás képernyőn választható cél (50%, 80%, 90% vagy mind a 214) és célidőpont (alapból fél év). Egy kandzsi akkor lefedett, ha minden radikálját tudod; a szöveg-lefedettség azt mutatja, hogy a japán Wikinews és Wikipédia kandzsi-előfordulásainak mekkora része ilyen. A 80%-hoz 11 lecke (110 radikál) kell; mellette a hátralévő radikálok, a szükséges heti tempó, az utóbbi 14 nap átlaga és a várható célba érés, mint a JLPT-haladásnál.
 - Vonássorrend és **Írás** gyakorlat a csak elemként élő radikálokhoz is (a 辵, 靑, 戶 vonásai a mai 辶, 青, 戸 alakból).
 - **Kandzsi ↔ radikál:** a kandzsi kártyáján a radikáljai (休 → 亻 人 · ember + 木 fa, a szótári radikál kiemelve), a radikál kártyáján a kandzsik, amelyekben szerepel (a már megtanultak elöl). A felbontás a KanjiVG elemfájából készül (`tools/build-radicals.mjs`).
 
@@ -224,6 +226,7 @@ npm run check      # lint + az összes teszt
 ## Források
 
 - **Vonássorrend:** [KanjiVG](https://kanjivg.tagaini.net), © Ulrich Apel, [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.hu). A `kanjivg/` mappa adatai ebből származnak, és ugyanezen licenc alatt használhatók tovább.
+- **Kandzsi-gyakoriság (Radikál-útvonal):** [scriptin/kanji-frequency](https://github.com/scriptin/kanji-frequency) (Wikinews + Wikipédia), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.hu).
 - **Ismétlésütemezés:** az [FSRS](https://github.com/open-spaced-repetition) algoritmus 5. változata, az alapértelmezett paraméterekkel.
 - **Betűk:** Nunito és Lora (Google Fonts, SIL Open Font License).
 - **Tárolás és felhő:** [localforage](https://github.com/localForage/localForage), [Firebase](https://firebase.google.com).

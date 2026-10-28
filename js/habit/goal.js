@@ -55,8 +55,8 @@ function getNewWordPool() {
     pool = pool.filter(w => Number.isFinite(lessonNum(w)));
     return pool.sort((a, b) => (lessonNum(a) - lessonNum(b)) || (order.get(a.id) - order.get(b.id)));
   }
-  // V13.23: a radikálok a hagyományos Kangxi-sorrendben (ez vonásszám szerinti is)
-  if (currentMode === 'radicals') return pool.sort((a, b) => (a.kangxi || 999) - (b.kangxi || 999) || (order.get(a.id) - order.get(b.id)));
+  // V13.24: a radikálok a Radikál-útvonal sorrendjében (a leggyakoribb építőelemek elöl)
+  if (currentMode === 'radicals') return pool.sort((a, b) => (a.path || 999) - (b.path || 999) || (order.get(a.id) - order.get(b.id)));
   return pool
     .sort((a, b) => (lessonNum(a) - lessonNum(b)) || (diffOrder(a.diff) - diffOrder(b.diff)) || (order.get(a.id) - order.get(b.id)));
 }
@@ -64,7 +64,7 @@ function getNewWordPool() {
 // Az aktuális tankönyvi lecke állapota a Kezdőlaphoz. A több leckében szereplő
 // szó mindegyik érintett leckében számít, ugyanúgy, mint a Gyakorlás szűrőjében.
 function getCurrentLessonProgress() {
-  if (currentMode !== 'japanese') return null;
+  if (currentMode !== 'japanese' && currentMode !== 'radicals') return null; // V13.24: a Radikál-útvonal is leckés
   const lessonWords = new Map();
   state.words.forEach(w => {
     const lessons = (Array.isArray(w.lesson) ? w.lesson : [w.lesson])
@@ -108,7 +108,7 @@ function hasPoolFilters() {
 function describePoolSource() {
   const first = getNewWordPool()[0];
   if (currentMode === 'japanese') return first ? `Dekiru ${lessonNum(first)}. lecke · sorrendben` : 'Dekiru leckék';
-  if (currentMode === 'radicals') return first ? `${lessonNum(first)} vonásos radikálok · Kangxi-sorrendben` : 'Radikálok · Kangxi-sorrendben';
+  if (currentMode === 'radicals') return first ? `Radikál-útvonal ${lessonNum(first)}. lecke · sorrendben` : 'Radikál-útvonal';
   if (currentMode === 'kanji') return first && Number.isFinite(lessonNum(first))
     ? `Kanji ${lessonNum(first)}. lecke · sorrendben` : 'Kanji leckék · sorrendben';
   return 'Teljes angol szótár · szint szerint';

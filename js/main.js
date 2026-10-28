@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.23)
+// LexiLearn – belépési pont (V13.24)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -22,7 +22,7 @@ import { clearFilters, openCurrentLesson, openPoolSource, renderHome } from './h
 import { learnSwipe, speakLearnWord, startLearnSession, startTodayReview } from './habit/learn.js';
 import { flipReviewCard, rateReview, speakReviewWord, startReviewSession } from './habit/review.js';
 import { RENAMED_WORDS, seedSrsAll } from './core/storage.js';
-import { setGoalDate, showGoalScreen } from './goal/view.js';
+import { setGoalDate, setPathGoalDate, setPathTarget, showGoalScreen } from './goal/view.js';
 import { setDirection, setPracticeOption, toggleDockSettings } from './library/dock.js';
 import './library/filters.js';
 import { applyFilters, initLibraryEvents, renderDashboard, selectNone, switchViewTab, toggleSelectAll } from './library/list.js';
@@ -138,6 +138,8 @@ Object.assign(window, {
   lexiRenamedWords: RENAMED_WORDS, // V13.18: a firebase-sync.js így a régi alakú felhőszót is párosítja
   showGoalScreen,
   setGoalDate,
+  setPathGoalDate,
+  setPathTarget,
   switchStatsTab,
   switchViewTab,
   suspendReviewWord,
@@ -160,7 +162,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.23 indítása...");
+console.log("[LexiLearn] V13.24 indítása...");
 initV6Features();
 initViewportFix(); // V13.20: iOS 26 standalone – a fix sávok ne csússzanak el a billentyűzet után
 initLibraryEvents();

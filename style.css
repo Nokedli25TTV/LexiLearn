@@ -2755,6 +2755,34 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .jl-ms-more { padding: 8px 0; font-size: 13px; font-weight: 600; color: var(--text-3); border-bottom: 1px solid var(--border); }
 .jl-coverage { max-width: 65ch; margin-top: 10px; font-size: 13px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
 
+/* V13.24: Radikál-útvonal (a Haladás képernyő és a Statisztika kártya elemeiből; új szín nincs) */
+.rp-cover { margin: 10px 0 0; font-size: 14px; font-weight: 600; color: var(--text-2); }
+.rp-cover b { font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+.rp-targets { margin-bottom: 4px; }
+.rp-now { margin-top: 14px; }
+.rp-hint { margin: -2px 0 6px; }
+.rp-list .jl-ms {
+  width: 100%;
+  min-height: 56px;
+  padding: 6px 0;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background: none;
+  color: inherit;
+  font-family: 'Nunito', sans-serif;
+  text-align: left;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.rp-list li:last-child .jl-ms { border-bottom: none; }
+@media (hover: hover) { .rp-list .jl-ms:hover .jl-ms-name { color: var(--primary-h); } }
+.rp-lesson-main { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.rp-chars { font-size: 16px; font-weight: 600; letter-spacing: 0.14em; color: var(--text-2); overflow-wrap: anywhere; }
+.rp-lesson.is-next .rp-chars { color: var(--text-3); }
+.rp-later .jl-ms-list, .rp-how .jl-coverage:first-of-type { margin-top: 0; }
+.rp-how .jl-coverage + .jl-coverage { margin-top: 8px; }
+
 /* Tanulás vége: elért mérföldkő (csendes, nem ünnepi) */
 .learn-milestone {
   min-height: 40px;

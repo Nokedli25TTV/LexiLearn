@@ -11,6 +11,10 @@ window.LEXI_DATA = {
   // V13.23: Radikálok mód (radicals_data.js, előállítja: tools/build-radicals.mjs)
   radicalsData:     typeof RADICALS_DATA !== 'undefined' ? RADICALS_DATA : [],
   kanjiRadicals:    typeof KANJI_RADICALS !== 'undefined' ? KANJI_RADICALS : {},
+  // V13.24: Radikál-útvonal
+  radicalLessons:   typeof RADICAL_LESSONS !== 'undefined' ? RADICAL_LESSONS : [],
+  kanjiFreq:        typeof KANJI_FREQ !== 'undefined' ? KANJI_FREQ : {},
+  kanjiFreqTotal:   typeof KANJI_FREQ_TOTAL !== 'undefined' ? KANJI_FREQ_TOTAL : 0,
   englishSentences: typeof english_sentences2 !== 'undefined' ? english_sentences2 : [],
   travelPlan:       typeof TRAVEL_PLAN !== 'undefined' ? TRAVEL_PLAN : null,
   travelPlanKanji:  typeof TRAVEL_PLAN_KANJI !== 'undefined' ? TRAVEL_PLAN_KANJI : null,
