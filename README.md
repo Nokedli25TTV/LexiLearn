@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.24" src="https://img.shields.io/badge/verzi%C3%B3-13.24-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.25" src="https://img.shields.io/badge/verzi%C3%B3-13.25-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -75,7 +75,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - Koppintásra megfordul: jelentés, kandzsi írásmód, romaji és egy példamondat furiganával, magyar fordítással.
 - **Kandzsi ↔ szó:** a japán szó hátoldalán a benne lévő kandzsik a jelentésükkel (名 név · 前 előtt), a kandzsi hátoldalán legfeljebb három szó, amelyben szerepel (a már megtanultak elöl). Az írásmód a szó saját adatából vagy a saját példamondataiból jön, csak ha egyértelmű.
 - A „Még nem” kártya a sor végére kerül, és addig visszajön, amíg egyszer nem megy.
-- Kiejtés japánul és angolul (iOS kezdőképernyős appban is), billentyűzettel a nyilak és a Szóköz is működik.
+- Kiejtés japánul, angolul és magyarul (iOS kezdőképernyős appban is, a némító kapcsoló mellett is szól, ha a Zene mellett ki van kapcsolva), billentyűzettel a nyilak és a Szóköz is működik.
 
 ### Ismétlés: Anki-szerű ütemezés (FSRS-5)
 
@@ -170,7 +170,7 @@ Saját szó felvehető kézzel vagy listából importálva.
 
 - Sötét téma alapból, meleg világos téma egy kapcsolóra.
 - **Napi emlékeztető:** a Profilban egy naponta ismétlődő naptáresemény (.ics, riasztással) tölthető le a választott időpontra; a telefon naptára akkor is jelez, ha az app zárva van.
-- **Kiejtés a zene mellett:** a Profilban bekapcsolva a kiejtés nem állítja meg a háttérben szóló zenét (például Spotify), hanem ráhangzik (iOS 16.4-től, Audio Session API).
+- **Kiejtés a zene mellett:** a Profilban bekapcsolva a kiejtés nem állítja meg a háttérben szóló zenét (például Spotify), hanem ráhangzik (iOS 16.4-től, Audio Session API). Ilyenkor a némító kapcsoló a kiejtést is elnémítja.
 - Egy kéz, egy hüvelykujj: a navigáció és a gyakorlás indítása alul, lebegő sávon. iOS 26 kezdőképernyős appban a sávok a billentyűzet bezárása után sem csúsznak el (a WebKit visualViewport-hibáját ellensúlyozza).
 - WCAG AA kontraszt mindkét témában, `prefers-reduced-motion` tisztelete, billentyűzetes alternatíva minden húzáshoz, legalább 44 px-es érintési felületek.
 - Felnőtt, nyugodt nyelvezet: Konzisztencia, Napi penzum, Napi feladatok.

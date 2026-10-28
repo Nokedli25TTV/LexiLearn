@@ -4,10 +4,11 @@
      index.html  → Network-first (mindig a legfrissebb UI)
      JS/CSS/ikonok → Cache-first (villámgyors indulás)
      kanjivg/*.json → Cache-first, külön, verziófüggetlen cache-ben (V13.9)
+     hang (Range / audio), Firestore, kiejtés → nem nyúl hozzá (V13.25)
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-24';
+const CACHE_NAME = 'lexilearn-v13-25';
 // A vonássorrend-adat (1,7 MB) igény szerint töltődik le, és az app frissítései túlélik.
 // Ha a tools/build-kanjivg.mjs újragenerálja a fájlokat, ezt a nevet kell léptetni.
 const KANJIVG_CACHE = 'lexilearn-kanjivg-1';
@@ -128,14 +129,22 @@ self.addEventListener('message', event => {
   }
 });
 
+/* V13.25: a külső kérések közül csak ezek a hosztok kerülnek a cache-be (localforage, betűk, Firebase SDK,
+   zászlók). Minden mást (a kiejtés hangja, a Firestore) a böngésző kezel, a service worker nem nyúl hozzá. */
+const CACHEABLE_HOSTS = new Set(['cdnjs.cloudflare.com', 'fonts.googleapis.com', 'fonts.gstatic.com', 'www.gstatic.com', 'flagcdn.com']);
+
 /* ── FETCH: kettős stratégia ─────────────────────────── */
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  // V13.25: hang és videó soha nem megy át a service workeren: az <audio> Range fejléccel kér, és a Safari a
+  // service workeren átadott, nem részleges (200) választ nem mindig játssza le. A kiejtés kérése így közvetlen.
+  if (event.request.headers.has('range') || event.request.destination === 'audio' || event.request.destination === 'video') return;
+  if (url.origin !== self.location.origin && !CACHEABLE_HOSTS.has(url.hostname)) return;
 
   const isNavigation = event.request.mode === 'navigate' || event.request.destination === 'document';
 
   /* V13.9: vonássorrend (kanjivg/n5.json … n1.json): cache-first a saját cache-ben */
-  const url = new URL(event.request.url);
   if (url.origin === self.location.origin && url.pathname.includes('/kanjivg/')) {
     event.respondWith(
       caches.open(KANJIVG_CACHE).then(async cache => {
