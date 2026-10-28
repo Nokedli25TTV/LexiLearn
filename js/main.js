@@ -9,6 +9,7 @@ import './core/state.js';
 import { loadState, savePlaylists, saveStats, saveWords } from './core/storage.js';
 import { escHtml, jsArg } from './core/util.js';
 import { clearAllBookmarks, clearLessonFocus, toggleBookmark, toggleLessonFocus } from './features/bookmarks.js';
+import { openLeeches } from './features/leeches.js';
 import { doAddWord, doImport, exportData, importData, openAddModal, openImportModal } from './features/import-export.js';
 import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
 import { setDailyGoal, toggleMixAudio } from './features/profile.js';
@@ -48,6 +49,7 @@ Object.assign(window, {
   checkSentenceAnswer,
   clearAllBookmarks,
   clearLessonFocus,
+  openLeeches,
   clearDiff,
   clearFilters,
   clearLessons,

@@ -3,6 +3,7 @@
 import { TRAVEL_PLAN, TRAVEL_PLAN_KANJI } from '../core/data.js';
 import { currentMode, state } from '../core/state.js';
 import { isNewWord } from '../habit/goal.js';
+import { isLeech } from '../features/leeches.js';
 
 /* ══════════════════════════════════════════════════════
    ÚTI TERV – AKTÍV NAPI TERV
@@ -85,6 +86,8 @@ function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false, ignor
   if (f.list && f.list !== 'all') {
     if (f.list === '__focus') {
       if (!w.bookmarked) return false;
+    } else if (f.list === '__leech') {
+      if (!isLeech(w)) return false;
     } else if (isLessonFocusList(f.list)) {
       if (!w.lessonFocus || !lessonFocusKeys(w).includes(f.list.slice(LESSON_FOCUS_PREFIX.length))) return false;
     } else {
@@ -164,6 +167,7 @@ function validateDayFilter() {
 function listLabel(id) {
   if (!id || id === 'all') return 'Lista';
   if (id === '__focus') return 'Fókusz Lista';
+  if (id === '__leech') return 'Makacs szavak';
   if (isLessonFocusList(id)) return `${lessonFocusLabel(id.slice(LESSON_FOCUS_PREFIX.length))} · fókusz`;
   return (state.playlists || []).find(p => p.id === id)?.name || 'Lista';
 }

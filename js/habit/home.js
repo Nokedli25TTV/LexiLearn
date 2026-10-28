@@ -12,6 +12,7 @@ import { showToast } from '../ui/toast.js';
 import { REVIEW_BATCH_SIZE, dueForecast } from '../srs/schedule.js';
 import { goalLineHtml } from '../goal/view.js';
 import { weekHomeRowHtml } from '../stats/week.js';
+import { leechHomeRowHtml } from '../features/leeches.js';
 
 /* ── KEZDŐLAP ─────────────────────────────────────────── */
 function renderHome() {
@@ -121,7 +122,7 @@ function renderHome() {
 
   const actions = document.getElementById('home-actions');
   // V13.13: hetente egyszer egy csendes sor a lezárt hétről (megnézés után eltűnik)
-  if (actions) actions.innerHTML = reviewHtml + learnHtml + forecastHtml + queueHtml + goalLineHtml() + weekHomeRowHtml();
+  if (actions) actions.innerHTML = reviewHtml + learnHtml + forecastHtml + queueHtml + goalLineHtml() + leechHomeRowHtml() + weekHomeRowHtml();
 
   renderDailyQuests();
 }

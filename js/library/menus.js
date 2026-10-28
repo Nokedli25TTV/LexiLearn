@@ -3,6 +3,7 @@
 import { currentMode, diffOrder, state } from '../core/state.js';
 import { escHtml, jsArg } from '../core/util.js';
 import { getBookmarkedWords, hasLessonFocus } from '../features/bookmarks.js';
+import { getLeeches } from '../features/leeches.js';
 import { PRACTICE_LEARNED_CORRECT } from '../goal/jlpt.js';
 import { _dockOpen, toggleDockSettings } from './dock.js';
 import { SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonFocusGroups, getLessonOptions, getStatusCounts, hasActiveFilters, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordMatchesFilters } from './filters.js';
@@ -268,6 +269,11 @@ function listMenuHtml() {
       extra: bmCount > 0 ? menuIconBtn('clearAllBookmarks()', 'Összes csillag törlése', UI_ICONS.trash) : ''
     })
   ];
+  // V13.18: az app által felismert makacs szavak (csak ha van ilyen, vagy épp ez a szűrő)
+  const leechCount = getLeeches().length;
+  if (leechCount > 0 || f.list === '__leech') {
+    rows.push(menuOption({ selected: f.list === '__leech', label: 'Makacs szavak', meta: leechCount, action: `setListFilter('__leech')` }));
+  }
   // V13.17: leckénkénti fókusz listák (a gyakorlókártya zászlójával jelölt nehéz szavak)
   let lessonNote = '';
   if (hasLessonFocus()) {
