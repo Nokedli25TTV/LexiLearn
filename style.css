@@ -1940,6 +1940,10 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
   cursor: pointer;
 }
 @media (hover: hover) { .menu-link:hover { color: var(--text); } }
+/* V13.18: Anki export a Lista menü alján */
+.menu-foot:has(.menu-anki) { flex-wrap: wrap; }
+.menu-anki { display: block; flex: 1 0 100%; width: 100%; min-height: 44px; text-align: center; }
+.menu-anki:disabled { color: var(--text-3); cursor: default; }
 /* Kész / Mentés: fordított semleges gomb, mindkét témában erős kontraszt */
 .menu-done {
   flex: none;

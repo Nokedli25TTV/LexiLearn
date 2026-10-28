@@ -10,7 +10,7 @@ import { loadState, savePlaylists, saveStats, saveWords } from './core/storage.j
 import { escHtml, jsArg } from './core/util.js';
 import { clearAllBookmarks, clearLessonFocus, toggleBookmark, toggleLessonFocus } from './features/bookmarks.js';
 import { openLeeches, practiceLessonHard } from './features/leeches.js';
-import { doAddWord, doImport, exportData, importData, openAddModal, openImportModal } from './features/import-export.js';
+import { doAddWord, doImport, exportData, exportSelectedToAnki, importData, openAddModal, openImportModal } from './features/import-export.js';
 import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
 import { setDailyGoal, setReviewBatch, toggleMixAudio } from './features/profile.js';
 import { downloadReminder, setReminderTime } from './features/reminder.js';
@@ -66,6 +66,7 @@ Object.assign(window, {
   escHtml,
   expandPlaylist,
   exportData,
+  exportSelectedToAnki,
   finishSession,
   googleSignIn,
   importData,

@@ -4,6 +4,9 @@ import { currentMode, state } from '../core/state.js';
 import { _migrateMonolithToSplit, saveWords, stableWordId } from '../core/storage.js';
 import { applyFilters, renderDashboard } from '../library/list.js';
 import { closeModal, showToast } from '../ui/toast.js';
+import { downloadText, escHtml } from '../core/util.js';
+import { todayKey } from '../core/dates.js';
+import { wordWriting } from './kanji-links.js';
 
 /* ══════════════════════════════════════════════════════
    IMPORT / EXPORT
@@ -193,4 +196,38 @@ function migrateDiff(d) {
   }
 }
 
-export { doAddWord, doImport, exportData, importData, migrateDiff, openAddModal, openImportModal };
+/* ══════════════════════════════════════════════════════
+   V13.18: ANKI EXPORT – a kijelölt szavak Anki szöveges importfájlként
+   (tabulátorral tagolt, fejlécsorokkal: elválasztó, HTML, címkeoszlop).
+   Japánnál elöl az írásmód és a kana, hátul a jelentés és a romaji.
+══════════════════════════════════════════════════════ */
+const ankiField = s => escHtml(String(s ?? '').replace(/[\t\r\n]+/g, ' ').trim());
+const ankiTag = s => String(s ?? '').trim().replace(/\s+/g, '_');
+
+function ankiRow(w, mode) {
+  let front = ankiField(w.en), back = ankiField(w.hu);
+  if (mode === 'japanese') {
+    const writing = wordWriting(w);
+    front = writing ? `${ankiField(writing)}<br>${ankiField(w.en)}` : ankiField(w.en);
+    if (w.romaji) back += `<br>${ankiField(w.romaji)}`;
+  } else if (mode === 'kanji') {
+    back += `<br>On: ${ankiField(w.onyomi || '–')} · Kun: ${ankiField(w.kunyomi || '–')}`;
+  }
+  const lessons = (Array.isArray(w.lesson) ? w.lesson : [w.lesson]).filter(l => l !== undefined && l !== null && l !== '');
+  const prefix = mode === 'kanji' ? 'Kanji_lecke_' : 'Dekiru_';
+  const tags = ['LexiLearn', `LexiLearn::${mode}`, w.diff, ...lessons.map(l => prefix + l), ...(w.tags || [])].filter(Boolean).map(ankiTag);
+  return [front, back, [...new Set(tags)].join(' ')].join('\t');
+}
+
+function buildAnkiExport(words, mode) {
+  return ['#separator:tab', '#html:true', '#tags column:3', ...words.map(w => ankiRow(w, mode))].join('\n') + '\n';
+}
+
+function exportSelectedToAnki() {
+  const words = state.words.filter(w => state.selectedIds.has(w.id));
+  if (words.length === 0) { showToast('Előbb jelölj ki szavakat.'); return; }
+  downloadText(`LexiLearn-anki-${currentMode}-${todayKey()}.txt`, buildAnkiExport(words, currentMode));
+  showToast(`${words.length} szó exportálva. Ankiban: Fájl → Importálás.`);
+}
+
+export { buildAnkiExport, doAddWord, doImport, exportData, exportSelectedToAnki, importData, migrateDiff, openAddModal, openImportModal };

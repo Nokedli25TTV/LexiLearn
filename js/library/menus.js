@@ -303,7 +303,8 @@ function listMenuHtml() {
       <input id="playlist-name-input" type="text" maxlength="40" autocomplete="off" aria-label="Új lista neve"
         placeholder="${sel > 0 ? `${sel} kijelölt szó mentése új listaként` : 'Jelölj ki szavakat egy új listához'}" ${sel > 0 ? '' : 'disabled'}>
       <button type="submit" class="menu-done" ${sel > 0 ? '' : 'disabled'}>Mentés</button>
-    </form>`;
+    </form>
+    <button class="menu-link menu-anki" onclick="exportSelectedToAnki()" ${sel > 0 ? '' : 'disabled'}>${sel > 0 ? `${sel} kijelölt szó exportálása Ankiba` : 'Anki export: jelölj ki szavakat'}</button>`;
   return menuShell('Lista', 'Szűrés listára', `<div role="listbox" aria-label="Lista">${rows.join('')}</div>${lessonNote}`, foot);
 }
 
