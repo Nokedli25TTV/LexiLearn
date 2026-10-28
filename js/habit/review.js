@@ -2,7 +2,7 @@
 // V13.5: ESEDÉKES ISMÉTLÉS (Anki-szerű). A kártya elöl a szót mutatja, koppintásra megfordul, és csak
 // utána lehet értékelni: Újra / Nehéz / Jó / Könnyű (1-4), mindegyik alatt a következő ismétlésig
 // hátralévő idő. Húzással: balra Újra, jobbra Jó. Az "Újra" kártya a mai sor végére kerül.
-// Egy alkalom legfeljebb REVIEW_BATCH_SIZE kártya; minden értékelés azonnal mentődik.
+// Egy alkalom legfeljebb getReviewBatch() kártya (alapból 20, a Profilban állítható); minden értékelés azonnal mentődik.
 import { todayKey } from '../core/dates.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
 import { currentMode, state } from '../core/state.js';
@@ -10,8 +10,8 @@ import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, japaneseBackLine } from '../core/util.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { AGAIN, HARD, GOOD, EASY } from '../srs/fsrs.js';
-import { REVIEW_BATCH_SIZE, dueForecast, fmtInterval, getDueWords, previewWord, rateWord } from '../srs/schedule.js';
-import { getDailyGoal, getNewWordPool, getTodayWords, logActivity } from './goal.js';
+import { dueForecast, fmtInterval, getDueWords, previewWord, rateWord } from '../srs/schedule.js';
+import { getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords, logActivity } from './goal.js';
 import { renderHome } from './home.js';
 import { getExampleSentence, updatePracticeTop } from '../practice/engine.js';
 import { speakWord } from '../practice/tts.js';
@@ -32,7 +32,7 @@ let _reviewRevealed = false; // a jelentést egyszer már megnézte → értéke
 function startReviewSession() {
   const due = getDueWords(state.words);
   if (due.length === 0) { showToast('Mára nincs esedékes ismétlés.'); renderHome(); return; }
-  const ids = due.slice(0, REVIEW_BATCH_SIZE).map(w => w.id);
+  const ids = due.slice(0, getReviewBatch()).map(w => w.id);
   state.practice = {
     type: 'review', origin: 'home',
     queue: [...ids], batchIds: ids, doneIds: [], againIds: [],

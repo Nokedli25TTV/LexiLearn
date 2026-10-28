@@ -411,6 +411,17 @@
       </div>
     </section>
 
+    <section class="pf-section" aria-labelledby="pf-review-title">
+      <h2 class="pf-title" id="pf-review-title">Ismétlés egy alkalommal · <span id="pf-review-mode">Angol</span></h2>
+      <p class="pf-text">Ennyi kártyát veszünk egyszerre. Egy fáradtabb estén elég kevesebb is: ami esedékes marad, egy újabb alkalommal folytatható, vagy holnap jön.</p>
+      <div class="segmented" id="review-segmented" role="radiogroup" aria-labelledby="pf-review-title">
+        <button role="radio" data-batch="10" onclick="setReviewBatch(10)">10</button>
+        <button role="radio" data-batch="20" onclick="setReviewBatch(20)">20</button>
+        <button role="radio" data-batch="30" onclick="setReviewBatch(30)">30</button>
+        <button role="radio" data-batch="50" onclick="setReviewBatch(50)">50</button>
+      </div>
+    </section>
+
     <section class="pf-section" aria-labelledby="pf-look-title">
       <h2 class="pf-title" id="pf-look-title">Megjelenés</h2>
       <button class="pf-toggle" id="theme-switch" role="switch" aria-checked="true" onclick="toggleTheme()">

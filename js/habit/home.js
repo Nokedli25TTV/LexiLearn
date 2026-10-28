@@ -5,11 +5,11 @@ import { MODE_LABELS, currentMode, state } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests } from '../features/quests.js';
 import { calcStreak, renderWeekTracker } from '../features/streak.js';
-import { LEARN_BATCH_SIZE, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getTodayWords } from './goal.js';
+import { LEARN_BATCH_SIZE, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords } from './goal.js';
 import { applyFilters } from '../library/list.js';
 import { closeFilterMenu, renderFilterBar } from '../library/menus.js';
 import { showToast } from '../ui/toast.js';
-import { REVIEW_BATCH_SIZE, dueForecast } from '../srs/schedule.js';
+import { dueForecast } from '../srs/schedule.js';
 import { goalLineHtml } from '../goal/view.js';
 import { weekHomeRowHtml } from '../stats/week.js';
 import { leechHomeRowHtml, lessonHardWords } from '../features/leeches.js';
@@ -69,7 +69,7 @@ function renderHome() {
 
   let reviewHtml = '';
   if (due > 0) {
-    const batch = Math.min(due, REVIEW_BATCH_SIZE);
+    const batch = Math.min(due, getReviewBatch());
     const mins = Math.max(1, Math.round(batch * 0.2));
     reviewHtml = `
       <button class="cta-learn" onclick="startReviewSession()">

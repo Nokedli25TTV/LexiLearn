@@ -2,7 +2,7 @@
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { MODE_LABELS, currentMode, state } from '../core/state.js';
 import { renderStorageInfo, saveStats } from '../core/storage.js';
-import { getDailyGoal } from '../habit/goal.js';
+import { REVIEW_BATCH_OPTIONS, getDailyGoal, getReviewBatch } from '../habit/goal.js';
 import { canMixWithMusic, isMixWithMusic, setMixWithMusic } from '../practice/tts.js';
 import { renderReminder } from './reminder.js';
 import { showToast } from '../ui/toast.js';
@@ -17,11 +17,28 @@ function renderProfile() {
   });
   const modeLbl = document.getElementById('pf-goal-mode');
   if (modeLbl) modeLbl.textContent = MODE_LABELS[currentMode];
+  const batch = getReviewBatch();
+  document.querySelectorAll('#review-segmented [data-batch]').forEach(btn => {
+    const isActive = Number(btn.dataset.batch) === batch;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+  });
+  const reviewLbl = document.getElementById('pf-review-mode');
+  if (reviewLbl) reviewLbl.textContent = MODE_LABELS[currentMode];
   const sw = document.getElementById('theme-switch');
   if (sw) sw.setAttribute('aria-checked', document.documentElement.getAttribute('data-theme') === 'dark' ? 'true' : 'false');
   renderMixAudio();
   renderReminder();
   renderStorageInfo();
+}
+
+// V13.18: egy ismétlési alkalom mérete (módonként, szinkronizált)
+function setReviewBatch(n) {
+  if (!REVIEW_BATCH_OPTIONS.includes(n)) return;
+  state.globalStats.reviewBatch = n;
+  saveStats();
+  renderProfile();
+  showToast(`Ismétlés (${MODE_LABELS[currentMode]}): egyszerre legfeljebb ${n} kártya`);
 }
 
 // V13.18: Zene mellett kapcsoló (csak ahol a böngésző ismeri az Audio Session API-t)
@@ -51,4 +68,4 @@ function setDailyGoal(n) {
   showToast(`Napi cél (${MODE_LABELS[currentMode]}): ${n} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}`);
 }
 
-export { renderMixAudio, renderProfile, setDailyGoal, toggleMixAudio };
+export { renderMixAudio, renderProfile, setDailyGoal, setReviewBatch, toggleMixAudio };

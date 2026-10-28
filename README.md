@@ -81,7 +81,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 
 - Négy gomb: **Újra, Nehéz, Jó, Könnyű**, mindegyik alatt a következő ismétlésig hátralévő idő („ma”, „3 n”, „2 hó”).
 - 90%-os célzott megtartás, napi felbontás; a „Rögzült” szó ismétlési köze legalább 21 nap.
-- Egy alkalom legfeljebb 20 kártya; az „Újra” még aznap visszajön. Húzással (balra Újra, jobbra Jó) és az 1-4 billentyűkkel is értékelhetsz.
+- Egy alkalom alapból legfeljebb 20 kártya (a Profilban módonként 10, 20, 30 vagy 50); az „Újra” még aznap visszajön. Húzással (balra Újra, jobbra Jó) és az 1-4 billentyűkkel is értékelhetsz.
 - Az SRS-be kizárólag a napi, Dekiru-sorrendű tanulásban már sikerült szavak kerülnek. A szabad gyakorlásban ötször egymás után helyesen megválaszolt szavak (egy hiba újraindítja a számolást) beleszámítanak a JLPT-haladásba és a statisztikába, de nem hoznak létre ismétlőkártyát; egy gyakorlási hiba csak egy már létező napi kártyát hozhat előre.
 - **Kezelhető ismétlési sor:** minden kártyán látszik a lecke, a bekerülés oka és az esedékesség; a kártya holnapra vagy egy héttel halasztható, szüneteltethető és később visszaállítható.
 
@@ -200,7 +200,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **131 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **132 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash

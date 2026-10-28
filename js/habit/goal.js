@@ -4,6 +4,7 @@ import { todayKey } from '../core/dates.js';
 import { currentMode, diffOrder, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { isLearnedWord } from '../goal/jlpt.js';
+import { REVIEW_BATCH_SIZE } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
    V13: NAPI SZOKÁS MOTOR – új szavak, napi cél, mai ismétlés
@@ -18,6 +19,13 @@ const LEARN_BATCH_SIZE = 5;
 
 function getDailyGoal() {
   return state.globalStats.dailyGoal || DEFAULT_DAILY_GOAL[currentMode] || 10;
+}
+
+// V13.18: egy ismétlési alkalom mérete, módonként állítható (globalStats.reviewBatch, szinkronizált)
+const REVIEW_BATCH_OPTIONS = [10, 20, 30, 50];
+function getReviewBatch() {
+  const n = state.globalStats.reviewBatch;
+  return REVIEW_BATCH_OPTIONS.includes(n) ? n : REVIEW_BATCH_SIZE;
 }
 
 function isNewWord(w) {
@@ -142,4 +150,4 @@ function markWordLearned(word) {
   saveStats();
 }
 
-export { ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, LEARN_BATCH_SIZE, _lastActivityTs, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getTodayWords, hasPoolFilters, isNewWord, logActivity, markWordLearned };
+export { _lastActivityTs, ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords, hasPoolFilters, isNewWord, LEARN_BATCH_SIZE, logActivity, markWordLearned, REVIEW_BATCH_OPTIONS };

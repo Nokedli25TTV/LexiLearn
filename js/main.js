@@ -12,7 +12,7 @@ import { clearAllBookmarks, clearLessonFocus, toggleBookmark, toggleLessonFocus 
 import { openLeeches, practiceLessonHard } from './features/leeches.js';
 import { doAddWord, doImport, exportData, importData, openAddModal, openImportModal } from './features/import-export.js';
 import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
-import { setDailyGoal, toggleMixAudio } from './features/profile.js';
+import { setDailyGoal, setReviewBatch, toggleMixAudio } from './features/profile.js';
 import { downloadReminder, setReminderTime } from './features/reminder.js';
 import { replayStrokes } from './features/strokes.js';
 import './features/quests.js';
@@ -99,6 +99,7 @@ Object.assign(window, {
   saveWords,
   selectNone,
   setDailyGoal,
+  setReviewBatch,
   toggleMixAudio,
   downloadReminder,
   setReminderTime,
