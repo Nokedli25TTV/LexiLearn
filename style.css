@@ -880,6 +880,12 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 /* ── Alsó navigáció: lebegő "Liquid Glass" kapszula ──
    Nem ér a képernyő széleihez, alatta átdereng a görgetett tartalom. Az aktív elem
    mögött egy üveg "lencse" csúszik (--nav-i index, transform: nem layout animáció). */
+/* V13.20: iOS 26 standalone viewport-hiba ellensúlyozása (js/ui/viewport-fix.js állítja; alapból 0)
+   és a gumis túlgörgetés kikapcsolása a kezdőképernyős appban, ami szintén elhúzhatja a fix sávokat */
+.bottom-nav, .toast { translate: 0 var(--vv-shift, 0px); }
+@media (max-width: 960px) { .practice-dock { translate: 0 var(--vv-shift, 0px); } }
+@media (display-mode: standalone) { html, body { overscroll-behavior-y: none; } }
+
 .bottom-nav {
   position: fixed;
   left: var(--float-inset);

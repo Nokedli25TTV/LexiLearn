@@ -62,6 +62,7 @@ const STATIC_ASSETS = [
   './js/ui/swipe.js',
   './js/ui/theme.js',
   './js/ui/toast.js',
+  './js/ui/viewport-fix.js',
   './firebase-sync.js',
   './data.js',
   './japanese_words.js',

@@ -40,6 +40,7 @@ import './ui/confetti.js';
 import { setMode, showScreen } from './ui/screens.js';
 import './ui/swipe.js';
 import { initV6Features, toggleTheme } from './ui/theme.js';
+import { initViewportFix } from './ui/viewport-fix.js';
 import { closeModal, showToast } from './ui/toast.js';
 
 // Az inline HTML eseménykezelők globális függvényeket várnak
@@ -160,6 +161,7 @@ Object.assign(window, {
 ══════════════════════════════════════════════════════ */
 console.log("[LexiLearn] V13.20 indítása...");
 initV6Features();
+initViewportFix(); // V13.20: iOS 26 standalone – a fix sávok ne csússzanak el a billentyűzet után
 initLibraryEvents();
 
 /* ══════════════════════════════════════════════════════
