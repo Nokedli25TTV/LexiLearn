@@ -127,7 +127,10 @@ const INSPECTORS = {
   fresh: ['Ismerkedés', w => isLearnedWord(w) && srsInterval(w) < 7],
   practicing: ['Gyakorlás alatt', w => isLearnedWord(w) && srsInterval(w) >= 7 && srsInterval(w) < 21],
   mature: ['Rögzült szavak', w => isMatureWord(w)],
-  notStarted: ['Még nem tanult', w => !isLearnedWord(w)]
+  notStarted: ['Még nem tanult', w => !isLearnedWord(w)],
+  // V13.20: a még nem megtanult szavak az 5 egymás utáni helyes felé (Statisztika: Úton a megtanuláshoz)
+  ...Object.fromEntries([1, 2, 3, 4].map(n => [`streak${n}`, [`${n}/5 egymás után helyes`,
+    w => !isLearnedWord(w) && Math.min(w.stats?.streak || 0, 4) === n]]))
 };
 
 function openWordInspector(kind, mode = currentMode) {
@@ -135,9 +138,10 @@ function openWordInspector(kind, mode = currentMode) {
   const selectedMode = appData[mode] ? mode : currentMode;
   // V13.19: a gyakorlásból megtanultak a legfrissebb elöl (a dátumukkal), a többi betűrendben
   const byRecent = kind === 'practice' || kind === 'practiceJlpt';
-  const recency = w => w.stats?.practiceLearnedAt || '';
+  const isStreak = kind.startsWith('streak');
+  const recency = w => (isStreak ? String(w.stats?.lastAttempt || 0).padStart(15, '0') : w.stats?.practiceLearnedAt || '');
   const words = appData[selectedMode].words.filter(predicate).sort((a, b) =>
-    (byRecent ? recency(b).localeCompare(recency(a)) : 0) || String(a.en).localeCompare(String(b.en), 'hu'));
+    (byRecent || isStreak ? recency(b).localeCompare(recency(a)) : 0) || String(a.en).localeCompare(String(b.en), 'hu'));
   const shown = words.slice(0, 500);
   const rows = shown.map(w => {
     const attempts = (w.stats?.totalCorrect || 0) + (w.stats?.totalWrong || 0);
@@ -147,7 +151,7 @@ function openWordInspector(kind, mode = currentMode) {
       <div class="inspect-row-main">${wordIdentity(w, selectedMode)}
         <span class="inspect-meta">${escHtml(lessonText(w))} · ${escHtml(sourceText(w))}</span>
       </div>
-      <span class="inspect-side">${interval ? `${interval} napos köz` : accuracy}</span>
+      <span class="inspect-side">${isStreak ? `${Math.min(w.stats?.streak || 0, 4)}/5 · ${accuracy}` : interval ? `${interval} napos köz` : accuracy}</span>
     </li>`;
   }).join('');
   const more = words.length > shown.length ? `<p class="inspect-limit">Az első ${shown.length} szó látható.</p>` : '';

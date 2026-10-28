@@ -7,6 +7,7 @@ import { escHtml, escRegex } from '../core/util.js';
 import { hasLessonFocus, lessonFocusTitle, toggleBookmark, toggleLessonFocus } from '../features/bookmarks.js';
 import { renderPracticeDock } from './dock.js';
 import { hasActiveFilters, wordMatchesFilters } from './filters.js';
+import { PRACTICE_LEARNED_CORRECT, isLearnedWord } from '../goal/jlpt.js';
 import { UI_ICONS, _openMenu, renderFilterBar, renderFilterMenu } from './menus.js';
 import { showToast } from '../ui/toast.js';
 
@@ -126,7 +127,9 @@ function wordRowHtml(w) {
           <span class="word-sub">${escHtml(sub)}</span>
         </span>
         <span class="word-meta">
-          ${s.streak > 0 ? `<span class="word-stat" title="Egymás utáni helyes válaszok">${s.streak}×</span>` : ''}
+          ${s.streak > 0 ? (isLearnedWord(w)
+            ? `<span class="word-stat" title="Egymás utáni helyes válaszok">${s.streak}×</span>`
+            : `<span class="word-stat is-progress" title="Egymás utáni helyes válaszok: ${Math.min(s.streak, PRACTICE_LEARNED_CORRECT - 1)} az ${PRACTICE_LEARNED_CORRECT}-ből">${Math.min(s.streak, PRACTICE_LEARNED_CORRECT - 1)}/${PRACTICE_LEARNED_CORRECT}</span>`) : ''}
           ${pct !== null ? `<span class="word-stat" title="Pontosság">${pct}%</span>` : ''}
           <span class="diff-pill d${escHtml(w.diff)}">${escHtml(w.diff)}</span>
         </span>

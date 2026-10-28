@@ -2098,6 +2098,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .word-sub { overflow: hidden; font-size: 13px; font-weight: 600; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
 .word-meta { flex: none; display: flex; align-items: center; gap: 8px; }
 .word-stat { font-size: 12px; font-weight: 700; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.word-stat.is-progress { color: var(--primary-h); font-weight: 800; } /* V13.20: 3/5 – az 5 egymás utáni helyes felé */
 .word-star, .word-flag {
   flex: none;
   width: 48px;
@@ -2520,6 +2521,24 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .learning-breakdown b { font-size: 18px; font-weight: 900; }
 .learning-breakdown span { margin-top: 2px; font-size: 10px; font-weight: 750; line-height: 1.25; color: var(--text-3); }
 .stats-calc-open { margin-top: 8px; }
+
+/* V13.20: Úton a megtanuláshoz – soronként 5 pötty az 5 egymás utáni helyes felé */
+.sp-list { display: flex; flex-direction: column; gap: 8px; }
+.sp-row {
+  width: 100%; min-height: 52px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px;
+  padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2);
+  color: var(--text); font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer;
+  transition: border-color 0.18s, transform 140ms var(--ease-out);
+}
+.sp-row:active { transform: scale(0.985); }
+@media (hover: hover) { .sp-row:hover { border-color: var(--primary-h); } }
+.sp-dots { display: inline-flex; gap: 4px; }
+.sp-dots i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--primary-h); opacity: 0.45; }
+.sp-dots i.on { background: var(--primary-h); opacity: 1; }
+.sp-main { min-width: 0; display: flex; flex-direction: column; }
+.sp-main b { font-size: 15px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.sp-words { overflow: hidden; font-size: 13px; font-weight: 650; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
+.sp-count { font-size: 18px; font-weight: 900; font-variant-numeric: tabular-nums; }
 
 /* Vonal- és oszlopdiagram jelölők */
 .viz-grid { stroke: var(--viz-grid); stroke-width: 1; shape-rendering: crispEdges; }

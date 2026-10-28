@@ -5,7 +5,7 @@ import { MODE_LABELS, appData, currentMode, state } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { getDailyGoal } from '../habit/goal.js';
-import { isPracticeLearned } from '../goal/jlpt.js';
+import { PRACTICE_LEARNED_CORRECT, isLearnedWord, isPracticeLearned } from '../goal/jlpt.js';
 import { accuracyOf, activityLevel, buildDailyIndex, computeMaturity, weekFocusSeconds } from './model.js';
 import { renderJlptCard } from '../goal/view.js';
 import { renderWeekLink } from './week.js';
@@ -51,6 +51,7 @@ function renderStats() {
   renderKpis(idx, goal);
   renderConsistencyHeatmap(idx, goal);
   renderMaturity();
+  renderStreakProgress();
   renderAccuracyChart(idx);
   renderFocusChart(idx);
   renderStatsDetails();
@@ -185,6 +186,43 @@ function renderConsistencyHeatmap(idx, goal) {
 }
 
 /* ── Tudás-érettség: 100%-os sávdiagram (ordinális zöld skála) ── */
+/* ── V13.20: Úton a megtanuláshoz – hány egymás utáni helyesnél tartanak a még nem megtanult szavak ──
+   Az 5. egymás utáni helyes válasznál lesz megtanult, egy hiba újraindítja. Soronként 5 pötty mutatja
+   az állást; a sor a szavak listáját nyitja. */
+const streakOf = w => Math.min(w.stats?.streak || 0, PRACTICE_LEARNED_CORRECT - 1);
+
+function streakDots(n) {
+  return `<span class="sp-dots" aria-hidden="true">${Array.from({ length: PRACTICE_LEARNED_CORRECT }, (_, i) =>
+    `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</span>`;
+}
+
+function renderStreakProgress() {
+  const host = document.getElementById('streak-progress');
+  if (!host) return;
+  const goal = PRACTICE_LEARNED_CORRECT;
+  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const inProgress = state.words.filter(w => !isLearnedWord(w) && (w.stats?.streak || 0) > 0);
+  setText('viz-streak-note', `Az ${goal}. egymás utáni helyes válasznál lesz megtanult, egy hiba újraindítja.`);
+  if (inProgress.length === 0) {
+    host.innerHTML = vizEmpty('Most nincs félúton lévő szó. Egy gyakorló kör után itt látod, melyik hány helyesnél tart.');
+    return;
+  }
+  const rows = [4, 3, 2, 1].map(n => {
+    const ws = inProgress.filter(w => streakOf(w) === n)
+      .sort((a, b) => (b.stats.lastAttempt || 0) - (a.stats.lastAttempt || 0));
+    if (ws.length === 0) return '';
+    const preview = ws.slice(0, 4).map(w => escHtml(w.en)).join(', ') + (ws.length > 4 ? ', …' : '');
+    return `
+      <button class="sp-row" onclick="openWordInspector('streak${n}')" aria-label="${n} az ${goal}-ből: ${ws.length} ${unit}">
+        ${streakDots(n)}
+        <span class="sp-main"><b>${n}/${goal}</b><span class="sp-words" lang="ja">${preview}</span></span>
+        <span class="sp-count">${fmtNum(ws.length)}</span>
+      </button>`;
+  }).join('');
+  host.innerHTML = `<div class="sp-list">${rows}</div>
+    <p class="viz-caption">${fmtNum(inProgress.length)} ${unit} félúton. Koppints egy sorra a szavakért.</p>`;
+}
+
 function renderMaturity() {
   const host = document.getElementById('maturity');
   if (!host) return;
@@ -439,7 +477,9 @@ function renderStatsDetails() {
   setHtml('word-stats-table', practiced.length
     ? `<div class="table-scroll">${dataTable([srcHeader, 'Magyar', 'Sorozat', 'Helyes', 'Hibás', '%', 'Szint'], practiced.map(w => {
         const t = w.stats.totalCorrect + w.stats.totalWrong;
-        return [w.en, w.hu, String(w.stats.streak || 0), String(w.stats.totalCorrect), String(w.stats.totalWrong), `${Math.round(w.stats.totalCorrect / t * 100)}%`, w.diff];
+        // V13.20: a még nem megtanultnál az 5 egymás utáni helyes felé (3/5), különben „megtanult”
+        const streak = isLearnedWord(w) ? 'megtanult' : `${streakOf(w)}/${PRACTICE_LEARNED_CORRECT}`;
+        return [w.en, w.hu, streak, String(w.stats.totalCorrect), String(w.stats.totalWrong), `${Math.round(w.stats.totalCorrect / t * 100)}%`, w.diff];
       }))}</div>`
     : vizEmpty('Még nincs gyakorolt szó ebben a módban.'));
 
@@ -508,4 +548,4 @@ function switchStatsTab(tab) {
   if (tab === 'dekiru') renderDekiruLessonStats();
 }
 
-export { HEAT_LEVEL_LABELS, _statsResizeTimer, dataTable, deltaChip, hideVizTip, niceMaxMinutes, perfRowsHtml, renderAccuracyChart, renderConsistencyHeatmap, renderDekiruLessonStats, renderFocusChart, renderKpis, renderMaturity, renderStats, renderStatsDetails, setHtml, setText, showVizTip, switchStatsTab, trendHtml, vizEmpty, xDayLabels };
+export { dataTable, deltaChip, HEAT_LEVEL_LABELS, hideVizTip, niceMaxMinutes, perfRowsHtml, renderAccuracyChart, renderConsistencyHeatmap, renderDekiruLessonStats, renderFocusChart, renderKpis, renderMaturity, renderStats, renderStatsDetails, renderStreakProgress, setHtml, setText, showVizTip, _statsResizeTimer, switchStatsTab, trendHtml, vizEmpty, xDayLabels };
