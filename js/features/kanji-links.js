@@ -4,8 +4,8 @@
 // Az írásmód forrása: a szó saját kanji mezője (N3 szólista), különben a saját példamondatai,
 // ha ott a ruby olvasata pontosan a szó, és csak egyféle alakban fordul elő (a heurisztikus,
 // más mondatokból kikövetkeztetett alak túl sokszor téves lenne: わたし → 渡し).
-import { JAPANESE_SENTENCES } from '../core/data.js';
-import { appData } from '../core/state.js';
+import { JAPANESE_SENTENCES, KANJI_RADICALS, RADICALS_DATA } from '../core/data.js';
+import { appData, diffOrder } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { isLearnedWord } from '../goal/jlpt.js';
 
@@ -50,7 +50,40 @@ function wordsWithKanji(kanji, limit = KANJI_WORD_LIMIT) {
     .slice(0, limit);
 }
 
-// A kártya hátoldalára: japán szónál a kandzsijai, kandzsinál a szavai (üres, ha nincs mit mutatni)
+/* ── V13.23: kandzsi ↔ radikál (a KanjiVG elemfájából, tools/build-radicals.mjs) ── */
+const RADICAL_KANJI_LIMIT = 6;
+const radicalMeaning = new Map(RADICALS_DATA.map(r => [r.radical, r.hu]));
+
+// A kandzsi radikáljai: [{ shown: a kandzsiban látható alak (亻), radical: a radikál (人), hu, main }]
+function radicalsOf(kanji) {
+  return (KANJI_RADICALS[kanji] || []).map(([shown, radical], i) => ({ shown, radical, hu: radicalMeaning.get(radical) || '', main: i === 0 }));
+}
+
+// A radikált tartalmazó kandzsik: a már megtanultak, aztán a könnyebb szint, aztán ahol ez a szótári radikál
+let _byRadical = null;
+function kanjiWithRadical(radical, limit = RADICAL_KANJI_LIMIT) {
+  if (!_byRadical) {
+    _byRadical = new Map();
+    Object.entries(KANJI_RADICALS).forEach(([kanji, parts]) => parts.forEach(([, r], i) => {
+      if (!_byRadical.has(r)) _byRadical.set(r, []);
+      _byRadical.get(r).push({ kanji, main: i === 0 });
+    }));
+  }
+  const byChar = new Map(appData.kanji.words.map(w => [w.en, w]));
+  const all = (_byRadical.get(radical) || []).map(x => ({ ...x, w: byChar.get(x.kanji) })).filter(x => x.w);
+  all.sort((a, b) => (isLearnedWord(b.w) - isLearnedWord(a.w)) || (diffOrder(a.w.diff) - diffOrder(b.w.diff)) || (b.main - a.main));
+  return { total: all.length, shown: all.slice(0, limit) };
+}
+
+function radicalChipsHtml(kanji) {
+  const parts = radicalsOf(kanji);
+  if (parts.length === 0) return '';
+  return `<div class="kanji-links is-radicals" aria-label="Radikálok a kandzsiban">${parts.map(p =>
+    `<span class="kl-item${p.main ? ' is-main' : ''}"${p.main ? ' title="Szótári radikál"' : ''}><b lang="ja">${escHtml(p.shown)}</b>${p.shown !== p.radical ? `<span lang="ja">${escHtml(p.radical)}</span> ` : ''}${escHtml(p.hu)}</span>`).join('')}</div>`;
+}
+
+// A kártya hátoldalára: japán szónál a kandzsijai, kandzsinál a szavai és a radikáljai,
+// radikálnál a kandzsik, amelyekben szerepel (üres, ha nincs mit mutatni)
 function kanjiLinksHtml(word, mode) {
   if (mode === 'japanese') {
     const meanings = kanjiMeanings();
@@ -61,11 +94,18 @@ function kanjiLinksHtml(word, mode) {
   }
   if (mode === 'kanji') {
     const words = wordsWithKanji(word.en);
-    if (words.length === 0) return '';
-    return `<div class="kanji-links is-words" aria-label="Szavak ezzel a kandzsival">${words.map(({ w, writing }) =>
+    const wordsHtml = words.length === 0 ? '' : `<div class="kanji-links is-words" aria-label="Szavak ezzel a kandzsival">${words.map(({ w, writing }) =>
       `<span class="kl-word"><b lang="ja">${escHtml(writing)}</b><span lang="ja">${escHtml(w.en)}</span> · ${escHtml(w.hu)}</span>`).join('')}</div>`;
+    return radicalChipsHtml(word.en) + wordsHtml;
+  }
+  if (mode === 'radicals') {
+    const { total, shown } = kanjiWithRadical(word.en);
+    if (total === 0) return '';
+    const more = total > shown.length ? `<span class="kl-more">+${total - shown.length} kandzsi</span>` : '';
+    return `<div class="kanji-links" aria-label="Kandzsik ezzel a radikállal">${shown.map(({ w }) =>
+      `<span class="kl-item"><b lang="ja">${escHtml(w.en)}</b>${escHtml(w.hu)}</span>`).join('')}${more}</div>`;
   }
   return '';
 }
 
-export { kanjiChars, kanjiLinksHtml, wordWriting, wordsWithKanji };
+export { kanjiChars, kanjiLinksHtml, kanjiWithRadical, radicalsOf, wordWriting, wordsWithKanji };

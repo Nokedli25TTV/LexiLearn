@@ -67,6 +67,7 @@ function importData(event) {
 }
 
 function openImportModal() {
+  if (currentMode === 'radicals') { showToast('A 214 radikál rögzített lista, ide nem lehet importálni. Válts másik módra.'); return; }
   const ta = document.getElementById('import-textarea');
   const mod = document.getElementById('import-modal');
   if(ta && mod) {
@@ -104,6 +105,7 @@ function doImport() {
 }
 
 function openAddModal() {
+  if (currentMode === 'radicals') { showToast('A 214 radikál rögzített lista, ide nem lehet új elemet felvenni. Válts másik módra.'); return; }
   const addEn = document.getElementById('add-en');
   const addHu = document.getElementById('add-hu');
   const addTags = document.getElementById('add-tags');
@@ -210,11 +212,12 @@ function ankiRow(w, mode) {
     const writing = wordWriting(w);
     front = writing ? `${ankiField(writing)}<br>${ankiField(w.en)}` : ankiField(w.en);
     if (w.romaji) back += `<br>${ankiField(w.romaji)}`;
-  } else if (mode === 'kanji') {
+  } else if (mode === 'kanji' || mode === 'radicals') {
     back += `<br>On: ${ankiField(w.onyomi || '–')} · Kun: ${ankiField(w.kunyomi || '–')}`;
+    if (mode === 'radicals' && w.romaji) back += `<br>${ankiField(w.romaji)}`; // a busu-név
   }
   const lessons = (Array.isArray(w.lesson) ? w.lesson : [w.lesson]).filter(l => l !== undefined && l !== null && l !== '');
-  const prefix = mode === 'kanji' ? 'Kanji_lecke_' : 'Dekiru_';
+  const prefix = mode === 'kanji' ? 'Kanji_lecke_' : mode === 'radicals' ? 'Radikal_vonas_' : 'Dekiru_';
   const tags = ['LexiLearn', `LexiLearn::${mode}`, w.diff, ...lessons.map(l => prefix + l), ...(w.tags || [])].filter(Boolean).map(ankiTag);
   return [front, back, [...new Set(tags)].join(' ')].join('\t');
 }

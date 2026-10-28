@@ -5,7 +5,7 @@
 // Egy alkalom legfeljebb getReviewBatch() kártya (alapból 20, a Profilban állítható); minden értékelés azonnal mentődik.
 import { todayKey } from '../core/dates.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
-import { currentMode, state } from '../core/state.js';
+import { currentMode, isCharMode, state, unitOf } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, japaneseBackLine } from '../core/util.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
@@ -60,13 +60,13 @@ function showReviewCard() {
   _reviewFlipped = false;
   _reviewRevealed = false;
 
-  const isKanji = currentMode === 'kanji';
+  const isKanji = isCharMode(); // V13.23: radikálnál is egy írásjegy
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
   const backSrc = japaneseBackLine(word, currentMode, wordWriting(word));
   const links = kanjiLinksHtml(word, currentMode); // V13.18: kandzsi ↔ szó
   const strokes = isKanji ? strokeFigureHtml(word.en) : ''; // V13.9: vonássorrend a hátoldalon
   const kanjiReadings = isKanji
-    ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
+    ? `<div class="learn-readings">${currentMode === 'radicals' && word.romaji ? `${escHtml(word.romaji)} · ` : ''}On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
     : '';
   const example = getExampleSentence(word);
   const isAgain = p.againIds.includes(word.id);
@@ -190,7 +190,7 @@ function showReviewComplete() {
   const learnedToday = getTodayWords().length;
   const newLeft = Math.max(0, getDailyGoal() - learnedToday);
   const canLearn = newLeft > 0 && getNewWordPool().length > 0;
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   const c = p.counts;
   const summary = RATINGS.filter(r => c[r.rating] > 0).map(r => `${r.label} ${c[r.rating]}`).join(' · ');
 

@@ -12,7 +12,7 @@
 //
 // A Firestore függvényeket kívülről kapja (fs), így Firestore nélkül is tesztelhető.
 
-const LANGS = ['english', 'japanese', 'kanji'];
+const LANGS = ['english', 'japanese', 'kanji', 'radicals']; // V13.23: radikálok
 const WORD_BUCKETS = 8;
 const MANIFEST_ID = 'v2_manifest';
 const LEGACY_ID = 'snapshot';
@@ -43,6 +43,9 @@ function partIdsFor(lang) {
 function splitSnapshot(snap) {
   const parts = {};
   LANGS.forEach(lang => {
+    // V13.23: egy régi eszköz mentéséből hiányzó mód (pl. radicals) kimarad: nem írunk helyette üreset,
+    // ami beolvasáskor törölné az új eszközön meglévő adatait
+    if (!snap.words?.[lang] && !snap.stats?.[lang] && !snap.playlists?.[lang]) return;
     parts[`v2_${lang}_meta`] = { lang, kind: 'meta', stats: snap.stats?.[lang] || null, playlists: snap.playlists?.[lang] || [] };
     for (let b = 0; b < WORD_BUCKETS; b++) parts[`v2_${lang}_w${b}`] = { lang, kind: 'words', words: [] };
     (snap.words?.[lang] || []).forEach(w => parts[`v2_${lang}_w${bucketOf(w.id)}`].words.push(w));

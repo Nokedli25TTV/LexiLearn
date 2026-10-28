@@ -1,20 +1,22 @@
 // LexiLearn – features/strokes.js
 // V13.9: KANDZSI VONÁSSORREND a tanuló és az ismétlő kártya hátoldalán.
 // Adat: a KanjiVG útvonalai (© Ulrich Apel, CC BY-SA 3.0, https://kanjivg.tagaini.net), JLPT-szintenként
-// egy-egy JSON fájlban (kanjivg/n5.json … n1.json; előállítja: tools/build-kanjivg.mjs).
+// egy-egy JSON fájlban (kanjivg/n5.json … n1.json; előállítja: tools/build-kanjivg.mjs), V13.23-tól a
+// kandzsik között nem szereplő radikáloké a kanjivg/radicals.json-ban (tools/build-radicals.mjs).
 // Egy szint fájlja akkor töltődik le, amikor az első ilyen kandzsi kártya megjelenik; a service worker
 // külön, verziófüggetlen gyorsítótárban tartja, így offline is megmarad.
 // Megfordításkor a vonások sorban megrajzolódnak a halvány teljes alak fölött, számozva; az épp
 // rajzolódó vonás zöld, utána tintaszínű lesz. prefers-reduced-motion alatt a kész, számozott ábra látszik.
-import { KANJI_DATA } from '../core/data.js';
+import { KANJI_DATA, RADICALS_DATA } from '../core/data.js';
 import { escHtml } from '../core/util.js';
 
-const LEVELS = ['n5', 'n4', 'n3', 'n2', 'n1'];
+const LEVELS = ['n5', 'n4', 'n3', 'n2', 'n1', 'radicals'];
 const FLIP_DELAY = 380; // a kártya fordulásának (520 ms) nagyjából a felénél kezd rajzolni
 const GAP = 80;         // szünet két vonás között (ms)
 const MAX_TOTAL = 5200; // a sok vonásos kandzsi se tartson sokáig: az egészet ebbe sűrítjük
 
 const levelOf = new Map(KANJI_DATA.map(k => [k.kanji, String(k.jlpt || 'N1').toLowerCase()]));
+RADICALS_DATA.forEach(r => { if (!levelOf.has(r.radical)) levelOf.set(r.radical, 'radicals'); });
 const files = new Map(); // szint → Promise<{ kandzsi: [[útvonal, x, y], …] } | null>
 let warmed = false;
 

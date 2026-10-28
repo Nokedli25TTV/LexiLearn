@@ -7,7 +7,7 @@
 // "megtanult" pedig ugyanaz a szabály, mint mindenhol (isLearnedWord). Nincs jutalom és nincs
 // ítélet: a hét tényei, és ami belőlük a következő lépés.
 import { HU_MONTHS, addDays, dateKey, fmtDay, fmtDuration, fmtNum, keyToDate, startOfWeek, todayKey } from '../core/dates.js';
-import { MODE_LABELS, appData, currentMode, state } from '../core/state.js';
+import { appData, currentMode, MODE_LABELS, state, unitOf } from '../core/state.js';
 import { saveSettings, saveStats } from '../core/storage.js';
 import { escHtml } from '../core/util.js';
 import { LEVELS, TARGETS, isLearnedWord, srsInterval } from '../goal/jlpt.js';
@@ -20,11 +20,10 @@ import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 
 const DAY_LABELS = ['H', 'K', 'Sz', 'Cs', 'P', 'Szo', 'V'];
-const MODES = ['japanese', 'kanji', 'english'];
+const MODES = ['japanese', 'kanji', 'radicals', 'english'];
 const JLPT_TRACKS = [['words', 'japanese', 'Szókincs'], ['kanji', 'kanji', 'Kandzsi']];
 const UNSURE_SHOWN = 6;
 
-const unitOf = mode => (mode === 'kanji' ? 'kanji' : 'szó');
 const goalFor = mode => appData[mode].globalStats.dailyGoal || DEFAULT_DAILY_GOAL[mode] || 10;
 // A megtanulás napja, ha ismert (a régi, dátum nélküli megtanult szavak egyik hétbe sem számítanak bele)
 const learnedKey = w => (w.stats && (w.stats.learnedAt || w.stats.practiceLearnedAt)) || null;

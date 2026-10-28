@@ -7,6 +7,8 @@ const raw = (typeof window !== 'undefined' && window.LEXI_DATA) || {};
 const SAMPLE_WORDS = raw.sampleWords || [];
 const JAPANESE_WORDS = raw.japaneseWords || [];
 const KANJI_DATA = raw.kanjiData || [];
+const RADICALS_DATA = raw.radicalsData || [];   // V13.23
+const KANJI_RADICALS = raw.kanjiRadicals || {}; // V13.23: kandzsi → [[látható alak, radikál], …]
 const english_sentences2 = raw.englishSentences || [];
 const TRAVEL_PLAN = raw.travelPlan || null;
 const TRAVEL_PLAN_KANJI = raw.travelPlanKanji || null;
@@ -18,6 +20,6 @@ const JAPANESE_SENTENCES = (raw.japaneseSentenceLessons || []).flat();
 console.log(`[LexiLearn] ÖSSZES mondat betöltve: ${JAPANESE_SENTENCES.length} db`);
 
 export {
-  SAMPLE_WORDS, JAPANESE_WORDS, KANJI_DATA, english_sentences2, TRAVEL_PLAN, TRAVEL_PLAN_KANJI,
+  SAMPLE_WORDS, JAPANESE_WORDS, KANJI_DATA, KANJI_RADICALS, RADICALS_DATA, english_sentences2, TRAVEL_PLAN, TRAVEL_PLAN_KANJI,
   MY_CUSTOM_LISTS, DEKIRU_LESSONS, JAPANESE_SENTENCES
 };

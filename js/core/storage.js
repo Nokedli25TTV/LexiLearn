@@ -1,7 +1,7 @@
 // LexiLearn – core/storage.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
-import { DEKIRU_LESSONS, JAPANESE_WORDS, KANJI_DATA, MY_CUSTOM_LISTS, SAMPLE_WORDS } from './data.js';
-import { appData, createEmptyState, currentMode } from './state.js';
+import { DEKIRU_LESSONS, JAPANESE_WORDS, KANJI_DATA, MY_CUSTOM_LISTS, RADICALS_DATA, SAMPLE_WORDS } from './data.js';
+import { MODES, appData, createEmptyState, currentMode } from './state.js';
 import { renderHome } from '../habit/home.js';
 import { renderDashboard } from '../library/list.js';
 import { setMode } from '../ui/screens.js';
@@ -65,7 +65,7 @@ function migrateToStableIds() {
 
 // Szó-azonosító csere után a hivatkozások (kijelölés, listák, napi feladatok) frissítése
 function remapWordReferences(oldToNew) {
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  MODES.forEach(lang => {
     // selectedIds (Set)
     if (appData[lang].selectedIds) {
       const newSelected = new Set();
@@ -153,7 +153,7 @@ const UI_VERSION = 13;
 // ── Belső segéd: aktuális állapot → 4 mentési objektum ──────────
 function _buildSaveObjects() {
   const words = {}, stats = {}, playlists = {}, settings = { lastMode: currentMode, theme: document.documentElement.getAttribute('data-theme') || 'dark', uiVersion: UI_VERSION };
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  MODES.forEach(lang => {
     words[lang]     = appData[lang].words;
     stats[lang]     = { globalStats: appData[lang].globalStats, dailyQuests: appData[lang].dailyQuests };
     playlists[lang] = appData[lang].playlists;
@@ -189,7 +189,7 @@ async function saveState() {
 
 // ── Betöltő segéd: parsed objektumból appData feltöltése ────────
 function _applyParsedData(words, stats, playlists, settings) {
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  MODES.forEach(lang => {
     if (words?.[lang])     appData[lang].words = words[lang];
     if (playlists?.[lang]) appData[lang].playlists = playlists[lang];
     if (stats?.[lang]) {
@@ -220,7 +220,7 @@ async function _migrateMonolithToSplit(monolit) {
     lastMode: monolit.lastMode || 'english',
     theme:    monolit.theme    || 'light'
   };
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  MODES.forEach(lang => {
     const d = monolit[lang] || {};
     words[lang]     = d.words     || [];
     playlists[lang] = d.playlists || [];
@@ -339,7 +339,7 @@ async function renderStorageInfo() {
 // utána csak ha pl. régi eszközről szinkronizált szó érkezik)
 function seedSrsAll() {
   let seeded = 0, cleared = 0, backfilled = 0;
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  MODES.forEach(lang => {
     // V13.17: egyszeri átállás az egymás utáni 5 helyes válasz szabályára (a régi, összesítve
     // megtanult szavak megmaradnak). A jelző a statisztikával együtt a felhőbe is szinkronizálódik.
     const gs = appData[lang].globalStats;
@@ -360,7 +360,7 @@ function seedSrsAll() {
 
 function cleanTags() {
   let needsSave = false;
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  MODES.forEach(lang => {
     appData[lang].words.forEach(w => {
       let originalTags = JSON.stringify(w.tags);
       w.tags = w.tags.map(t => {
@@ -532,6 +532,30 @@ function syncNewWords() {
   appData.kanji.words = appData.kanji.words.filter(w => 
     w.source !== 'data_js' || sampleKjSet.has(w.en)
   );
+
+  // --- V13.23: RADIKÁLOK (radicals_data.js) ---
+  // en: a radikál, hu: magyar jelentés, romaji: a busu-név (pl. ninben), lecke: a vonásszám,
+  // diff: a JLPT-szint, ha a radikál önálló kandzsiként is az, különben '–'
+  const kanjiChars = new Set(KANJI_DATA.map(k => k.kanji));
+  const radicalSet = new Set(RADICALS_DATA.map(r => r.radical));
+  RADICALS_DATA.forEach(r => {
+    const fields = {
+      hu: r.hu, romaji: r.romaji, onyomi: r.onyomi || '', kunyomi: r.kunyomi || '',
+      diff: r.jlpt || '–', lesson: r.strokes, kangxi: r.id,
+      tags: [kanjiChars.has(r.radical) ? 'önálló kandzsi is' : 'csak elemként']
+    };
+    const existing = appData.radicals.words.find(x => x.en === r.radical);
+    if (!existing) {
+      appData.radicals.words.push({
+        id: stableWordId('rad', r.radical), en: r.radical, ...fields, source: 'data_js', sentence: '',
+        bookmarked: false, stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
+      });
+    } else {
+      Object.assign(existing, fields, { source: 'data_js' });
+      if (existing.bookmarked === undefined) existing.bookmarked = false;
+    }
+  });
+  appData.radicals.words = appData.radicals.words.filter(w => w.source !== 'data_js' || radicalSet.has(w.en));
 }
 
 /* ══════════════════════════════════════════════════════

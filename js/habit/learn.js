@@ -2,7 +2,7 @@
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { todayKey } from '../core/dates.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
-import { currentMode, state } from '../core/state.js';
+import { currentMode, isCharMode, state, unitOf } from '../core/state.js';
 import { saveStats } from '../core/storage.js';
 import { escHtml, shuffle } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
@@ -43,7 +43,7 @@ function startLearnSession() {
 
 // V13.6: a JLPT sávba számító (N5-N3) megtanult szavak száma a mostani módban
 function jlptLearnedCount() {
-  if (currentMode === 'english') return null;
+  if (currentMode !== 'japanese' && currentMode !== 'kanji') return null; // a radikálok nem számítanak a JLPT-be
   return state.words.filter(w => ['N5', 'N4', 'N3'].includes(w.diff) && isLearnedWord(w)).length;
 }
 
@@ -66,13 +66,13 @@ function showLearnCard() {
   if (!word) { p.queue.shift(); showLearnCard(); return; }
   _learnFlipped = false;
 
-  const isKanji = currentMode === 'kanji';
+  const isKanji = isCharMode(); // V13.23: radikálnál is egy írásjegy
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
   const backSrc = japaneseBackLine(word, currentMode, wordWriting(word));
   const links = kanjiLinksHtml(word, currentMode); // V13.18: kandzsi ↔ szó
   const strokes = isKanji ? strokeFigureHtml(word.en) : ''; // V13.9: vonássorrend a hátoldalon
   const kanjiReadings = isKanji
-    ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
+    ? `<div class="learn-readings">${currentMode === 'radicals' && word.romaji ? `${escHtml(word.romaji)} · ` : ''}On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
     : '';
   const example = getExampleSentence(word);
   const isAgain = p.againIds.includes(word.id);
@@ -194,7 +194,7 @@ function showLearnComplete() {
   qArea.innerHTML = `
     <div class="learn-done">
       <div class="learn-done-badge" aria-hidden="true">✓</div>
-      <h2 class="learn-done-title">${p.learnedIds.length} új ${currentMode === 'kanji' ? 'kanji' : 'szó'} rögzítve</h2>
+      <h2 class="learn-done-title">${p.learnedIds.length} új ${unitOf()} rögzítve</h2>
       <p class="learn-done-sub">${goalReached
         ? 'A napi limit teljesítve. Az új szavak holnap folytatódnak; addig ismételd a maiakat.'
         : `Napi penzum: ${learnedToday}/${goal}. Még ${remaining} van hátra.`}</p>

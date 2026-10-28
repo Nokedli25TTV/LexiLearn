@@ -2,7 +2,7 @@
 // V13.18: Makacs szavak (az Ankiban "leech"): amik többször is kifogtak rajtad, és most sem
 // mennek stabilan. Az app magától veszi észre őket (a zászlós lecke-listát te töltöd, ezt ő),
 // és ha a szó később rendben megy, magától kikerül. Nincs külön mentett mező: az állapotból számol.
-import { currentMode, state } from '../core/state.js';
+import { state, unitOf } from '../core/state.js';
 import { MATURE_DAYS, srsInterval } from '../goal/jlpt.js';
 import { applyFilters, updateSelectAllBtn, updateStartPanel } from '../library/list.js';
 import { renderFilterBar } from '../library/menus.js';
@@ -31,7 +31,7 @@ function getLeeches(words = state.words) {
 function leechHomeRowHtml() {
   const n = getLeeches().length;
   if (n === 0) return '';
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   return `
     <button class="home-jlpt home-leech" onclick="openLeeches()">
       <span class="home-jlpt-label">Makacs</span>

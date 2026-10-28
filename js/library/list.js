@@ -1,7 +1,7 @@
 // LexiLearn – library/list.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { JAPANESE_SENTENCES, english_sentences2 } from '../core/data.js';
-import { appData, currentMode, diffOrder, state } from '../core/state.js';
+import { appData, currentMode, diffOrder, isCharMode, state, unitOf } from '../core/state.js';
 import { saveSettings } from '../core/storage.js';
 import { escHtml, escRegex } from '../core/util.js';
 import { hasLessonFocus, lessonFocusTitle, toggleBookmark, toggleLessonFocus } from '../features/bookmarks.js';
@@ -47,16 +47,21 @@ function applyFilters() {
   _filteredWords = filtered;
 
   const countLabel = document.getElementById('word-count-label');
-  if (countLabel) countLabel.textContent = `${filtered.length.toLocaleString('hu-HU')} ${currentMode === 'kanji' ? 'kanji' : 'szó'}`;
+  if (countLabel) countLabel.textContent = `${filtered.length.toLocaleString('hu-HU')} ${unitOf()}`;
 
   renderActiveList();
   updateSelectAllBtn();
   saveSettings(); // Szűrő változás csak beállítást érint
 }
 
+// V13.23: a radikáloknak nincs példamondatuk, ott a Szavak / Mondatok váltó sem látszik
+const showsSentences = () => state.activeViewTab === 'sentences' && currentMode !== 'radicals';
+
 // Csak az aktív nézetet rendereljük (a mondatos nézet sok regexet futtat)
 function renderActiveList() {
-  const isSentences = state.activeViewTab === 'sentences';
+  const viewSwitch = document.getElementById('vtab-words')?.parentElement;
+  if (viewSwitch) viewSwitch.hidden = currentMode === 'radicals';
+  const isSentences = showsSentences();
   const wordView = document.getElementById('word-list-view');
   const sentView = document.getElementById('sentence-list-view');
   if (wordView) wordView.style.display = isSentences ? 'none' : '';
@@ -92,7 +97,7 @@ function renderActiveList() {
 }
 
 function appendListPage() {
-  const isSentences = state.activeViewTab === 'sentences';
+  const isSentences = showsSentences();
   const container = document.getElementById(isSentences ? 'sentence-list' : 'word-list');
   if (!container || _listShown >= _filteredWords.length) return;
   const page = _filteredWords.slice(_listShown, _listShown + (isSentences ? SENTENCE_PAGE : WORD_PAGE));
@@ -116,6 +121,7 @@ function wordRowHtml(w) {
   let sub = w.hu;
   if (currentMode === 'japanese' && w.romaji) sub = `${w.hu} · ${w.romaji}`;
   if (currentMode === 'kanji') sub = `${w.hu} · ${w.onyomi || '–'} / ${w.kunyomi || '–'}`;
+  if (currentMode === 'radicals') sub = `${w.hu} · ${w.romaji}`; // V13.23: a busu-név
   const starLabel = w.bookmarked ? 'Eltávolítás a Fókusz Listából' : 'Hozzáadás a Fókusz Listához';
   const flagLabel = hasLessonFocus() ? lessonFocusTitle(w) : '';
   return `
@@ -123,7 +129,7 @@ function wordRowHtml(w) {
       <button class="word-toggle" role="checkbox" aria-checked="${selected}">
         <span class="word-check" aria-hidden="true">${UI_ICONS.check}</span>
         <span class="word-main">
-          <span class="word-src ${currentMode === 'kanji' ? 'is-kanji' : ''}">${escHtml(w.en)}</span>
+          <span class="word-src ${isCharMode() ? 'is-kanji' : ''}">${escHtml(w.en)}</span>
           <span class="word-sub">${escHtml(sub)}</span>
         </span>
         <span class="word-meta">
@@ -131,7 +137,7 @@ function wordRowHtml(w) {
             ? `<span class="word-stat" title="Egymás utáni helyes válaszok">${s.streak}×</span>`
             : `<span class="word-stat is-progress" title="Egymás utáni helyes válaszok: ${Math.min(s.streak, PRACTICE_LEARNED_CORRECT - 1)} az ${PRACTICE_LEARNED_CORRECT}-ből">${Math.min(s.streak, PRACTICE_LEARNED_CORRECT - 1)}/${PRACTICE_LEARNED_CORRECT}</span>`) : ''}
           ${pct !== null ? `<span class="word-stat" title="Pontosság">${pct}%</span>` : ''}
-          <span class="diff-pill d${escHtml(w.diff)}">${escHtml(w.diff)}</span>
+          ${w.diff && w.diff !== '–' ? `<span class="diff-pill d${escHtml(w.diff)}">${escHtml(w.diff)}</span>` : '' /* V13.23: a JLPT-n kívüli radikálnak nincs szint-pillája */}
         </span>
       </button>
       ${flagLabel ? `<button class="word-flag ${w.lessonFocus ? 'is-on' : ''}" aria-pressed="${!!w.lessonFocus}" aria-label="${escHtml(flagLabel)}" title="${escHtml(flagLabel)}">${UI_ICONS.flag}</button>` : ''}

@@ -1260,6 +1260,10 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .kl-item b, .kl-word b { font-size: 17px; font-weight: 700; color: var(--text); }
 .kanji-links.is-words { flex-direction: column; align-items: center; }
 .kl-word { border-radius: var(--radius-sm); }
+/* V13.23: radikálok a kandzsi kártyáján (a szótári radikál kiemelve), és a „+N kandzsi” */
+.kl-item.is-main { box-shadow: inset 0 0 0 2px var(--primary-h); }
+.kl-item span[lang="ja"] { color: var(--text); }
+.kl-more { align-self: center; font-size: 13px; font-weight: 700; color: var(--text-3); }
 .learn-example {
   width: 100%;
   margin-top: 18px;
@@ -1697,6 +1701,7 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .pf-signout { color: var(--error); }
 
 .segmented { display: flex; gap: 4px; padding: 4px; border-radius: 16px; background: var(--surface-2); }
+.segmented[hidden] { display: none; }
 .segmented button {
   flex: 1;
   min-height: 46px;

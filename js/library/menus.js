@@ -1,6 +1,6 @@
 // LexiLearn – library/menus.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
-import { currentMode, diffOrder, state } from '../core/state.js';
+import { currentMode, diffOrder, state, unitOf } from '../core/state.js';
 import { escHtml, jsArg } from '../core/util.js';
 import { getBookmarkedWords, hasLessonFocus } from '../features/bookmarks.js';
 import { getLeeches } from '../features/leeches.js';
@@ -147,7 +147,7 @@ function menuIconBtn(action, label, icon, disabled = false) {
 // Több lecke is kijelölhető (mint a témaköröknél): a sorok kapcsolók, a menü a Kész gombig nyitva marad
 function lessonMenuHtml() {
   const selected = selectedLessons();
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   const opts = getLessonOptions();
   let previousBook = null;
   const rows = opts.map(o => {
@@ -172,7 +172,7 @@ function lessonMenuHtml() {
 function statusMenuHtml() {
   const status = statusFilter();
   const counts = getStatusCounts();
-  const labels = { all: currentMode === 'kanji' ? 'Minden kanji' : 'Minden szó', new: 'Még nem tanult', learned: 'Megtanult' };
+  const labels = { all: `Minden ${unitOf()}`, new: 'Még nem tanult', learned: 'Megtanult' };
   const rows = STATUS_OPTIONS.map(([v]) => menuOption({
     selected: status === v, label: labels[v], meta: counts[v].toLocaleString('hu-HU'), action: `setStatusFilter('${v}')`
   })).join('');
@@ -182,7 +182,7 @@ function statusMenuHtml() {
 
 function dayMenuHtml() {
   const f = state.filters;
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   const opts = getDayOptions();
   const rows = menuOption({ selected: f.day === 'all', label: 'Minden nap', action: `setDayFilter('all')` }) +
     opts.map(o => menuOption({ selected: String(f.day) === o.value, label: `${o.value}. nap`, meta: `${o.total} ${unit}`, action: `setDayFilter(${jsArg(o.value)})` })).join('');

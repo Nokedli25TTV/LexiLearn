@@ -21,7 +21,7 @@ const pctText = p => `${Math.floor(p * 100)}%`;
 function fmtDate(key) { const d = keyToDate(key); return `${d.getFullYear()}. ${HU_MONTHS[d.getMonth()]} ${d.getDate()}.`; }
 function fmtMonth(key) { const d = keyToDate(key); return `${d.getFullYear()}. ${HU_MONTHS[d.getMonth()]}`; }
 
-function jlptVisible() { return currentMode !== 'english'; }
+function jlptVisible() { return currentMode === 'japanese' || currentMode === 'kanji'; } // V13.23: a radikálok nem JLPT-sáv
 
 function getTracks(today = todayKey()) {
   const goal = getGoal(appData.japanese.globalStats);

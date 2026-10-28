@@ -17,8 +17,8 @@ const PRACTICE_TYPES = [
   { value: 'listening',    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>', name: 'Hallás',            desc: 'Meghallgatod, és kiválasztod', modes: ['english', 'japanese'] },
   // V13.18: mondatépítő – a példamondatok japán és angol módban vannak meg
   { value: 'sentenceBuild', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="6" rx="1.5"/><rect x="14" y="4" width="7" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg>', name: 'Mondatépítő', desc: 'Rakd sorba a mondatot', modes: ['english', 'japanese'] },
-  // V13.13: írásgyakorlás, csak kandzsi módban (a vonásadat a kandzsikhoz van meg)
-  { value: 'writing',      icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>', name: 'Írás',              desc: 'Rajzold meg vonásonként', modes: ['kanji'] }
+  // V13.13: írásgyakorlás kandzsi (és V13.23-tól radikál) módban, ahol vonásadat van (a vonásadat a kandzsikhoz van meg)
+  { value: 'writing',      icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>', name: 'Írás',              desc: 'Rajzold meg vonásonként', modes: ['kanji', 'radicals'] }
 ];
 const practiceTypesFor = mode => PRACTICE_TYPES.filter(t => !t.modes || t.modes.includes(mode));
 const PRACTICE_COUNTS = [10, 20, 30, 50, 'all'];
@@ -26,7 +26,8 @@ const PRACTICE_ORDERS = [['random', 'Véletlen'], ['az', 'A → Z'], ['za', 'Z �
 const DIRECTION_LABELS = {
   english:  ['Angol → magyar', 'Magyar → angol'],
   japanese: ['Kana → magyar',  'Magyar → kana'],
-  kanji:    ['Kanji → magyar', 'Magyar → kanji']
+  kanji:    ['Kanji → magyar', 'Magyar → kanji'],
+  radicals: ['Radikál → magyar', 'Magyar → radikál'] // V13.23
 };
 
 function getPracticeOptions() {

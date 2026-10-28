@@ -2,7 +2,7 @@
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { JAPANESE_SENTENCES, english_sentences2 } from '../core/data.js';
 import { todayKey } from '../core/dates.js';
-import { currentMode, diffOrder, state } from '../core/state.js';
+import { currentMode, diffOrder, isCharMode, state, unitOf } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, escRegex, shuffle } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests, updateQuestProgress } from '../features/quests.js';
@@ -69,7 +69,7 @@ function renderLearnedNow(p) {
   const ids = p.learnedNow || [];
   if (sec) sec.hidden = ids.length === 0;
   if (!list || ids.length === 0) return;
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   const title = document.getElementById('learned-title');
   if (title) title.textContent = `${ids.length} új megtanult ${unit}`;
   list.innerHTML = ids.map((id, i) => {
@@ -210,8 +210,8 @@ function showQuestion() {
   eyeState = 0; 
 
   // V13.8: az irány felirata zászlóképek nélkül (azok külső szerverről jöttek, offline nem töltődtek be)
-  const SOURCE_LABEL = { english: 'ANGOL', japanese: 'KANA', kanji: 'KANJI' }[currentMode] || 'ANGOL';
-  const TARGET_LABEL = { english: 'ANGOL', japanese: 'JAPÁN', kanji: 'KANJI' }[currentMode] || 'ANGOL';
+  const SOURCE_LABEL = { english: 'ANGOL', japanese: 'KANA', kanji: 'KANJI', radicals: 'RADIKÁL' }[currentMode] || 'ANGOL';
+  const TARGET_LABEL = { english: 'ANGOL', japanese: 'JAPÁN', kanji: 'KANJI', radicals: 'RADIKÁL' }[currentMode] || 'ANGOL';
   let hintText = isEnHu ? `${SOURCE_LABEL} &rarr; MAGYAR` : `MAGYAR &rarr; ${TARGET_LABEL}`;
 
   const questionText = isEnHu ? word.en : word.hu;
@@ -273,7 +273,7 @@ function showQuestion() {
     const options = shuffle([correctText, ...getSmartDistractors(word, 3, isEnHu)]);
 
     contentHtml = `
-      <div class="q-word ${currentMode === 'kanji' && isEnHu ? 'kanji-display' : ''}">${escHtml(questionText)}</div>
+      <div class="q-word ${isCharMode() && isEnHu ? 'kanji-display' : ''}">${escHtml(questionText)}</div>
       ${isJapanMode && isEnHu ? '<div id="reveal-text" class="reveal-text"></div>' : ''}
       <div class="q-tools">
         ${isJapanMode && isEnHu ? `
@@ -320,7 +320,7 @@ function showQuestion() {
   }
   else if (p.type === 'writing') {
     /* ══ V13.13: ÍRÁSGYAKORLÁS (a rajzfelületet a writing.js kezeli) ══ */
-    hintText = 'ÍRÁS · MAGYAR &rarr; KANJI';
+    hintText = `ÍRÁS · MAGYAR &rarr; ${TARGET_LABEL}`;
     contentHtml = writingHtml(word);
   }
   else if (p.type === 'flashcard3d') {
@@ -331,20 +331,20 @@ function showQuestion() {
     // Előlap (forrás)
     const frontMain = isEnHu ? word.en : word.hu;
     let frontReading = '';
-    if (isEnHu && currentMode === 'kanji') frontReading = `On: ${word.onyomi || '–'} | Kun: ${word.kunyomi || '–'}`;
+    if (isEnHu && isCharMode()) frontReading = `On: ${word.onyomi || '–'} | Kun: ${word.kunyomi || '–'}`;
     else if (isEnHu && currentMode === 'japanese' && word.romaji) frontReading = word.romaji;
 
     // Hátlap (cél)
     const backMain = isEnHu ? word.hu : word.en;
     let backReading = '';
-    if (!isEnHu && currentMode === 'kanji') backReading = `On: ${word.onyomi || '–'} | Kun: ${word.kunyomi || '–'}`;
+    if (!isEnHu && isCharMode()) backReading = `On: ${word.onyomi || '–'} | Kun: ${word.kunyomi || '–'}`;
     else if (!isEnHu && currentMode === 'japanese' && word.romaji) backReading = word.romaji;
 
     // Példamondat (highlight + magyar)
     const { html: exampleSentenceHTML, hu: exampleHU } = getExampleSentence(word);
 
-    const isKanjiFront = currentMode === 'kanji' && isEnHu;
-    const isKanjiBack  = currentMode === 'kanji' && !isEnHu;
+    const isKanjiFront = isCharMode() && isEnHu;
+    const isKanjiBack  = isCharMode() && !isEnHu;
 
     contentHtml = `
       <div class="flashcard-3d" id="flashcard-3d">
@@ -758,7 +758,7 @@ function toggleEye(wordId) {
   if (currentMode === 'japanese') {
     if (eyeState > 1) eyeState = 0;
     rt.innerHTML = eyeState === 1 ? `<span style="color:var(--primary-h)">${word.romaji}</span>` : '';
-  } else if (currentMode === 'kanji') {
+  } else if (isCharMode()) {
     if (eyeState > 2) eyeState = 0;
     if (eyeState === 0) rt.innerHTML = '';
     if (eyeState === 1) rt.innerHTML = `<span style="color:var(--primary-h)">On: ${word.onyomi} | Kun: ${word.kunyomi}</span>`;
@@ -782,7 +782,7 @@ function checkAnswer(btn, chosen, correct) {
     document.querySelectorAll('.opt-btn').forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
     if(qCard) qCard.classList.add('shake');
     if(currentMode !== 'english' && practiceDir() === 'en-hu') {
-      eyeState = currentMode === 'kanji' ? 1 : 0; 
+      eyeState = isCharMode() ? 1 : 0; 
       toggleEye(word.id);
     }
   }
@@ -894,7 +894,7 @@ function showRoundEnd() {
   // Gyors ismétlésnél nincs következő kör: a hibás szavak már a soron belül ismétlődtek.
   // Ha van következő kör, az a korall fő lépés; különben a befejezés.
   const hasNextRound = p.errorList.length > 0 && !isQuickQuiz;
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   const actions = document.getElementById('re-actions');
   if (actions) {
     actions.innerHTML = hasNextRound
@@ -952,7 +952,7 @@ function finishSession() {
 
   const learnedCount = (p.learnedNow || []).length;
   saveStats(); saveWords(); showScreen(p.origin || 'dashboard'); // Statisztika + szó streak mentése
-  showToast(learnedCount ? `Gyakorlás mentve · ${learnedCount} új megtanult ${currentMode === 'kanji' ? 'kanji' : 'szó'}` : 'Gyakorlás mentve');
+  showToast(learnedCount ? `Gyakorlás mentve · ${learnedCount} új megtanult ${unitOf()}` : 'Gyakorlás mentve');
 }
 
 // V13: oda térünk vissza, ahonnan a gyakorlás indult (Kezdőlap vagy Gyakorlás fül)

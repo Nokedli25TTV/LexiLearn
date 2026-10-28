@@ -174,7 +174,7 @@ function buildCloudSnapshot() {
     updatedAt: Date.now()  // kliens timestamp – konfliktus megoldáshoz
   };
 
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  ['english', 'japanese', 'kanji', 'radicals'].forEach(lang => {
     // ── WORDS ── (méret-tudatos)
     const words = appData[lang].words || [];
     snap.words[lang] = words
@@ -220,7 +220,7 @@ function buildCloudSnapshot() {
   // Debug: snapshot méret a console-ba
   try {
     const sizeKB = (JSON.stringify(snap).length / 1024).toFixed(1);
-    const wordCounts = ['english','japanese','kanji']
+    const wordCounts = ['english','japanese','kanji','radicals']
       .map(l => `${l}=${snap.words[l].length}`).join(', ');
     console.log(`[FirebaseSync] Snapshot méret: ${sizeKB} KB (mentett szavak: ${wordCounts})`);
   } catch (e) { /* noop */ }
@@ -238,7 +238,7 @@ function applyCloudSnapshot(snap) {
   const appData = window.appData;
   if (!appData || !snap) return;
 
-  ['english', 'japanese', 'kanji'].forEach(lang => {
+  ['english', 'japanese', 'kanji', 'radicals'].forEach(lang => {
     // ── WORDS ──
     if (snap.words?.[lang]) {
       const cloudById = new Map(snap.words[lang].map(w => [w.id, w]));

@@ -1,7 +1,7 @@
 // LexiLearn – stats/view.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { HU_MONTHS, addDays, dateKey, fmtDay, fmtDayLong, fmtDuration, fmtNum, lastNDays, startOfWeek } from '../core/dates.js';
-import { MODE_LABELS, appData, currentMode, state } from '../core/state.js';
+import { appData, currentMode, MODE_LABELS, state, unitOf } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { getDailyGoal } from '../habit/goal.js';
@@ -200,7 +200,7 @@ function renderStreakProgress() {
   const host = document.getElementById('streak-progress');
   if (!host) return;
   const goal = PRACTICE_LEARNED_CORRECT;
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   const inProgress = state.words.filter(w => !isLearnedWord(w) && (w.stats?.streak || 0) > 0);
   setText('viz-streak-note', `Az ${goal}. egymás utáni helyes válasznál lesz megtanult, egy hiba újraindítja.`);
   if (inProgress.length === 0) {
@@ -227,7 +227,7 @@ function renderMaturity() {
   const host = document.getElementById('maturity');
   if (!host) return;
   const m = computeMaturity();
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   setText('viz-mat-note', `${fmtNum(m.started)} ${unit} elkezdve · ${fmtNum(m.notStarted)} még nem`);
   if (m.started === 0) {
     host.innerHTML = vizEmpty('Ebben a módban még nincs elkezdett szó. Az első tanulás után itt látod, mennyire rögzült a tudásod.');
@@ -473,7 +473,7 @@ function renderStatsDetails() {
   // Szavak: csak a már gyakoroltak, a legtöbbet gyakoroltak elöl
   const practiced = words.filter(w => w.stats.totalCorrect + w.stats.totalWrong > 0)
     .sort((a, b) => (b.stats.totalCorrect + b.stats.totalWrong) - (a.stats.totalCorrect + a.stats.totalWrong));
-  const srcHeader = currentMode === 'english' ? 'Angol' : currentMode === 'kanji' ? 'Kandzsi' : 'Kana';
+  const srcHeader = currentMode === 'english' ? 'Angol' : currentMode === 'kanji' ? 'Kandzsi' : currentMode === 'radicals' ? 'Radikál' : 'Kana';
   setHtml('word-stats-table', practiced.length
     ? `<div class="table-scroll">${dataTable([srcHeader, 'Magyar', 'Sorozat', 'Helyes', 'Hibás', '%', 'Szint'], practiced.map(w => {
         const t = w.stats.totalCorrect + w.stats.totalWrong;

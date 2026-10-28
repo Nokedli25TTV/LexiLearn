@@ -3,7 +3,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   splitSnapshot, joinParts, hashParts, bucketOf, chooseInitialSource, createCloudStore,
-  WORD_BUCKETS, MANIFEST_ID, LEGACY_ID
+  LANGS, WORD_BUCKETS, MANIFEST_ID, LEGACY_ID
 } from '../../js/app/cloud-store.js';
 import { createFakeFirestore } from '../fakes/firestore.js';
 
@@ -13,7 +13,7 @@ const flush = () => new Promise(r => setTimeout(r, 0));
 const quiet = { warn() {} };
 
 // Valószerű felhő snapshot: N3 szintű mennyiségnél is (kb. 6000 gyakorolt szó)
-function makeSnap(n = { english: 40, japanese: 120, kanji: 30 }, updatedAt = 1000) {
+function makeSnap(n = { english: 40, japanese: 120, kanji: 30, radicals: 12 }, updatedAt = 1000) {
   const snap = { words: {}, stats: {}, playlists: {}, updatedAt };
   Object.entries(n).forEach(([lang, count]) => {
     snap.words[lang] = Array.from({ length: count }, (_, i) => ({
@@ -35,7 +35,11 @@ describe('felosztás és összerakás', () => {
   it('split → join visszaadja ugyanazt az adatot', () => {
     const snap = makeSnap();
     const parts = splitSnapshot(snap);
-    expect(Object.keys(parts)).toHaveLength(3 * (1 + WORD_BUCKETS));
+    expect(Object.keys(parts)).toHaveLength(LANGS.length * (1 + WORD_BUCKETS));
+    // Egy régi eszköz mentése (még nincs benne a radicals mód): nem lesz belőle üres radikál-rész
+    const old = makeSnap({ english: 3, japanese: 5, kanji: 2 });
+    expect(Object.keys(splitSnapshot(old)).some(id => id.startsWith('v2_radicals'))).toBe(false);
+    expect(joinParts(splitSnapshot(old), 1).playlists.radicals).toBeUndefined();
     expect(sortWords(joinParts(parts, 1000))).toEqual(sortWords(makeSnap()));
   });
   it('egy szó mindig ugyanabba a vödörbe kerül, és a vödrök nagyjából egyenletesek', () => {
@@ -71,7 +75,7 @@ describe('createCloudStore', () => {
     const first = await store.load({ firstOnThisDevice: true });
     expect(first.source).toBe('legacy');
     await store.save({ ...first.snap, updatedAt: 2000 });
-    expect(f.stats.writes).toBe(3 * (1 + WORD_BUCKETS) + 1);
+    expect(f.stats.writes).toBe(LANGS.length * (1 + WORD_BUCKETS) + 1);
     expect(f.docs.has(path(LEGACY_ID))).toBe(true);
 
     const other = createCloudStore({ ...f, uid: UID, log: quiet });
@@ -137,7 +141,7 @@ describe('createCloudStore', () => {
     const reads = f.stats.reads;
     const later = await createCloudStore({ ...f, uid: UID, log: quiet }).load({ firstOnThisDevice: false });
     expect(later.source).toBe('v2');
-    expect(f.stats.reads - reads).toBe(1 + 3 * (1 + WORD_BUCKETS));
+    expect(f.stats.reads - reads).toBe(1 + LANGS.length * (1 + WORD_BUCKETS));
   });
 
   it('nagy adat: ami egy dokumentumba már nem férne (1 MiB), felosztva bőven elfér', async () => {

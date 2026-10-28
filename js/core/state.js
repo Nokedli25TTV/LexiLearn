@@ -17,10 +17,13 @@ function createEmptyState() {
   };
 }
 
+// V13.23: a negyedik mód, a 214 Kangxi-radikál (a KanjiRadical projektből)
+const MODES = ['english', 'japanese', 'kanji', 'radicals'];
 let appData = {
   english: createEmptyState(),
   japanese: createEmptyState(),
-  kanji: createEmptyState()
+  kanji: createEmptyState(),
+  radicals: createEmptyState()
 };
 // V12: a firebase-sync.js (type=module) ezen keresztül éri el az adatokat
 window.appData = appData;
@@ -29,10 +32,15 @@ let currentMode = 'english';
 let state = appData[currentMode]; 
 
 function diffOrder(d) {
-  const map = {B1:1, B2:2, C1:3, C2:4, N5:1, N4:2, N3:3, N2:4, N1:5};
+  const map = {B1:1, B2:2, C1:3, C2:4, N5:1, N4:2, N3:3, N2:4, N1:5, '–':6}; // '–': JLPT-n kívüli radikál
   return map[d] ?? 0;
 }
-const MODE_LABELS = { english: 'Angol', japanese: 'Japán', kanji: 'Kandzsi' };
+const MODE_LABELS = { english: 'Angol', japanese: 'Japán', kanji: 'Kandzsi', radicals: 'Radikálok' };
+
+// V13.23: az egy karakteres módok (kandzsi, radikál) közös megjelenése: nagy írásjegy, on/kun olvasat
+const isCharMode = (mode = currentMode) => mode === 'kanji' || mode === 'radicals';
+// Mértékegység a szövegekben: „12 kanji”, „12 radikál”, „12 szó”
+const unitOf = (mode = currentMode) => (mode === 'kanji' ? 'kanji' : mode === 'radicals' ? 'radikál' : 'szó');
 
 // V13.3: a módváltás egyetlen helye (ES modulban a state/currentMode élő kötés, kívülről nem írható)
 function setCurrentMode(mode) {
@@ -40,4 +48,4 @@ function setCurrentMode(mode) {
   state = appData[currentMode];
 }
 
-export { MODE_LABELS, appData, createEmptyState, currentMode, diffOrder, setCurrentMode, state };
+export { MODES, MODE_LABELS, appData, createEmptyState, currentMode, diffOrder, isCharMode, setCurrentMode, state, unitOf };

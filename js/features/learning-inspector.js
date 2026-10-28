@@ -1,6 +1,6 @@
 // LexiLearn – tanulási állapot és ismétlési sor átlátható kezelése.
 import { fmtDay, fmtDayLong, fmtDuration, fmtNum, lastNDays, todayKey } from '../core/dates.js';
-import { appData, currentMode, state } from '../core/state.js';
+import { appData, currentMode, state, unitOf } from '../core/state.js';
 import { saveWords } from '../core/storage.js';
 import { escHtml, jsArg } from '../core/util.js';
 import { LEVELS, TARGETS, isLearnedWord, isMatureWord, isPracticeLearned, srsInterval } from '../goal/jlpt.js';
@@ -155,7 +155,7 @@ function openWordInspector(kind, mode = currentMode) {
     </li>`;
   }).join('');
   const more = words.length > shown.length ? `<p class="inspect-limit">Az első ${shown.length} szó látható.</p>` : '';
-  showInspector(title, `${fmtNum(words.length)} ${selectedMode === 'kanji' ? 'kanji' : 'szó'}`,
+  showInspector(title, `${fmtNum(words.length)} ${unitOf(selectedMode)}`,
     words.length ? `<ul class="inspect-list">${rows}</ul>${more}` : '<p class="inspect-empty">Ebben a csoportban még nincs szó.</p>');
 }
 

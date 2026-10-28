@@ -14,7 +14,7 @@ import { REVIEW_BATCH_SIZE } from '../srs/schedule.js';
    - A napi cél módonként állítható (globalStats.dailyGoal, szinkronizált).
      Ha elérted, mára lezárjuk az új szavakat: holnap nagyobb kedvvel jössz vissza.
 ══════════════════════════════════════════════════════ */
-const DEFAULT_DAILY_GOAL = { english: 10, japanese: 10, kanji: 5 };
+const DEFAULT_DAILY_GOAL = { english: 10, japanese: 10, kanji: 5, radicals: 5 };
 const LEARN_BATCH_SIZE = 5;
 
 function getDailyGoal() {
@@ -55,6 +55,8 @@ function getNewWordPool() {
     pool = pool.filter(w => Number.isFinite(lessonNum(w)));
     return pool.sort((a, b) => (lessonNum(a) - lessonNum(b)) || (order.get(a.id) - order.get(b.id)));
   }
+  // V13.23: a radikálok a hagyományos Kangxi-sorrendben (ez vonásszám szerinti is)
+  if (currentMode === 'radicals') return pool.sort((a, b) => (a.kangxi || 999) - (b.kangxi || 999) || (order.get(a.id) - order.get(b.id)));
   return pool
     .sort((a, b) => (lessonNum(a) - lessonNum(b)) || (diffOrder(a.diff) - diffOrder(b.diff)) || (order.get(a.id) - order.get(b.id)));
 }
@@ -106,6 +108,7 @@ function hasPoolFilters() {
 function describePoolSource() {
   const first = getNewWordPool()[0];
   if (currentMode === 'japanese') return first ? `Dekiru ${lessonNum(first)}. lecke · sorrendben` : 'Dekiru leckék';
+  if (currentMode === 'radicals') return first ? `${lessonNum(first)} vonásos radikálok · Kangxi-sorrendben` : 'Radikálok · Kangxi-sorrendben';
   if (currentMode === 'kanji') return first && Number.isFinite(lessonNum(first))
     ? `Kanji ${lessonNum(first)}. lecke · sorrendben` : 'Kanji leckék · sorrendben';
   return 'Teljes angol szótár · szint szerint';

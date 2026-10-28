@@ -8,6 +8,9 @@ window.LEXI_DATA = {
   // V13.7: a JLPT N3 szókincs (jlpt_n3_words.js) a japán szavakhoz csatlakozik
   japaneseWords:    [...(typeof JAPANESE_WORDS !== 'undefined' ? JAPANESE_WORDS : []), ...(typeof N3_WORDS !== 'undefined' ? N3_WORDS : [])],
   kanjiData:        typeof KANJI_DATA !== 'undefined' ? KANJI_DATA : [],
+  // V13.23: Radikálok mód (radicals_data.js, előállítja: tools/build-radicals.mjs)
+  radicalsData:     typeof RADICALS_DATA !== 'undefined' ? RADICALS_DATA : [],
+  kanjiRadicals:    typeof KANJI_RADICALS !== 'undefined' ? KANJI_RADICALS : {},
   englishSentences: typeof english_sentences2 !== 'undefined' ? english_sentences2 : [],
   travelPlan:       typeof TRAVEL_PLAN !== 'undefined' ? TRAVEL_PLAN : null,
   travelPlanKanji:  typeof TRAVEL_PLAN_KANJI !== 'undefined' ? TRAVEL_PLAN_KANJI : null,

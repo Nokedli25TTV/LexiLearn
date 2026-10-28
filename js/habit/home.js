@@ -1,7 +1,7 @@
 // LexiLearn – habit/home.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { todayKey } from '../core/dates.js';
-import { MODE_LABELS, currentMode, state } from '../core/state.js';
+import { currentMode, MODE_LABELS, state, unitOf } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests } from '../features/quests.js';
 import { calcStreak, renderWeekTracker } from '../features/streak.js';
@@ -30,7 +30,7 @@ function renderHome() {
   setText('home-greeting', greeting);
   setText('home-streak-text', `${streak} nap`);
   setText('home-streak-hint',
-    studiedToday ? `A mai ${MODE_LABELS[currentMode].toLowerCase()} adag megvan.`
+    studiedToday ? `A mai ${currentMode === 'radicals' ? 'radikál' : MODE_LABELS[currentMode].toLowerCase()} adag megvan.`
     : streak > 0 ? 'Egy rövid alkalom ma is elég a folytonossághoz.'
     : 'Egy rövid alkalom ma: ebből épül a rutin.');
   renderWeekTracker();
@@ -42,7 +42,7 @@ function renderHome() {
   const pct = Math.min(1, learnedToday / goal);
   setText('goal-done', learnedToday);
   setText('goal-total', goal);
-  setText('goal-unit', currentMode === 'kanji' ? 'új kanji' : 'új szó');
+  setText('goal-unit', `új ${unitOf()}`);
   const goalSection = document.getElementById('home-goal');
   if (goalSection) goalSection.classList.toggle('is-done', goalReached);
   const bar = document.getElementById('goal-bar');
@@ -55,7 +55,7 @@ function renderHome() {
   const pool = getNewWordPool();
   const source = document.getElementById('goal-source');
   if (source) {
-    source.innerHTML = `<span>Forrás: <b>${escHtml(describePoolSource())}</b> · ${pool.length} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}</span>`;
+    source.innerHTML = `<span>Forrás: <b>${escHtml(describePoolSource())}</b> · ${pool.length} új ${unitOf()}</span>`;
   }
   renderCurrentLesson();
 
@@ -64,7 +64,7 @@ function renderHome() {
   // Ha nincs esedékes, az új szavak tanulása a fő gomb, mint eddig.
   const forecast = dueForecast(state.words);
   const due = forecast.due;
-  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const unit = unitOf();
   const arrow = `<span class="cta-arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>`;
 
   let reviewHtml = '';

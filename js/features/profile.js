@@ -1,6 +1,6 @@
 // LexiLearn – features/profile.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
-import { MODE_LABELS, currentMode, state } from '../core/state.js';
+import { currentMode, MODE_LABELS, state, unitOf } from '../core/state.js';
 import { renderStorageInfo, saveStats } from '../core/storage.js';
 import { REVIEW_BATCH_OPTIONS, getDailyGoal, getReviewBatch } from '../habit/goal.js';
 import { canMixWithMusic, isMixWithMusic, setMixWithMusic } from '../practice/tts.js';
@@ -86,7 +86,7 @@ function setDailyGoal(n) {
   state.globalStats.dailyGoal = n;
   saveStats();
   renderProfile();
-  showToast(`Napi cél (${MODE_LABELS[currentMode]}): ${n} új ${currentMode === 'kanji' ? 'kanji' : 'szó'}`);
+  showToast(`Napi cél (${MODE_LABELS[currentMode]}): ${n} új ${unitOf()}`);
 }
 
 export { APP_VERSION, renderMixAudio, renderProfile, setDailyGoal, setReviewBatch, tapVersion, toggleMixAudio };

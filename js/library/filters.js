@@ -63,7 +63,7 @@ function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false, ignor
   }
   if (!ignoreTags && f.tags.length > 0 && !f.tags.some(t => w.tags.includes(t))) return false;
   if (f.diff.size > 0 && !f.diff.has(w.diff)) return false;
-  if (currentMode === 'kanji' || currentMode === 'japanese') {
+  if (currentMode === 'kanji' || currentMode === 'japanese' || currentMode === 'radicals') {
     const lessons = selectedLessons(f);
     if (lessons.length > 0 && !wordLessons(w).some(l => lessons.includes(l))) return false;
   }
@@ -106,6 +106,7 @@ const SORT_OPTIONS = [
 
 /* ── Szűrő opciók ── */
 function lessonLabel(v) {
+  if (currentMode === 'radicals') return `${v} vonás`; // V13.23: a radikálok „leckéje” a vonásszám
   const prefix = currentMode === 'kanji' ? 'Kanji' : 'Dekiru';
   if (Number.isNaN(Number(v))) return `${prefix}: ${v}`;
   const book = currentMode === 'japanese' && Number(v) >= 25 ? ' · 2. könyv' : '';
@@ -114,10 +115,15 @@ function lessonLabel(v) {
 
 // A Lecke pilla felirata: egy lecke névvel, kettő felsorolva, összefüggő sor tartományként, különben darabszám
 function lessonsLabel(values) {
-  if (values.length === 0) return 'Lecke';
+  const strokes = currentMode === 'radicals';
+  if (values.length === 0) return strokes ? 'Vonásszám' : 'Lecke';
   if (values.length === 1) return lessonLabel(values[0]);
   const nums = values.map(Number).sort((a, b) => a - b);
   if (nums.some(Number.isNaN)) return `${values.length} lecke`;
+  if (strokes) {
+    const contiguous = nums.every((n, i) => i === 0 || n === nums[i - 1] + 1);
+    return contiguous ? `${nums[0]}–${nums[nums.length - 1]} vonás` : `${nums.join(', ')} vonás`;
+  }
   if (nums.length === 2) return `${nums[0]}., ${nums[1]}. lecke`;
   const contiguous = nums.every((n, i) => i === 0 || n === nums[i - 1] + 1);
   return contiguous ? `${nums[0]}–${nums[nums.length - 1]}. lecke` : `${nums.length} lecke`;
