@@ -113,7 +113,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Makacs szavak:** az app magától felismeri, ami többször is kifogott rajtad (az ismétlésben legalább 4 visszaesés, vagy a gyakorlásban legalább 4 hiba, legalább annyi, mint a helyes). A Kezdőlapon egy csendes sor jelzi, egy koppintással kijelölve a Gyakorlás fülre visz; ha a szó már megy, magától kikerül.
 - **Leckék fókusz listái:** gyakorlás közben a kártya zászlójával egy nehéz szó a saját leckéjének fókusz listájába kerül (a csillagos Fókusz Listától külön). A Lista menüben leckénként külön szakaszban jelennek meg, így egy lecke nehéz szavai külön gyakorolhatók.
 - **Lebegő dokk** a képernyő alján: a kijelöltek száma, a beállítások összefoglalója és a korall Indítás gomb.
-- **Hat gyakorlástípus:**
+- **Hét gyakorlástípus:**
 
 | Típus | Mit csinálsz |
 |---|---|
@@ -122,6 +122,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 | Mondat-kiegészítő | a szó a példamondatban hiányzik |
 | 3D kártya | megfordítod, és elhúzod, ha tudtad |
 | Hallás | japán és angol módban: csak hallod a szót, és a jelentését választod; az azonos hangzású szavak nem zavaró válaszok |
+| Mondatépítő | japán és angol módban: a példamondat darabjait (furiganával) a magyar fordítás alapján sorba rakod; a szórendet gyakorolja, ezért a szó megtanulásába nem számít bele |
 | Írás | kandzsi módban: megrajzolod a kandzsit vonásonként |
 
 - Irány (kana → magyar vagy fordítva), kérdésszám (10, 20, 30, 50 vagy mind), sorrend (véletlen, betűrend, könnyebb vagy nehezebb elöl).
@@ -199,7 +200,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **127 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **128 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash

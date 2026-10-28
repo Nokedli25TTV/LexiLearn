@@ -15,6 +15,8 @@ const PRACTICE_TYPES = [
   { value: 'flashcard3d',  icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="14" height="14" rx="2.5"/><path d="M7 3h11.5A2.5 2.5 0 0 1 21 5.5V17"/></svg>', name: '3D kártya',         desc: 'Fordítsd meg, húzd el' },
   // V13.18: hallás utáni gyakorlás – a kandzsi önmagában több olvasatú, ezért ott nincs
   { value: 'listening',    icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>', name: 'Hallás',            desc: 'Meghallgatod, és kiválasztod', modes: ['english', 'japanese'] },
+  // V13.18: mondatépítő – a példamondatok japán és angol módban vannak meg
+  { value: 'sentenceBuild', icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="7" height="6" rx="1.5"/><rect x="14" y="4" width="7" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/></svg>', name: 'Mondatépítő', desc: 'Rakd sorba a mondatot', modes: ['english', 'japanese'] },
   // V13.13: írásgyakorlás, csak kandzsi módban (a vonásadat a kandzsikhoz van meg)
   { value: 'writing',      icon: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>', name: 'Írás',              desc: 'Rajzold meg vonásonként', modes: ['kanji'] }
 ];
@@ -41,7 +43,7 @@ function renderPracticeDock() {
   const type = types.find(t => t.value === o.type) || types[0];
   const radio = (on, attrs, label, cls = '') => `<button role="radio" aria-checked="${on}" class="${cls} ${on ? 'active is-selected' : ''}" ${attrs}>${label}</button>`;
   // Írásnál és hallásnál nincs irány: a jelentésből rajzolsz, illetve a hangból a jelentésre
-  const directionGroup = type.value === 'writing' || type.value === 'listening' ? '' : `
+  const directionGroup = ['writing', 'listening', 'sentenceBuild'].includes(type.value) ? '' : `
     <div class="dock-group">
       <span class="dock-label" id="dock-dir-label">Irány</span>
       <div class="segmented" role="radiogroup" aria-labelledby="dock-dir-label">

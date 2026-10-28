@@ -29,6 +29,7 @@ import { applyFilters, initLibraryEvents, renderDashboard, selectNone, switchVie
 import { clearDiff, clearLessons, closeFilterMenu, closeLibraryOverlays, onTagSearch, setDayFilter, setLessonFilter, setListFilter, setSort, setStatusFilter, setTags, toggleDiff, toggleFilterMenu, toggleLesson, toggleTag } from './library/menus.js';
 import { deletePlaylist, expandPlaylist, savePlaylist } from './library/playlists.js';
 import { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, finishSession, manualNextQuestion, revealHardcoreAnswer, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation } from './practice/engine.js';
+import { sbGiveUp, sbPick, sbUnpick } from './practice/sentence-build.js';
 import { prevFlashcard3D, rateFlashcard3D, speakFlashcard3D } from './practice/flashcard.js';
 import './practice/tts.js';
 import { writingHint, writingRestart, writingReveal, writingToggleOutline } from './practice/writing.js';
@@ -121,6 +122,9 @@ Object.assign(window, {
   startLearnSession,
   startNextRound,
   startPractice,
+  sbGiveUp,
+  sbPick,
+  sbUnpick,
   startTodayReview,
   startReviewSession,
   flipReviewCard,

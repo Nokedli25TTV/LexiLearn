@@ -16,6 +16,7 @@ import { hasStrokeData } from '../features/strokes.js';
 import { logActivity } from '../habit/goal.js';
 import { _currentTTSAudio, setTtsOnEnd, speakWord } from './tts.js';
 import { initWriting, isWritingCorrect, resetWritingOutline, writingHtml } from './writing.js';
+import { buildableSentences, initSentenceBuild, sentenceBuildHtml } from './sentence-build.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { practiceLapse } from '../srs/schedule.js';
@@ -24,6 +25,9 @@ import { practiceLapse } from '../srs/schedule.js';
    PRACTICE LOGIC (V6.7: SZEM IKON + MONDAT MOTOR)
 ══════════════════════════════════════════════════════ */
 let eyeState = 0; 
+
+// Önellenőrző / szórend-gyakorló módok: a szó statisztikáját és a pontosságot nem érintik
+const UNSCORED_TYPES = ['flashcard3d', 'sentenceBuild'];
 
 // Az ötödik helyes szabad gyakorlóválasznál a szó belép a JLPT-haladásba.
 // SRS-ismétlést csak a napi, Dekiru-sorrendű tanulás hoz létre.
@@ -66,6 +70,14 @@ function startPractice() {
 
     if (orderedWords.length === 0) {
       showToast('A kiválasztott szavakhoz még nincs példamondat.');
+      return;
+    }
+  }
+
+  if (type === 'sentenceBuild') {
+    orderedWords = orderedWords.filter(w => buildableSentences(w, currentMode).length > 0);
+    if (orderedWords.length === 0) {
+      showToast('A kiválasztott szavakhoz nincs kirakható példamondat.');
       return;
     }
   }
@@ -254,6 +266,14 @@ function showQuestion() {
       <button class="dont-know" onclick="checkAnswer(null,null,'${escHtml(word.hu)}')">Nem tudom</button>
     `;
   }
+  else if (p.type === 'sentenceBuild') {
+    /* ══ V13.18: MONDATÉPÍTŐ (a csempéket a sentence-build.js kezeli) ══ */
+    hintText = 'MONDATÉPÍTŐ';
+    const sentences = buildableSentences(word, currentMode);
+    if (sentences.length === 0) { p.type = 'classic'; showQuestion(); return; } // mint a mondat-kiegészítőnél
+    p.currentSentenceObj = sentences[Math.floor(Math.random() * sentences.length)];
+    contentHtml = sentenceBuildHtml(p.currentSentenceObj, currentMode);
+  }
   else if (p.type === 'writing') {
     /* ══ V13.13: ÍRÁSGYAKORLÁS (a rajzfelületet a writing.js kezeli) ══ */
     hintText = 'ÍRÁS · MAGYAR &rarr; KANJI';
@@ -408,6 +428,38 @@ function showQuestion() {
   }
 
   if (p.type === 'writing') initWriting(word, result => finishWriting(word, result));
+  if (p.type === 'sentenceBuild') initSentenceBuild(currentMode, (ok, sObj) => finishSentenceBuild(word, ok, sObj));
+}
+
+// V13.18: egy mondat kirakásának vége. A kör eredményébe és a napi naplóba számít, a szó
+// statisztikájába nem (a szórendet gyakorolja). Helyesnél a mondat elhangzik, aztán tovább.
+function finishSentenceBuild(word, isCorrect, sObj) {
+  const p = state.practice;
+  if (!p || p.type !== 'sentenceBuild' || p.roundWords[p.currentIdx] !== word.id) return;
+  if (isCorrect) p.roundCorrect++;
+  else { p.roundWrong++; if (!p.errorList.includes(word.id)) p.errorList.push(word.id); }
+  logActivity({ known: isCorrect });
+  speakWord(sObj.ttsSentence || '', false);
+  const qCard = document.getElementById('q-card');
+  if (qCard) qCard.classList.add(isCorrect ? 'bounce' : 'shake');
+
+  if (isCorrect) {
+    let advanced = false;
+    const advance = () => {
+      if (advanced || state.practice !== p || p.roundWords[p.currentIdx] !== word.id) return;
+      advanced = true;
+      setTtsOnEnd(null);
+      p.currentIdx++;
+      if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
+    };
+    setTtsOnEnd(() => setTimeout(advance, 400));
+    setTimeout(advance, 7000); // biztonsági felső korlát, ha a hang nem szól
+  } else {
+    setTimeout(() => {
+      const nextBtn = document.getElementById('next-btn-container');
+      if (nextBtn) nextBtn.style.display = 'block';
+    }, 500);
+  }
 }
 
 // V13.13: egy kandzsi megrajzolásának vége. Hibátlanul vagy javítással kész: helyes válasz;
@@ -734,9 +786,9 @@ function showRoundEnd() {
   const pct = total > 0 ? Math.round(p.roundCorrect / total * 100) : 0;
   const elapsed = Math.round((Date.now() - p.roundStartTime) / 1000);
 
-  // A 3D kártya önértékelés, nem kvízeredmény: aktív tanulási napnak számít,
-  // de nem írjuk bele a küldetés- vagy pontossági statisztikába.
-  if (p.type === 'flashcard3d') {
+  // A 3D kártya önértékelés, a mondatépítő szórend-gyakorlás, nem kvízeredmény: aktív tanulási
+  // napnak számít, de nem írjuk bele a küldetés- vagy pontossági statisztikába.
+  if (UNSCORED_TYPES.includes(p.type)) {
     if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
     state.globalStats.studyDays[todayKey()] = true;
     saveStats();
@@ -814,14 +866,14 @@ function finishSession() {
   const p = state.practice;
   const duration = Math.round((Date.now() - p.sessionStartTime) / 1000);
 
-  // A 3D kártya szabad önellenőrzés: aktív tanulási napnak számít, de nem hoz
-  // létre 0/0-s kvízelőzményt és nem módosítja a globális pontosságot.
-  if (p.type === 'flashcard3d') {
+  // A 3D kártya szabad önellenőrzés (és a mondatépítő szórend-gyakorlás): aktív tanulási napnak
+  // számít, de nem hoz létre 0/0-s kvízelőzményt és nem módosítja a globális pontosságot.
+  if (UNSCORED_TYPES.includes(p.type)) {
     if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
     state.globalStats.studyDays[todayKey()] = true;
     saveStats();
     showScreen(p.origin || 'dashboard');
-    showToast('Kártyák áttekintve');
+    showToast(p.type === 'sentenceBuild' ? 'Mondatok gyakorolva' : 'Kártyák áttekintve');
     return;
   }
 

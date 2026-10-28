@@ -2271,6 +2271,28 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .q-word { margin-bottom: 4px; }
 .reveal-text { min-height: 0; margin: 6px 0 0; }
 .reveal-text:empty { display: none; }
+/* V13.18: mondatépítő – csempék a magyar mondat alatt; a kirakott sor felül, a készlet alul */
+.sb-prompt { margin: 2px 0 16px; font-size: 18px; font-weight: 800; line-height: 1.45; color: var(--text); }
+.sb-answer {
+  min-height: 64px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 8px;
+  padding: 10px; border-bottom: 2px dashed var(--border); margin-bottom: 16px;
+}
+.sb-pool:empty, #sb-giveup[hidden] { display: none; }
+.sb-pool { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 8px; }
+.sb-tile {
+  min-height: 48px; min-width: 44px; padding: 6px 14px; border: 2px solid var(--border); border-radius: 12px;
+  background: var(--surface-2); color: var(--text); font-family: 'Nunito', sans-serif; font-size: 18px; font-weight: 700;
+  line-height: 1.6; cursor: pointer; transition: transform 140ms var(--ease-out), border-color 0.15s;
+}
+.sb-tile:active { transform: scale(0.94); }
+.sb-tile rt { font-size: 10px; font-weight: 700; color: var(--text-3); }
+.sb-tile.is-correct { border-color: var(--success); background: var(--success-bg); }
+.sb-tile.is-wrong { border-color: var(--error); background: var(--error-bg); }
+.sb-tile:disabled { cursor: default; }
+.sb-gap { min-width: 44px; min-height: 48px; border-radius: 12px; border: 2px dashed var(--border); opacity: 0.6; }
+.sb-tail { align-self: center; font-size: 18px; font-weight: 700; color: var(--text-2); }
+.sb-solution { margin: 6px 0 4px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--success-bg); font-size: 17px; font-weight: 700; line-height: 1.8; color: var(--text); }
+.sb-solution[hidden] { display: none; }
 /* V13.18: hallás utáni gyakorlás – nagy lejátszó gomb, a szó csak a válasz után látszik */
 .listen-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 4px 0 22px; }
 .listen-play {

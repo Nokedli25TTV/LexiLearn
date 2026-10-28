@@ -48,6 +48,7 @@ const STATIC_ASSETS = [
   './js/main.js',
   './js/practice/engine.js',
   './js/practice/flashcard.js',
+  './js/practice/sentence-build.js',
   './js/practice/tts.js',
   './js/practice/writing.js',
   './js/srs/fsrs.js',
