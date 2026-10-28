@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.18" src="https://img.shields.io/badge/verzi%C3%B3-13.18-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.19" src="https://img.shields.io/badge/verzi%C3%B3-13.19-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -127,12 +127,13 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 
 - Irány (kana → magyar vagy fordítva), kérdésszám (10, 20, 30, 50 vagy mind), sorrend (véletlen, betűrend, könnyebb vagy nehezebb elöl).
 - Körökben halad: a hibás szavak a következő körbe kerülnek. A kör végén pontosság, helyes és hibás válaszok, idő, és a hibás szavak listája.
+- **Megtanult szó visszajelzése:** amikor egy szó gyakorlás közben eléri az 5 egymás utáni helyes választ, a kártyán „Megtanult szó” jelvény bukkan fel; a kör végén külön lista mutatja, mely szavak kerültek a megtanultak közé ebben a gyakorlásban, és az Előzményekben is látszanak.
 
 ### Statisztika és JLPT N3 haladás
 
 - **KPI sáv:** Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten.
 - **Konzisztencia hőtérkép** GitHub-stílusú naptárban, **tudás-érettség** (Ismerkedés, Gyakorlás alatt, Rögzült), **pontosság** és **fókuszált idő** az elmúlt 14 napról. Minden ábrának van táblázatos nézete is.
-- A tudás-érettség, a JLPT-haladás és a tanulási forrás számai megnyithatók: külön listázhatók a napi tanulásból, az 5× helyes gyakorlásból, az aktív ismétlésből és a rögzült állapotból származó szavak. A „Hogyan számoljuk?” nézet képlettel vezeti le a JLPT-összesítést.
+- A tudás-érettség, a JLPT-haladás és a tanulási forrás számai megnyithatók: külön listázhatók a napi tanulásból, az 5× egymás után helyes gyakorlásból (dátummal, a legfrissebb elöl), az aktív ismétlésből és a rögzült állapotból származó szavak. A „Hogyan számoljuk?” nézet képlettel vezeti le a JLPT-összesítést.
 - A Konzisztencia, Aktív napok és Fókusz KPI-k napi bontást nyitnak válaszszámmal, új szavakkal és aktív idővel.
 - **Heti összefoglaló:** hetenként lapozható képernyő az aktív napokkal és négy számmal (megtanult szó, válasz és kártya, pontosság, fókuszált idő), mindegyik az előző héthez mérve. Alatta az N3 haladás heti változása, a héten elrontott és azóta nem javított szavak egy „Gyakorlás ezekkel” gombbal, és a módonkénti bontás. A lezárt hétről egy csendes sor szól a Kezdőlapon, amíg meg nem nézted.
 - **JLPT haladás:** mérföldkő-sáv N5-től N3-ig (szókincs és kandzsi külön), célidőpont (alapból 2027. július 4., átállítható), szükséges tempó, 14 napos átlag, várható dátum és szótár-lefedettség. A Kezdőlapon egy sor mutatja: „N3 FELÉ szókincs 24% · kandzsi 20%”.
@@ -200,7 +201,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **134 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **135 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash

@@ -5,6 +5,7 @@ import { MODE_LABELS, appData, currentMode, state } from '../core/state.js';
 import { escHtml } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { getDailyGoal } from '../habit/goal.js';
+import { isPracticeLearned } from '../goal/jlpt.js';
 import { accuracyOf, activityLevel, buildDailyIndex, computeMaturity, weekFocusSeconds } from './model.js';
 import { renderJlptCard } from '../goal/view.js';
 import { renderWeekLink } from './week.js';
@@ -202,7 +203,7 @@ function renderMaturity() {
   ];
   const pct = v => Math.round(v / m.started * 100);
   const dailyLearned = state.words.filter(w => !!w.stats?.learnedAt).length;
-  const practiceLearned = state.words.filter(w => !w.stats?.learnedAt && (w.stats?.totalCorrect || 0) >= 5).length;
+  const practiceLearned = state.words.filter(w => !w.stats?.learnedAt && isPracticeLearned(w)).length; // V13.19: az egymás utáni szabály szerint
   const activeReview = state.words.filter(w => !!w.stats?.srs).length;
   const segments = stages.filter(s => s[3] > 0)
     .map(([key, cls, label, v]) => `<span class="mat-seg ${cls}" style="flex-grow:${v}" data-label="${label}" data-v="${v}"></span>`).join('');
@@ -214,7 +215,7 @@ function renderMaturity() {
     </ul>
     <div class="learning-breakdown" aria-label="Miből számít megtanultnak">
       <button onclick="openWordInspector('daily')"><b>${fmtNum(dailyLearned)}</b><span>Napi tanulás</span></button>
-      <button onclick="openWordInspector('practice')"><b>${fmtNum(practiceLearned)}</b><span>5× helyes gyakorlás</span></button>
+      <button onclick="openWordInspector('practice')"><b>${fmtNum(practiceLearned)}</b><span>5× egymás után helyes</span></button>
       <button onclick="openWordInspector('review')"><b>${fmtNum(activeReview)}</b><span>Aktív ismétlés</span></button>
     </div>
     <button class="link-btn stats-calc-open" onclick="openStatsExplanation()">Hogyan számoljuk a megtanult szavakat?</button>
@@ -449,12 +450,20 @@ function renderStatsDetails() {
     return `
       <div class="hist-row">
         <div><span class="hist-date">${escHtml(h.date)}</span>
-          <span class="hist-score">${h.correct} helyes · ${h.wrong} hibás</span></div>
+          <span class="hist-score">${h.correct} helyes · ${h.wrong} hibás</span>${learnedLine(h)}</div>
         <span class="hist-meta">${h.rounds} kör · ${mins > 0 ? `${mins} p ${secs} mp` : `${secs} mp`}</span>
       </div>`;
   }).join(''));
 
   if (document.getElementById('stats-dekiru-tab') && !document.getElementById('stats-dekiru-tab').hidden) renderDekiruLessonStats();
+}
+
+// V13.19: a gyakorlásban megtanult szavak az előzmény sorában (a szó maga, ha még megvan)
+function learnedLine(h) {
+  const ids = Array.isArray(h.learned) ? h.learned : [];
+  if (ids.length === 0) return '';
+  const names = ids.map(id => state.words.find(w => w.id === id)?.en).filter(Boolean);
+  return `<span class="hist-learned">+${ids.length} megtanult${names.length ? `: <span lang="ja">${names.map(escHtml).join(', ')}</span>` : ''}</span>`;
 }
 
 function renderDekiruLessonStats() {

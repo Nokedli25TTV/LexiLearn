@@ -196,6 +196,30 @@ body, .app-header, .card, .modal, .q-card, .search-input, .sort-select, .btn, .m
   .re-kpis .kpi-value { font-size: 24px; }
 }
 .re-errors .detail-title { margin: 0 0 8px; }
+/* V13.19: a gyakorlásban megtanult szavak a kör végén (zöld pipa, egymás után beúszva) */
+.re-learned .detail-title { margin: 0 0 2px; color: var(--success); }
+.re-learned-sub { margin: 0 0 8px; font-size: 13px; font-weight: 650; color: var(--text-2); }
+.re-learned-list { border-color: color-mix(in oklab, var(--success) 45%, var(--border)); }
+.re-learned-item { align-items: center; justify-content: flex-start; animation: learnedIn 0.42s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms + 120ms); }
+.re-learned-item .re-err-meaning { margin-left: auto; }
+.re-learned-check { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--success-bg); color: var(--success); }
+@keyframes learnedIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* V13.19: „Megtanult szó” jelvény a gyakorlókártyán, amikor a szó átlépi az 5 egymás utáni helyest */
+.learned-badge {
+  position: absolute; left: 50%; top: -16px; z-index: 6;
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 999px;
+  background: var(--success); color: var(--on-strong); font-size: 13px; font-weight: 900; white-space: nowrap;
+  box-shadow: 0 6px 18px color-mix(in oklab, var(--success) 35%, transparent);
+  transform: translateX(-50%); animation: learnedPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+@keyframes learnedPop {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(6px) scale(0.7); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .learned-badge, .re-learned-item { animation: none; }
+}
 .re-err-list { margin: 0; padding: 0; list-style: none; overflow: hidden; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); }
 .re-err { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 12px 16px; }
 .re-err + .re-err { border-top: 1px solid var(--border); }
@@ -2729,6 +2753,7 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .hist-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 12px; padding: 12px 0; border-bottom: 1px solid color-mix(in oklch, var(--border) 60%, transparent); }
 .hist-date { display: block; font-size: 12px; font-weight: 600; color: var(--text-3); }
 .hist-score { font-size: 14px; font-weight: 800; color: var(--text); }
+.hist-learned { display: block; margin-top: 2px; font-size: 13px; font-weight: 700; color: var(--success); overflow-wrap: anywhere; } /* V13.19 */
 .hist-meta { font-size: 12px; font-weight: 700; color: var(--text-2); }
 .detail-sort { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--text-2); }
 .detail-sort select { width: auto; min-height: 40px; font-size: 14px; }

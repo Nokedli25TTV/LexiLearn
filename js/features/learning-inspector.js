@@ -17,7 +17,7 @@ const lessonText = w => {
 };
 const sourceText = w => w.stats?.learnedAt
   ? `Napi tanulás · ${fmtDay(w.stats.learnedAt)}`
-  : w.stats?.practiceLearnedAt ? 'Gyakorlásban 5× egymás után helyes'
+  : w.stats?.practiceLearnedAt ? `Gyakorlás · ${fmtDay(w.stats.practiceLearnedAt)}`
   : isPracticeLearned(w) ? 'Gyakorlásban legalább 5× helyes (régi szabály)' : 'Még nem tanult';
 
 function showInspector(title, subtitle, html) {
@@ -133,7 +133,11 @@ const INSPECTORS = {
 function openWordInspector(kind, mode = currentMode) {
   const [title, predicate] = INSPECTORS[kind] || INSPECTORS.daily;
   const selectedMode = appData[mode] ? mode : currentMode;
-  const words = appData[selectedMode].words.filter(predicate).sort((a, b) => String(a.en).localeCompare(String(b.en), 'hu'));
+  // V13.19: a gyakorlásból megtanultak a legfrissebb elöl (a dátumukkal), a többi betűrendben
+  const byRecent = kind === 'practice' || kind === 'practiceJlpt';
+  const recency = w => w.stats?.practiceLearnedAt || '';
+  const words = appData[selectedMode].words.filter(predicate).sort((a, b) =>
+    (byRecent ? recency(b).localeCompare(recency(a)) : 0) || String(a.en).localeCompare(String(b.en), 'hu'));
   const shown = words.slice(0, 500);
   const rows = shown.map(w => {
     const attempts = (w.stats?.totalCorrect || 0) + (w.stats?.totalWrong || 0);

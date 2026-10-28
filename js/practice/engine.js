@@ -27,6 +27,11 @@ import { practiceLapse } from '../srs/schedule.js';
 ══════════════════════════════════════════════════════ */
 let eyeState = 0; 
 
+// V13.19: ha a válasz épp megtanulttá tette a szót, a kártya egy kicsit tovább marad (látszódjon a jelvény)
+const LEARNED_HOLD_MS = 1000;
+let _learnedHold = false;
+const learnedHold = () => (_learnedHold ? LEARNED_HOLD_MS : 0);
+
 // Önellenőrző / szórend-gyakorló módok: a szó statisztikáját és a pontosságot nem érintik
 const UNSCORED_TYPES = ['flashcard3d', 'sentenceBuild'];
 
@@ -34,8 +39,45 @@ const UNSCORED_TYPES = ['flashcard3d', 'sentenceBuild'];
 // SRS-ismétlést csak a napi, Dekiru-sorrendű tanulás hoz létre.
 // Ha a „Még nem tanult” szűrővel jelölted ki a szavakat, a megtanult szó kikerül a
 // kijelölésből is (a listából már eltűnik), így a dokk számlálója vele együtt csökken.
+// V13.19: a kártyán azonnal jelezzük, és a gyakorlás végén (meg az előzményekben) felsoroljuk.
 function registerPracticeMastery(word, isCorrect) {
-  if (isCorrect && markPracticeLearned(word) && statusFilter() === 'new') state.selectedIds.delete(word.id);
+  if (!isCorrect || !markPracticeLearned(word)) return;
+  if (statusFilter() === 'new') state.selectedIds.delete(word.id);
+  const p = state.practice;
+  if (p) {
+    if (!p.learnedNow) p.learnedNow = [];
+    if (!p.learnedNow.includes(word.id)) p.learnedNow.push(word.id);
+  }
+  _learnedHold = true;
+  showLearnedBadge();
+}
+
+function showLearnedBadge() {
+  const card = document.getElementById('q-card');
+  if (!card || card.querySelector('.learned-badge')) return;
+  card.insertAdjacentHTML('beforeend', `
+    <div class="learned-badge" role="status">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+      Megtanult szó
+    </div>`);
+}
+
+// A kör végén: a gyakorlásban (minden eddigi körében) megtanult szavak, egymás után beúszva
+function renderLearnedNow(p) {
+  const sec = document.getElementById('learned-section');
+  const list = document.getElementById('learned-list-items');
+  const ids = p.learnedNow || [];
+  if (sec) sec.hidden = ids.length === 0;
+  if (!list || ids.length === 0) return;
+  const unit = currentMode === 'kanji' ? 'kanji' : 'szó';
+  const title = document.getElementById('learned-title');
+  if (title) title.textContent = `${ids.length} új megtanult ${unit}`;
+  list.innerHTML = ids.map((id, i) => {
+    const w = state.words.find(x => x.id === id);
+    return w ? `<li class="re-err re-learned-item" style="--i:${i}">
+      <span class="re-learned-check" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+      <span class="re-err-word">${escHtml(w.en)}</span><span class="re-err-meaning">${escHtml(w.hu)}</span></li>` : '';
+  }).join('');
 }
 
 function startPractice() {
@@ -153,6 +195,7 @@ function getSmartDistractors(targetWord, count, isEnHu, exclude = null) {
 }
 
 function showQuestion() {
+  _learnedHold = false;
   const p = state.practice;
   const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
   if (!word) return;
@@ -503,7 +546,7 @@ function finishWriting(word, result) {
       if (state.practice !== p || p.roundWords[p.currentIdx] !== word.id) return; // közben kiléptek
       p.currentIdx++;
       if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
-    }, 1100);
+    }, 1100 + learnedHold());
   } else {
     setTimeout(() => {
       const nextBtn = document.getElementById('next-btn-container');
@@ -601,7 +644,7 @@ function checkSentenceAnswer(btn, chosen) {
       if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
     };
     // A speakWord 100ms múlva indul → _ttsOnEnd-et ráhagyjuk, hogy az onend-et elkapja
-    setTtsOnEnd(() => setTimeout(doAdvance, 400));
+    setTtsOnEnd(() => setTimeout(doAdvance, 400 + learnedHold()));
     setTimeout(doAdvance, 6000); // Biztonsági timeout (hosszú mondatoknál is elég)
   } else {
     // Hibásnál megáll és felugrik a Tovább gomb
@@ -687,7 +730,7 @@ function checkHardcoreAnswer(wordId) {
       p.currentIdx++;
       if (p.currentIdx >= p.roundWords.length) showRoundEnd(); else showQuestion();
     };
-    setTtsOnEnd(() => setTimeout(doAdvance, 400));
+    setTtsOnEnd(() => setTimeout(doAdvance, 400 + learnedHold()));
     setTimeout(doAdvance, 5000); // Biztonsági timeout
   } else {
     setTimeout(() => {
@@ -780,10 +823,10 @@ function checkAnswer(btn, chosen, correct) {
     const isAudioPlaying = (_currentTTSAudio && !_currentTTSAudio.ended && !_currentTTSAudio.paused)
                         || (window.speechSynthesis && window.speechSynthesis.speaking);
     if (isAudioPlaying) {
-      setTtsOnEnd(() => setTimeout(doAdvance, 350)); // Hang végén + kis szünet
+      setTtsOnEnd(() => setTimeout(doAdvance, 350 + learnedHold())); // Hang végén + kis szünet
       setTimeout(doAdvance, 5000);                  // Biztonsági max. várakozás
     } else {
-      setTimeout(doAdvance, 800);
+      setTimeout(doAdvance, 800 + learnedHold());
     }
   } else {
     setTimeout(() => {
@@ -846,6 +889,7 @@ function showRoundEnd() {
     }).join('');
   }
   if (errSec) errSec.hidden = p.errorList.length === 0;
+  renderLearnedNow(p);
 
   // Gyors ismétlésnél nincs következő kör: a hibás szavak már a soron belül ismétlődtek.
   // Ha van következő kör, az a korall fő lépés; különben a befejezés.
@@ -902,10 +946,13 @@ function finishSession() {
     correct: p.sessionCorrect,
     wrong: p.sessionWrong,
     rounds: p.roundNumber,
-    duration: duration
+    duration: duration,
+    ...(p.learnedNow && p.learnedNow.length ? { learned: [...p.learnedNow] } : {}) // V13.19: megtanult szavak
   });
 
-  saveStats(); saveWords(); showScreen(p.origin || 'dashboard'); showToast('Gyakorlás mentve'); // Statisztika + szó streak mentése
+  const learnedCount = (p.learnedNow || []).length;
+  saveStats(); saveWords(); showScreen(p.origin || 'dashboard'); // Statisztika + szó streak mentése
+  showToast(learnedCount ? `Gyakorlás mentve · ${learnedCount} új megtanult ${currentMode === 'kanji' ? 'kanji' : 'szó'}` : 'Gyakorlás mentve');
 }
 
 // V13: oda térünk vissza, ahonnan a gyakorlás indult (Kezdőlap vagy Gyakorlás fül)
