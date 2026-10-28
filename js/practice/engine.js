@@ -6,7 +6,7 @@ import { currentMode, diffOrder, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, escRegex, shuffle } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests, updateQuestProgress } from '../features/quests.js';
-import { getPracticeOptions } from '../library/dock.js';
+import { getPracticeOptions, practiceTypesFor } from '../library/dock.js';
 import { statusFilter } from '../library/filters.js';
 import { UI_ICONS, closeLibraryOverlays } from '../library/menus.js';
 import { hasLessonFocus, lessonFocusTitle } from '../features/bookmarks.js';
@@ -42,8 +42,8 @@ function startPractice() {
   const o = getPracticeOptions();
   const qCount = o.count === 'all' ? selectedWords.length : Math.min(Number(o.count) || 20, selectedWords.length);
   const order = o.order || 'random';
-  // Az írásgyakorlás csak kandzsi módban van (ott érhető el vonásadat)
-  const type = o.type === 'writing' && currentMode !== 'kanji' ? 'classic' : (o.type || 'classic');
+  // Az írásgyakorlás csak kandzsi módban van (ott érhető el vonásadat), a hallás kandzsi módban nincs
+  const type = practiceTypesFor(currentMode).some(t => t.value === o.type) ? o.type : 'classic';
 
   let orderedWords = [...selectedWords];
 
@@ -81,6 +81,7 @@ function startPractice() {
     currentIdx: 0, errorList: [], roundCorrect: 0, roundWrong: 0,
     roundStartTime: Date.now(), sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0,
     type: type, currentSentenceObj: null, _combo: 0,
+    ...(type === 'listening' ? { direction: 'en-hu' } : {}), // hallásnál mindig hang → jelentés
     flashcardHistory: []  // V11: vissza gomb-hoz – csak flashcard3d módban használt
   };
 
@@ -95,8 +96,8 @@ function startPractice() {
    V9: OKOS HAMIS VÁLASZ GENERÁTOR (Smart Distractors)
    Prioritás: 1) Azonos témakör (tags) → 2) Azonos nehézség → 3) Véletlen
 ══════════════════════════════════════════════════════ */
-function getSmartDistractors(targetWord, count, isEnHu) {
-  const allWords = state.words.filter(w => w.id !== targetWord.id);
+function getSmartDistractors(targetWord, count, isEnHu, exclude = null) {
+  const allWords = state.words.filter(w => w.id !== targetWord.id && !(exclude && exclude(w)));
   const distractors = [];
   const usedIds = new Set();
 
@@ -230,6 +231,27 @@ function showQuestion() {
         ${options.map(opt => `<button class="opt-btn" onclick="checkAnswer(this,'${escHtml(opt)}','${escHtml(correctText)}')">${escHtml(opt)}</button>`).join('')}
       </div>
       <button class="dont-know" onclick="checkAnswer(null,null,'${escHtml(correctText)}')">Nem tudom</button>
+    `;
+  }
+  else if (p.type === 'listening') {
+    /* ══ V13.18: HALLÁS – a szót csak hallod, a jelentését választod ══ */
+    hintText = `HALLÁS · ${SOURCE_LABEL === 'KANA' ? 'JAPÁN' : SOURCE_LABEL} &rarr; MAGYAR`;
+    // Az azonos hangzású (vagy azonos jelentésű) szó nem lehet rossz válasz: hallásból nem dönthető el
+    const sound = w => (w.romaji || '').toLowerCase().replace(/[^a-z]/g, '');
+    const sameSound = w => w.en === word.en || (!!sound(word) && sound(w) === sound(word)) || w.hu === word.hu;
+    const options = shuffle([word.hu, ...getSmartDistractors(word, 3, true, sameSound)]);
+    contentHtml = `
+      <div class="listen-stage">
+        <button class="listen-play" id="speak-btn" onclick="speakQuestionWord()" aria-label="Meghallgatás újra" title="Meghallgatás újra">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+        </button>
+        <p class="listen-hint">Koppints az újrahallgatáshoz</p>
+        <div class="listen-word" id="listen-word" aria-live="polite"></div>
+      </div>
+      <div class="options-grid">
+        ${options.map(opt => `<button class="opt-btn" onclick="checkAnswer(this,'${escHtml(opt)}','${escHtml(word.hu)}')">${escHtml(opt)}</button>`).join('')}
+      </div>
+      <button class="dont-know" onclick="checkAnswer(null,null,'${escHtml(word.hu)}')">Nem tudom</button>
     `;
   }
   else if (p.type === 'writing') {
@@ -374,6 +396,10 @@ function showQuestion() {
 
   if ((p.type === 'classic' || p.type === 'quickQuiz') && isEnHu) {
     setTimeout(() => { speakWord(questionText, false); }, 300);
+  }
+
+  if (p.type === 'listening') {
+    setTimeout(() => { if (state.practice === p && p.roundWords[p.currentIdx] === word.id) speakWord(word.en, false); }, 300);
   }
 
   if (p.type === 'flashcard3d') {
@@ -666,6 +692,13 @@ function checkAnswer(btn, chosen, correct) {
 
   if (!isCorrect && practiceDir() === 'hu-en') {
       speakWord(word.en, false);
+  }
+
+  // Hallásnál a válasz után látszik, mit hallottál; hibánál még egyszer meg is szólal
+  if (p.type === 'listening' && word) {
+    const lw = document.getElementById('listen-word');
+    if (lw) lw.innerHTML = `<span class="listen-src">${escHtml(word.en)}</span>${word.romaji ? `<span class="listen-romaji">${escHtml(word.romaji)}</span>` : ''}`;
+    if (!isCorrect) speakWord(word.en, false);
   }
 
   if (isCorrect) {

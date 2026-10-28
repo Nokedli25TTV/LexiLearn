@@ -192,7 +192,7 @@ function openStatsExplanation(mode = currentMode) {
   </button>`;
   showInspector('Hogyan számoljuk a haladást?', `JLPT N5–N3 · ${selectedMode === 'kanji' ? 'kandzsi' : 'szókincs'}`, `
     <div class="calc-equation"><b>${fmtNum(daily.length)}</b> napi tanulás <span>+</span> <b>${fmtNum(practice.length)}</b> csak gyakorlás <span>=</span> <strong>${fmtNum(learned.length)} / ${fmtNum(target)}</strong></div>
-    <p class="inspect-explain">Egy ${unit} akkor számít megtanultnak, ha a napi tanulásban már sikerült, vagy a klasszikus, gépelős és mondat-kiegészítő gyakorlatokban ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást). Ugyanaz a ${unit} csak egyszer számít.</p>
+    <p class="inspect-explain">Egy ${unit} akkor számít megtanultnak, ha a napi tanulásban már sikerült, vagy a klasszikus, gépelős, mondat-kiegészítő és hallás gyakorlatokban ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást). Ugyanaz a ${unit} csak egyszer számít.</p>
     <div class="calc-list">
       ${row('Napi tanulás', daily.length, 'Dekiru-sorrendben megtanult', 'dailyJlpt')}
       ${row('Csak gyakorlásból ismert', practice.length, '5 helyes válasz egymás után', 'practiceJlpt')}

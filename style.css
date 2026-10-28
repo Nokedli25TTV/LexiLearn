@@ -2238,6 +2238,19 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .q-word { margin-bottom: 4px; }
 .reveal-text { min-height: 0; margin: 6px 0 0; }
 .reveal-text:empty { display: none; }
+/* V13.18: hallás utáni gyakorlás – nagy lejátszó gomb, a szó csak a válasz után látszik */
+.listen-stage { display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 4px 0 22px; }
+.listen-play {
+  width: 96px; height: 96px; border: none; border-radius: 50%;
+  background: var(--primary-dim); color: var(--primary-h);
+  display: grid; place-items: center; cursor: pointer;
+  transition: transform 160ms var(--ease-out), background-color 0.2s;
+}
+.listen-play:active { transform: scale(0.92); }
+.listen-hint { font-size: 13px; font-weight: 700; color: var(--text-3); }
+.listen-word { min-height: 52px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.listen-src { font-size: 28px; font-weight: 800; color: var(--text); }
+.listen-romaji { font-size: 14px; font-weight: 700; color: var(--primary-h); }
 .q-tools { display: flex; justify-content: center; gap: 12px; margin: 14px 0 22px; }
 .q-tools .eye-btn,
 .q-tools .speak-btn { width: 44px; height: 44px; margin: 0; }
