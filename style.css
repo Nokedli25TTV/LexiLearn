@@ -1672,6 +1672,7 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
   transition: transform 220ms var(--ease-out);
 }
 .pf-toggle[aria-checked="true"] .switch-track { background: var(--primary); }
+.pf-toggle[hidden] { display: none; }
 .pf-toggle[aria-checked="true"] .switch-thumb { transform: translateX(20px); }
 
 .pf-list { display: flex; flex-direction: column; }

@@ -18,6 +18,28 @@ let _ttsOnEnd = null;         // Hang befejezésekor futó callback (advance log
    koppintáskor: (1) feloldunk egy ÚJRAHASZNÁLT <audio> elemet egy néma klippel
    (ezt használja a Google-TTS is), (2) felébresztjük a speechSynthesis-t.
    Enélkül az auto-lejátszás (setTimeout → kiesik a gesture-láncból) néma. */
+/* ── V13.18: Zene mellett – a kiejtés ne állítsa meg a háttérben szóló zenét (pl. Spotify) ──
+   iOS-en az <audio> lejátszás médialejátszásnak számít, ezért a rendszer megállítja a másik
+   app zenéjét. Az Audio Session API 'ambient' típusával a kiejtés a zenére keveredik.
+   Ára: ilyenkor az iPhone némító kapcsolója a kiejtést is elnémítja, ezért kapcsolható,
+   eszközönkénti beállítás (localStorage, nem szinkronizálódik). Safari 16.4-től érhető el. */
+const MIX_AUDIO_KEY = 'lexi_mix_audio';
+let _mixWithMusic = false;
+try { _mixWithMusic = localStorage.getItem(MIX_AUDIO_KEY) === '1'; } catch (e) { /* privát mód */ }
+
+const canMixWithMusic = () => typeof navigator !== 'undefined' && !!navigator.audioSession;
+function applyAudioSession() {
+  try { if (canMixWithMusic()) navigator.audioSession.type = _mixWithMusic ? 'ambient' : 'auto'; } catch (e) { /* régi WebKit */ }
+}
+applyAudioSession();
+
+function isMixWithMusic() { return _mixWithMusic; }
+function setMixWithMusic(on) {
+  _mixWithMusic = !!on;
+  try { localStorage.setItem(MIX_AUDIO_KEY, _mixWithMusic ? '1' : '0'); } catch (e) { /* privát mód */ }
+  applyAudioSession();
+}
+
 const _TTS_SILENCE = 'data:audio/wav;base64,UklGRiwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQgAAACAgICAgICAgA==';
 let _ttsAudioEl = null;
 let _audioUnlocked = false;
@@ -34,6 +56,7 @@ function _getTTSAudio() {
 function unlockAudioPlayback() {
   if (_audioUnlocked) return;
   _audioUnlocked = true;
+  applyAudioSession(); // a néma feloldó klipp se állítsa meg a zenét
   // 1) HTMLAudio elem feloldása néma klippel
   try {
     const a = _getTTSAudio();
@@ -64,6 +87,7 @@ function _onTTSFinished(version) {
 }
 
 function speakWord(text, forceHungarian = false) {
+  applyAudioSession();
   _ttsVersion++;
   const ver = _ttsVersion;
 
@@ -139,4 +163,4 @@ if (typeof speechSynthesis !== 'undefined' && speechSynthesis.onvoiceschanged !=
 // A gyakorló motor ezen keresztül kér értesítést a hang végéről
 function setTtsOnEnd(fn) { _ttsOnEnd = fn; }
 
-export { _TTS_SILENCE, _audioUnlocked, _currentTTSAudio, _getTTSAudio, _onTTSFinished, _ttsAudioEl, _ttsOnEnd, _ttsVersion, setTtsOnEnd, speakWord, unlockAudioPlayback };
+export { _TTS_SILENCE, _audioUnlocked, applyAudioSession, canMixWithMusic, isMixWithMusic, setMixWithMusic, _currentTTSAudio, _getTTSAudio, _onTTSFinished, _ttsAudioEl, _ttsOnEnd, _ttsVersion, setTtsOnEnd, speakWord, unlockAudioPlayback };
