@@ -6,7 +6,7 @@
   },
   "wordsHash": {
     "en": "215270:eff4203",
-    "ja": "1031284:bd2fbcc8",
+    "ja": "1031286:22a1f95",
     "kj": "480257:8c75dd46"
   },
   "basics": {
@@ -393,14 +393,14 @@
         "ja_わたし",
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス"
       ],
       "pool": 1771,
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_ドイツ",
@@ -425,7 +425,7 @@
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_ドイツ",
@@ -450,7 +450,7 @@
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_ドイツ",
@@ -475,7 +475,7 @@
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_ドイツ",
@@ -500,7 +500,7 @@
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_ドイツ",
@@ -525,7 +525,7 @@
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_ドイツ",
@@ -550,7 +550,7 @@
       "poolFirst": [
         "ja_なまえ",
         "ja_にほん",
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_ドイツ",
@@ -682,7 +682,7 @@
   "questsHtml": "1889:faf73524",
   "practice": {
     "roundWords": [
-      "ja_ハンがリー",
+      "ja_ハンガリー",
       "ja_オーストリア",
       "ja_わたし",
       "ja_アメリカ",
@@ -694,7 +694,7 @@
       "ja_にほん"
     ],
     "top": "1. kör",
-    "question": "<div class=\"q-card\" id=\"q-card\"> <button class=\"bookmark-btn \" id=\"bookmark-btn-ja_ハンがリー\" onclick=\"event.stopPropagation(); toggleBookmark('ja_ハンがリー')\" title=\"Hozzáadás a Fókusz Listához\"> <svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon> </svg> </button> <button class=\"bookmark-btn lesson-focus-btn \" id=\"lesson-focus-btn-ja_ハンがリー\" onclick=\"event.stopPropagation(); toggleLessonFocus('ja_ハンがリー')\" aria-pressed=\"false\" aria-label=\"Hozzáadás a lecke fókusz listájához (Dekiru 1. lecke)\" title=\"Hozzáadás a lecke fókusz listájához (Dekiru 1. lecke)\"><svg width=\"19\" height=\"19\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 21V4\"></path><path d=\"M5 4h12l-2.5 4.5L17 13H5z\"></path></svg></button> <div class=\"q-hint\" style=\"display:flex; justify-content:center; align-items:center; margin-bottom:14px;\"> <span style=\"letter-spacing:0.1em; color:var(--text-3); font-weight:800; font-size:11px; text-transform:uppercase;\">KANA → MAGYAR</span> <span style=\"margin: 0 8px; color: var(--border);\">|</span> <span class=\"diff-pill dN5\" style=\"font-size:11px; padding:2px 8px;\">N5</span> </div> <div class=\"q-word \">ハンがリー</div> <div id=\"reveal-text\" class=\"reveal-text\"></div> <div class=\"q-tools\"> <button class=\"eye-btn\" onclick=\"toggleEye('ja_ハンがリー')\" title=\"Olvasat felfedése\" aria-label=\"Olvasat felfedése\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg></button> <button class=\"speak-btn\" id=\"speak-btn\" onclick=\"speakQuestionWord()\" aria-label=\"Kiejtés\"> <svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"11 5 6 9 2 9 2 15 6 15 11 19 11 5\"></polygon><path d=\"M15.54 8.46a5 5 0 0 1 0 7.07\"></path><path d=\"M19.07 4.93a10 10 0 0 1 0 14.14\"></path></svg> </button> </div> <div class=\"options-grid\"> <button class=\"opt-btn\" onclick=\"checkAnswer(this,'Magyarország','Magyarország')\">Magyarország</button><button class=\"opt-btn\" onclick=\"checkAnswer(this,'Amerika','Magyarország')\">Amerika</button><button class=\"opt-btn\" onclick=\"checkAnswer(this,'az egész ország','Magyarország')\">az egész ország</button><button class=\"opt-btn\" onclick=\"checkAnswer(this,'japán származású/érdekeltségű','Magyarország')\">japán származású/érdekeltségű</button> </div> <button class=\"dont-know\" onclick=\"checkAnswer(null,null,'Magyarország')\">Nem tudom</button> </div> <!-- V13.2: hibás válasz után a Tovább a képernyő aljára rögzül, hüvelykujjal elérhető --> <div id=\"next-btn-container\" class=\"next-bar\" style=\"display: none;\"> <button class=\"next-btn\" onclick=\"manualNextQuestion()\"> Tovább <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"></line> <polyline points=\"12 5 19 12 12 19\"></polyline> </svg> </button> </div>",
+    "question": "<div class=\"q-card\" id=\"q-card\"> <button class=\"bookmark-btn \" id=\"bookmark-btn-ja_ハンガリー\" onclick=\"event.stopPropagation(); toggleBookmark('ja_ハンガリー')\" title=\"Hozzáadás a Fókusz Listához\"> <svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"currentColor\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon> </svg> </button> <button class=\"bookmark-btn lesson-focus-btn \" id=\"lesson-focus-btn-ja_ハンガリー\" onclick=\"event.stopPropagation(); toggleLessonFocus('ja_ハンガリー')\" aria-pressed=\"false\" aria-label=\"Hozzáadás a lecke fókusz listájához (Dekiru 1. lecke)\" title=\"Hozzáadás a lecke fókusz listájához (Dekiru 1. lecke)\"><svg width=\"19\" height=\"19\" viewBox=\"0 0 24 24\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 21V4\"></path><path d=\"M5 4h12l-2.5 4.5L17 13H5z\"></path></svg></button> <div class=\"q-hint\" style=\"display:flex; justify-content:center; align-items:center; margin-bottom:14px;\"> <span style=\"letter-spacing:0.1em; color:var(--text-3); font-weight:800; font-size:11px; text-transform:uppercase;\">KANA → MAGYAR</span> <span style=\"margin: 0 8px; color: var(--border);\">|</span> <span class=\"diff-pill dN5\" style=\"font-size:11px; padding:2px 8px;\">N5</span> </div> <div class=\"q-word \">ハンガリー</div> <div id=\"reveal-text\" class=\"reveal-text\"></div> <div class=\"q-tools\"> <button class=\"eye-btn\" onclick=\"toggleEye('ja_ハンガリー')\" title=\"Olvasat felfedése\" aria-label=\"Olvasat felfedése\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg></button> <button class=\"speak-btn\" id=\"speak-btn\" onclick=\"speakQuestionWord()\" aria-label=\"Kiejtés\"> <svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polygon points=\"11 5 6 9 2 9 2 15 6 15 11 19 11 5\"></polygon><path d=\"M15.54 8.46a5 5 0 0 1 0 7.07\"></path><path d=\"M19.07 4.93a10 10 0 0 1 0 14.14\"></path></svg> </button> </div> <div class=\"options-grid\"> <button class=\"opt-btn\" onclick=\"checkAnswer(this,'Magyarország','Magyarország')\">Magyarország</button><button class=\"opt-btn\" onclick=\"checkAnswer(this,'Amerika','Magyarország')\">Amerika</button><button class=\"opt-btn\" onclick=\"checkAnswer(this,'az egész ország','Magyarország')\">az egész ország</button><button class=\"opt-btn\" onclick=\"checkAnswer(this,'japán származású/érdekeltségű','Magyarország')\">japán származású/érdekeltségű</button> </div> <button class=\"dont-know\" onclick=\"checkAnswer(null,null,'Magyarország')\">Nem tudom</button> </div> <!-- V13.2: hibás válasz után a Tovább a képernyő aljára rögzül, hüvelykujjal elérhető --> <div id=\"next-btn-container\" class=\"next-bar\" style=\"display: none;\"> <button class=\"next-btn\" onclick=\"manualNextQuestion()\"> Tovább <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"> <line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"></line> <polyline points=\"12 5 19 12 12 19\"></polyline> </svg> </button> </div>",
     "afterWrong": {
       "stats": {
         "streak": 0,
@@ -703,7 +703,7 @@
         "lastAttempt": 1790668800000
       },
       "errorList": [
-        "ja_ハンがリー"
+        "ja_ハンガリー"
       ],
       "nextShown": "block",
       "daily": {
@@ -723,7 +723,7 @@
     "queue": [
       "ja_なまえ",
       "ja_にほん",
-      "ja_ハンがリー",
+      "ja_ハンガリー",
       "ja_イギリス",
       "ja_オーストリア"
     ],
@@ -733,7 +733,7 @@
         "ja_なまえ"
       ],
       "queue": [
-        "ja_ハンがリー",
+        "ja_ハンガリー",
         "ja_イギリス",
         "ja_オーストリア",
         "ja_にほん"

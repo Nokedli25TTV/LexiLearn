@@ -246,11 +246,14 @@ function applyCloudSnapshot(snap) {
       // Date.now-os ID-jű cloud snapshot-okra (a stabil ID migráció előtti adat)
       const cloudByEn = new Map();
       snap.words[lang].forEach(w => { if (w.en) cloudByEn.set(w.en, w); });
+      // V13.18: adatjavításból átnevezett szavak – a még régi alakú felhőszó is párt talál (új kana → régi kana)
+      const renamedFrom = new Map(Object.entries(window.lexiRenamedWords?.[lang] || {}).map(([oldEn, newEn]) => [newEn, oldEn]));
 
       // Frissítjük a lokális szavakat
       appData[lang].words.forEach(localW => {
         let cw = cloudById.get(localW.id);
         if (!cw) cw = cloudByEn.get(localW.en); // fallback by en
+        if (!cw && renamedFrom.has(localW.en)) cw = cloudByEn.get(renamedFrom.get(localW.en));
         if (!cw) return;
         // stats + bookmarked mindig átvesszük
         if (cw.stats)      localW.stats = cw.stats;

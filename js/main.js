@@ -21,7 +21,7 @@ import './habit/goal.js';
 import { clearFilters, openCurrentLesson, openPoolSource, renderHome } from './habit/home.js';
 import { learnSwipe, speakLearnWord, startLearnSession, startTodayReview } from './habit/learn.js';
 import { flipReviewCard, rateReview, speakReviewWord, startReviewSession } from './habit/review.js';
-import { seedSrsAll } from './core/storage.js';
+import { RENAMED_WORDS, seedSrsAll } from './core/storage.js';
 import { setGoalDate, showGoalScreen } from './goal/view.js';
 import { setDirection, setPracticeOption, toggleDockSettings } from './library/dock.js';
 import './library/filters.js';
@@ -133,6 +133,7 @@ Object.assign(window, {
   rateReview,
   speakReviewWord,
   seedSrsAll,
+  lexiRenamedWords: RENAMED_WORDS, // V13.18: a firebase-sync.js így a régi alakú felhőszót is párosítja
   showGoalScreen,
   setGoalDate,
   switchStatsTab,

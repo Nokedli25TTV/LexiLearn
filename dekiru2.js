@@ -372,7 +372,7 @@ const DEKIRU_2_WORDS = [
   { kana: 'きふする', romaji: 'kifusuru', hu: 'adományoz', tags: ['igék'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },
   { kana: 'ほうこくする', romaji: 'houkokusuru', hu: 'jelent, tudósít', tags: ['igék', 'kommunikáció'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },
   { kana: '(むしが)さす', romaji: 'mushiga sasu', hu: 'megcsíp (rovar)', tags: ['igék'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },
-  { kana: 'しゅっえんする', romaji: 'shueensuru', hu: 'fellép', tags: ['igék'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },
+  { kana: 'しゅつえんする', romaji: 'shutsuensuru', hu: 'fellép', tags: ['igék'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },
   { kana: 'はれる', romaji: 'hareru', hu: 'feldagad', tags: ['időjárás', 'igék'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },
   { kana: 'やくにたつ', romaji: 'yakunitatsu', hu: 'hasznos', tags: ['igék'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },
   { kana: 'かんびょうする', romaji: 'kanbyousuru', hu: 'ápol', tags: ['igék', 'egészség'], jlpt: 'N4', lesson: [34], source: 'dekiru', book: 2 },

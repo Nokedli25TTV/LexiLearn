@@ -59,8 +59,12 @@ function migrateToStableIds() {
   if (oldToNew.size === 0) return false;
 
   console.log(`[LexiLearn] V12.4 ID migráció: ${oldToNew.size} szó ID-je stabil ID-re cserélve.`);
+  remapWordReferences(oldToNew);
+  return true;
+}
 
-  // Hivatkozások frissítése
+// Szó-azonosító csere után a hivatkozások (kijelölés, listák, napi feladatok) frissítése
+function remapWordReferences(oldToNew) {
   ['english', 'japanese', 'kanji'].forEach(lang => {
     // selectedIds (Set)
     if (appData[lang].selectedIds) {
@@ -91,8 +95,46 @@ function migrateToStableIds() {
       });
     }
   });
+}
 
-  return true;
+// V13.18: adatjavításból átnevezett beépített szavak (régi kana → új kana). A szó azonosítója a
+// kanából képződik, ezért a mentett haladás (statisztika, ismétlés, csillag, zászló, listák,
+// kijelölés) átköltözik az új azonosítóra; különben a szinkron a régit törölné, az újat üresen hozná.
+const RENAMED_WORDS = {
+  japanese: { 'ハンがリー': 'ハンガリー', 'ブルがリア': 'ブルガリア', 'がス': 'ガス', 'しゅっえんする': 'しゅつえんする' }
+};
+const hasWordProgress = w => !!(w && (w.bookmarked || w.lessonFocus || (w.stats && (w.stats.lastAttempt || w.stats.learnedAt || w.stats.srs || w.stats.totalCorrect || w.stats.totalWrong))));
+
+function migrateRenamedWords() {
+  const oldToNew = new Map();
+  let changed = false;
+  Object.entries(RENAMED_WORDS).forEach(([lang, renames]) => {
+    const words = appData[lang].words;
+    Object.entries(renames).forEach(([oldEn, newEn]) => {
+      const old = words.find(w => w.en === oldEn);
+      if (!old) return;
+      const oldId = old.id;
+      const newId = stableWordId('ja', newEn);
+      const current = words.find(w => w.en === newEn);
+      if (current) {
+        // Az új alak már megvan (pl. másik eszközről): a régi haladás csak akkor költözik, ha az újnak nincs
+        if (!hasWordProgress(current) && hasWordProgress(old)) {
+          current.stats = old.stats;
+          current.bookmarked = !!old.bookmarked;
+          if (old.lessonFocus) current.lessonFocus = true;
+        }
+        appData[lang].words = appData[lang].words.filter(w => w !== old);
+      } else {
+        old.en = newEn;
+        old.id = newId;
+      }
+      oldToNew.set(oldId, newId);
+      changed = true;
+    });
+  });
+  if (oldToNew.size) remapWordReferences(oldToNew);
+  if (changed) console.log(`[LexiLearn] Adatjavítás: ${oldToNew.size} átnevezett szó haladása átköltöztetve.`);
+  return changed;
 }
 
 /* ══════════════════════════════════════════════════════
@@ -248,12 +290,14 @@ async function loadState() {
 
     // V12.4: stabil ID migráció ELŐSZÖR (mielőtt a syncNewWords új szavakat ad hozzá)
     const migrated = migrateToStableIds();
+    const renamed = migrateRenamedWords(); // V13.18: a syncNewWords előtt, különben a régi alakot törölné
     syncNewWords();
     syncCustomLists();
-    if (migrated) await saveWords(); // mentsük a migrált ID-ket
+    if (migrated || renamed) await saveWords(); // mentsük a migrált ID-ket
   } catch(e) {
     console.warn('[LexiLearn] Betöltési hiba:', e);
     migrateToStableIds();
+    migrateRenamedWords();
     syncNewWords();
     syncCustomLists();
   }
@@ -426,7 +470,7 @@ function syncNewWords() {
       existingWord.source = 'dekiru';
       existingWord.hu = mergeText(existingWord.hu, w.hu);
       existingWord.tags = [...new Set([...(existingWord.tags || []), ...(w.tags || [])])];
-      if (!existingWord.romaji && w.romaji) existingWord.romaji = w.romaji;
+      if (w.romaji) existingWord.romaji = w.romaji; // V13.18: az adatfájl az irányadó (romaji-javítások)
       if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
     }
   });
@@ -520,4 +564,4 @@ function syncCustomLists() {
   });
 }
 
-export { UI_VERSION, _applyParsedData, _buildSaveObjects, _migrateMonolithToSplit, cleanTags, loadState, migrateToStableIds, renderStorageInfo, savePlaylists, saveSettings, saveState, saveStats, saveWords, stableWordId, syncCustomLists, syncNewWords, seedSrsAll };
+export { UI_VERSION, _applyParsedData, _buildSaveObjects, _migrateMonolithToSplit, cleanTags, loadState, migrateToStableIds, renderStorageInfo, savePlaylists, saveSettings, saveState, saveStats, saveWords, stableWordId, syncCustomLists, syncNewWords, seedSrsAll, RENAMED_WORDS, migrateRenamedWords };
