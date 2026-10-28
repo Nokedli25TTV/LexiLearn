@@ -9,9 +9,9 @@ function escRegex(str) { return String(str).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'
 
 // Kártya hátoldalának forrás-sora: japán módban kandzsi írásmód (ha van) · kana · romaji
 // (V13.7); más módban maga a szó
-function japaneseBackLine(word, mode) {
+function japaneseBackLine(word, mode, writing = word.kanji) {
   if (mode !== 'japanese' || !word.romaji) return word.en;
-  return [word.kanji, word.en, word.romaji].filter(Boolean).join(' · ');
+  return [writing, word.en, word.romaji].filter(Boolean).join(' · ');
 }
 
 export { escHtml, escRegex, japaneseBackLine, jsArg, shuffle };

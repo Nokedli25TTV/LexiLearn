@@ -1183,6 +1183,11 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
   overflow: hidden;
 }
 .learn-back { transform: rotateY(180deg); overflow-y: auto; }
+/* V13.18: biztonságos középre zárás – ha a tartalom (példamondat, kandzsi-kapcsolatok) nem fér el,
+   a teteje se vágódjon le, hanem görgethető legyen (a has-strokes változat már így működött) */
+.learn-back { justify-content: flex-start; }
+.learn-back > :first-child { margin-top: auto; }
+.learn-back > :last-child { margin-bottom: auto; }
 .learn-pill {
   position: absolute;
   top: 18px;
@@ -1204,6 +1209,15 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .learn-back-src { font-size: 15px; font-weight: 700; color: var(--text-3); }
 .learn-meaning { margin-top: 6px; font-size: 32px; font-weight: 900; line-height: 1.2; color: var(--text); }
 .learn-readings { margin-top: 8px; font-size: 14px; font-weight: 700; color: var(--primary-h); }
+/* V13.18: kandzsi ↔ szó kapcsolatok a kártya hátoldalán */
+.kanji-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 12px; }
+.kl-item, .kl-word {
+  display: inline-flex; align-items: baseline; gap: 6px; padding: 4px 10px;
+  border-radius: 999px; background: var(--surface-2); font-size: 13px; font-weight: 700; color: var(--text-2);
+}
+.kl-item b, .kl-word b { font-size: 17px; font-weight: 700; color: var(--text); }
+.kanji-links.is-words { flex-direction: column; align-items: center; }
+.kl-word { border-radius: var(--radius-sm); }
 .learn-example {
   width: 100%;
   margin-top: 18px;

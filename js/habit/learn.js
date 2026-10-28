@@ -1,6 +1,7 @@
 // LexiLearn – habit/learn.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { todayKey } from '../core/dates.js';
+import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
 import { currentMode, state } from '../core/state.js';
 import { saveStats } from '../core/storage.js';
 import { escHtml, shuffle } from '../core/util.js';
@@ -67,7 +68,8 @@ function showLearnCard() {
 
   const isKanji = currentMode === 'kanji';
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
-  const backSrc = japaneseBackLine(word, currentMode);
+  const backSrc = japaneseBackLine(word, currentMode, wordWriting(word));
+  const links = kanjiLinksHtml(word, currentMode); // V13.18: kandzsi ↔ szó
   const strokes = isKanji ? strokeFigureHtml(word.en) : ''; // V13.9: vonássorrend a hátoldalon
   const kanjiReadings = isKanji
     ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
@@ -92,6 +94,7 @@ function showLearnCard() {
             ${strokes || `<div class="learn-back-src">${escHtml(backSrc)}</div>`}
             <div class="learn-meaning">${escHtml(word.hu)}</div>
             ${kanjiReadings}
+            ${links}
             ${example.html ? `
               <div class="learn-example">
                 <div class="learn-example-src">${example.html}</div>

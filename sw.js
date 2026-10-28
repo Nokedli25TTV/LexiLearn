@@ -28,6 +28,7 @@ const STATIC_ASSETS = [
   './js/goal/jlpt.js',
   './js/goal/view.js',
   './js/features/import-export.js',
+  './js/features/kanji-links.js',
   './js/features/learning-inspector.js',
   './js/features/leeches.js',
   './js/features/profile.js',

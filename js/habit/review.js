@@ -4,6 +4,7 @@
 // hátralévő idő. Húzással: balra Újra, jobbra Jó. Az "Újra" kártya a mai sor végére kerül.
 // Egy alkalom legfeljebb REVIEW_BATCH_SIZE kártya; minden értékelés azonnal mentődik.
 import { todayKey } from '../core/dates.js';
+import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
 import { currentMode, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, japaneseBackLine } from '../core/util.js';
@@ -61,7 +62,8 @@ function showReviewCard() {
 
   const isKanji = currentMode === 'kanji';
   const frontReading = currentMode === 'japanese' ? (word.romaji || '') : '';
-  const backSrc = japaneseBackLine(word, currentMode);
+  const backSrc = japaneseBackLine(word, currentMode, wordWriting(word));
+  const links = kanjiLinksHtml(word, currentMode); // V13.18: kandzsi ↔ szó
   const strokes = isKanji ? strokeFigureHtml(word.en) : ''; // V13.9: vonássorrend a hátoldalon
   const kanjiReadings = isKanji
     ? `<div class="learn-readings">On: ${escHtml(word.onyomi || '–')} · Kun: ${escHtml(word.kunyomi || '–')}</div>`
@@ -87,6 +89,7 @@ function showReviewCard() {
             ${strokes || `<div class="learn-back-src">${escHtml(backSrc)}</div>`}
             <div class="learn-meaning">${escHtml(word.hu)}</div>
             ${kanjiReadings}
+            ${links}
             ${example.html ? `
               <div class="learn-example">
                 <div class="learn-example-src">${example.html}</div>
