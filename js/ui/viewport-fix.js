@@ -1,29 +1,36 @@
 // LexiLearn – ui/viewport-fix.js
 // V13.20: iOS 26 kezdőképernyős appban (standalone) a billentyűzet bezárása után a látható
-// képernyőterület (visualViewport) eltolva marad a layout viewporthoz képest (offsetTop > 0), ezért a
-// position: fixed sávok (navigáció, gyakorló dokk, értesítés) görgetéskor a képernyő közepére
-// csúsznak (WebKit-hiba, FB20249802). Az eltolást mérjük, és a sávokat ugyanennyivel visszatoljuk
-// (--vv-shift, a CSS translate tulajdonsága, így a meglévő transform-okat nem írja felül).
-// Nyitott billentyűzetnél nem tolunk: az ottani viselkedés változatlan. Safariban (nem standalone)
-// a viewportot a böngésző kezeli, ott nem avatkozunk be.
-const KEYBOARD_MIN_PX = 120; // ennyinél kisebb magasság-különbség még nem billentyűzet (pl. kerekítés)
+// képernyőterület (visualViewport) eltolva marad (az offsetTop nem áll vissza), ezért a
+// position: fixed sávok (navigáció, gyakorló dokk, értesítés) görgetéskor feljebb, a képernyő
+// közepére csúsznak (WebKit-hiba, FB20249802). Az eltolás NÖVEKMÉNYÉT mérjük a nyugalmi
+// állapothoz képest, és a sávokat ugyanennyivel visszatoljuk (--vv-shift, a CSS translate
+// tulajdonsága, így a meglévő transform-okat nem írja felül).
+// V13.21: semmilyen magassághoz (clientHeight) nem hasonlítunk – iOS 26 standalone módban az eltér a
+// látható magasságtól, és nyugalomban is lejjebb tolta a sávokat. Nyugalomban az eltolás így mindig 0.
+// Nyitott billentyűzetnél nem tolunk; Safariban (nem standalone) a böngésző kezeli, ott nem avatkozunk be.
+const KEYBOARD_MIN_PX = 120; // ennyinél kisebb magasságcsökkenés még nem billentyűzet
 
 const isStandalone = () => (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches)
   || window.navigator.standalone === true;
 
+// rest: a legkisebb látott offsetTop zárt billentyűzetnél; full: a legnagyobb látott magasság (tájolásonként)
+const _state = { rest: null, full: 0, width: 0 };
+
 // A sávok szükséges eltolása px-ben (0, ha nincs mit javítani)
-function viewportShift(vv, layoutHeight) {
-  if (!vv || !layoutHeight) return 0;
-  if (layoutHeight - vv.height > KEYBOARD_MIN_PX) return 0; // nyitva a billentyűzet
-  const shift = Math.round(vv.offsetTop + vv.height - layoutHeight);
-  return Math.abs(shift) < 1 ? 0 : shift;
+function viewportShift(vv, st = _state) {
+  if (!vv) return 0;
+  if (vv.width !== st.width) { st.width = vv.width; st.full = 0; st.rest = null; } // tájolásváltás: újramérés
+  st.full = Math.max(st.full, vv.height);
+  if (st.full - vv.height > KEYBOARD_MIN_PX) return 0;                         // nyitva a billentyűzet
+  if (st.rest === null || vv.offsetTop < st.rest) st.rest = vv.offsetTop;
+  const shift = Math.round(vv.offsetTop - st.rest);
+  return shift < 1 ? 0 : shift;
 }
 
 let _queued = false;
 function syncViewportShift() {
   _queued = false;
-  const shift = viewportShift(window.visualViewport, document.documentElement.clientHeight);
-  const value = `${shift}px`;
+  const value = `${viewportShift(window.visualViewport)}px`;
   if (document.documentElement.style.getPropertyValue('--vv-shift') !== value) {
     document.documentElement.style.setProperty('--vv-shift', value);
   }
