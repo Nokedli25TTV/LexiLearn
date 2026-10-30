@@ -89,6 +89,15 @@ A stats-szal együtt mentődik és szinkronizálódik.
 - **Már tanult szavak:** betöltéskor (és felhő szinkron után) a még ütemezés nélküli tanult szavakat a meglévő
   eredményekből becsülve beosztja; a lemaradtakat napi adagokra (min. 15/nap, legfeljebb 3 hét).
 
+## Kiejtés
+
+`js/practice/tts.js`. Minden nyelv a Google-hangon szól (`translate_tts`), egy rejtett, azonos eredetű keretben létrehozott `<audio>` elemen, mert a szolgáltatás 404-et ad, ha a kérés más oldal címét viszi Referer fejlécben.
+
+- **Nem gyorsítótárazható:** a válasz `no-store`, és nincs CORS-fejléc, így előre letölteni, blobként tárolni vagy offline menteni nem lehet: minden kimondás hálózati kérés.
+- **Tartalék:** hiba (0,3 mp szünettel) vagy 2,5 mp csend után egyszer újrapróbálja, utána a készülék beszédmotorja jön, de csak akkor, ha van a nyelvhez hangja (különben csend és egy egyszeri értesítés). Elutasított lejátszásnál és kapcsolat nélkül nincs újrapróbálás.
+- **Hangkimenet (nem iOS):** szünet után a kimenet ébredése elnyelné a szó elejét, ezért egy AudioContext -100 dB-es jele nyitva tartja, és ha aludt, az indítás 250 ms-ot vár. 30 mp tétlenség vagy háttérbe kerülés után elalszik. iOS-en nem fut: ott a némító kapcsoló és a Zene mellett beállítás miatt más a helyzet, és a kiejtés jól működik.
+- **Hibakeresés a készüléken:** a Profil alján ötször a verziószámra koppintva a diagnosztika a kiejtést is mutatja: online-e, a hangkimenet állapota, nyelvenként hány hang van, és az utolsó kimondások (melyik hang szólt, hány ms alatt, miért váltott).
+
 ## JLPT haladás
 
 - **Viszonyítás:** a JLPT általános, halmozott célszámai: N5 800 / 100, N4 1500 / 300, N3 3750 / 650 (szó / kandzsi).
@@ -184,6 +193,7 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/sw.test.js`** – a service worker előtöltési listája: minden fájl létezik, minden modul benne van.
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
+- **`tests/tts.test.js`, `tests/tts-android.test.js`** – a hangútvonal: Google-hang, újrapróbálás, nyelvhez illő tartalék, a hangkimenet ébren tartása, napló.
 - **`tests/learned-rule.test.js`, `tests/practice-card.test.js`** – a "Tudom" csak elkezd, két sikeres ismétlés tesz megtanulttá; az ötödik gyakorlási találat kártyát ad, a kör végén értékelhető; a régi szavak napi adagban jönnek.
 - Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).
 - **`tests/cloud-sync.test.js`** – a valódi `firebase-sync.js` a teljes appal, memóriabeli Firestore-ral

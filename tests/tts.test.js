@@ -1,6 +1,6 @@
 // V13.25: a kiejtés mindhárom nyelven a Google-hangon szól a feloldott <audio> elemen, Referer fejléc nélkül
 // (iOS-en ezt a némító kapcsoló nem némítja el); a beépített beszédmotor csak tartalék: hiba, elutasított
-// lejátszás vagy 4 mp csend után, és egy szónál csak egyszer.
+// lejátszás vagy csend után (V13.28: egy újrapróbálás után), és egy szónál csak egyszer.
 import { afterEach, expect, it, vi } from 'vitest';
 import { bootApp } from './harness/boot.js';
 import { FIXED_NOW } from './harness/env.js';
@@ -28,7 +28,7 @@ it('nyelvenként a Google-hang, tartalék a beépített motor (egyszer), időkor
   audio.play = () => play();
   // A harness már a dátumot hamisítja; a setTimeout-tal együtt újra kell kezdeni
   vi.useRealTimers();
-  vi.useFakeTimers({ toFake: ['Date', 'setTimeout'] });
+  vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] });
   vi.setSystemTime(new Date(FIXED_NOW));
 
   // Japán: kana, lassított tempó
@@ -39,8 +39,8 @@ it('nyelvenként a Google-hang, tartalék a beépített motor (egyszer), időkor
   expect(decodeURIComponent(audio.src)).toContain('q=えき');
   expect(synth.cancel).not.toHaveBeenCalled(); // nem szólt semmi, nincs mit leállítani
 
-  // 4 mp csend után a tartalék szól, japánul
-  vi.advanceTimersByTime(4000);
+  // Csend után (az újrapróbálás után) a tartalék szól, japánul
+  vi.advanceTimersByTime(api.TTS_START_TIMEOUT_MS * api.TTS_ATTEMPTS);
   expect(spoken.map(u => [u.text, u.lang])).toEqual([['えき', 'ja-JP']]);
 
   // Angol és magyar is a Google-hangon
@@ -74,7 +74,7 @@ it('nyelvenként a Google-hang, tartalék a beépített motor (egyszer), időkor
   // Egy elavult szó tartaléka nem szólal meg az új helyett
   api.speakWord('first');
   api.speakWord('second');
-  vi.advanceTimersByTime(4000);
+  vi.advanceTimersByTime(api.TTS_START_TIMEOUT_MS * api.TTS_ATTEMPTS);
   expect(spoken.map(u => u.text).slice(-1)).toEqual(['second']);
 
   // Hosszú szöveg (mondat) egyből a beépített motorral

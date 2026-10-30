@@ -10,6 +10,7 @@
 // Nyitott billentyűzetnél nem tolunk; Safariban (nem standalone) a böngésző kezeli, ott nem avatkozunk be.
 // V13.22: csak az első billentyűzethasználat után kapcsolhat be (a hiba csak utána jelentkezik), így az
 // app megnyitásakor a sávok biztosan a CSS szerinti helyükön vannak.
+import { ttsDiagnostics } from '../practice/tts.js';
 const KEYBOARD_MIN_PX = 120; // ennyinél kisebb magasságcsökkenés még nem billentyűzet
 
 const isStandalone = () => (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches)
@@ -43,6 +44,7 @@ function syncViewportShift() {
 /* ── Diagnosztika (Profil: a verziószámra ötször koppintva): a mért értékek a képernyő tetején,
    hogy egy képernyőképből látszódjon, mit csinál az iOS ── */
 let _debugEl = null;
+let _debugTimer = null;
 function renderViewportDebug() {
   const vv = window.visualViewport;
   const nav = document.getElementById('bottom-nav')?.getBoundingClientRect();
@@ -51,15 +53,17 @@ function renderViewportDebug() {
     `standalone: ${isStandalone()} · shift: ${document.documentElement.style.getPropertyValue('--vv-shift') || '0px'}`,
     `vv: top ${r(vv?.offsetTop)} · h ${r(vv?.height)} · w ${r(vv?.width)} · scale ${r(vv?.scale)}`,
     `inner: ${window.innerWidth}×${window.innerHeight} · client: ${document.documentElement.clientHeight} · scrollY ${r(window.scrollY)}`,
-    `rest ${r(_state.rest)} · full ${r(_state.full)} · kb ${_state.keyboardSeen} · nav ${r(nav?.top)}–${r(nav?.bottom)}`
+    `rest ${r(_state.rest)} · full ${r(_state.full)} · kb ${_state.keyboardSeen} · nav ${r(nav?.top)}–${r(nav?.bottom)}`,
+    ...ttsDiagnostics() // V13.28
   ].join('\n');
 }
 function toggleViewportDebug() {
-  if (_debugEl) { _debugEl.remove(); _debugEl = null; return false; }
+  if (_debugEl) { clearInterval(_debugTimer); _debugEl.remove(); _debugEl = null; return false; }
   _debugEl = document.createElement('pre');
   _debugEl.className = 'vv-debug';
   document.body.appendChild(_debugEl);
   renderViewportDebug();
+  _debugTimer = setInterval(renderViewportDebug, 1000);
   return true;
 }
 const queueSync = () => { if (!_queued) { _queued = true; requestAnimationFrame(syncViewportShift); } };
