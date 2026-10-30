@@ -1,6 +1,6 @@
 // JLPT haladás: mérföldkövek, elérési dátumok, rögzült (21+ nap), tempó és előrejelzés.
 import { describe, it, expect } from 'vitest';
-import { backfillPracticeLearned, buildMilestones, crossedMilestones, getGoal, isLearnedWord, learnedDate, markPracticeLearned, paceFor, trackProgress } from '../../js/goal/jlpt.js';
+import { backfillPracticeLearned, buildMilestones, crossedMilestones, getGoal, introducedDate, isLearnedWord, isLearningWord, isStartedWord, learnedDate, markPracticeLearned, markReviewLearned, paceFor, trackProgress } from '../../js/goal/jlpt.js';
 
 const TODAY = '2026-09-29';
 let seq = 0;
@@ -56,6 +56,32 @@ describe('sáv állapota', () => {
     ready.stats.streak = 0;
     expect(isLearnedWord(ready)).toBe(true);
     expect(markPracticeLearned(ready, '2026-10-01')).toBe(false);
+  });
+  it('az elkezdett szót két egymás utáni sikeres ismétlés teszi megtanulttá', () => {
+    const started = w('N5', { introducedAt: '2026-09-20', srs: { due: TODAY, s: 3, d: 5, last: '2026-09-20' } });
+    expect(isStartedWord(started)).toBe(true);
+    expect(isLearnedWord(started)).toBe(false);
+    expect(isLearningWord(started)).toBe(true);
+    expect(introducedDate(started)).toBe('2026-09-20');
+    expect(markReviewLearned(started, 3, TODAY)).toBe(false);
+    expect(markReviewLearned(started, 2, TODAY)).toBe(false); // a Nehéz nem számít, de nem is nulláz
+    expect(started.stats.reviewPasses).toBe(1);
+    expect(markReviewLearned(started, 1, TODAY)).toBe(false); // az Újra elölről indítja
+    expect(started.stats.reviewPasses).toBe(0);
+    expect(markReviewLearned(started, 3, TODAY)).toBe(false);
+    expect(markReviewLearned(started, 4, TODAY)).toBe(true);
+    expect(started.stats.learnedAt).toBe(TODAY);
+    expect(isLearnedWord(started)).toBe(true);
+    expect(introducedDate(started)).toBe('2026-09-20'); // a napi penzumba továbbra is az elkezdés napja számít
+    expect(markReviewLearned(started, 4, '2026-10-30')).toBe(false);
+    expect(started.stats.learnedAt).toBe(TODAY);
+  });
+  it('a V13.27 előtt megtanult szó megmarad, és a saját dátumával számít', () => {
+    const old = w('N5', { learnedAt: '2026-09-01' });
+    expect(isLearnedWord(old)).toBe(true);
+    expect(isLearningWord(old)).toBe(false);
+    expect(introducedDate(old)).toBe('2026-09-01');
+    expect(markReviewLearned(old, 3, TODAY)).toBe(false);
   });
   it('a napi tanulásból ismétlésbe (SRS) került szó a gyakorlási sorozattól függetlenül megtanult', () => {
     const srsWord = w('N5', { learnedAt: '2026-09-01', totalCorrect: 0, totalWrong: 3, streak: 0,

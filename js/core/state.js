@@ -7,7 +7,7 @@
 function createEmptyState() {
   return {
     words: [], playlists: [], selectedIds: new Set(),
-    // lesson: 'all' vagy a kiválasztott leckék tömbje; status: 'all' | 'new' | 'learned'
+    // lesson: 'all' vagy a kiválasztott leckék tömbje; status: 'all' | 'new' | 'learning' | 'learned'
     filters: { search: '', tags: [], diff: new Set(), lesson: 'all', status: 'all', day: 'all', sort: 'az', list: 'all' },
     direction: 'en-hu', activeViewTab: 'words',
     practiceOptions: { type: 'classic', count: 20, order: 'random' }, // V13.1: a Gyakorlás dokk beállításai

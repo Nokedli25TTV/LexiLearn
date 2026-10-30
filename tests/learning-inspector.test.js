@@ -14,7 +14,7 @@ it('az ismétlési sor megmutatható, halasztható, szüneteltethető és vissza
   const modal = win.document.getElementById('learning-inspector-modal');
   expect(modal.classList.contains('open')).toBe(true);
   expect(modal.textContent).toContain(word.en);
-  expect(modal.textContent).toContain('Azért van itt, mert a napi tanulásban megtanultad.');
+  expect(modal.textContent).toContain('Azért van itt, mert a napi tanulásban elkezdted.');
 
   api.postponeReviewWord(word.id, 7);
   expect(word.stats.srs.due).toBe('2026-10-06');

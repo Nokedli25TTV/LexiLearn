@@ -10,7 +10,7 @@
 // V13.26: ugyanez a felbontás mondja meg a Kandzsi módnak, mely kandzsik "készek" (minden radikáljukat tudod).
 import { addDays, dateKey, keyToDate } from '../core/dates.js';
 import { KANJI_DATA, KANJI_FREQ, KANJI_FREQ_TOTAL, KANJI_RADICALS, RADICAL_LESSONS } from '../core/data.js';
-import { isLearnedWord, isMatureWord, learnedDate } from './jlpt.js';
+import { isLearnedWord, isMatureWord, isStartedWord, learnedDate } from './jlpt.js';
 
 const PATH_TARGETS = [
   { value: '50', label: '50%', share: 0.5 },
@@ -55,7 +55,8 @@ function partsOf(kanji) {
 }
 const missingRadicals = (kanji, known) => partsOf(kanji).filter(r => !known.has(r));
 const isKanjiReady = (kanji, known) => missingRadicals(kanji, known).length === 0;
-const knownRadicals = radicalWords => new Set(radicalWords.filter(isLearnedWord).map(w => w.en));
+// V13.27: a kandzsik sorrendjéhez elég, ha a radikál már el van kezdve (a megtanulás két ismétlésig tart)
+const knownRadicals = radicalWords => new Set(radicalWords.filter(isStartedWord).map(w => w.en));
 
 /**
  * A radikálokból kész, még nem megtanult N5–N3 kandzsik, és amit a következő (nem kész) útvonal-lecke nyit meg.
@@ -64,7 +65,7 @@ const knownRadicals = radicalWords => new Set(radicalWords.filter(isLearnedWord)
  */
 function kanjiUnlockStatus(radicalWords, kanjiWords) {
   const known = knownRadicals(radicalWords);
-  const open = kanjiWords.filter(w => CORE_LEVELS.includes(w.diff) && !isLearnedWord(w));
+  const open = kanjiWords.filter(w => CORE_LEVELS.includes(w.diff) && !isStartedWord(w));
   const ready = open.filter(w => isKanjiReady(w.en, known));
   const lesson = RADICAL_LESSONS.find(l => lessonChars(l).some(r => !known.has(r)));
   let nextLesson = null;

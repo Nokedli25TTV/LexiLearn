@@ -6,13 +6,13 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.26" src="https://img.shields.io/badge/verzi%C3%B3-13.26-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.27" src="https://img.shields.io/badge/verzi%C3%B3-13.27-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
   <img alt="Vanilla JS, ES modulok" src="https://img.shields.io/badge/vanilla%20JS-ES%20modulok-de9300?style=for-the-badge&logo=javascript&logoColor=white&labelColor=171c1a">
   <img alt="Firebase felhő szinkron" src="https://img.shields.io/badge/Firebase-felh%C5%91%20szinkron-1a73e8?style=for-the-badge&logo=firebase&logoColor=white&labelColor=171c1a">
-  <img alt="Vitest, 116 teszt" src="https://img.shields.io/badge/Vitest-116%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
+  <img alt="Vitest, 149 teszt" src="https://img.shields.io/badge/Vitest-149%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
   <img alt="KanjiVG, CC BY-SA 3.0" src="https://img.shields.io/badge/KanjiVG-CC%20BY--SA%203.0-7a837e?style=for-the-badge&labelColor=171c1a">
 </p>
 
@@ -82,7 +82,8 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - Négy gomb: **Újra, Nehéz, Jó, Könnyű**, mindegyik alatt a következő ismétlésig hátralévő idő („ma”, „3 n”, „2 hó”).
 - 90%-os célzott megtartás, napi felbontás; a „Rögzült” szó ismétlési köze legalább 21 nap.
 - Egy alkalom alapból legfeljebb 20 kártya (a Profilban módonként 10, 20, 30 vagy 50); az „Újra” még aznap visszajön. Húzással (balra Újra, jobbra Jó) és az 1-4 billentyűkkel is értékelhetsz.
-- Az SRS-be kizárólag a napi, Dekiru-sorrendű tanulásban már sikerült szavak kerülnek. A szabad gyakorlásban ötször egymás után helyesen megválaszolt szavak (egy hiba újraindítja a számolást) beleszámítanak a JLPT-haladásba és a statisztikába, de nem hoznak létre ismétlőkártyát; egy gyakorlási hiba csak egy már létező napi kártyát hozhat előre.
+- A napi tanulás „Tudom” gombja csak elkezdi a szót (Tanulás alatt): kap ismétlőkártyát, de megtanult csak két egymás utáni sikeres ismétlés után lesz.
+- A szabad gyakorlásban ötször egymás után helyesen megválaszolt szó (egy hiba újraindítja a számolást) megtanult, és ő is ismétlőkártyát kap. A kör végén Nehéz / Jó / Könnyű gombbal dönthetsz az első ismétlésről (1, 3 vagy 16 nap), különben 3 nap múlva jön. A korábban így megtanult szavak módonként napi legfeljebb 5-tel kerülnek be. Egy gyakorlási hiba a kártyát holnapra hozza.
 - **Kezelhető ismétlési sor:** minden kártyán látszik a lecke, a bekerülés oka és az esedékesség; a kártya holnapra vagy egy héttel halasztható, szüneteltethető és később visszaállítható.
 
 ### Radikálok: a 214 Kangxi-radikál (a KanjiRadical projektből)
@@ -138,7 +139,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - Irány (kana → magyar vagy fordítva), kérdésszám (10, 20, 30, 50 vagy mind), sorrend (véletlen, betűrend, könnyebb vagy nehezebb elöl).
 - Körökben halad: a hibás szavak a következő körbe kerülnek. A kör végén pontosság, helyes és hibás válaszok, idő, és a hibás szavak listája.
 - **Úton a megtanuláshoz:** a Statisztikában a még nem megtanult szavak az 5 egymás utáni helyes felé csoportosítva (4/5, 3/5, 2/5, 1/5), pöttysorral és a szavakkal; egy sorra koppintva a teljes lista nyílik. A Szavak táblázat és a Gyakorlás fül szólistája is „3/5” formában mutatja az állást.
-- **Megtanult szó visszajelzése:** amikor egy szó gyakorlás közben eléri az 5 egymás utáni helyes választ, a kártyán „Megtanult szó” jelvény bukkan fel; a kör végén külön lista mutatja, mely szavak kerültek a megtanultak közé ebben a gyakorlásban, és az Előzményekben is látszanak.
+- **Megtanult szó visszajelzése:** amikor egy szó gyakorlás közben eléri az 5 egymás utáni helyes választ, a kártyán „Megtanult szó” jelvény bukkan fel; a kör végén külön lista mutatja, mely szavak kerültek a megtanultak közé ebben a gyakorlásban (itt választható ki az első ismétlésük), és az Előzményekben is látszanak.
 
 ### Statisztika és JLPT N3 haladás
 
@@ -212,7 +213,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **138 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **149 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash

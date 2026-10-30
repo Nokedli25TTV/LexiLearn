@@ -3,14 +3,15 @@
 import { todayKey } from '../core/dates.js';
 import { appData, currentMode, diffOrder, state } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
-import { isLearnedWord } from '../goal/jlpt.js';
+import { introducedDate, isLearnedWord, isStartedWord } from '../goal/jlpt.js';
 import { isKanjiReady, knownRadicals } from '../goal/radical-path.js';
 import { REVIEW_BATCH_SIZE } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
    V13: NAPI SZOKÁS MOTOR – új szavak, napi cél, mai ismétlés
-   - Egy szó "új", ha a napi tanulásban még nem sikerült és gyakorlásban sem válaszoltál rá 5-ször egymás után helyesen.
-   - Tanuláskor ("Tudom" / jobbra húzás) a szó stats.learnedAt = mai nap (helyi dátum).
+   - Egy szó "új", ha a napi tanulásban még nem kezdted el és gyakorlásban sem válaszoltál rá 5-ször egymás után helyesen.
+   - Tanuláskor ("Tudom" / jobbra húzás) a szó stats.introducedAt = mai nap (helyi dátum): ez számít a napi penzumba.
+     Megtanult két sikeres ismétlés után lesz (stats.learnedAt, lásd goal/jlpt.js).
      A stats objektumban van, így a felhő szinkron módosítás nélkül viszi.
    - A napi cél módonként állítható (globalStats.dailyGoal, szinkronizált).
      Ha elérted, mára lezárjuk az új szavakat: holnap nagyobb kedvvel jössz vissza.
@@ -30,12 +31,12 @@ function getReviewBatch() {
 }
 
 function isNewWord(w) {
-  return !isLearnedWord(w);
+  return !isStartedWord(w);
 }
 
 function getTodayWords() {
   const today = todayKey();
-  return state.words.filter(w => w.stats && w.stats.learnedAt === today);
+  return state.words.filter(w => introducedDate(w) === today);
 }
 
 const lessonNum = w => {
@@ -89,12 +90,12 @@ function getCurrentLessonProgress() {
     if (!lessons.length) return null;
     const lastLesson = lessons.at(-1), words = lessonWords.get(lastLesson);
     return {
-      lesson: lastLesson, complete: true, total: words.length, learned: words.length,
+      lesson: lastLesson, complete: true, total: words.length, learned: words.filter(isLearnedWord).length,
       reviewing: words.filter(w => !!w.stats?.srs).length, remaining: 0, next: []
     };
   }
   const words = lessonWords.get(lesson);
-  const learned = words.filter(w => !isNewWord(w)).length;
+  const learned = words.filter(isLearnedWord).length;
   const reviewing = words.filter(w => !!w.stats?.srs).length;
   const slots = Math.max(0, getDailyGoal() - getTodayWords().length);
   const nextCounts = new Map();
@@ -104,7 +105,7 @@ function getCurrentLessonProgress() {
   });
   return {
     lesson, complete: false, total: words.length, learned, reviewing,
-    remaining: words.length - learned,
+    remaining: words.filter(isNewWord).length,
     next: [...nextCounts].map(([lessonNumber, count]) => ({ lesson: lessonNumber, count }))
   };
 }
@@ -156,13 +157,13 @@ function logActivity({ correct = null, known = null } = {}) {
   saveStats();
 }
 
-function markWordLearned(word) {
+function markWordIntroduced(word) {
   const today = todayKey();
-  word.stats.learnedAt = today;
+  word.stats.introducedAt = today;
   if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
   state.globalStats.studyDays[today] = true; // a tanulás is számít a napi sorozatba
   saveWords();
   saveStats();
 }
 
-export { _lastActivityTs, ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords, hasPoolFilters, isNewWord, LEARN_BATCH_SIZE, logActivity, markWordLearned, REVIEW_BATCH_OPTIONS };
+export { _lastActivityTs, ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords, hasPoolFilters, isNewWord, LEARN_BATCH_SIZE, logActivity, markWordIntroduced, REVIEW_BATCH_OPTIONS };

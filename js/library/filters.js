@@ -2,6 +2,7 @@
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { TRAVEL_PLAN, TRAVEL_PLAN_KANJI } from '../core/data.js';
 import { currentMode, state } from '../core/state.js';
+import { isLearnedWord, isStartedWord } from '../goal/jlpt.js';
 import { isNewWord } from '../habit/goal.js';
 import { isLeech } from '../features/leeches.js';
 
@@ -47,7 +48,8 @@ function selectedLessons(f = state.filters) {
 }
 
 // Állapot szerinti szűrés: ugyanaz a "megtanult", mint a Kezdőlap leckekártyáján és a JLPT haladásban
-const STATUS_OPTIONS = [['all', 'Minden'], ['new', 'Még nem tanult'], ['learned', 'Megtanult']];
+const STATUS_OPTIONS = [['all', 'Minden'], ['new', 'Még nem tanult'], ['learning', 'Tanulás alatt'], ['learned', 'Megtanult']];
+const wordStatus = w => (isLearnedWord(w) ? 'learned' : isStartedWord(w) ? 'learning' : 'new');
 const statusFilter = (f = state.filters) => (STATUS_OPTIONS.some(([v]) => v === f.status) ? f.status : 'all');
 
 function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false, ignoreStatus = false } = {}) {
@@ -69,7 +71,7 @@ function wordMatchesFilters(w, { ignoreSearch = false, ignoreTags = false, ignor
   }
   if (!ignoreStatus) {
     const status = statusFilter(f);
-    if (status !== 'all' && (status === 'new') !== isNewWord(w)) return false;
+    if (status !== 'all' && wordStatus(w) !== status) return false;
   }
 
   // Úti terv (Nap) szűrő – Japán (TRAVEL_PLAN) és Kandzsi (TRAVEL_PLAN_KANJI) mód
@@ -132,8 +134,9 @@ function hasActiveFilters(f = state.filters) {
 // Hány szó esik az egyes állapotokba a többi szűrő (lecke, témakör, szint, lista, keresés) mellett
 function getStatusCounts() {
   const pool = state.words.filter(w => wordMatchesFilters(w, { ignoreStatus: true }));
-  const fresh = pool.filter(isNewWord).length;
-  return { all: pool.length, new: fresh, learned: pool.length - fresh };
+  const counts = { all: pool.length, new: 0, learning: 0, learned: 0 };
+  pool.forEach(w => { counts[wordStatus(w)]++; });
+  return counts;
 }
 
 function getLessonOptions() {

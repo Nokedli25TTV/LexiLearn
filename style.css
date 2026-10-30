@@ -203,6 +203,12 @@ body, .app-header, .card, .modal, .q-card, .search-input, .sort-select, .btn, .m
 .re-learned-item { align-items: center; justify-content: flex-start; animation: learnedIn 0.42s var(--ease-out) both; animation-delay: calc(var(--i, 0) * 90ms + 120ms); }
 .re-learned-item .re-err-meaning { margin-left: auto; }
 .re-learned-check { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--success-bg); color: var(--success); }
+/* V13.27: a most megtanult szó első ismétlési köze; az értékelő sor gombjai, kisebben, kiválasztható állapottal */
+.re-learned-item.has-rate { flex-wrap: wrap; }
+.re-rate { flex: 1 0 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.re-rate-btn { min-height: 52px; padding: 6px 4px; border-radius: 12px; }
+.re-rate-btn[aria-pressed="true"] { background: var(--success-bg); color: var(--success); border-color: color-mix(in srgb, var(--success) 40%, transparent); }
+.re-rate-btn[aria-pressed="true"] .rate-when { color: inherit; }
 @keyframes learnedIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* V13.19: „Megtanult szó” jelvény a gyakorlókártyán, amikor a szó átlépi az 5 egymás utáni helyest */
@@ -1535,6 +1541,7 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
   .rate-3:hover { background: var(--success); color: var(--on-strong); }
 }
 .review-summary { font-size: 14px; font-weight: 700; color: var(--text-2); }
+.review-learned { font-size: 14px; font-weight: 800; color: var(--success); }
 
 /* Kezdőlap: ismétlés-előrejelzés a gombok alatt */
 .home-forecast { margin-top: 2px; text-align: center; font-size: 13px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
@@ -2536,7 +2543,8 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .mat-name { font-weight: 700; color: var(--text); }
 .mat-count { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
 .mat-pct { text-align: right; font-weight: 600; color: var(--text-3); font-variant-numeric: tabular-nums; }
-.learning-breakdown { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+.learning-breakdown { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
+@media (min-width: 720px) { .learning-breakdown { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .learning-breakdown button { min-width: 0; padding: 10px 8px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); color: var(--text); font-family: 'Nunito', sans-serif; cursor: pointer; }
 .learning-breakdown b, .learning-breakdown span { display: block; }
 .learning-breakdown b { font-size: 18px; font-weight: 900; }

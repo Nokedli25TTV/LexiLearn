@@ -10,9 +10,11 @@ import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, japaneseBackLine } from '../core/util.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { AGAIN, HARD, GOOD, EASY } from '../srs/fsrs.js';
+import { markReviewLearned } from '../goal/jlpt.js';
 import { dueForecast, fmtInterval, getDueWords, previewWord, rateWord } from '../srs/schedule.js';
 import { getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords, logActivity } from './goal.js';
 import { renderHome } from './home.js';
+import { milestoneNoteHtml, progressBaseline } from './learn.js';
 import { getExampleSentence, updatePracticeTop } from '../practice/engine.js';
 import { speakWord } from '../practice/tts.js';
 import { showScreen } from '../ui/screens.js';
@@ -37,9 +39,10 @@ function startReviewSession() {
     type: 'review', origin: 'home',
     queue: [...ids], batchIds: ids, doneIds: [], againIds: [],
     counts: { [AGAIN]: 0, [HARD]: 0, [GOOD]: 0, [EASY]: 0 },
-    roundNumber: 1, roundWords: [], currentIdx: 0, errorList: [],
+    roundNumber: 1, roundWords: [], currentIdx: 0, errorList: [], learnedNow: [],
     roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now(),
-    sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0
+    sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0,
+    ...progressBaseline()
   };
   showScreen('practice');
   showReviewCard();
@@ -167,6 +170,7 @@ function resolveReview(rating) {
   if (word) {
     const today = todayKey();
     rateWord(word, rating, today);
+    if (markReviewLearned(word, rating, today)) p.learnedNow.push(id); // V13.27
     p.counts[rating]++;
     logActivity({ known: rating !== AGAIN });
     if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
@@ -193,6 +197,7 @@ function showReviewComplete() {
   const unit = unitOf();
   const c = p.counts;
   const summary = RATINGS.filter(r => c[r.rating] > 0).map(r => `${r.label} ${c[r.rating]}`).join(' · ');
+  const learned = p.learnedNow.map(id => state.words.find(w => w.id === id)).filter(Boolean);
 
   let next;
   if (remaining > 0) {
@@ -213,6 +218,9 @@ function showReviewComplete() {
       <h2 class="learn-done-title">${p.doneIds.length} ${unit} átismételve</h2>
       <p class="learn-done-sub">${sub}</p>
       ${summary ? `<p class="review-summary">${summary}</p>` : ''}
+      ${milestoneNoteHtml(p)}
+      ${learned.length ? `<p class="review-learned">${learned.length} új megtanult ${unit}</p>
+      <div class="learn-done-words">${learned.map(w => `<span class="word-chip">${escHtml(w.en)} <span>${escHtml(w.hu)}</span></span>`).join('')}</div>` : ''}
       <div class="learn-done-actions">
         ${next}
         <button class="btn-quiet" onclick="showScreen('home')">Vissza a kezdőlapra</button>

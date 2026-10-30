@@ -235,11 +235,11 @@ describe('több lecke egyszerre és az állapot szűrő', () => {
   });
 
   it('az állapot darabszámai a kiválasztott leckékre vonatkoznak', () => {
-    expect(getStatusCounts()).toEqual({ all: 6, new: 4, learned: 2 });
+    expect(getStatusCounts()).toEqual({ all: 6, new: 4, learning: 0, learned: 2 });
     toggleLesson('1');
     toggleLesson('2');
     setStatusFilter('new');
-    expect(getStatusCounts()).toEqual({ all: 4, new: 2, learned: 2 });
+    expect(getStatusCounts()).toEqual({ all: 4, new: 2, learning: 0, learned: 2 });
     expect(ids()).toEqual(['l1-uj', 'l2-uj']);
     const html = statusMenuHtml();
     expect(html).toContain('Még nem tanult');

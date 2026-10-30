@@ -5,7 +5,7 @@ import { appData, currentMode, MODE_LABELS, state, unitOf } from '../core/state.
 import { escHtml } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { getDailyGoal } from '../habit/goal.js';
-import { PRACTICE_LEARNED_CORRECT, isLearnedWord, isPracticeLearned } from '../goal/jlpt.js';
+import { PRACTICE_LEARNED_CORRECT, isLearnedWord, isLearningWord, isPracticeLearned } from '../goal/jlpt.js';
 import { accuracyOf, activityLevel, buildDailyIndex, computeMaturity, weekFocusSeconds } from './model.js';
 import { renderJlptCard } from '../goal/view.js';
 import { renderWeekLink } from './week.js';
@@ -242,6 +242,7 @@ function renderMaturity() {
   const pct = v => Math.round(v / m.started * 100);
   const dailyLearned = state.words.filter(w => !!w.stats?.learnedAt).length;
   const practiceLearned = state.words.filter(w => !w.stats?.learnedAt && isPracticeLearned(w)).length; // V13.19: az egymás utáni szabály szerint
+  const learning = state.words.filter(isLearningWord).length; // V13.27: elkezdve, még nem megtanult
   const activeReview = state.words.filter(w => !!w.stats?.srs).length;
   const segments = stages.filter(s => s[3] > 0)
     .map(([key, cls, label, v]) => `<span class="mat-seg ${cls}" style="flex-grow:${v}" data-label="${label}" data-v="${v}"></span>`).join('');
@@ -254,6 +255,7 @@ function renderMaturity() {
     <div class="learning-breakdown" aria-label="Miből számít megtanultnak">
       <button onclick="openWordInspector('daily')"><b>${fmtNum(dailyLearned)}</b><span>Napi tanulás</span></button>
       <button onclick="openWordInspector('practice')"><b>${fmtNum(practiceLearned)}</b><span>5× egymás után helyes</span></button>
+      <button onclick="openWordInspector('learning')"><b>${fmtNum(learning)}</b><span>Tanulás alatt</span></button>
       <button onclick="openWordInspector('review')"><b>${fmtNum(activeReview)}</b><span>Aktív ismétlés</span></button>
     </div>
     <button class="link-btn stats-calc-open" onclick="openStatsExplanation()">Hogyan számoljuk a megtanult szavakat?</button>

@@ -3,10 +3,10 @@ import { fmtDay, fmtDayLong, fmtDuration, fmtNum, lastNDays, todayKey } from '..
 import { appData, currentMode, state, unitOf } from '../core/state.js';
 import { saveWords } from '../core/storage.js';
 import { escHtml, jsArg } from '../core/util.js';
-import { LEVELS, TARGETS, isLearnedWord, isMatureWord, isPracticeLearned, srsInterval } from '../goal/jlpt.js';
+import { LEVELS, TARGETS, introducedDate, isLearnedWord, isLearningWord, isMatureWord, isPracticeLearned, isStartedWord, srsInterval } from '../goal/jlpt.js';
 import { getDailyGoal } from '../habit/goal.js';
 import { renderHome } from '../habit/home.js';
-import { daysBetween, seedMissing, shiftKey } from '../srs/schedule.js';
+import { daysBetween, seedMissing, seedPracticeBacklog, shiftKey } from '../srs/schedule.js';
 import { activityLevel, buildDailyIndex } from '../stats/model.js';
 
 const modal = () => document.getElementById('learning-inspector-modal');
@@ -18,7 +18,8 @@ const lessonText = w => {
 const sourceText = w => w.stats?.learnedAt
   ? `Napi tanulás · ${fmtDay(w.stats.learnedAt)}`
   : w.stats?.practiceLearnedAt ? `Gyakorlás · ${fmtDay(w.stats.practiceLearnedAt)}`
-  : isPracticeLearned(w) ? 'Gyakorlásban legalább 5× helyes (régi szabály)' : 'Még nem tanult';
+  : isPracticeLearned(w) ? 'Gyakorlásban legalább 5× helyes (régi szabály)'
+  : w.stats?.introducedAt ? `Tanulás alatt · ${fmtDay(w.stats.introducedAt)} óta` : 'Még nem tanult';
 
 function showInspector(title, subtitle, html) {
   const host = modal();
@@ -51,7 +52,7 @@ function reviewRow(w, today) {
     <div class="inspect-row-main">
       ${wordIdentity(w)}
       <span class="inspect-meta">${escHtml(lessonText(w))} · ${escHtml(reviewWhen(w, today))}</span>
-      <span class="inspect-reason">Azért van itt, mert a napi tanulásban megtanultad.</span>
+      <span class="inspect-reason">Azért van itt, mert ${introducedDate(w) ? 'a napi tanulásban elkezdted' : 'a gyakorlásban megtanultad'}.</span>
     </div>
     <div class="inspect-actions">
       <button class="btn btn-outline btn-sm" onclick="postponeReviewWord(${jsArg(w.id)}, 1)">Holnapra</button>
@@ -70,9 +71,9 @@ function suspendedRow(w) {
 
 function openReviewQueue() {
   const today = todayKey();
-  const active = state.words.filter(w => w.stats?.learnedAt && w.stats?.srs)
+  const active = state.words.filter(w => w.stats?.srs)
     .sort((a, b) => a.stats.srs.due.localeCompare(b.stats.srs.due) || String(a.id).localeCompare(String(b.id)));
-  const suspended = state.words.filter(w => w.stats?.learnedAt && w.stats?.srsSuspended)
+  const suspended = state.words.filter(w => w.stats?.srsSuspended)
     .sort((a, b) => String(a.en).localeCompare(String(b.en), 'hu'));
   const due = active.filter(w => w.stats.srs.due <= today).length;
   const activeHtml = active.length
@@ -111,7 +112,7 @@ function restoreReviewWord(id) {
   const w = state.words.find(word => word.id === id);
   if (!w?.stats?.srsSuspended) return;
   delete w.stats.srsSuspended;
-  seedMissing([w]);
+  if (!seedMissing([w])) seedPracticeBacklog([w]); // V13.27: a gyakorlásból megtanult szó kártyája is visszajöhet
   afterReviewChange('Az ismétlőkártya visszaállítva.');
 }
 
@@ -125,10 +126,11 @@ const INSPECTORS = {
   daily: ['Napi tanulásban megtanult', w => !!w.stats?.learnedAt],
   practice: ['Gyakorlásból ismert', w => !w.stats?.learnedAt && isPracticeLearned(w)],
   review: ['Aktív ismétlőkártyák', w => !!w.stats?.srs],
-  fresh: ['Ismerkedés', w => isLearnedWord(w) && srsInterval(w) < 7],
-  practicing: ['Gyakorlás alatt', w => isLearnedWord(w) && srsInterval(w) >= 7 && srsInterval(w) < 21],
+  learning: ['Tanulás alatt', w => isLearningWord(w)], // V13.27: elkezdve, még nem megtanult
+  fresh: ['Ismerkedés', w => isStartedWord(w) && srsInterval(w) < 7],
+  practicing: ['Gyakorlás alatt', w => isStartedWord(w) && srsInterval(w) >= 7 && srsInterval(w) < 21],
   mature: ['Rögzült szavak', w => isMatureWord(w)],
-  notStarted: ['Még nem tanult', w => !isLearnedWord(w)],
+  notStarted: ['Még nem tanult', w => !isStartedWord(w)],
   // V13.20: a még nem megtanult szavak az 5 egymás utáni helyes felé (Statisztika: Úton a megtanuláshoz)
   ...Object.fromEntries([1, 2, 3, 4].map(n => [`streak${n}`, [`${n}/5 egymás után helyes`,
     w => !isLearnedWord(w) && Math.min(w.stats?.streak || 0, 4) === n]]))
@@ -191,6 +193,7 @@ function openStatsExplanation(mode = currentMode) {
   const daily = inScope.filter(w => !!w.stats?.learnedAt);
   const practice = inScope.filter(w => !w.stats?.learnedAt && isPracticeLearned(w));
   const learned = inScope.filter(isLearnedWord);
+  const learning = inScope.filter(isLearningWord);
   const review = inScope.filter(w => !!w.stats?.srs);
   const suspended = inScope.filter(w => !!w.stats?.srsSuspended);
   const mature = inScope.filter(isMatureWord);
@@ -201,11 +204,12 @@ function openStatsExplanation(mode = currentMode) {
   </button>`;
   showInspector('Hogyan számoljuk a haladást?', `JLPT N5–N3 · ${selectedMode === 'kanji' ? 'kandzsi' : 'szókincs'}`, `
     <div class="calc-equation"><b>${fmtNum(daily.length)}</b> napi tanulás <span>+</span> <b>${fmtNum(practice.length)}</b> csak gyakorlás <span>=</span> <strong>${fmtNum(learned.length)} / ${fmtNum(target)}</strong></div>
-    <p class="inspect-explain">Egy ${unit} akkor számít megtanultnak, ha a napi tanulásban már sikerült, vagy a klasszikus, gépelős, mondat-kiegészítő és hallás gyakorlatokban ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást). Ugyanaz a ${unit} csak egyszer számít.</p>
+    <p class="inspect-explain">A napi tanulás „Tudom” gombja csak elkezdi a szót. Egy ${unit} akkor számít megtanultnak, ha két ismétlésen egymás után tudtad (Jó vagy Könnyű), vagy a klasszikus, gépelős, mondat-kiegészítő és hallás gyakorlatokban ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást). Ugyanaz a ${unit} csak egyszer számít.</p>
     <div class="calc-list">
-      ${row('Napi tanulás', daily.length, 'Dekiru-sorrendben megtanult', 'dailyJlpt')}
+      ${row('Napi tanulás', daily.length, 'Két sikeres ismétlés után', 'dailyJlpt')}
       ${row('Csak gyakorlásból ismert', practice.length, '5 helyes válasz egymás után', 'practiceJlpt')}
       ${row('JLPT-haladás összesen', learned.length, `A cél ${fmtNum(target)} ${unit}`, 'learned')}
+      ${row('Tanulás alatt', learning.length, 'Elkezdve, még nem számít bele', 'learning')}
       ${row('Aktív ismétlés', review.length, 'Van SRS-időpontja', 'reviewJlpt')}
       ${row('Szüneteltetett ismétlés', suspended.length, 'Megtanult, de nincs a sorban')}
       ${row('Rögzült', mature.length, 'Legalább 21 napos ismétlési köz', 'matureJlpt')}

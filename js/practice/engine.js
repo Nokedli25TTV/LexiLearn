@@ -4,7 +4,7 @@ import { JAPANESE_SENTENCES, english_sentences2 } from '../core/data.js';
 import { todayKey } from '../core/dates.js';
 import { currentMode, diffOrder, isCharMode, state, unitOf } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
-import { escHtml, escRegex, shuffle } from '../core/util.js';
+import { escHtml, escRegex, jsArg, shuffle } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests, updateQuestProgress } from '../features/quests.js';
 import { getPracticeOptions, practiceTypesFor } from '../library/dock.js';
 import { statusFilter } from '../library/filters.js';
@@ -20,7 +20,8 @@ import { buildableSentences, initSentenceBuild, sentenceBuildHtml } from './sent
 import { hasKatakana, romajiToHiragana, toKatakana } from '../core/romaji.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
-import { practiceLapse } from '../srs/schedule.js';
+import { GOOD, EASY, HARD } from '../srs/fsrs.js';
+import { fmtInterval, newCardPreview, practiceLapse, rescheduleNewCard, scheduleLearnedWord } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
    PRACTICE LOGIC (V6.7: SZEM IKON + MONDAT MOTOR)
@@ -36,17 +37,24 @@ const learnedHold = () => (_learnedHold ? LEARNED_HOLD_MS : 0);
 const UNSCORED_TYPES = ['flashcard3d', 'sentenceBuild'];
 
 // Az ötödik helyes szabad gyakorlóválasznál a szó belép a JLPT-haladásba.
-// SRS-ismétlést csak a napi, Dekiru-sorrendű tanulás hoz létre.
-// Ha a „Még nem tanult” szűrővel jelölted ki a szavakat, a megtanult szó kikerül a
+// V13.27: ha még nincs ismétlőkártyája, most kap egyet Jó értékeléssel, így akkor is visszajön,
+// ha kilépsz a körből; a kör végén Nehéz / Jó / Könnyű gombbal átállítható.
+// Ha a „Még nem tanult” vagy „Tanulás alatt” szűrővel jelölted ki a szavakat, a megtanult szó kikerül a
 // kijelölésből is (a listából már eltűnik), így a dokk számlálója vele együtt csökken.
 // V13.19: a kártyán azonnal jelezzük, és a gyakorlás végén (meg az előzményekben) felsoroljuk.
 function registerPracticeMastery(word, isCorrect) {
   if (!isCorrect || !markPracticeLearned(word)) return;
-  if (statusFilter() === 'new') state.selectedIds.delete(word.id);
+  if (['new', 'learning'].includes(statusFilter())) state.selectedIds.delete(word.id);
   const p = state.practice;
+  const needsCard = !word.stats.srs && !word.stats.srsSuspended;
+  if (needsCard) scheduleLearnedWord(word, false);
   if (p) {
     if (!p.learnedNow) p.learnedNow = [];
     if (!p.learnedNow.includes(word.id)) p.learnedNow.push(word.id);
+    if (needsCard) {
+      if (!p.ratableIds) p.ratableIds = [];
+      if (!p.ratableIds.includes(word.id)) p.ratableIds.push(word.id);
+    }
   }
   _learnedHold = true;
   showLearnedBadge();
@@ -62,22 +70,55 @@ function showLearnedBadge() {
     </div>`);
 }
 
+// V13.27: a most megtanult, új kártyás szó első ismétlési köze. Alapból Jó, az Újra itt értelmetlen
+// (öt találat után jön), ezért csak három gomb van.
+const LEARNED_RATINGS = [[HARD, 'Nehéz'], [GOOD, 'Jó'], [EASY, 'Könnyű']];
+
+function learnedRatingHtml(w, chosen) {
+  const preview = newCardPreview();
+  return `<div class="re-rate" role="group" aria-label="${escHtml(w.en)}: mikor kérdezzem vissza?">${LEARNED_RATINGS.map(([rating, label]) => `
+    <button class="rate-btn re-rate-btn" data-word="${escHtml(w.id)}" data-rating="${rating}" aria-pressed="${rating === chosen}" onclick="setLearnedRating(${jsArg(w.id)}, ${rating})">
+      <span class="rate-label">${label}</span><span class="rate-when">${fmtInterval(preview[rating].days)}</span>
+    </button>`).join('')}</div>`;
+}
+
 // A kör végén: a gyakorlásban (minden eddigi körében) megtanult szavak, egymás után beúszva
 function renderLearnedNow(p) {
   const sec = document.getElementById('learned-section');
   const list = document.getElementById('learned-list-items');
   const ids = p.learnedNow || [];
+  const ratable = p.ratableIds || [];
   if (sec) sec.hidden = ids.length === 0;
   if (!list || ids.length === 0) return;
   const unit = unitOf();
   const title = document.getElementById('learned-title');
   if (title) title.textContent = `${ids.length} új megtanult ${unit}`;
+  const sub = document.getElementById('learned-sub');
+  if (sub) sub.textContent = ratable.length
+    ? `Mikor kérdezzem vissza? Ha nem választasz, ${fmtInterval(newCardPreview()[GOOD].days).replace(' n', ' nap')} múlva jön.`
+    : 'Bekerültek a megtanultak közé és a JLPT-haladásba.';
   list.innerHTML = ids.map((id, i) => {
     const w = state.words.find(x => x.id === id);
-    return w ? `<li class="re-err re-learned-item" style="--i:${i}">
+    if (!w) return '';
+    const rate = ratable.includes(id) ? learnedRatingHtml(w, (p.learnedRatings || {})[id] || GOOD) : '';
+    return `<li class="re-err re-learned-item${rate ? ' has-rate' : ''}" style="--i:${i}">
       <span class="re-learned-check" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
-      <span class="re-err-word">${escHtml(w.en)}</span><span class="re-err-meaning">${escHtml(w.hu)}</span></li>` : '';
+      <span class="re-err-word">${escHtml(w.en)}</span><span class="re-err-meaning">${escHtml(w.hu)}</span>${rate}</li>`;
   }).join('');
+}
+
+// Az értékelés azonnal érvényes; a gombok helyben váltanak, hogy a lista ne ússzon be újra
+function setLearnedRating(id, rating) {
+  const p = state.practice;
+  const word = state.words.find(w => w.id === id);
+  if (!p || !word || !(p.ratableIds || []).includes(id)) return;
+  rescheduleNewCard(word, rating);
+  if (!p.learnedRatings) p.learnedRatings = {};
+  p.learnedRatings[id] = rating;
+  saveWords();
+  document.querySelectorAll('#learned-list-items .re-rate-btn').forEach(btn => {
+    if (btn.dataset.word === String(id)) btn.setAttribute('aria-pressed', String(Number(btn.dataset.rating) === rating));
+  });
 }
 
 function startPractice() {
@@ -1005,4 +1046,4 @@ function getExampleSentence(word) {
   return { html, hu };
 }
 
-export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, finishSession, finishWriting, getExampleSentence, getSmartDistractors, manualNextQuestion, normalizeRomaji, practiceDir, revealHardcoreAnswer, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation, updatePracticeTop };
+export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, finishSession, finishWriting, getExampleSentence, getSmartDistractors, manualNextQuestion, normalizeRomaji, practiceDir, revealHardcoreAnswer, setLearnedRating, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation, updatePracticeTop };

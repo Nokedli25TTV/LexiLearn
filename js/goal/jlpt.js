@@ -3,10 +3,11 @@
 //
 // Viszonyítás: a JLPT-hez általánosan megadott, halmozott célszámok (N3-hoz összesen kb. 3750 szó
 // és 650 kandzsi). Az N5-N3 szintű szavak együtt számítanak, így a vártnál több N5 szó is előrevisz.
-// Egy szó "megtanult", ha a napi tanulásban már sikerült, vagy szabad gyakorlásban legalább
-// ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást). "Rögzült", ha az ismétlési köze legalább 21 nap.
+// Egy szó "elkezdett", ha a napi tanulásban a "Tudom" után ismétlésre vár. "Megtanult", ha ezután két ismétlésen
+// egymás után tudtad, vagy szabad gyakorlásban ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja
+// a számolást). "Rögzült", ha az ismétlési köze legalább 21 nap.
 import { addDays, dateKey, keyToDate } from '../core/dates.js';
-import { intervalFor } from '../srs/fsrs.js';
+import { AGAIN, HARD, intervalFor } from '../srs/fsrs.js';
 
 const LEVELS = ['N5', 'N4', 'N3'];
 const TARGETS = {
@@ -22,6 +23,7 @@ const DEFAULT_GOAL = { level: 'N3', date: '2027-07-04' };
 const MATURE_DAYS = 21;
 const PACE_WINDOW_DAYS = 14;
 const PRACTICE_LEARNED_CORRECT = 5;
+const REVIEW_LEARNED_PASSES = 2;
 
 const dayDiff = (a, b) => Math.round((keyToDate(b) - keyToDate(a)) / 86400000);
 
@@ -43,6 +45,35 @@ function isPracticeLearned(w) {
 
 function isLearnedWord(w) {
   return !!(w.stats && w.stats.learnedAt) || isPracticeLearned(w);
+}
+
+// V13.27: a napi tanulás "Tudom" gombja csak elkezdi a szót (introducedAt): kap ismétlőkártyát és kikerül az
+// új szavak közül, de megtanult csak akkor lesz, ha fel is tudtad idézni. A learnedAt a megtanulás napja.
+function isStartedWord(w) {
+  return !!(w.stats && w.stats.introducedAt) || isLearnedWord(w);
+}
+
+function isLearningWord(w) {
+  return isStartedWord(w) && !isLearnedWord(w);
+}
+
+// Melyik napi penzumba számít a szó: az elkezdés napja, a V13.27 előtti szavaknál a learnedAt
+function introducedDate(w) {
+  const s = w.stats || {};
+  return s.introducedAt || s.learnedAt || null;
+}
+
+// Ismétlés után: egymás után két Jó vagy Könnyű teszi megtanulttá az elkezdett szót.
+// Az Újra elölről indítja a számolást, a Nehéz nem számít, de nem is nulláz.
+function markReviewLearned(w, rating, today = dateKey(new Date())) {
+  if (!isLearningWord(w)) return false;
+  const s = w.stats;
+  if (rating === AGAIN) { s.reviewPasses = 0; return false; }
+  if (rating === HARD) return false;
+  s.reviewPasses = (s.reviewPasses || 0) + 1;
+  if (s.reviewPasses < REVIEW_LEARNED_PASSES) return false;
+  s.learnedAt = today;
+  return true;
 }
 
 // A küszöb átlépésének dátuma kell a 14 napos tempóhoz és a mérföldkövekhez.
@@ -154,5 +185,5 @@ function getGoal(globalStats) {
 }
 
 export { DEFAULT_GOAL, LEVELS, MATURE_DAYS, PRACTICE_LEARNED_CORRECT, STEPS, TARGETS, backfillPracticeLearned, buildMilestones,
-  crossedMilestones, getGoal, isLearnedWord, isMatureWord, isPracticeLearned, learnedDate, markPracticeLearned, paceFor,
+  crossedMilestones, getGoal, introducedDate, isLearnedWord, isLearningWord, isMatureWord, isPracticeLearned, isStartedWord, learnedDate, markPracticeLearned, markReviewLearned, paceFor,
   srsInterval, trackProgress };

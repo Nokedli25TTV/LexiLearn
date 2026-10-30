@@ -6,7 +6,7 @@ import { appData, currentMode, isCharMode, state, unitOf } from '../core/state.j
 import { saveStats } from '../core/storage.js';
 import { az, escHtml, shuffle } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
-import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordLearned } from './goal.js';
+import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordIntroduced } from './goal.js';
 import { dueForecast, scheduleLearnedWord } from '../srs/schedule.js';
 import { crossedMilestones, isLearnedWord } from '../goal/jlpt.js';
 import { completedLessons, coverageOf, kanjiUnlockStatus } from '../goal/radical-path.js';
@@ -36,12 +36,20 @@ function startLearnSession() {
     roundNumber: 1, roundWords: [], currentIdx: 0, errorList: [],
     roundCorrect: 0, roundWrong: 0, roundStartTime: Date.now(),
     sessionStartTime: Date.now(), sessionCorrect: 0, sessionWrong: 0,
-    jlptBefore: jlptLearnedCount(), // V13.6: mérföldkő-jelzéshez a tanulás végén
-    lessonsBefore: currentMode === 'radicals' ? completedLessons(state.words) : null, // V13.24: kész útvonal-lecke jelzése
-    kanjiReadyBefore: currentMode === 'radicals' ? readyKanjiChars() : null // V13.26: az így megnyílt kandzsik jelzése
+    ...progressBaseline()
   };
   showScreen('practice');
   showLearnCard();
+}
+
+// A kezdeti állapot a tanulás / ismétlés végi jelzésekhez (mérföldkő, kész útvonal-lecke, megnyílt kandzsik).
+// V13.27: megtanulttá az ismétlés tesz, ezért a mérföldkő jellemzően ott következik be.
+function progressBaseline() {
+  return {
+    jlptBefore: jlptLearnedCount(),
+    lessonsBefore: currentMode === 'radicals' ? completedLessons(state.words) : null,
+    kanjiReadyBefore: currentMode === 'radicals' ? readyKanjiChars() : null
+  };
 }
 
 // V13.6: a JLPT sávba számító (N5-N3) megtanult szavak száma a mostani módban
@@ -191,8 +199,9 @@ function resolveLearnCard(known) {
   if (word) {
     if (known) {
       // V13.5: a "Tudom" Jó értékelés; ha közben "Még nem" is volt, előbb Újra (így hamarabb jön vissza)
+      // V13.27: ez csak elkezdi a szót, megtanult két sikeres ismétlés után lesz
       scheduleLearnedWord(word, p.againIds.includes(id));
-      markWordLearned(word);
+      markWordIntroduced(word);
       p.learnedIds.push(id);
     } else {
       // "Még nem megy": vissza a sor végére, amíg egyszer jobbra nem húzod
@@ -224,10 +233,11 @@ function showLearnComplete() {
   qArea.innerHTML = `
     <div class="learn-done">
       <div class="learn-done-badge" aria-hidden="true">✓</div>
-      <h2 class="learn-done-title">${p.learnedIds.length} új ${unitOf()} rögzítve</h2>
+      <h2 class="learn-done-title">${p.learnedIds.length} új ${unitOf()} elkezdve</h2>
       <p class="learn-done-sub">${goalReached
         ? 'A napi limit teljesítve. Az új szavak holnap folytatódnak; addig ismételd a maiakat.'
         : `Napi penzum: ${learnedToday}/${goal}. Még ${remaining} van hátra.`}</p>
+      <p class="review-summary">Két sikeres ismétlés után ${p.learnedIds.length === 1 ? 'számít' : 'számítanak'} megtanultnak.</p>
       <div class="learn-done-meter">
         <div class="goal-bar ${goalReached ? 'is-done' : ''}" style="--p:${pct}"><div class="goal-bar-fill"></div></div>
         <span class="learn-done-streak">Konzisztencia: ${streak} nap</span>
@@ -279,4 +289,4 @@ function startTodayReview() {
   showQuestion();
 }
 
-export { _learnFlipped, flipLearnCard, learnSwipe, resolveLearnCard, showLearnCard, showLearnComplete, speakLearnWord, startLearnSession, startTodayReview };
+export { _learnFlipped, flipLearnCard, learnSwipe, milestoneNoteHtml, progressBaseline, resolveLearnCard, showLearnCard, showLearnComplete, speakLearnWord, startLearnSession, startTodayReview };

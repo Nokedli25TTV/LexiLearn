@@ -1,5 +1,5 @@
-// A Gyakorlás fül három pontozott módjában az ötödik helyes válasz
-// megtanulttá teszi a szót a statisztikában, de nem teszi SRS-kártyává.
+// A Gyakorlás fül három pontozott módjában az ötödik helyes válasz megtanulttá teszi a szót,
+// és (V13.27) ismétlőkártyát is ad neki, hogy visszajöjjön.
 import { expect, it } from 'vitest';
 import { bootApp } from './harness/boot.js';
 
@@ -22,7 +22,7 @@ it('az ötödik helyes klasszikus, gépelős vagy mondatválasz belépteti a sz�
   const expectMastered = word => {
     expect(word.stats.totalCorrect).toBe(5);
     expect(word.stats.practiceLearnedAt).toBe('2026-09-29');
-    expect(word.stats.srs).toBeUndefined();
+    expect(word.stats.srs).toMatchObject({ due: '2026-10-02', reps: 1 });
     expect(api.isLearnedWord(word)).toBe(true);
   };
 

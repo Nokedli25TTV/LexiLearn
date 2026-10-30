@@ -28,7 +28,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.26">
+<link rel="stylesheet" href="style.css?v=13.27">
 </head>
 <body data-screen="home">
 
@@ -214,7 +214,7 @@
     <!-- V13.19: a gyakorlásban megtanult szavak (5 egymás utáni helyes válasz) -->
     <section class="re-learned" id="learned-section" hidden>
       <h2 class="detail-title" id="learned-title">Új megtanult szavak</h2>
-      <p class="re-learned-sub">Bekerültek a megtanultak közé és a JLPT-haladásba.</p>
+      <p class="re-learned-sub" id="learned-sub">Bekerültek a megtanultak közé és a JLPT-haladásba.</p>
       <ul class="re-err-list re-learned-list" id="learned-list-items"></ul>
     </section>
 
@@ -581,17 +581,17 @@
 <div class="toast" id="toast"></div>
 
 <!-- Statikus szótár-adatok (klasszikus scriptek, kézzel szerkeszthetők) -->
-<script src="data.js?v=13.26"></script>
-<script src="japanese_words.js?v=13.26"></script>
-<script src="jlpt_n3_words.js?v=13.26"></script>
-<script src="dekiru.js?v=13.26"></script>
-<script src="dekiru2.js?v=13.26"></script>
-<script src="kanji_data.js?v=13.26"></script>
-<script src="radicals_data.js?v=13.26"></script>
-<script src="japanese_sentences.js?v=13.26"></script>
-<script src="english_sentences2.js?v=13.26"></script>
+<script src="data.js?v=13.27"></script>
+<script src="japanese_words.js?v=13.27"></script>
+<script src="jlpt_n3_words.js?v=13.27"></script>
+<script src="dekiru.js?v=13.27"></script>
+<script src="dekiru2.js?v=13.27"></script>
+<script src="kanji_data.js?v=13.27"></script>
+<script src="radicals_data.js?v=13.27"></script>
+<script src="japanese_sentences.js?v=13.27"></script>
+<script src="english_sentences2.js?v=13.27"></script>
 <!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
-<script src="data-registry.js?v=13.26"></script>
+<script src="data-registry.js?v=13.27"></script>
 
 <!-- V13.3: ES modulok nem futnak file:// alól (duplakattintással megnyitott index.html) -->
 <script>
@@ -607,8 +607,8 @@
 
 <!-- V13.3: az alkalmazás ES modulokként (js/). A main.js a firebase-sync előtt fut,
      hogy az auth / szinkron események hallgatói már feliratkozva legyenek. -->
-<script type="module" src="js/main.js?v=13.26"></script>
-<script type="module" src="firebase-sync.js?v=13.26"></script>
+<script type="module" src="js/main.js?v=13.27"></script>
+<script type="module" src="firebase-sync.js?v=13.27"></script>
 
 </body>
 </html>

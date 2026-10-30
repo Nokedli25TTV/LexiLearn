@@ -81,9 +81,11 @@ Anki-szerű: minden tanult szó `stats.srs` mezőjében él a következő esedé
 A stats-szal együtt mentődik és szinkronizálódik.
 
 - **Algoritmus:** FSRS-5 az alapértelmezett paraméterekkel, 90%-os célzott megtartással, napi felbontással.
-- **Új szó:** a tanuló kártyán a "Tudom" Jó értékelés (első ismétlés 3 nap múlva); ha közben "Még nem" is volt, hamarabb.
+- **Új szó:** a tanuló kártyán a "Tudom" Jó értékelés (első ismétlés 3 nap múlva); ha közben "Még nem" is volt, hamarabb. Ez csak elkezdi a szót (`stats.introducedAt`, Tanulás alatt); ez a dátum számít a napi penzumba.
 - **Ismétlés:** Újra / Nehéz / Jó / Könnyű; az Újra még ma visszajön. Egy alkalom legfeljebb 20 kártya.
-- **Szabad gyakorlás:** az ötödik helyes kvíz- / gépelős / mondatválasznál a szó megtanultnak számít, bekerül az SRS-be és a JLPT-haladásba. Megtanult szónál a hibás válasz holnapra hozza az ismétlést; a helyes válasz nem tolja ki.
+- **Megtanult (napi tanulásból):** két egymás utáni Jó vagy Könnyű ismétlés után (`stats.reviewPasses`, utána `stats.learnedAt`, `markReviewLearned()`). Az Újra nullázza a számolást, a Nehéz nem számít, de nem is nulláz. Csak ismétlésekből ez kb. 2 hét (3 + 11 nap).
+- **Szabad gyakorlás:** az ötödik egymás utáni helyes kvíz- / gépelős / mondat- / hallás válasznál a szó megtanult (`stats.practiceLearnedAt`), bekerül a JLPT-haladásba, és ha még nincs, Jó értékeléssel ismétlőkártyát kap. A kör végén Nehéz / Jó / Könnyű gombbal átállítható (`setLearnedRating()`, 1, 3 vagy 16 nap); ha nem választasz, marad a 3 nap. A szüneteltetett kártya nem jön vissza magától. Kártyás szónál a hibás válasz holnapra hozza az ismétlést; a helyes válasz nem tolja ki. Az 5 találat alatti próbálkozás nem hoz létre kártyát, így egy véletlenül kiválasztott, későbbi lecke szava nem kerül az ismétlésbe.
+- **Gyakorlásból megtanult, kártya nélküli szavak:** a V13.27 előtt ezeknek nem volt kártyájuk. Betöltéskor módonként legfeljebb napi 5-tel, a leginkább felejtettel kezdve beosztja őket (`seedPracticeBacklog()`).
 - **Már tanult szavak:** betöltéskor (és felhő szinkron után) a még ütemezés nélküli tanult szavakat a meglévő
   eredményekből becsülve beosztja; a lemaradtakat napi adagokra (min. 15/nap, legfeljebb 3 hét).
 
@@ -91,9 +93,10 @@ A stats-szal együtt mentődik és szinkronizálódik.
 
 - **Viszonyítás:** a JLPT általános, halmozott célszámai: N5 800 / 100, N4 1500 / 300, N3 3750 / 650 (szó / kandzsi).
   Az N5-N3 szintű szavak együtt számítanak.
-- **Megtanult:** elkezdett szó. **Rögzült:** az ismétlési köz (a stabilitásból, `intervalFor(s)`) legalább 21 nap;
+- **Elkezdett:** a "Tudom" után, ismétlésre vár (`isStartedWord`); kikerül az új szavak közül, a Gyakorlásban "Tanulás alatt". **Megtanult:** lásd az SRS szakaszt (`isLearnedWord`). **Rögzült:** az ismétlési köz (a stabilitásból, `intervalFor(s)`) legalább 21 nap;
   ugyanez a definíció a Statisztika érettség-sávjában és KPI-jában.
-- **Mérföldkövek:** a napi tanulásban sikerült, illetve szabad gyakorlásban ötször egymás után helyesen megválaszolt szavak töltik; az elérés dátuma a k-adik megtanult szó dátuma.
+- **Mérföldkövek:** a megtanult szavak töltik, az elkezdettek nem; az elérés dátuma a k-adik megtanult szó dátuma. A jelzés a tanulás és az ismétlés végén is megjelenik.
+- **Radikálok:** a kandzsik sorrendjéhez és megnyílásához elég az elkezdett radikál (`knownRadicals`), a lecke és a haladás viszont megtanult radikált számol.
 - **Célidőpont:** `appData.japanese.globalStats.jlptGoal` (szinkronizált), alapból 2027-07-04.
 
 ## Kandzsi vonássorrend (KanjiVG)
@@ -181,6 +184,7 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/sw.test.js`** – a service worker előtöltési listája: minden fájl létezik, minden modul benne van.
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
+- **`tests/learned-rule.test.js`, `tests/practice-card.test.js`** – a "Tudom" csak elkezd, két sikeres ismétlés tesz megtanulttá; az ötödik gyakorlási találat kártyát ad, a kör végén értékelhető; a régi szavak napi adagban jönnek.
 - Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).
 - **`tests/cloud-sync.test.js`** – a valódi `firebase-sync.js` a teljes appal, memóriabeli Firestore-ral
   (`tests/fakes/`; a `vitest.config.js` a Firebase CDN importokat ezekre cseréli).

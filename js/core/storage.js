@@ -5,7 +5,7 @@ import { MODES, appData, createEmptyState, currentMode } from './state.js';
 import { renderHome } from '../habit/home.js';
 import { renderDashboard } from '../library/list.js';
 import { setMode } from '../ui/screens.js';
-import { clearPracticeOnlySchedules, seedMissing } from '../srs/schedule.js';
+import { seedMissing, seedPracticeBacklog } from '../srs/schedule.js';
 import { backfillPracticeLearned } from '../goal/jlpt.js';
 import { applyTheme } from '../ui/theme.js';
 
@@ -103,7 +103,7 @@ function remapWordReferences(oldToNew) {
 const RENAMED_WORDS = {
   japanese: { 'ハンがリー': 'ハンガリー', 'ブルがリア': 'ブルガリア', 'がス': 'ガス', 'しゅっえんする': 'しゅつえんする' }
 };
-const hasWordProgress = w => !!(w && (w.bookmarked || w.lessonFocus || (w.stats && (w.stats.lastAttempt || w.stats.learnedAt || w.stats.srs || w.stats.totalCorrect || w.stats.totalWrong))));
+const hasWordProgress = w => !!(w && (w.bookmarked || w.lessonFocus || (w.stats && (w.stats.lastAttempt || w.stats.learnedAt || w.stats.introducedAt || w.stats.srs || w.stats.totalCorrect || w.stats.totalWrong))));
 
 function migrateRenamedWords() {
   const oldToNew = new Map();
@@ -338,7 +338,7 @@ async function renderStorageInfo() {
 // V13.5: a már tanult, de még ütemezés nélküli szavak beosztása (az SRS bevezetésekor egyszer,
 // utána csak ha pl. régi eszközről szinkronizált szó érkezik)
 function seedSrsAll() {
-  let seeded = 0, cleared = 0, backfilled = 0;
+  let seeded = 0, backlog = 0, backfilled = 0;
   MODES.forEach(lang => {
     // V13.17: egyszeri átállás az egymás utáni 5 helyes válasz szabályára (a régi, összesítve
     // megtanult szavak megmaradnak). A jelző a statisztikával együtt a felhőbe is szinkronizálódik.
@@ -347,15 +347,15 @@ function seedSrsAll() {
       backfilled += backfillPracticeLearned(appData[lang].words);
       gs.practiceStreakRule = true;
     }
-    cleared += clearPracticeOnlySchedules(appData[lang].words);
     seeded += seedMissing(appData[lang].words);
+    backlog += seedPracticeBacklog(appData[lang].words); // V13.27: a régi, csak gyakorlásból megtanult szavak
   });
-  if (cleared > 0) console.log(`[LexiLearn] Ismétlési sor javítása: ${cleared} csak gyakorlásból bekerült kártya eltávolítva.`);
   if (seeded > 0) console.log(`[LexiLearn] Ismétlésütemezés: ${seeded} napi tanulásból származó szó beosztva.`);
+  if (backlog > 0) console.log(`[LexiLearn] Ismétlésütemezés: ${backlog} gyakorlásból megtanult szó beosztva, napi adagokban.`);
   if (backfilled > 0) console.log(`[LexiLearn] Átállás: ${backfilled} gyakorlásból már megtanult szó megtartva.`);
-  if (cleared > 0 || seeded > 0 || backfilled > 0) saveWords();
+  if (seeded > 0 || backlog > 0 || backfilled > 0) saveWords();
   if (backfilled > 0) saveStats();
-  return seeded;
+  return seeded + backlog;
 }
 
 function cleanTags() {

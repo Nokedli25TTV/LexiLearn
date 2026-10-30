@@ -53,20 +53,22 @@ function seedMode(mode, { active, perDay, todayCount, lessonsOnly, pendingBias, 
       const w = pool[idx];
       // A tanuló kártya "Tudom" húzása Jó értékelés; utána az ismétlések a saját közük szerint jönnek
       let s = 3.17 * rr(0.92, 1.08), d = rr(3.5, 6.5), reps = 1, lapses = 0, last = t;
+      let passes = 0, learnedT = null; // két egymás utáni sikeres ismétlés teszi megtanulttá
       let dueT = t + Math.max(1, Math.round(s));
       while (dueT <= T) {
         const tr = nextActive(dueT);
         if (tr > T || (tr >= T - 1 && rnd() < pendingBias)) break; // esedékes, még nem ismételte
         const R = log(tr);
-        if (rnd() < 0.09) { R.g++; lapses++; s = Math.max(0.8, s * rr(0.25, 0.45)); d = Math.min(10, d + 0.8); }
-        else { R.k++; s *= rr(1.9, 2.7); d = Math.max(1, d - 0.15); }
+        if (rnd() < 0.09) { R.g++; lapses++; passes = 0; s = Math.max(0.8, s * rr(0.25, 0.45)); d = Math.min(10, d + 0.8); }
+        else { R.k++; passes++; if (passes === 2 && learnedT === null) learnedT = tr; s *= rr(1.9, 2.7); d = Math.max(1, d - 0.15); }
         reps++; last = tr; dueT = tr + Math.max(1, Math.round(s));
       }
       // Egy részük szabad gyakorlásban is előkerült
       const quizzed = rnd() < 0.45;
       const tc = quizzed ? ri(1, 6) : 0, tw = quizzed && rnd() < 0.3 ? ri(1, 2) : 0;
       w.stats = {
-        ...w.stats, learnedAt: keyAt(t), streak: quizzed ? Math.max(1, tc - tw) : 0, totalCorrect: tc, totalWrong: tw,
+        ...w.stats, introducedAt: keyAt(t), reviewPasses: passes, ...(learnedT === null ? {} : { learnedAt: keyAt(learnedT) }),
+        streak: quizzed ? Math.max(1, tc - tw) : 0, totalCorrect: tc, totalWrong: tw,
         lastAttempt: quizzed ? stampAt(Math.min(T, last + ri(0, 2))) : null,
         srs: { due: keyAt(dueT), s: +s.toFixed(2), d: +d.toFixed(2), last: keyAt(last), reps, lapses }
       };
@@ -81,7 +83,7 @@ function seedMode(mode, { active, perDay, todayCount, lessonsOnly, pendingBias, 
     const answers = ri(0, quizMax);
     L.a += answers; L.c += Math.round(answers * rr(0.76, 0.94));
   }
-  const untouched = st.words.filter(w => !w.stats.learnedAt);
+  const untouched = st.words.filter(w => !w.stats.introducedAt);
   for (let i = 0; i < Math.min(14, untouched.length); i++) {
     const w = untouched[Math.floor(rnd() * untouched.length)];
     if (w.stats.practiceLearnedAt) continue;

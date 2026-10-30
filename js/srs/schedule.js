@@ -3,19 +3,20 @@
 //   word.stats.srs = { due: 'YYYY-MM-DD', s: stabilitás, d: nehézség, last: 'YYYY-MM-DD', reps, lapses }
 // A stats-szal együtt mentődik és szinkronizálódik (helyi tár + felhő), külön kezelés nélkül.
 import { addDays, dateKey, keyToDate, todayKey } from '../core/dates.js';
-import { isLearnedWord } from '../goal/jlpt.js';
+import { isPracticeLearned } from '../goal/jlpt.js';
 import { AGAIN, GOOD, W, intervalFor, previewAll, retrievability } from './fsrs.js';
 
 const REVIEW_BATCH_SIZE = 20;       // egy alkalom legfeljebb ennyi kártya (5-15 perces alkalmak)
 const SEED_SPREAD_MAX_DAYS = 21;    // a már tanult szavak beosztása legfeljebb 3 hétre
 const SEED_MIN_PER_DAY = 15;
+const PRACTICE_BACKLOG_PER_DAY = 5; // a régi, csak gyakorlásból megtanult szavak napi adagja (módonként)
 
 const round4 = x => Math.round(x * 10000) / 10000;
 const daysBetween = (fromKey, toKey) => Math.round((keyToDate(toKey) - keyToDate(fromKey)) / 86400000);
 const shiftKey = (key, n) => dateKey(addDays(keyToDate(key), n));
 
 function srsOf(word) { return (word.stats && word.stats.srs) || null; }
-function isDue(word, today = todayKey()) { const s = srsOf(word); return isLearnedWord(word) && !!s && s.due <= today; }
+function isDue(word, today = todayKey()) { const s = srsOf(word); return !!s && s.due <= today; }
 
 // Esedékes szavak: a legrégebben esedékes elöl, azon belül a leginkább felejtett
 function getDueWords(words, today = todayKey()) {
@@ -30,7 +31,7 @@ function dueForecast(words, today = todayKey()) {
   let due = 0, tomorrowCount = 0, week = 0;
   words.forEach(w => {
     const s = srsOf(w);
-    if (!s || !isLearnedWord(w)) return;
+    if (!s) return;
     if (s.due <= today) due++;
     else if (s.due <= weekEnd) { week++; if (s.due === tomorrow) tomorrowCount++; }
   });
@@ -54,39 +55,37 @@ function rateWord(word, rating, today = todayKey()) {
   return word.stats.srs;
 }
 
-// Új szó a tanuló kártyán: a "Tudom" Jó értékelés; ha közben "Még nem" is volt, előbb Újra (még ma)
+// Új kártya: a napi tanulásban a "Tudom", a gyakorlásban az ötödik egymás utáni találat hozza létre.
+// Jó értékelés; ha közben "Még nem" is volt, előbb Újra (még ma)
 function scheduleLearnedWord(word, hadAgain, today = todayKey()) {
   if (word.stats) delete word.stats.srsSuspended;
   if (hadAgain) rateWord(word, AGAIN, today);
   return rateWord(word, GOOD, today);
 }
 
-// Szabad gyakorlásban (kvíz, gépelős, mondat) elrontott, már napi tanulásból
-// ütemezett szó legkésőbb holnap visszajön. A szabad gyakorlás önmagában nem hoz
-// létre SRS-kártyát: így egy véletlenül kiválasztott, későbbi lecke nehéz szava nem
-// kerül be a napi ismétlésbe.
+// V13.27: a gyakorlásban most megtanult szó első értékelése a kör végén (Nehéz / Jó / Könnyű).
+// A kártya már Jó értékeléssel létrejött, ez csak felülírja, mintha most értékelnéd először.
+function rescheduleNewCard(word, rating, today = todayKey()) {
+  if (word.stats) delete word.stats.srs;
+  return rateWord(word, rating, today);
+}
+
+// Egy teljesen új kártya értékeléseinek következménye (a kör végi gombok alatt)
+function newCardPreview() {
+  return previewAll(null, 0);
+}
+
+// Szabad gyakorlásban (kvíz, gépelős, mondat) elrontott, kártyával rendelkező szó legkésőbb
+// holnap visszajön. Kártyát a gyakorlás csak az ötödik egymás utáni találatnál hoz létre: így
+// egy véletlenül kiválasztott, későbbi lecke nehéz szava nem kerül be az ismétlésbe.
 function practiceLapse(word, today = todayKey()) {
   const tomorrow = shiftKey(today, 1);
   const s = srsOf(word);
-  if (!s || !word.stats?.learnedAt) return s;
+  if (!s) return s;
   if (s.due > tomorrow) {
     s.due = tomorrow;
   }
   return word.stats.srs;
-}
-
-// A korábbi működés a csak szabad gyakorlásban ötször eltalált szavakhoz is
-// létrehozott SRS-kártyát. Ezeket betöltéskor eltávolítjuk; a kvízeredmény és a
-// statisztikai „megtanult” állapot megmarad, csak az ismétlési sor tisztul ki.
-function clearPracticeOnlySchedules(words) {
-  let cleared = 0;
-  words.forEach(w => {
-    if (w.stats?.srs && !w.stats.learnedAt) {
-      delete w.stats.srs;
-      cleared++;
-    }
-  });
-  return cleared;
 }
 
 /* ── Már tanult szavak beosztása (az SRS bevezetésekor, és ha szinkronból ütemezés nélküli szó jön) ──
@@ -96,14 +95,14 @@ function clearPracticeOnlySchedules(words) {
    - egymás utáni helyes válaszok: minden további kb. 1,9-szeres köz, a pontossággal súlyozva
    Ami így már esedékes lenne, azt a leginkább felejtettel kezdve napi adagokra osztja (legfeljebb 3 hét). */
 function hasHistory(w) {
-  return !!w.stats?.learnedAt && !w.stats.srsSuspended;
+  return !!(w.stats?.learnedAt || w.stats?.introducedAt) && !w.stats.srsSuspended;
 }
 
 function estimateCard(w, today) {
   const st = w.stats;
   const tc = st.totalCorrect || 0, tw = st.totalWrong || 0, total = tc + tw;
   const acc = total ? tc / total : 1;
-  const lastKey = st.lastAttempt ? dateKey(new Date(st.lastAttempt)) : (st.learnedAt || today);
+  const lastKey = st.lastAttempt ? dateKey(new Date(st.lastAttempt)) : (st.learnedAt || st.introducedAt || today);
   let s;
   if (total === 0) s = W[2];
   else if (!(st.streak > 0)) s = 1;
@@ -125,6 +124,19 @@ function seedMissing(words, today = todayKey()) {
   return cards.length;
 }
 
+// V13.27: a V13.27 előtt csak gyakorlásból megtanult szavaknak nincs kártyájuk, így sosem jöttek vissza.
+// Módonként legfeljebb napi 5-tel, a leginkább felejtettel kezdve kerülnek be, hogy ne torlódjon az ismétlési sor.
+function seedPracticeBacklog(words, today = todayKey()) {
+  const waiting = words.filter(w => w.stats && !w.stats.srs && !w.stats.srsSuspended && !w.stats.learnedAt && !w.stats.introducedAt && isPracticeLearned(w));
+  const cards = waiting.map(w => ({ w, c: estimateCard(w, today) }))
+    .sort((a, b) => retrievability(daysBetween(a.c.last, today), a.c.s) - retrievability(daysBetween(b.c.last, today), b.c.s));
+  cards.forEach((x, i) => {
+    x.c.due = shiftKey(today, Math.floor(i / PRACTICE_BACKLOG_PER_DAY));
+    x.w.stats.srs = x.c;
+  });
+  return cards.length;
+}
+
 // "ma", "1 n", "12 n", "3 hó", "1,5 év"
 function fmtInterval(days) {
   if (days <= 0) return 'ma';
@@ -133,5 +145,5 @@ function fmtInterval(days) {
   return `${(Math.round(days / 36.5) / 10).toLocaleString('hu-HU')} év`;
 }
 
-export { REVIEW_BATCH_SIZE, clearPracticeOnlySchedules, daysBetween, dueForecast, fmtInterval, getDueWords, hasHistory, isDue, practiceLapse,
-  previewWord, rateWord, scheduleLearnedWord, seedMissing, shiftKey, srsOf };
+export { PRACTICE_BACKLOG_PER_DAY, REVIEW_BATCH_SIZE, daysBetween, dueForecast, fmtInterval, getDueWords, hasHistory, isDue, newCardPreview, practiceLapse,
+  previewWord, rateWord, rescheduleNewCard, scheduleLearnedWord, seedMissing, seedPracticeBacklog, shiftKey, srsOf };
