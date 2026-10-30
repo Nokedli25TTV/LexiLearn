@@ -2282,7 +2282,9 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .dock-settings .chip.is-selected { background: var(--primary-dim); }
 .chip-grid-flat { padding: 0; }
 
-/* Asztalon: két hasáb, a dokk ragadós oldalpanel, a beállítások mindig nyitva */
+/* Asztalon: két hasáb, a dokk ragadós oldalpanel, a beállítások mindig nyitva.
+   V13.29: a panel sosem magasabb a képernyőnél (tableten fekve sem): a beállítások a panelen belül
+   görgethetők, a kijelölés és az Indítás sáv mindig látszik alul, a lebegő navigáció fölött. */
 @media (min-width: 961px) {
   .lib { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; align-items: start; padding-top: 32px; }
   .lib-aside { position: sticky; top: 84px; }
@@ -2297,9 +2299,21 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     box-shadow: var(--shadow);
+    max-height: calc(100vh - 84px - var(--nav-h) - 36px - var(--safe-b));
+    max-height: calc(100dvh - 84px - var(--nav-h) - 36px - var(--safe-b));
   }
   .practice-dock .dock-settings,
-  .practice-dock.is-open .dock-settings { display: block; max-height: none; overflow: visible; border-bottom-color: var(--border); animation: none; }
+  .practice-dock.is-open .dock-settings {
+    display: block;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-bottom-color: var(--border);
+    animation: none;
+  }
+  .dock-bar { flex: none; }
   .dock-settings-btn { display: none; }
   .dock-bar { padding: 12px 12px 12px 18px; }
   .dock-start { flex: 1; justify-content: center; }
