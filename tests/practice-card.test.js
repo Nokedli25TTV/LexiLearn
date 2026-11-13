@@ -36,20 +36,22 @@ it('az ötödik találat kártyát ad, ami a kör végén átállítható, a ré
     api.checkAnswer(null, w.hu, w.hu);
   });
 
-  // Az új kártya azonnal létrejön (kilépéskor sem vész el), a meglévőhöz nem nyúl
+  // Az új kártya azonnal létrejön (kilépéskor sem vész el); a "Tudom" kártyáját is felváltja (V13.30),
+  // csak a kézzel szüneteltetetthez nem nyúl
   expect(fresh.stats.practiceLearnedAt).toBe(TODAY);
   expect(fresh.stats.srs.due).toBe('2026-10-02');
-  expect(started.stats.srs).toEqual(startedCard);
+  expect(started.stats.srs.due).toBe('2026-10-02');
+  expect(started.stats.srs.last).toBe(TODAY);
   expect(paused.stats.srs).toBeUndefined();
   expect(paused.stats.srsSuspended).toBe(true);
-  expect(ja.practice.ratableIds).toEqual([fresh.id]);
+  expect(ja.practice.ratableIds).toEqual([fresh.id, started.id]);
 
-  // Kör vége: mind a három megtanult, de csak az új kártya értékelhető, alapból Jó
+  // Kör vége: mind a három megtanult, a két kártyás értékelhető, alapból Jó
   api.showRoundEnd();
   const list = doc.getElementById('learned-list-items');
   expect(list.querySelectorAll('.re-learned-item')).toHaveLength(3);
-  expect(list.querySelectorAll('.re-rate')).toHaveLength(1);
-  const buttons = () => [...list.querySelectorAll('.re-rate-btn')];
+  expect(list.querySelectorAll('.re-rate')).toHaveLength(2);
+  const buttons = () => [...list.querySelectorAll('.re-rate-btn')].filter(b => b.dataset.word === String(fresh.id));
   const pressed = () => buttons().filter(b => b.getAttribute('aria-pressed') === 'true').map(b => b.querySelector('.rate-label').textContent);
   expect(buttons().map(b => [...b.children].map(c => c.textContent).join(' '))).toEqual(['Nehéz 1 n', 'Jó 3 n', 'Könnyű 16 n']);
   expect(pressed()).toEqual(['Jó']);
@@ -62,9 +64,11 @@ it('az ötödik találat kártyát ad, ami a kör végén átállítható, a ré
   expect(fresh.stats.srs.due).toBe('2026-09-30');
   expect(pressed()).toEqual(['Nehéz']);
 
-  // Csak a kör saját, új kártyája állítható át
+  // A korábban Tanulás alatt álló szó is átállítható; a szüneteltetett nem
   win.setLearnedRating(started.id, 4);
-  expect(started.stats.srs).toEqual(startedCard);
+  expect(started.stats.srs.due).toBe('2026-10-15');
+  win.setLearnedRating(paused.id, 4);
+  expect(paused.stats.srs).toBeUndefined();
 
   // Újrarajzoláskor (következő kör vége) a választás megmarad, és a hiba holnapra hozza a szót
   api.showRoundEnd();

@@ -21,7 +21,7 @@ import { hasKatakana, romajiToHiragana, toKatakana } from '../core/romaji.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { GOOD, EASY, HARD } from '../srs/fsrs.js';
-import { fmtInterval, newCardPreview, practiceLapse, rescheduleNewCard, scheduleLearnedWord } from '../srs/schedule.js';
+import { fmtInterval, newCardPreview, practiceLapse, rescheduleNewCard } from '../srs/schedule.js';
 
 /* ══════════════════════════════════════════════════════
    PRACTICE LOGIC (V6.7: SZEM IKON + MONDAT MOTOR)
@@ -37,8 +37,9 @@ const learnedHold = () => (_learnedHold ? LEARNED_HOLD_MS : 0);
 const UNSCORED_TYPES = ['flashcard3d', 'sentenceBuild'];
 
 // Az ötödik helyes szabad gyakorlóválasznál a szó belép a JLPT-haladásba.
-// V13.27: ha még nincs ismétlőkártyája, most kap egyet Jó értékeléssel, így akkor is visszajön,
-// ha kilépsz a körből; a kör végén Nehéz / Jó / Könnyű gombbal átállítható.
+// V13.27: most kap egy új ismétlőkártyát Jó értékeléssel, így akkor is visszajön, ha kilépsz a körből;
+// a kör végén Nehéz / Jó / Könnyű gombbal átállítható. V13.30: a napi tanulásból még Tanulás alatt álló
+// szónál is (a "Tudom" kártyáját felváltja), csak a kézzel szüneteltetett kártyához nem nyúl.
 // Ha a „Még nem tanult” vagy „Tanulás alatt” szűrővel jelölted ki a szavakat, a megtanult szó kikerül a
 // kijelölésből is (a listából már eltűnik), így a dokk számlálója vele együtt csökken.
 // V13.19: a kártyán azonnal jelezzük, és a gyakorlás végén (meg az előzményekben) felsoroljuk.
@@ -46,12 +47,12 @@ function registerPracticeMastery(word, isCorrect) {
   if (!isCorrect || !markPracticeLearned(word)) return;
   if (['new', 'learning'].includes(statusFilter())) state.selectedIds.delete(word.id);
   const p = state.practice;
-  const needsCard = !word.stats.srs && !word.stats.srsSuspended;
-  if (needsCard) scheduleLearnedWord(word, false);
+  const ratable = !word.stats.srsSuspended;
+  if (ratable) rescheduleNewCard(word, GOOD);
   if (p) {
     if (!p.learnedNow) p.learnedNow = [];
     if (!p.learnedNow.includes(word.id)) p.learnedNow.push(word.id);
-    if (needsCard) {
+    if (ratable) {
       if (!p.ratableIds) p.ratableIds = [];
       if (!p.ratableIds.includes(word.id)) p.ratableIds.push(word.id);
     }
