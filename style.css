@@ -1513,6 +1513,42 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 }
 .review-reveal:active { transform: scale(0.97); }
 
+/* V13.31: gépelős és választós ismétlés. A válasz előtt a kérdés (mező vagy négy gomb), utána ugyanott marad
+   a válaszod (letiltva), alatta az eredmény: helyesnél Nehéz / Jó / Könnyű, hibásnál Tovább (Újra). */
+.review-controls.is-answer { display: flex; flex-direction: column; gap: 12px; }
+.review-controls.is-answer > * { grid-area: auto; }
+.review-ask { display: flex; flex-direction: column; gap: 10px; }
+.review-input {
+  width: 100%; min-height: 54px; padding: 0 16px;
+  border: 1px solid var(--border); border-radius: 16px; background: var(--surface); color: var(--text);
+  font: 700 18px 'Nunito', sans-serif; /* 16px felett: iOS nem nagyít rá */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.review-input::placeholder { color: var(--text-3); }
+.review-input:focus { outline: none; border-color: var(--primary-h); box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary-h) 22%, transparent); }
+.review-input:disabled { color: var(--text-2); background: var(--surface-2); }
+.review-ask .kana-preview { min-height: 0; margin-top: -2px; text-align: center; }
+.review-ask .dont-know { width: auto; align-self: center; min-height: 44px; }
+.review-controls.is-answered .review-ask .review-reveal-row,
+.review-controls.is-answered .review-ask .dont-know { display: none; }
+.review-options { margin-bottom: 0; }
+.review-options .opt-btn { min-height: 52px; }
+.review-options .opt-btn:disabled { cursor: default; }
+.review-options .opt-btn.is-picked { border-color: var(--text-3); background: var(--surface-2); color: var(--text-2); }
+.review-after { display: none; }
+.review-controls.is-answered .review-after { display: flex; flex-direction: column; gap: 10px; }
+.review-verdict { text-align: center; font-size: 15px; font-weight: 800; color: var(--text-2); }
+.review-verdict.is-pass { color: var(--success); }
+.review-rate.is-three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.review-controls.is-miss .review-rate { display: none; }
+.review-miss { display: none; }
+.review-controls.is-miss .review-miss { display: grid; gap: 4px; }
+.review-next-note { display: block; margin-top: 2px; font-size: 12px; font-weight: 700; }
+.learn-meaning.review-prompt { margin-top: 0; font-size: 28px; }
+/* Gépelésnél és választásnál alacsonyabb kártya: alatta a mező (és a billentyűzet) vagy a négy gomb is elfér */
+.review-stage.is-answering .learn-card { height: min(40vh, 330px); min-height: 230px; }
+.review-controls.is-answered .kana-preview { display: none; }
+
 .review-rate { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .rate-btn {
   min-height: 60px;
@@ -1728,6 +1764,10 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
   transition: background-color 0.2s, color 0.2s;
 }
 .segmented button.active { background: var(--seg-active); color: var(--text); box-shadow: 0 1px 6px rgba(0, 0, 0, 0.14); }
+/* V13.31: hosszabb címkék (Ismétlés módja): mobilon 2×2, szélesebb képernyőn egy sorban */
+.segmented-wrap { flex-wrap: wrap; }
+.segmented-wrap button { flex: 1 1 40%; font-size: 15px; }
+@media (min-width: 560px) { .segmented-wrap button { flex-basis: 0; } }
 
 .pf-toggle {
   width: 100%;
@@ -2545,6 +2585,17 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 
 /* Tudás-érettség: 20px-es sáv, 2px felületrés a szakaszok közt, jobb vége lekerekített */
 .mat-bar { display: flex; gap: 2px; height: 20px; }
+/* V13.31: megtartási arány: soronként érték és sáv, a függőleges jel a 90%-os cél */
+.ret-list { display: flex; flex-direction: column; gap: 16px; }
+.ret-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.ret-name { font-size: 14px; font-weight: 700; color: var(--text-2); }
+.ret-val { font-size: 18px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; }
+.ret-row.is-total .ret-name { color: var(--text); font-weight: 800; }
+.ret-row.is-total .ret-val { font-size: 26px; }
+.ret-bar { position: relative; height: 10px; border-radius: 999px; background: var(--hm-0); }
+.ret-bar i { display: block; height: 100%; width: calc(var(--p) * 100%); border-radius: inherit; background: var(--viz-line); }
+.ret-bar b { position: absolute; top: -4px; bottom: -4px; left: calc(var(--p) * 100%); width: 2px; margin-left: -1px; border-radius: 1px; background: var(--text-2); }
+.ret-count { display: block; margin-top: 6px; font-size: 12px; font-weight: 600; color: var(--text-3); font-variant-numeric: tabular-nums; }
 .mat-seg { flex-basis: 0; min-width: 4px; height: 100%; transition: filter 0.12s; }
 .mat-seg:last-child { border-radius: 0 4px 4px 0; }
 .mat-seg:hover { filter: brightness(1.12); }

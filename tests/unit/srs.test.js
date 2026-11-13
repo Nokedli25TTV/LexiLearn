@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { AGAIN, HARD, GOOD, EASY, intervalFor, initDifficulty, nextState, previewAll, retrievability } from '../../js/srs/fsrs.js';
 import {
-  dueForecast, fmtInterval, getDueWords, newCardPreview, practiceLapse, previewWord, rateWord, rescheduleNewCard, seedPracticeBacklog,
+  cardInterval, dueForecast, fmtInterval, getDueCards, getDueWords, newCardPreview, practiceLapse, previewWord, rateWord, rescheduleNewCard, seedPracticeBacklog, seedReverseCards,
   scheduleLearnedWord, seedMissing
 } from '../../js/srs/schedule.js';
 
@@ -155,5 +155,36 @@ describe('már tanult szavak beosztása', () => {
     expect(w.stats.srs.reps).toBe(1);
     rescheduleNewCard(w, 4, TODAY);
     expect(w.stats.srs).toMatchObject({ due: '2026-10-15', reps: 1, lapses: 0 });
+  });
+});
+
+describe('fordított kártyák (V13.31)', () => {
+  const stable = (id, s) => word(id, { learnedAt: '2026-08-01', srs: { due: '2026-10-20', s, d: 5, last: '2026-09-20', reps: 3, lapses: 0 } });
+  it('csak a 7+ napos közű, megtanult szó kap, naponta legfeljebb 5, a legstabilabbal kezdve', () => {
+    const words = [stable('a', 40), stable('b', 3), ...Array.from({ length: 6 }, (_, i) => stable(`s${i}`, 10 + i))];
+    words.push(word('elkezdett', { introducedAt: '2026-09-20', srs: { due: '2026-10-20', s: 40, d: 5, last: '2026-09-20' } }));
+    words.push(word('szunet', { learnedAt: '2026-08-01', srs: { due: '2026-10-20', s: 40, d: 5, last: '2026-09-20' }, srsRevSuspended: true }));
+    const gs = {};
+    expect(seedReverseCards(words, gs, TODAY)).toBe(5);
+    const got = words.filter(w => w.stats.srsRev).map(w => w.id);
+    expect(got).toEqual(['a', 's2', 's3', 's4', 's5']);
+    expect(gs.reverseSeeded).toEqual({ day: TODAY, n: 5 });
+    expect(seedReverseCards(words, gs, TODAY)).toBe(0);              // a mai keret elfogyott
+    expect(seedReverseCards(words, gs, '2026-09-30')).toBe(2);       // holnap a maradék két alkalmas szó
+    expect(words.find(w => w.id === 'b').stats.srsRev).toBeUndefined();
+    expect(words.find(w => w.id === 'elkezdett').stats.srsRev).toBeUndefined();
+    expect(words.find(w => w.id === 'szunet').stats.srsRev).toBeUndefined();
+  });
+  it('a fordított kártya saját ütemezéssel, új kártyaként indul, és a sorba is bekerül', () => {
+    const w = stable('x', 30);
+    seedReverseCards([w], {}, TODAY);
+    expect(cardInterval(w, true)).toBe(0);
+    expect(getDueCards([w], TODAY)).toEqual([{ word: w, rev: true }]);
+    expect(previewWord(w, TODAY, true)[3].days).toBe(3); // új kártya: Jó = 3 nap
+    rateWord(w, 1, TODAY, true);
+    expect(w.stats.srsRev.lapses).toBe(0); // az első Újra nem visszaesés
+    rateWord(w, 3, TODAY, true);
+    expect(w.stats.srs.due).toBe('2026-10-20');
+    expect(dueForecast([w], TODAY).due).toBe(0);
   });
 });

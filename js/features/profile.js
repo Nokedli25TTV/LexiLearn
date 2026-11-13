@@ -2,7 +2,7 @@
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { currentMode, MODE_LABELS, state, unitOf } from '../core/state.js';
 import { renderStorageInfo, saveStats } from '../core/storage.js';
-import { REVIEW_BATCH_OPTIONS, getDailyGoal, getReviewBatch } from '../habit/goal.js';
+import { REVIEW_BATCH_OPTIONS, REVIEW_STYLES, getDailyGoal, getReviewBatch, getReviewStyle } from '../habit/goal.js';
 import { canMixWithMusic, isMixWithMusic, setMixWithMusic } from '../practice/tts.js';
 import { renderReminder } from './reminder.js';
 import { toggleViewportDebug } from '../ui/viewport-fix.js';
@@ -18,6 +18,7 @@ function renderProfile() {
   });
   const modeLbl = document.getElementById('pf-goal-mode');
   if (modeLbl) modeLbl.textContent = MODE_LABELS[currentMode];
+  renderReviewStyle();
   const batch = getReviewBatch();
   document.querySelectorAll('#review-segmented [data-batch]').forEach(btn => {
     const isActive = Number(btn.dataset.batch) === batch;
@@ -62,6 +63,34 @@ function setReviewBatch(n) {
   showToast(`Ismétlés (${MODE_LABELS[currentMode]}): egyszerre legfeljebb ${n} kártya`);
 }
 
+// V13.31: az ismétlés módja (módonként, szinkronizált)
+const REVIEW_STYLE_TEXT = {
+  type: 'Be kell írnod a jelentést. Az ékezet, a kis elírás és az írásjel nem számít, több jelentésből egy is elég. Ha mégis hibának venné, az „Elírás volt, tudtam” gombbal javíthatod.',
+  choice: 'Négy lehetőség közül választasz. Gyorsabb, de a felismerés könnyebb, mint a felidézés.',
+  self: 'Megnézed a jelentést, és te döntöd el, mennyire ment (Újra / Nehéz / Jó / Könnyű).',
+  mixed: 'Kártyánként váltakozik a gépelés, a választás és az önértékelés.'
+};
+const REVIEW_STYLE_LABEL = { type: 'gépelés', choice: 'választós', self: 'önértékelés', mixed: 'vegyes' };
+function renderReviewStyle() {
+  const style = getReviewStyle();
+  document.querySelectorAll('#review-style-segmented [data-style]').forEach(btn => {
+    const isActive = btn.dataset.style === style;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-checked', isActive ? 'true' : 'false');
+  });
+  const mode = document.getElementById('pf-rstyle-mode');
+  if (mode) mode.textContent = MODE_LABELS[currentMode];
+  const text = document.getElementById('pf-rstyle-text');
+  if (text) text.textContent = REVIEW_STYLE_TEXT[style];
+}
+function setReviewStyle(style) {
+  if (!REVIEW_STYLES.includes(style)) return;
+  state.globalStats.reviewStyle = style;
+  saveStats();
+  renderReviewStyle();
+  showToast(`Ismétlés (${MODE_LABELS[currentMode]}): ${REVIEW_STYLE_LABEL[style]}`);
+}
+
 // V13.18: Zene mellett kapcsoló (csak ahol a böngésző ismeri az Audio Session API-t)
 function renderMixAudio() {
   const sw = document.getElementById('mix-audio-switch');
@@ -89,4 +118,4 @@ function setDailyGoal(n) {
   showToast(`Napi cél (${MODE_LABELS[currentMode]}): ${n} új ${unitOf()}`);
 }
 
-export { APP_VERSION, renderMixAudio, renderProfile, setDailyGoal, setReviewBatch, tapVersion, toggleMixAudio };
+export { APP_VERSION, renderMixAudio, renderProfile, setDailyGoal, setReviewBatch, setReviewStyle, tapVersion, toggleMixAudio };

@@ -10,6 +10,8 @@ it('a Tudom csak elkezdi a szót, két sikeres ismétlés teszi megtanulttá', a
   const { api, win } = await bootApp();
   for (let i = 0; i < 200 && !win.appData.japanese.words.length; i++) await wait(10);
   api.setMode('japanese');
+  win.appData.japanese.globalStats.reviewStyle = 'self'; // V13.31: ez a teszt az önértékelős menetet nézi
+  win.appData.japanese.globalStats.reverseSeeded = { day: TODAY, n: 99 }; // fordított kártya nélkül
   const doc = win.document;
   const ja = win.appData.japanese;
   ja.globalStats.dailyGoal = 500;

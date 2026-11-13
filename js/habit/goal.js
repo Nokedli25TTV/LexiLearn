@@ -138,7 +138,16 @@ const ACTIVE_BREAK_S = 180;
 const DAILY_LOG_MAX_DAYS = 400;
 let _lastActivityTs = 0;
 
-function logActivity({ correct = null, known = null } = {}) {
+// V13.31: az ismétlés módja (módonként, szinkronizált): gépelés (alap), választós, önértékelés vagy vegyes
+const REVIEW_STYLES = ['type', 'choice', 'self', 'mixed'];
+function getReviewStyle() {
+  const s = state.globalStats.reviewStyle;
+  return REVIEW_STYLES.includes(s) ? s : 'type';
+}
+
+// review: egy kártya első értékelése ma ({ passed, mature }); r / rp: összes / elsőre tudott, rm / rmp: ugyanez
+// a rögzült (21+ napos közű) kártyákra. Ebből lesz a Statisztika megtartási aránya.
+function logActivity({ correct = null, known = null, review = null } = {}) {
   const gs = state.globalStats;
   if (!gs.daily) gs.daily = {};
   const key = todayKey();
@@ -146,6 +155,11 @@ function logActivity({ correct = null, known = null } = {}) {
   const d = gs.daily[key] || (gs.daily[key] = { a: 0, c: 0, k: 0, g: 0, s: 0 });
   if (correct !== null) { d.a++; if (correct) d.c++; }
   if (known !== null) { if (known) d.k++; else d.g++; }
+  if (review) {
+    d.r = (d.r || 0) + 1;
+    if (review.passed) d.rp = (d.rp || 0) + 1;
+    if (review.mature) { d.rm = (d.rm || 0) + 1; if (review.passed) d.rmp = (d.rmp || 0) + 1; }
+  }
 
   const now = Date.now();
   const gap = (now - _lastActivityTs) / 1000;
@@ -166,4 +180,4 @@ function markWordIntroduced(word) {
   saveStats();
 }
 
-export { _lastActivityTs, ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords, hasPoolFilters, isNewWord, LEARN_BATCH_SIZE, logActivity, markWordIntroduced, REVIEW_BATCH_OPTIONS };
+export { _lastActivityTs, ACTIVE_BREAK_S, ACTIVE_GAP_CAP_S, DAILY_LOG_MAX_DAYS, DEFAULT_DAILY_GOAL, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords, hasPoolFilters, isNewWord, LEARN_BATCH_SIZE, logActivity, markWordIntroduced, REVIEW_BATCH_OPTIONS, REVIEW_STYLES, getReviewStyle };

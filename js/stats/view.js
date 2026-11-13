@@ -6,7 +6,7 @@ import { escHtml } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { getDailyGoal } from '../habit/goal.js';
 import { PRACTICE_LEARNED_CORRECT, isLearnedWord, isLearningWord, isPracticeLearned } from '../goal/jlpt.js';
-import { accuracyOf, activityLevel, buildDailyIndex, computeMaturity, weekFocusSeconds } from './model.js';
+import { RETENTION_TARGET, accuracyOf, activityLevel, buildDailyIndex, computeMaturity, computeRetention, weekFocusSeconds } from './model.js';
 import { renderJlptCard } from '../goal/view.js';
 import { renderWeekLink } from './week.js';
 
@@ -51,6 +51,7 @@ function renderStats() {
   renderKpis(idx, goal);
   renderConsistencyHeatmap(idx, goal);
   renderMaturity();
+  renderRetention(idx);
   renderStreakProgress();
   renderAccuracyChart(idx);
   renderFocusChart(idx);
@@ -221,6 +222,37 @@ function renderStreakProgress() {
   }).join('');
   host.innerHTML = `<div class="sp-list">${rows}</div>
     <p class="viz-caption">${fmtNum(inProgress.length)} ${unit} félúton. Koppints egy sorra a szavakért.</p>`;
+}
+
+// V13.31: megtartási arány: az esedékes ismétlések közül mennyit tudtál elsőre; a vonal az ütemezés célja (90%)
+function renderRetention(idx) {
+  const host = document.getElementById('retention');
+  if (!host) return;
+  const m = computeRetention(idx);
+  setText('viz-ret-note', m.total ? `${fmtNum(m.total)} ismétlés · az első válasz számít` : '');
+  if (!m.total) {
+    host.innerHTML = vizEmpty('Az első ismétlések után itt látod, a szavak hány százalékát tudod, amikor esedékesek. Mostantól gyűlik.');
+    setHtml('retention-table', '');
+    return;
+  }
+  const pct = (p, n) => (n ? Math.round(p / n * 100) : null);
+  const target = Math.round(RETENTION_TARGET * 100);
+  const rows = [
+    ['Összesen', m.passed, m.total, true],
+    ['Friss kártyák', m.young.p, m.young.n, false],
+    ['Rögzült kártyák', m.mature.p, m.mature.n, false]
+  ];
+  host.innerHTML = `<div class="ret-list">${rows.map(([label, p, n, total]) => {
+    const v = pct(p, n);
+    return `<div class="ret-row${total ? ' is-total' : ''}">
+      <div class="ret-head"><span class="ret-name">${label}</span><span class="ret-val">${v === null ? '–' : `${v}%`}</span></div>
+      <div class="ret-bar" role="img" aria-label="${label}: ${v === null ? 'még nincs adat' : `${v}%, ${n} ismétlésből`}; cél ${target}%"><i style="--p:${v === null ? 0 : v / 100}"></i><b style="--p:${RETENTION_TARGET}"></b></div>
+      <span class="ret-count">${n ? `${fmtNum(p)} / ${fmtNum(n)} elsőre` : 'Még nincs ilyen ismétlés'}</span>
+    </div>`;
+  }).join('')}</div>
+  <p class="viz-caption">A vonal a ${target}%-os cél: erre ütemez az ismétlés. Ha tartósan alatta vagy, kevesebb új szó kell; ha jóval fölötte, bírnál többet. Friss: 21 napnál rövidebb ismétlési köz.</p>`;
+  setHtml('retention-table', dataTable(['', 'Elsőre tudtad', 'Ismétlés', 'Arány'],
+    rows.map(([label, p, n]) => [label, fmtNum(p), fmtNum(n), n ? `${pct(p, n)}%` : '–'])));
 }
 
 function renderMaturity() {

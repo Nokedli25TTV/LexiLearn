@@ -18,6 +18,8 @@ import { _currentTTSAudio, setTtsOnEnd, speakWord } from './tts.js';
 import { initWriting, isWritingCorrect, resetWritingOutline, writingHtml } from './writing.js';
 import { buildableSentences, initSentenceBuild, sentenceBuildHtml } from './sentence-build.js';
 import { hasKatakana, romajiToHiragana, toKatakana } from '../core/romaji.js';
+import { checkJapanese, checkMeaning } from '../core/answer.js';
+import { wordWriting } from '../features/kanji-links.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { GOOD, EASY, HARD } from '../srs/fsrs.js';
@@ -697,14 +699,6 @@ function checkSentenceAnswer(btn, chosen) {
   }
 }
 
-function normalizeRomaji(str) {
-  if (!str) return "";
-  let s = str.toLowerCase().trim();
-  s = s.replace(/[\s\-]/g, '');
-  s = s.replace(/ou/g, 'o').replace(/oo/g, 'o').replace(/ō/g, 'o').replace(/uu/g, 'u').replace(/ū/g, 'u').replace(/aa/g, 'a').replace(/ā/g, 'a').replace(/ii/g, 'i').replace(/ī/g, 'i').replace(/ee/g, 'e').replace(/ē/g, 'e');
-  s = s.replace(/([bcdfghjklmnpqrstvwxyz])\1/g, '$1');
-  return s;
-}
 
 function checkHardcoreAnswer(wordId) {
   const p = state.practice;
@@ -721,13 +715,11 @@ function checkHardcoreAnswer(wordId) {
   const isEnHu = practiceDir() === 'en-hu';
   const correctText = isEnHu ? word.hu : word.en;
   
-  let isCorrect = (userAnswer.toLowerCase() === correctText.toLowerCase());
-  
-  if (!isEnHu && !isCorrect && word.romaji) {
-    const normUser = normalizeRomaji(userAnswer);
-    const normCorrect = normalizeRomaji(word.romaji);
-    if (normUser === normCorrect) isCorrect = true;
-  }
+  // V13.31: hibatűrő ellenőrzés (ékezet, írásjel, névelő, egy jelentés a többől, kis elírás; japánnál kana,
+  // kandzsi vagy romaji, a hosszú magánhangzó mindegy)
+  const isCorrect = (isEnHu ? checkMeaning(userAnswer, word.hu, 'hu')
+    : currentMode === 'english' ? checkMeaning(userAnswer, word.en, 'en')
+    : checkJapanese(userAnswer, { kana: word.en, writing: currentMode === 'japanese' ? wordWriting(word) : null, romaji: word.romaji })).ok;
 
   if (feedbackEl) feedbackEl.style.display = 'block';
   const romajiAdd = (!isEnHu && word.romaji) ? `(${word.romaji})` : '';
@@ -1047,4 +1039,4 @@ function getExampleSentence(word) {
   return { html, hu };
 }
 
-export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, finishSession, finishWriting, getExampleSentence, getSmartDistractors, manualNextQuestion, normalizeRomaji, practiceDir, revealHardcoreAnswer, setLearnedRating, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation, updatePracticeTop };
+export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, finishSession, finishWriting, getExampleSentence, getSmartDistractors, manualNextQuestion, practiceDir, revealHardcoreAnswer, setLearnedRating, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, updateKanaPreview, toggleEye, toggleSentenceTranslation, updatePracticeTop };

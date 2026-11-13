@@ -1,6 +1,6 @@
 // LexiLearn – stats/model.js
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
-import { addDays, dateKey, parseHuDateKey, startOfWeek } from '../core/dates.js';
+import { addDays, dateKey, lastNDays, parseHuDateKey, startOfWeek } from '../core/dates.js';
 import { state } from '../core/state.js';
 import { isNewWord } from '../habit/goal.js';
 import { introducedDate } from '../goal/jlpt.js';
@@ -14,12 +14,13 @@ import { MATURE_DAYS, srsInterval } from '../goal/jlpt.js';
 function buildDailyIndex(src = state) {
   const gs = src.globalStats;
   const idx = {};
-  const entry = k => idx[k] || (idx[k] = { a: 0, c: 0, k: 0, g: 0, s: 0, n: 0, studied: false });
+  const entry = k => idx[k] || (idx[k] = { a: 0, c: 0, k: 0, g: 0, s: 0, n: 0, r: 0, rp: 0, rm: 0, rmp: 0, studied: false });
   const since = gs.dailySince || '9999-12-31';
 
   Object.entries(gs.daily || {}).forEach(([key, d]) => {
     const e = entry(key);
     e.a += d.a || 0; e.c += d.c || 0; e.k += d.k || 0; e.g += d.g || 0; e.s += d.s || 0;
+    e.r += d.r || 0; e.rp += d.rp || 0; e.rm += d.rm || 0; e.rmp += d.rmp || 0;
   });
   (gs.sessionHistory || []).forEach(h => {
     const key = parseHuDateKey(h.date);
@@ -79,4 +80,16 @@ function accuracyOf(words) {
   return { c, t, pct: t > 0 ? Math.round(c / t * 100) : null };
 }
 
-export { accuracyOf, activityLevel, buildDailyIndex, computeMaturity, weekFocusSeconds };
+/* ── V13.31: megtartási arány ──
+   Az esedékes ismétlések közül mennyit tudtál elsőre (nem Újra), az utolsó RETENTION_DAYS napban, külön a friss
+   (21 napnál rövidebb közű) és a rögzült kártyákra. Az ütemezés (FSRS) 90%-ra céloz. A V13.31 előtti ismétlésekről
+   nincs ilyen adat, ezért mostantól gyűlik. */
+const RETENTION_DAYS = 30;
+const RETENTION_TARGET = 0.9;
+function computeRetention(idx, days = RETENTION_DAYS) {
+  let r = 0, rp = 0, rm = 0, rmp = 0;
+  lastNDays(days).forEach(k => { const e = idx[k]; if (e) { r += e.r; rp += e.rp; rm += e.rm; rmp += e.rmp; } });
+  return { total: r, passed: rp, young: { n: r - rm, p: rp - rmp }, mature: { n: rm, p: rmp } };
+}
+
+export { RETENTION_DAYS, RETENTION_TARGET, accuracyOf, activityLevel, buildDailyIndex, computeMaturity, computeRetention, weekFocusSeconds };

@@ -82,7 +82,8 @@ function openReviewQueue() {
   const suspendedHtml = suspended.length
     ? `<details class="inspect-suspended"><summary>Szüneteltetett kártyák (${fmtNum(suspended.length)})</summary><ul class="inspect-list">${suspended.map(suspendedRow).join('')}</ul></details>`
     : '';
-  showInspector('Ismétlési sor', `${due} ma esedékes · ${active.length} aktív kártya`, activeHtml + suspendedHtml);
+  const reverse = state.words.filter(w => w.stats?.srsRev).length; // V13.31: a fordított kártyák külön ütemezéssel
+  showInspector('Ismétlési sor', `${due} ma esedékes · ${active.length} aktív kártya${reverse ? ` · ${reverse} fordított` : ''}`, activeHtml + suspendedHtml);
 }
 
 function afterReviewChange(message) {
