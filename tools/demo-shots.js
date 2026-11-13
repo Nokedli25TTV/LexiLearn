@@ -56,18 +56,25 @@ const SHOTS = {
     flipLearnCard();
   },
 
-  // Ismétlés: két értékelés után a harmadik kártya megfordítva, a négy gombbal
+  // Ismétlés (V13.31: gépelős): két kártya után a harmadik jelentése begépelve, ékezet nélkül, elfogadva
   async ismetles() {
     window.setMode('japanese');
     window.startReviewSession();
     await settle();
+    const typeAnswer = (plain = false) => {
+      const w = state.words.find(x => x.id === state.practice.queue[0]);
+      let text = (w.hu.split(/[,;/]/)[0] || '').replace(/(.*?)/g, '').trim();
+      if (plain) text = text.normalize('NFD').replace(/[̀-ͯ]/g, '');
+      $('#review-input').value = text;
+      window.submitReviewAnswer();
+    };
     for (let i = 0; i < 2; i++) {
-      window.flipReviewCard();
+      typeAnswer();
       await settle();
       window.rateReview(3);
       await settle(600);
     }
-    window.flipReviewCard();
+    typeAnswer(true);
   },
 
   // Gyakorlás fül: két lecke, csak a még nem tanult szavak, mind kijelölve
