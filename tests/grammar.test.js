@@ -51,10 +51,9 @@ it('nyelvtan sor a Gyakorlás fülön, lap lapozással, felolvasás, bezárás',
   doc.dispatchEvent(new win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
   expect(modal.classList.contains('open')).toBe(false);
 
-  // Nyelvtan nélküli lecke: csak a zárás sora (ha van elkezdett szó), nyelvtan nincs
-  api.setLessonFilter('20');
-  expect(slot.querySelector('.lesson-grammar-btn')).toBeNull();
-  api.openGrammar(20);
+  // Nem létező lecke: nincs nyelvtan, a lap nem nyílik meg
+  expect(api.hasGrammar(99)).toBe(false);
+  api.openGrammar(99);
   expect(modal.classList.contains('open')).toBe(false);
 
   // Több lecke kiválasztva: nincs sor

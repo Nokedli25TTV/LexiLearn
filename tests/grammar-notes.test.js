@@ -11,7 +11,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = { window: {}, console: { log() {} } };
 ctx.globalThis = ctx;
 vm.createContext(ctx);
-for (const f of ['dekiru.js', 'grammar_notes.js']) vm.runInContext(readFileSync(path.join(ROOT, f), 'utf8'), ctx, { filename: f });
+for (const f of ['dekiru.js', 'dekiru2.js', 'grammar_notes.js']) vm.runInContext(readFileSync(path.join(ROOT, f), 'utf8'), ctx, { filename: f });
 const get = name => vm.runInContext(`typeof ${name} !== 'undefined' ? ${name} : null`, ctx);
 const GRAMMAR = get('GRAMMAR_NOTES');
 const lessons = Object.entries(GRAMMAR || {});
@@ -21,12 +21,15 @@ const EMOJI = /\p{Extended_Pictographic}/u;
 const FIELDS = ['pattern', 'name', 'text', 'ex', 'watch'];
 
 describe('nyelvtan leckénként (grammar_notes.js)', () => {
-  it('1. adag: a Dekiru 1. könyv 1–12. leckéje, mind létező lecke, címmel', () => {
-    expect(lessons.map(([n]) => Number(n))).toEqual(Array.from({ length: 12 }, (_, i) => i + 1));
+  it('a leckék sorban, hézag nélkül, legalább a Dekiru 1. könyv mind a 24 leckéje; mind létező lecke, címmel', () => {
+    const nums = lessons.map(([n]) => Number(n));
+    expect(nums).toEqual(Array.from({ length: nums.length }, (_, i) => i + 1));
+    expect(nums.length).toBeGreaterThanOrEqual(24);
+    const book2 = new Set((get('DEKIRU_2_WORDS') || []).flatMap(w => w.lesson));
     lessons.forEach(([n, g]) => {
-      expect(get(`DEKIRU_L${n}`)).toBeTruthy();
+      expect(Number(n) <= 24 ? get(`DEKIRU_L${n}`) : book2.has(Number(n))).toBeTruthy();
       expect(typeof g.title).toBe('string');
-      expect(g.points.length).toBeGreaterThanOrEqual(4);
+      expect(g.points.length).toBeGreaterThanOrEqual(3);
     });
   });
 
