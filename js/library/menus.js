@@ -8,6 +8,7 @@ import { PRACTICE_LEARNED_CORRECT } from '../goal/jlpt.js';
 import { _dockOpen, toggleDockSettings } from './dock.js';
 import { SORT_OPTIONS, STATUS_OPTIONS, getDayOptions, getLessonFocusGroups, getLessonOptions, getStatusCounts, hasActiveFilters, lessonLabel, lessonsLabel, listLabel, selectedLessons, statusFilter, validateDayFilter, wordMatchesFilters } from './filters.js';
 import { applyFilters } from './list.js';
+import { isLessonClosed } from '../practice/lesson-test.js';
 
 /* ── Ikonok és segédek a menükhöz ── */
 const UI_ICONS = {
@@ -158,7 +159,7 @@ function lessonMenuHtml() {
     return divider + menuOption({
       selected: selected.includes(o.value),
       label: escHtml(lessonLabel(o.value)),
-      meta: o.fresh > 0 ? `${o.total} ${unit} · <b>${o.fresh} új</b>` : `${o.total} ${unit}`,
+      meta: o.fresh > 0 ? `${o.total} ${unit} · <b>${o.fresh} új</b>` : `${o.total} ${unit}${currentMode === 'japanese' && isLessonClosed(o.value) ? ' · lezárva' : ''}`,
       action: `toggleLesson(${jsArg(o.value)})`,
       attrs: `data-lesson="${escHtml(o.value)}"`
     });

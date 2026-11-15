@@ -340,6 +340,13 @@ A gyakorlás önértékelős kártyája: elöl a forrás, hátul a cél és a p�
 - **Középre zárás, görgetés:** a lap tartalma egy `.fc-body`-ban, auto margóval középen; ha nem fér el, a teteje nem vágódik le, hanem a lap görgethető (mint a tanuló kártya hátoldala). A kártya mobilon `clamp(300px, 40svh, 360px)` magas, asztalon 320px.
 - **Sarokelemek:** a tartalom legalább 20px-re marad a sarokjelölőtől, az „i” gomb 44px-es érintési felületétől és az alsó tipptől (felső belső margó elöl 56px, hátul 72px; alsó elöl 50px). Új szín nincs.
 
+### Lecke-zárás (V13.35)
+Japán módban egy Dekiru-lecke elkezdett szavai egyszer, vegyes kérdésekkel: jelentés (kana → magyar), magyarból választva, gépelve (magyar → japán), hallás után. Szavanként sorsolva, egyenlő arányban; a toldalék (~さい) és a több alakú szó (なに/なん) nem gépelős és nem hallás.
+- **Helye:** a Kezdőlapon a leckekártya alatt, a nehéz szavak sorával azonos sor, a lecke zöldjével („14. lecke zárása”, alatta a szószám vagy a legutóbbi eredmény). Az aktuális előtti leckét ajánlja (aminek már minden szava elkezdve); lezárás után eltűnik. A Gyakorlás fülön, ha pontosan egy lecke van kiválasztva, ugyanez a sor a lista fölött, bármelyik leckére (lezártnál csendes, „Lezárva · legjobb 94%”).
+- **Közben:** a felső jelvény „14. lecke zárása”, a hibás szavak köre „2. kör · hibásak”. A kérdések a meglévő gyakorló kártyák, a hibás válasz utáni magyarázattal együtt.
+- **A végén:** a kör vége képernyő, a „Még nem ül” lista a megtanultak elé kerül, a szó mellett Felület 2 pillában a kérdésfajta (gépelés, hallás, magyarból, jelentés). Fő lépés: „Hibásak még egyszer · N szó” (ugyanazzal a kérdésfajtával). 90%-tól „lezárva”: a leckelistában és a Statisztika Dekiru-fülén is.
+- **Hang:** nem vizsga, nincs bukás; „Majdnem kész, a záráshoz 90% kell”, „Ezt a leckét érdemes még gyakorolni, mielőtt továbblépsz”.
+
 ### Szómagyarázat (V13.33)
 Japán módban minden szónak van tudnivaló-lapja; a kézzel írt jegyzetek a `word_notes.js`-ben, kana szerint (szófaj, Használat, Figyelj, kapcsolódó szavak), adagonként (1. adag: Dekiru 1–5).
 - **„i” gomb:** a tanuló, az ismétlő és a 3D kártya **hátoldalának** jobb felső sarkában (az előoldalon nincs: ott a felidézés a feladat, és a lap a jelentést is mutatja). 44px érintési felület, 34px látható kör: Felület 2 háttér, másodlagos szöveg; ha van kézzel írt jegyzet, erdő-köd háttér zöld ikonnal. A még nem látszó hátoldalon rejtett (nem fókuszálható), a húzást nem indítja.

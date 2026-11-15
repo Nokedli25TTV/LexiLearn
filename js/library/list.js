@@ -10,6 +10,7 @@ import { hasActiveFilters, wordMatchesFilters } from './filters.js';
 import { PRACTICE_LEARNED_CORRECT, isLearnedWord } from '../goal/jlpt.js';
 import { UI_ICONS, _openMenu, renderFilterBar, renderFilterMenu } from './menus.js';
 import { showToast } from '../ui/toast.js';
+import { renderLessonTestSlot } from '../practice/lesson-test.js';
 
 /* ══════════════════════════════════════════════════════
    V13.1: GYAKORLÁS FÜL
@@ -48,6 +49,7 @@ function applyFilters() {
 
   const countLabel = document.getElementById('word-count-label');
   if (countLabel) countLabel.textContent = `${filtered.length.toLocaleString('hu-HU')} ${unitOf()}`;
+  renderLessonTestSlot(); // V13.35: egy lecke kiválasztva → Lecke-zárás
 
   renderActiveList();
   updateSelectAllBtn();

@@ -9,6 +9,7 @@ import { PRACTICE_LEARNED_CORRECT, isLearnedWord, isLearningWord, isPracticeLear
 import { RETENTION_TARGET, accuracyOf, activityLevel, buildDailyIndex, computeMaturity, computeRetention, weekFocusSeconds } from './model.js';
 import { renderJlptCard } from '../goal/view.js';
 import { renderWeekLink } from './week.js';
+import { PASS_PCT } from '../practice/lesson-test.js';
 
 const HEAT_LEVEL_LABELS = ['Nem tanultál', 'Aktív nap', 'Napi penzum', 'Penzum + ismétlés', 'Intenzív nap'];
 
@@ -562,9 +563,12 @@ function renderDekiruLessonStats() {
   else if (sort === 'lesson-desc') lessons.sort((a, b) => b.lesson - a.lesson);
   else                             lessons.sort((a, b) => a.lesson - b.lesson);
 
+  // V13.35: a lecke zárásának eredménye (PASS_PCT-től lezárt)
+  const tests = appData.japanese.globalStats?.lessonTests || {};
+  const testNote = n => { const r = tests[String(n)]; return r ? (r.best >= PASS_PCT ? ` · lezárva ${r.best}%` : ` · zárás ${r.pct}%`) : ''; };
   container.innerHTML = perfRowsHtml(lessons.map(l => ({
     name: `${l.lesson}. lecke`,
-    sub: `${l.count} szó · ${l.learned} megy · ${fmtNum(l.t)} válasz`,
+    sub: `${l.count} szó · ${l.learned} megy · ${fmtNum(l.t)} válasz${testNote(l.lesson)}`,
     pct: l.pct
   })));
 }

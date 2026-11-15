@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.34)
+// LexiLearn – belépési pont (V13.35)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -30,6 +30,7 @@ import { applyFilters, initLibraryEvents, renderDashboard, selectNone, switchVie
 import { clearDiff, clearLessons, closeFilterMenu, closeLibraryOverlays, onTagSearch, setDayFilter, setLessonFilter, setListFilter, setSort, setStatusFilter, setTags, toggleDiff, toggleFilterMenu, toggleLesson, toggleTag } from './library/menus.js';
 import { deletePlaylist, expandPlaylist, savePlaylist } from './library/playlists.js';
 import { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, finishSession, manualNextQuestion, revealHardcoreAnswer, setLearnedRating, speakQuestionWord, startNextRound, startPractice, toggleEye, toggleSentenceTranslation } from './practice/engine.js';
+import { startLessonTest } from './practice/lesson-test.js';
 import { sbGiveUp, sbPick, sbUnpick } from './practice/sentence-build.js';
 import { prevFlashcard3D, rateFlashcard3D, speakFlashcard3D } from './practice/flashcard.js';
 import './practice/tts.js';
@@ -127,6 +128,7 @@ Object.assign(window, {
   speakLearnWord,
   speakQuestionWord,
   startLearnSession,
+  startLessonTest,
   startNextRound,
   startPractice,
   sbGiveUp,
@@ -170,7 +172,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.34 indítása...");
+console.log("[LexiLearn] V13.35 indítása...");
 initV6Features();
 initViewportFix(); // V13.20: iOS 26 standalone – a fix sávok ne csússzanak el a billentyűzet után
 initLibraryEvents();

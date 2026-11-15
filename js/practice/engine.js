@@ -21,6 +21,7 @@ import { hasKatakana, romajiToHiragana, toKatakana } from '../core/romaji.js';
 import { checkJapanese, checkMeaning } from '../core/answer.js';
 import { counterTagHtml } from '../core/counters.js';
 import { fillMissNote, infoButtonHtml } from '../features/word-info.js';
+import { applyLessonTestKind, finishLessonTestRound, lessonTestBadge } from './lesson-test.js';
 import { wordWriting } from '../features/kanji-links.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
@@ -258,11 +259,12 @@ function showQuestion() {
   const p = state.practice;
   const word = state.words.find(w => w.id === p.roundWords[p.currentIdx]);
   if (!word) return;
+  applyLessonTestKind(p, word); // V13.35: Lecke-zárás – szavanként más kérdésfajta és irány
 
   // V13: a gyors ismétlésnél a hibás szavak a sor végére kerülnek, így a haladást
   // a helyesen megválaszolt EGYEDI szavakhoz mérjük, nem a (növekvő) sor hosszához.
   if (p.type === 'quickQuiz') updatePracticeTop('Mai szavak', p.roundCorrect, p.uniqueCount, p.roundWrong);
-  else updatePracticeTop(`${p.roundNumber}. kör`, p.currentIdx, p.roundWords.length, p.roundWrong);
+  else updatePracticeTop(p.lessonTest ? lessonTestBadge(p) : `${p.roundNumber}. kör`, p.currentIdx, p.roundWords.length, p.roundWrong);
 
   const isEnHu = practiceDir() === 'en-hu';
   const isJapanMode = currentMode !== 'english';
@@ -966,6 +968,9 @@ function showRoundEnd() {
          <button class="btn-quiet" onclick="finishSession()">Befejezés</button>`
       : `<button class="cta-learn cta-compact" onclick="finishSession()"><span class="cta-main">Befejezés</span></button>`;
   }
+  // V13.35: Lecke-zárás – eredmény mentése; a "Még nem ül" lista a megtanultak elé kerül
+  document.querySelector('#screen-round-end .round-end')?.classList.toggle('is-lesson-test', !!p.lessonTest);
+  if (p.lessonTest) finishLessonTestRound(p, pct);
 
   showScreen('roundend');
 }
@@ -1016,7 +1021,8 @@ function finishSession() {
 
   const learnedCount = (p.learnedNow || []).length;
   saveStats(); saveWords(); showScreen(p.origin || 'dashboard'); // Statisztika + szó streak mentése
-  showToast(learnedCount ? `Gyakorlás mentve · ${learnedCount} új megtanult ${unitOf()}` : 'Gyakorlás mentve');
+  const saved = p.lessonTest ? `${p.lessonTest}. lecke zárása mentve` : 'Gyakorlás mentve';
+  showToast(learnedCount ? `${saved} · ${learnedCount} új megtanult ${unitOf()}` : saved);
 }
 
 // V13: oda térünk vissza, ahonnan a gyakorlás indult (Kezdőlap vagy Gyakorlás fül)

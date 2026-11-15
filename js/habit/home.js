@@ -13,6 +13,7 @@ import { dueForecast } from '../srs/schedule.js';
 import { goalLineHtml } from '../goal/view.js';
 import { weekHomeRowHtml } from '../stats/week.js';
 import { leechHomeRowHtml, lessonHardWords } from '../features/leeches.js';
+import { lessonTestHomeRowHtml } from '../practice/lesson-test.js';
 
 /* ── KEZDŐLAP ─────────────────────────────────────────── */
 function renderHome() {
@@ -155,7 +156,7 @@ function renderCurrentLesson() {
       <span class="lesson-progress" style="--p:${pct}" role="progressbar" aria-label="${p.lesson}. lecke haladása" aria-valuemin="0" aria-valuemax="${p.total}" aria-valuenow="${p.learned}"><i></i></span>
       <span class="lesson-card-meta">${p.remaining} ${unit} van hátra · ${p.reviewing} ismétlés alatt</span>
       <span class="lesson-card-next">${escHtml(next)}</span>
-    </button>${lessonHardButtonHtml(p.lesson)}`;
+    </button>${lessonHardButtonHtml(p.lesson)}${lessonTestHomeRowHtml()}`;
 }
 
 // V13.18: egy koppintással a lecke nehéz szavai (zászlós, makacs, elrontott), ha van ilyen

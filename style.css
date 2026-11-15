@@ -196,6 +196,9 @@ body, .app-header, .card, .modal, .q-card, .search-input, .sort-select, .btn, .m
   .re-kpis .kpi-value { font-size: 24px; }
 }
 .re-errors .detail-title { margin: 0 0 8px; }
+/* V13.35: Lecke-zárásnál a lényeg, mi nem ül még: a hibás szavak a megtanultak elé */
+.round-end.is-lesson-test .re-learned { order: 1; }
+.round-end.is-lesson-test .re-actions { order: 2; }
 /* V13.19: a gyakorlásban megtanult szavak a kör végén (zöld pipa, egymás után beúszva) */
 .re-learned .detail-title { margin: 0 0 2px; color: var(--success); }
 .re-learned-sub { margin: 0 0 8px; font-size: 13px; font-weight: 650; color: var(--text-2); }
@@ -231,6 +234,8 @@ body, .app-header, .card, .modal, .q-card, .search-input, .sort-select, .btn, .m
 .re-err + .re-err { border-top: 1px solid var(--border); }
 .re-err-word { min-width: 0; font-size: 17px; font-weight: 800; color: var(--text); overflow-wrap: anywhere; }
 .re-err-meaning { font-size: 14px; font-weight: 600; color: var(--text-2); text-align: right; }
+/* V13.35: a Lecke-zárásban: melyik kérdésnél nem ment */
+.re-err-kind { display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); font-size: 11px; font-weight: 800; vertical-align: 2px; white-space: nowrap; }
 .re-actions {
   position: sticky;
   bottom: 0;
@@ -1075,6 +1080,11 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .lesson-hard-main { font-size: 15px; font-weight: 800; color: var(--accent-h); }
 .lesson-hard-sub { grid-column: 1; font-size: 13px; font-weight: 650; color: var(--text-2); }
 .lesson-hard-btn svg { grid-column: 2; grid-row: 1 / span 2; color: var(--text-3); }
+/* V13.35: Lecke-zárás – ugyanaz a sor, a lecke zöldjével; lezárt leckénél csendes */
+.lesson-test-btn .lesson-hard-main { color: var(--primary-h); }
+@media (hover: hover) { .lesson-test-btn:hover { border-color: var(--primary-h); } }
+.lesson-test-btn.is-closed .lesson-hard-main { color: var(--text); }
+.lesson-test-slot .lesson-hard-btn { margin-top: 12px; }
 .cta-learn, .cta-review {
   width: 100%;
   display: grid;
