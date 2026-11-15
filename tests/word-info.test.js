@@ -52,12 +52,17 @@ it('i gomb, Figyelj sor, alulról nyíló lap és a hibás válasz utáni magyar
   expect(relBtn.getAttribute('onclick')).toBe(`openWordInfo(${JSON.stringify(salon.id)}, true)`);
   win.openWordInfo(salon.id, true); // (jsdom-ban az inline onclick nem látja a window-ra tett kezelőket)
   expect(doc.getElementById('word-info-word').textContent).toBe('びよういん');
-  expect(body.querySelector('.wi-empty').textContent).toContain('még nincs használati leírás');
+  expect(body.querySelector('.wi-sec .wi-text').textContent).toContain('Fodrászat');
   expect(body.querySelector('.wi-back').getAttribute('onclick')).toBe('wordInfoBack()');
   win.wordInfoBack();
   expect(doc.getElementById('word-info-word').textContent).toBe('びょういん');
   doc.dispatchEvent(new win.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
   expect(modal.classList.contains('open')).toBe(false);
+
+  // Kézzel írt jegyzet nélküli szó: az automatikus adatok és egy csendes jelzés
+  win.openWordInfo(byEn('ハンガリー').id);
+  expect(body.querySelector('.wi-empty').textContent).toContain('még nincs használati leírás');
+  win.closeWordInfo();
 
   // Igénél a szófaj a jegyzetből (igecsoport)
   win.openWordInfo(byEn('いる').id);
