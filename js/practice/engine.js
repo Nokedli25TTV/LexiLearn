@@ -20,6 +20,7 @@ import { buildableSentences, initSentenceBuild, sentenceBuildHtml } from './sent
 import { hasKatakana, romajiToHiragana, toKatakana } from '../core/romaji.js';
 import { checkJapanese, checkMeaning } from '../core/answer.js';
 import { counterTagHtml } from '../core/counters.js';
+import { fillMissNote, infoButtonHtml } from '../features/word-info.js';
 import { wordWriting } from '../features/kanji-links.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
@@ -405,6 +406,7 @@ function showQuestion() {
             </div>
           </div>
           <div class="flashcard-3d-back">
+            ${infoButtonHtml(word)}
             <div class="fc-corner-hint">${isEnHu ? 'Magyar' : 'Forrás'}</div>
             <div class="fc-main fc-main-back ${isKanjiBack ? 'kanji-display' : ''}">${escHtml(backMain)}</div>
             ${backReading ? `<div class="fc-reading">${escHtml(backReading)}</div>` : ''}
@@ -481,6 +483,7 @@ function showQuestion() {
         </div>
         ${p.type !== 'flashcard3d' && counterTagHtml(word) ? `<div class="q-note">${counterTagHtml(word)}</div>` : ''}
         ${contentHtml}
+        <div class="miss-slot" id="miss-note" aria-live="polite"></div>
       </div>
       <!-- V13.2: hibás válasz után a Tovább a képernyő aljára rögzül, hüvelykujjal elérhető -->
       <div id="next-btn-container" class="next-bar" style="display: none;">
@@ -747,6 +750,7 @@ function checkHardcoreAnswer(wordId) {
     }
     inputEl.style.borderColor = 'var(--error)';
     inputEl.style.backgroundColor = 'var(--error-bg)';
+    fillMissNote('miss-note', word); // V13.33: mire figyelj, tudnivalók
 
     word.stats.streak=0; word.stats.totalWrong++; p.roundWrong++; p.sessionWrong++; 
     if(!p.errorList.includes(word.id)) p.errorList.push(word.id);
@@ -818,6 +822,7 @@ function checkAnswer(btn, chosen, correct) {
   else {
     if (btn) btn.classList.add('wrong');
     document.querySelectorAll('.opt-btn').forEach(b => { if (b.textContent === correct) b.classList.add('correct'); });
+    if (word && !isCorrect) fillMissNote('miss-note', word, chosen); // V13.33: mit választottál helyette, mire figyelj
     if(qCard) qCard.classList.add('shake');
     if(currentMode !== 'english' && practiceDir() === 'en-hu') {
       eyeState = isCharMode() ? 1 : 0; 

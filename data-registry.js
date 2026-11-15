@@ -15,6 +15,8 @@ window.LEXI_DATA = {
   radicalLessons:   typeof RADICAL_LESSONS !== 'undefined' ? RADICAL_LESSONS : [],
   kanjiFreq:        typeof KANJI_FREQ !== 'undefined' ? KANJI_FREQ : {},
   kanjiFreqTotal:   typeof KANJI_FREQ_TOTAL !== 'undefined' ? KANJI_FREQ_TOTAL : 0,
+  // V13.33: a japán szavak kézzel írt tudnivalói (word_notes.js), kana szerint
+  wordNotes:        typeof WORD_NOTES !== 'undefined' ? WORD_NOTES : {},
   englishSentences: typeof english_sentences2 !== 'undefined' ? english_sentences2 : [],
   travelPlan:       typeof TRAVEL_PLAN !== 'undefined' ? TRAVEL_PLAN : null,
   travelPlanKanji:  typeof TRAVEL_PLAN_KANJI !== 'undefined' ? TRAVEL_PLAN_KANJI : null,

@@ -44,6 +44,8 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `sw.js` | service worker (offline gyorsítótár) |
 | `kanjivg/n5.json` … `n1.json` | a kandzsik vonássorrendje (KanjiVG), JLPT-szintenként; a `tools/build-kanjivg.mjs` állítja elő |
 | `js/features/strokes.js` | vonássorrend a tanuló / ismétlő kártya hátoldalán (lusta betöltés, rajzolás, újrajátszás) |
+| `word_notes.js` | a japán szavak kézzel írt tudnivalói (`WORD_NOTES`, kana szerint: `pos`, `use`, `watch`, `rel`), klasszikus script, adagonként bővül (1. adag: Dekiru 1–5); a `tests/word-notes.test.js` ellenőrzi |
+| `js/features/word-info.js` | szómagyarázat: „i” gomb a kártyák hátoldalán, a Figyelj sor, a hibás válasz utáni magyarázat és az alulról nyíló lap (`openWordInfo`) |
 | `tools/` | fejlesztői eszközök, az app nem tölti be őket: KanjiVG feldolgozás, demó, a README képei (lásd lent) |
 
 ### Új függvény, amit HTML-ből hívsz
@@ -197,6 +199,8 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
 - **`tests/unit/answer.test.js`, `tests/review-typed.test.js`** – a hibatűrő ellenőrző; gépelős, választós, vegyes és fordított ismétlés a teljes appal, a megtartási arány számolása.
+- **`tests/word-notes.test.js`, `tests/word-info.test.js`** – a jegyzetek létező szóhoz és létező kapcsolódó szóhoz tartoznak, rövidek; az „i” gomb, a Figyelj sor, a lap (lapozás, vissza, Escape) és a hibás válasz utáni magyarázat a gyakorlásban és az ismétlésben.
+- **`tests/data.test.js`** (V13.33 óta) a kana mezőben latin betűt sem enged (elgépelés); az így javított szavak a `RENAMED_WORDS`-be kerülnek, hogy a haladás átköltözzön.
 - **`tests/unit/counters.test.js`, `tests/stats-shortcuts.test.js`** – mit számol a számlálószó; a Statisztika szólistájából gyakorlás, a JLPT-kártya két sora, a heti sor hét napja, és a számlálószó-címke a tanuló, a gyakorló és a 3D kártyán.
 - **`tests/tts.test.js`, `tests/tts-android.test.js`** – a hangútvonal: Google-hang, újrapróbálás, nyelvhez illő tartalék, a hangkimenet ébren tartása, napló.
 - **`tests/learned-rule.test.js`, `tests/practice-card.test.js`** – a "Tudom" csak elkezd, két sikeres ismétlés tesz megtanulttá; az ötödik gyakorlási találat kártyát ad, a kör végén értékelhető; a régi szavak napi adagban jönnek.

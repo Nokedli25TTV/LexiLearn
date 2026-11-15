@@ -350,7 +350,7 @@ const DEKIRU_L5 = [
   // Időmeghatározás (múlt, jelen, jövő)
   { kana: 'ゆうべ', romaji: 'yuube', hu: 'múlt éjszaka', tags: ['idő'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
   { kana: 'きのう', romaji: 'kinou', hu: 'tegnap', tags: ['idő'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
-  { kana: 'おototoi', romaji: 'ototoi', hu: 'tegnapelőtt', tags: ['idő'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
+  { kana: 'おととい', romaji: 'ototoi', hu: 'tegnapelőtt', tags: ['idő'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
   { kana: 'あさって', romaji: 'asatte', hu: 'holnapután', tags: ['idő'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
   { kana: 'せんしゅう', romaji: 'senshuu', hu: 'múlt hét', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
   { kana: 'こんしゅう', romaji: 'konshuu', hu: 'e hét', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
@@ -358,7 +358,7 @@ const DEKIRU_L5 = [
   { kana: 'せんげつ', romaji: 'sengetsu', hu: 'múlt hónap', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
   { kana: 'こんげつ', romaji: 'kongetsu', hu: 'e hónap', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
   { kana: 'らいげつ', romaji: 'raigetsu', hu: 'jövő hónap', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
-  { kana: 'きょねn', romaji: 'kyonen', hu: 'múlt év, tavaly', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
+  { kana: 'きょねん', romaji: 'kyonen', hu: 'múlt év, tavaly', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
   { kana: 'ことし', romaji: 'kotoshi', hu: 'idei év, idén', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
   { kana: 'らいねん', romaji: 'rainen', hu: 'jövő év', tags: ['idő'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
 
@@ -554,7 +554,7 @@ const DEKIRU_L8 = [
   { kana: 'きっぷ', romaji: 'kippu', hu: 'jegy', tags: ['tárgyak'], jlpt: 'N5', lesson: [8], source: 'dekiru' }, //
   { kana: 'うりば', romaji: 'uriba', hu: 'elárusítóhely', tags: ['helyek'], jlpt: 'N4', lesson: [8], source: 'dekiru' }, //
   { kana: 'クリスマス', romaji: 'kurisumasu', hu: 'karácsony', tags: ['szórakozás'], jlpt: 'N5', lesson: [8], source: 'dekiru' }, //
-  { kana: 'でnき', romaji: 'denki', hu: 'villany, áram', tags: ['tárgyak'], jlpt: 'N5', lesson: [8], source: 'dekiru' }, //
+  { kana: 'でんき', romaji: 'denki', hu: 'villany, áram', tags: ['tárgyak'], jlpt: 'N5', lesson: [8], source: 'dekiru' }, //
   { kana: 'にもつ', romaji: 'nimotsu', hu: 'csomag, poggyász', tags: ['tárgyak'], jlpt: 'N5', lesson: [8], source: 'dekiru' }, //
   { kana: 'がいこくじん', romaji: 'gaikokujin', hu: 'külföldi (ember)', tags: ['emberek'], jlpt: 'N5', lesson: [8], source: 'dekiru' }, //
   { kana: 'かた', romaji: 'kata', hu: 'személy (udvarias)', tags: ['emberek'], jlpt: 'N5', lesson: [8], source: 'dekiru' }, //
@@ -751,7 +751,7 @@ const DEKIRU_L11 = [
   { kana: 'くち', romaji: 'kuchi', hu: 'száj', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
   { kana: 'のど', romaji: 'nodo', hu: 'torok', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
   { kana: 'からだ', romaji: 'karada', hu: 'test', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
-  { kana: 'うde', romaji: 'ude', hu: 'kar', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
+  { kana: 'うで', romaji: 'ude', hu: 'kar', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
   { kana: 'おなか', romaji: 'onaka', hu: 'has', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
   { kana: 'あし', romaji: 'ashi', hu: 'láb', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },
   { kana: 'ゆび', romaji: 'yubi', hu: 'ujj', tags: ['testrészek'], jlpt: 'N5', lesson: [11], source: 'dekiru' },

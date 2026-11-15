@@ -11,6 +11,7 @@
 import { todayKey } from '../core/dates.js';
 import { checkJapanese, checkMeaning } from '../core/answer.js';
 import { counterTagHtml } from '../core/counters.js';
+import { fillMissNote, infoButtonHtml, isWordInfoOpen } from '../features/word-info.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
 import { currentMode, isCharMode, NEW_ITEMS, state, unitOf } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
@@ -138,6 +139,7 @@ function controlsHtml(style, rev, preview) {
           <button class="review-reveal" onclick="rateReview(${AGAIN})">Tovább<span class="review-next-note">Újra · ma</span></button>
           ${style === 'type' ? '<button class="btn-quiet" onclick="acceptReviewAnswer()">Elírás volt, tudtam</button>' : ''}
         </div>
+        <div class="miss-slot" id="review-miss-note"></div>
       </div>
     </div>`;
 }
@@ -219,6 +221,7 @@ function showReviewCard() {
             ${front}
           </div>
           <div class="learn-face learn-back${!rev && strokes ? ' has-strokes' : ''}">
+            ${infoButtonHtml(word)}
             ${back}
           </div>
         </div>
@@ -281,7 +284,7 @@ function flipReviewCard() {
 }
 
 // A válasz eredménye: a kártya megfordul, alatta az értékelés (helyes) vagy a Tovább (hibás)
-function showAnswer(result, verdict) {
+function showAnswer(result, verdict, picked = null) {
   const p = state.practice;
   const card = document.getElementById('review-card');
   const controls = document.getElementById('review-controls');
@@ -292,6 +295,7 @@ function showAnswer(result, verdict) {
   controls.classList.toggle('is-revealed', result === 'pass');
   const v = document.getElementById('review-verdict');
   if (v) { v.textContent = verdict; v.classList.toggle('is-pass', result === 'pass'); }
+  if (result === 'miss') fillMissNote('review-miss-note', currentCard().word, picked); // V13.33: mit választottál, mire figyelj
   controls.querySelectorAll('.review-ask input, .review-ask button').forEach(el => { el.disabled = true; });
   controls.querySelectorAll('.rate-btn').forEach(b => b.removeAttribute('tabindex'));
   const focus = result === 'pass' ? controls.querySelector('.rate-3') : controls.querySelector('.review-miss .review-reveal');
@@ -327,7 +331,7 @@ function pickReviewOption(i) {
     else if (n === i) b.classList.add('is-picked');
   });
   const pass = i === p.card.correct;
-  showAnswer(pass ? 'pass' : 'miss', pass ? 'Helyes.' : 'A helyes válasz kiemelve.');
+  showAnswer(pass ? 'pass' : 'miss', pass ? 'Helyes.' : 'A helyes válasz kiemelve.', i >= 0 ? p.card.options[i] : null);
 }
 
 // "Elírás volt, tudtam": a hibásnak vett gépelés mégis helyes, értékelhető
@@ -430,6 +434,7 @@ document.addEventListener('keydown', e => {
   const p = state.practice;
   if (!p || p.type !== 'review' || document.body.dataset.screen !== 'practice' || p.queue.length === 0) return;
   if (e.target.closest && e.target.closest('input, textarea, select')) return;
+  if (isWordInfoOpen()) return; // V13.33: nyitott szómagyarázat alatt az értékelés nem fut
   const style = p.card ? p.card.style : 'self';
   if (style !== 'self' && !p.card.answer) {
     const n = Number(e.key);

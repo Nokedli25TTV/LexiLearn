@@ -2789,6 +2789,76 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 }
 .inspector-practice:active { transform: scale(0.98); }
 
+/* V13.33: szómagyarázat. A kártya hátoldalán "i" gomb (44px érintés, 34px látható kör), kitöltött
+   zöld árnyalat, ha van kézzel írt jegyzet; a hibás válasz alatt csendes sorok; alulról nyíló lap. */
+.info-btn {
+  position: absolute; top: 8px; right: 8px; z-index: 2; width: 44px; height: 44px;
+  display: grid; place-items: center; padding: 0; border: none; border-radius: 50%;
+  background: transparent; color: var(--text-2); cursor: pointer;
+}
+.info-btn::before { content: ''; position: absolute; inset: 5px; z-index: -1; border-radius: 50%; background: var(--surface-2); transition: transform 140ms var(--ease-out); }
+.info-btn.has-note { color: var(--primary-h); }
+.info-btn.has-note::before { background: var(--primary-dim); }
+.info-btn:active::before { transform: scale(0.92); }
+.info-btn:focus-visible { outline: 2px solid var(--primary-h); outline-offset: 0; }
+/* a még nem látszó hátoldalon nem fókuszálható */
+.learn-card:not(.flipped) .learn-back .info-btn,
+.flashcard-3d:not(.flipped) .flashcard-3d-back .info-btn { visibility: hidden; }
+/* a hátoldal az első és utolsó elem auto margójával zár középre: a sarokgomb nem számít bele */
+.learn-back > .info-btn:first-child + * { margin-top: auto; }
+
+.card-watch { max-width: 34ch; margin-top: 12px; font-size: 14px; font-weight: 650; line-height: 1.45; color: var(--text-2); }
+.card-watch-label, .miss-label, .wi-label {
+  font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3);
+}
+.card-watch-label { margin-right: 4px; }
+
+.miss-slot:empty { display: none; }
+.miss-note { display: grid; gap: 6px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); text-align: left; scroll-margin-bottom: 104px; }
+.review-after .miss-note { margin-top: 2px; scroll-margin-bottom: 16px; }
+.miss-line { font-size: 14px; font-weight: 650; line-height: 1.45; color: var(--text); }
+.miss-label { margin-right: 6px; }
+.miss-line b { font-weight: 800; }
+.miss-more {
+  justify-self: start; display: inline-flex; align-items: center; gap: 2px; min-height: 44px; margin: -6px 0 -8px;
+  padding: 0; border: none; background: none; color: var(--primary-h);
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer;
+}
+
+.word-info-modal { max-width: 520px; }
+#word-info-body { padding-bottom: 8px; }
+.wi-back {
+  display: inline-flex; align-items: center; gap: 2px; min-height: 40px; margin: -8px 0 4px -6px; padding: 0 10px 0 2px;
+  border: none; background: none; color: var(--primary-h); font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer;
+}
+.wi-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.wi-word { font-size: 34px; font-weight: 900; line-height: 1.15; color: var(--text); overflow-wrap: anywhere; }
+.wi-sub { margin-top: 4px; font-size: 14px; font-weight: 700; color: var(--text-2); }
+.wi-meaning { margin-top: 10px; font-size: 19px; font-weight: 800; line-height: 1.35; color: var(--text); }
+.wi-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.wi-chip { padding: 5px 10px; border-radius: 999px; background: var(--surface-2); color: var(--text-2); font-size: 12px; font-weight: 800; line-height: 1.35; }
+.wi-sec { margin-top: 22px; }
+.wi-label { display: block; margin-bottom: 6px; }
+.wi-text { max-width: 60ch; font-size: 15px; font-weight: 600; line-height: 1.55; color: var(--text); }
+.wi-sec.is-watch { margin-top: 16px; padding: 12px 14px 14px; border-radius: 16px; background: var(--surface-2); }
+.wi-empty { margin-top: 18px; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--text-3); }
+.wi-rel { overflow: hidden; border: 1px solid var(--border); border-radius: 16px; }
+.wi-rel-btn {
+  width: 100%; min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 10px 12px 10px 14px;
+  border: none; border-bottom: 1px solid var(--border); background: var(--surface); color: var(--text);
+  font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer;
+}
+.wi-rel-btn:last-child { border-bottom: none; }
+.wi-rel-btn b { flex: none; font-size: 17px; font-weight: 800; }
+.wi-rel-btn span { flex: 1; min-width: 0; overflow: hidden; color: var(--text-2); font-size: 14px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.wi-rel-btn svg { flex: none; color: var(--text-3); }
+@media (hover: hover) { .wi-rel-btn:hover { background: var(--surface-2); } .miss-more:hover { text-decoration: underline; } }
+.wi-example { font-size: 18px; line-height: 1.75; color: var(--text); }
+.wi-example .fc-highlight { color: var(--cta); font-weight: 800; }
+[data-theme="light"] .wi-example .fc-highlight { color: var(--accent-h); }
+.wi-example-hu { margin-top: 2px; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
+@media (max-width: 680px) { #word-info-body { padding-bottom: calc(22px + var(--safe-b)); } }
+
 /* Haladás képernyő */
 .jl-screen-head { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .jl-screen-head .page-title { margin-bottom: 0; }

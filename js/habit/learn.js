@@ -13,6 +13,7 @@ import { completedLessons, coverageOf, kanjiUnlockStatus } from '../goal/radical
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { japaneseBackLine } from '../core/util.js';
 import { counterTagHtml } from '../core/counters.js';
+import { infoButtonHtml, isWordInfoOpen, watchLineHtml } from '../features/word-info.js';
 import { renderHome } from './home.js';
 import { getExampleSentence, showQuestion, updatePracticeTop } from '../practice/engine.js';
 import { speakWord } from '../practice/tts.js';
@@ -131,9 +132,11 @@ function showLearnCard() {
             <div class="learn-tap-hint">Koppints a jelentésért</div>
           </div>
           <div class="learn-face learn-back${strokes ? ' has-strokes' : ''}">
+            ${infoButtonHtml(word)}
             ${strokes || `<div class="learn-back-src">${escHtml(backSrc)}</div>`}
             <div class="learn-meaning">${escHtml(word.hu)}</div>
             ${counterTagHtml(word)}
+            ${watchLineHtml(word)}
             ${kanjiReadings}
             ${links}
             ${example.html ? `
@@ -268,6 +271,7 @@ document.addEventListener('keydown', e => {
   const p = state.practice;
   if (!p || p.type !== 'learn' || document.body.dataset.screen !== 'practice' || p.queue.length === 0) return;
   if (e.target.closest && e.target.closest('input, textarea, select')) return;
+  if (isWordInfoOpen()) return; // V13.33: nyitott szómagyarázat alatt a kártya nem mozdul
   if (e.key === 'ArrowRight') { e.preventDefault(); learnSwipe('right'); }
   else if (e.key === 'ArrowLeft') { e.preventDefault(); learnSwipe('left'); }
   else if ((e.key === ' ' || e.key === 'Enter') && !(e.target.closest && e.target.closest('button'))) {

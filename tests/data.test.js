@@ -68,6 +68,14 @@ describe('Dekiru 2 szókincs (dekiru2.js)', () => {
   });
 });
 
+describe('kana mezők (V13.33)', () => {
+  it('nincs bennük latin betű (elgépelés), csak a valódi rövidítésekben', () => {
+    const ALLOWED = ['ICカード', 'UFOキャッチャー'];
+    const all = [...existing, ...N3, ...DEKIRU_2];
+    expect(all.filter(w => /[A-Za-z]/.test(w.kana) && !ALLOWED.includes(w.kana)).map(w => w.kana)).toEqual([]);
+  });
+});
+
 describe('kana → romaji átalakító', () => {
   it('alapesetek', () => {
     expect(kanaToRomaji('あきらめる')).toBe('akirameru');
