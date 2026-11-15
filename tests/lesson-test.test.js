@@ -85,7 +85,7 @@ it('Lecke-zárás: ajánlás, vegyes kérdések, eredmény mentése, lezárt lec
 
   // Gyakorlás fül: egy lecke kiválasztva → a zárás sora, több vagy egy sem → nincs
   api.setLessonFilter('2');
-  const slot = doc.getElementById('lesson-test-slot');
+  const slot = doc.getElementById('lesson-tools-slot');
   expect(slot.hidden).toBe(false);
   expect(slot.textContent).toContain('2. lecke zárása');
   if (pct < 90) expect(slot.textContent).toContain(`Legutóbb ${pct}%`);

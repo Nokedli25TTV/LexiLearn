@@ -1084,7 +1084,10 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 .lesson-test-btn .lesson-hard-main { color: var(--primary-h); }
 @media (hover: hover) { .lesson-test-btn:hover { border-color: var(--primary-h); } }
 .lesson-test-btn.is-closed .lesson-hard-main { color: var(--text); }
-.lesson-test-slot .lesson-hard-btn { margin-top: 12px; }
+.lesson-tools-slot .lesson-hard-btn:first-child { margin-top: 12px; }
+/* V13.35: a lecke nyelvtana – semleges sor, alatta a szerkezetek egy sorban, levágva */
+.lesson-grammar-btn .lesson-hard-main { color: var(--text); }
+.lesson-grammar-btn .lesson-hard-sub { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cta-learn, .cta-review {
   width: 100%;
   display: grid;
@@ -2887,6 +2890,42 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .wi-example { font-size: 18px; line-height: 1.75; color: var(--text); }
 .wi-example .fc-highlight { color: var(--cta); font-weight: 800; }
 [data-theme="light"] .wi-example .fc-highlight { color: var(--accent-h); }
+/* V13.35: Nyelvtan leckénként – a szómagyarázat lapjára épül, kinyitható szerkezetekkel */
+.gr-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.gr-title { margin-top: 4px; font-size: 22px; font-weight: 900; line-height: 1.25; color: var(--text); }
+.gr-list { margin-top: 18px; overflow: hidden; border: 1px solid var(--border); border-radius: 16px; }
+.gr-point + .gr-point { border-top: 1px solid var(--border); }
+.gr-point summary {
+  display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 12px 14px 12px 16px;
+  list-style: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+.gr-point summary::-webkit-details-marker { display: none; }
+@media (hover: hover) { .gr-point summary:hover { background: var(--surface-2); } }
+.gr-sum { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.gr-pattern { font-size: 17px; font-weight: 800; line-height: 1.4; color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+.gr-name { font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--text-2); }
+.gr-nb { white-space: nowrap; }
+.gr-chev { flex: none; color: var(--text-3); transition: transform 200ms var(--ease-out); }
+.gr-point[open] .gr-chev { transform: rotate(180deg); }
+.gr-body { padding: 0 16px 16px; }
+.gr-examples { display: grid; gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; }
+.gr-ex { display: flex; align-items: flex-start; gap: 10px; }
+.gr-speak {
+  flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin-top: -2px; padding: 0;
+  border: none; border-radius: 999px; background: var(--surface-2); color: var(--text-2); cursor: pointer;
+}
+@media (hover: hover) { .gr-speak:hover { color: var(--primary-h); } }
+.gr-ex-text { min-width: 0; display: grid; gap: 2px; }
+.gr-ja { font-size: 17px; line-height: 1.6; color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+.gr-hu { font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--text-2); }
+.gr-body .wi-sec.is-watch { margin-top: 14px; }
+.gr-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.gr-nav-btn {
+  display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 6px;
+  border: none; background: none; color: var(--primary-h); font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer;
+}
+.gr-nav-btn.is-next { margin-left: auto; }
+@media (prefers-reduced-motion: reduce) { .gr-chev { transition: none; } }
 .wi-example-hu { margin-top: 2px; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
 @media (max-width: 680px) { #word-info-body { padding-bottom: calc(22px + var(--safe-b)); } }
 

@@ -12,7 +12,7 @@
   <br>
   <img alt="Vanilla JS, ES modulok" src="https://img.shields.io/badge/vanilla%20JS-ES%20modulok-de9300?style=for-the-badge&logo=javascript&logoColor=white&labelColor=171c1a">
   <img alt="Firebase felhő szinkron" src="https://img.shields.io/badge/Firebase-felh%C5%91%20szinkron-1a73e8?style=for-the-badge&logo=firebase&logoColor=white&labelColor=171c1a">
-  <img alt="Vitest, 176 teszt" src="https://img.shields.io/badge/Vitest-176%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
+  <img alt="Vitest, 181 teszt" src="https://img.shields.io/badge/Vitest-181%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
   <img alt="KanjiVG, CC BY-SA 3.0" src="https://img.shields.io/badge/KanjiVG-CC%20BY--SA%203.0-7a837e?style=for-the-badge&labelColor=171c1a">
 </p>
 
@@ -66,6 +66,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Aktuális lecke:** a Kezdőlapon látszik a lecke haladása, a hátralévő és ismétlés alatt álló szavak száma, valamint a következő napi adag lecke szerinti összetétele.
 - **A lecke nehéz szavai egy koppintással:** a leckekártya alatt, ha a leckében van zászlós, makacs vagy elrontott (még nem sorozatban menő) szó. A Gyakorlás fül beállításaival indul, a kijelölésedhez nem nyúl, és a végén a Kezdőlapra tér vissza.
 - **Lecke-zárás (japán):** ha egy Dekiru-lecke minden szavát elkezdted, a leckekártya alatt felajánlja a zárását (a Gyakorlás fülön egy leckét kiválasztva bármelyikét): a lecke szavai egyszer, vegyes kérdésekkel (jelentés, magyarból választva, gépelve, hallás után). A végén a **Még nem ül** lista azt is megmutatja, melyik kérdésnél bukott el a szó, és a hibásak még egyszer jöhetnek ugyanúgy. Az első kör eredménye leckénként megmarad; 90%-tól a lecke lezárt, ez a leckelistában és a Statisztika Dekiru-fülén is látszik.
+- **Nyelvtan leckénként (japán):** a Gyakorlás fülön egy Dekiru-leckét kiválasztva a lecke nyelvtani szerkezetei a könyv sorrendjében, alulról nyíló lapon: minta és név, kinyitva rövid magyarázat, felolvasható példák (kana, szóközzel tagolva) és a buktató („Figyelj”). A lapon belül előre-hátra lapozhatsz a leckék között. Az első adag a Dekiru 1. könyv 1–12. leckéje.
 - **Előrejelzés:** egy csendes sor arról, mennyi ismétlés jön holnap és a következő héten, hogy ne érjen meglepetés.
 - **Napi feladatok:** naponta három, változó feladat, például egy hibátlan kör, tematikus nap, a nap szava, régen látott szavak vagy a legtöbbször elrontott szavak javítása.
 - **Egyetlen ünneplés:** konfetti csak akkor, ha a napi cél teljesült, és akkor is naponta egyszer.
@@ -220,7 +221,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **176 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **181 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash

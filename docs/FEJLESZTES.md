@@ -47,6 +47,8 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `word_notes.js` | a japán szavak kézzel írt tudnivalói (`WORD_NOTES`, kana szerint: `pos`, `use`, `watch`, `rel`), klasszikus script, adagonként bővül (1. adag: Dekiru 1–5); a `tests/word-notes.test.js` ellenőrzi |
 | `js/features/word-info.js` | szómagyarázat: „i” gomb a kártyák hátoldalán, a Figyelj sor, a hibás válasz utáni magyarázat és az alulról nyíló lap (`openWordInfo`) |
 | `js/practice/lesson-test.js` | Lecke-zárás (japán): egy lecke elkezdett szavai egyszer, vegyes kérdésfajtával (`mix`: szavanként `meaning` / `reverse` / `typed` / `listen`, a motor `applyLessonTestKind()`-dal állítja be a típust és az irányt); az első kör eredménye `globalStats.lessonTests[lecke] = { date, pct, total, best }`, 90%-tól lezárt |
+| `grammar_notes.js` | nyelvtan leckénként (`GRAMMAR_NOTES`, lecke → `{ title, points: [{ pattern, name, text, ex: [[japán, magyar]], watch }] }`), klasszikus script; 1. adag: Dekiru 1–12. lecke, a könyv sorrendjében, saját magyarázattal és példákkal |
+| `js/features/grammar.js` | a lecke nyelvtana: sor a Gyakorlás fülön (egy lecke kiválasztva, a Lecke-zárás fölött), alulról nyíló lap kinyitható pontokkal, felolvasással (`speakGrammar`) és leckelapozással (`openGrammar`) |
 | `tools/` | fejlesztői eszközök, az app nem tölti be őket: KanjiVG feldolgozás, demó, a README képei (lásd lent) |
 
 ### Új függvény, amit HTML-ből hívsz
@@ -202,6 +204,7 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/unit/answer.test.js`, `tests/review-typed.test.js`** – a hibatűrő ellenőrző; gépelős, választós, vegyes és fordított ismétlés a teljes appal, a megtartási arány számolása.
 - **`tests/word-notes.test.js`, `tests/word-info.test.js`** – a jegyzetek létező szóhoz és létező kapcsolódó szóhoz tartoznak, rövidek; az „i” gomb, a Figyelj sor, a lap (lapozás, vissza, Escape) és a hibás válasz utáni magyarázat a gyakorlásban és az ismétlésben.
 - **`tests/lesson-test.test.js`** – a Lecke-zárás: melyik leckét ajánlja a Kezdőlap, minden szó egyszer és mind a négy kérdésfajta, a toldalékos szó nem gépelős, a kör vége (Még nem ül a kérdésfajtával, mentett eredmény, a második kör nem írja felül), a Gyakorlás fül sora, a lezárt lecke a menüben és a Statisztikában.
+- **`tests/grammar-notes.test.js`, `tests/grammar.test.js`** – a nyelvtan adatai (létező lecke, minden pontban minta, név, magyarázat és japán példa, hossz, írásjelek); a Gyakorlás fül sora, a lap (pontok, példák, buktató, lapozás, Escape), több lecke és angol mód esetén nincs nyelvtan.
 - **`tests/data.test.js`** (V13.33 óta) a kana mezőben latin betűt sem enged (elgépelés); az így javított szavak a `RENAMED_WORDS`-be kerülnek, hogy a haladás átköltözzön.
 - **`tests/unit/counters.test.js`, `tests/stats-shortcuts.test.js`** – mit számol a számlálószó; a Statisztika szólistájából gyakorlás, a JLPT-kártya két sora, a heti sor hét napja, és a számlálószó-címke a tanuló, a gyakorló és a 3D kártyán.
 - **`tests/tts.test.js`, `tests/tts-android.test.js`** – a hangútvonal: Google-hang, újrapróbálás, nyelvhez illő tartalék, a hangkimenet ébren tartása, napló.

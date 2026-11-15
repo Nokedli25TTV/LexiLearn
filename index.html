@@ -128,8 +128,8 @@
           <span id="sort-label">A → Z</span>
         </button>
       </div>
-      <!-- V13.35: ha egy lecke van kiválasztva, innen indítható a lecke zárása -->
-      <div class="lesson-test-slot" id="lesson-test-slot" hidden></div>
+      <!-- V13.35: ha egy lecke van kiválasztva: a lecke nyelvtana és a zárása -->
+      <div class="lesson-tools-slot" id="lesson-tools-slot" hidden></div>
       <div class="list-toolbar list-toolbar-2">
         <div class="segmented segmented-sm" role="tablist" aria-label="Nézet">
           <button role="tab" id="vtab-words" class="active" aria-selected="true" onclick="switchViewTab('words')">Szavak</button>
@@ -571,6 +571,13 @@
 </div>
 
 <!-- V13.33: szómagyarázat (a kártyák "i" gombja) -->
+<!-- V13.35: nyelvtan leckénként (alulról nyíló lap) -->
+<div class="modal-overlay" id="grammar-modal" aria-hidden="true">
+  <div class="modal word-info-modal grammar-modal" role="dialog" aria-modal="true" aria-labelledby="grammar-title">
+    <div id="grammar-body"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="word-info-modal" aria-hidden="true">
   <div class="modal word-info-modal" role="dialog" aria-modal="true" aria-labelledby="word-info-word">
     <div id="word-info-body"></div>
@@ -622,6 +629,7 @@
 <script src="japanese_sentences.js?v=13.35"></script>
 <script src="english_sentences2.js?v=13.35"></script>
 <script src="word_notes.js?v=13.35"></script>
+<script src="grammar_notes.js?v=13.35"></script>
 <!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
 <script src="data-registry.js?v=13.35"></script>
 

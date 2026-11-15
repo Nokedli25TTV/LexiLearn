@@ -29,6 +29,7 @@ const STATIC_ASSETS = [
   './js/core/answer.js', // V13.31
   './js/core/counters.js', // V13.32
   './js/features/word-info.js', // V13.33
+  './js/features/grammar.js', // V13.35
   './js/features/bookmarks.js',
   './js/goal/jlpt.js',
   './js/goal/radical-path.js',
@@ -80,6 +81,7 @@ const STATIC_ASSETS = [
   './japanese_sentences.js',
   './english_sentences2.js',
   './word_notes.js', // V13.33
+  './grammar_notes.js', // V13.35
   './data-registry.js',
   './manifest.json',
   './icon-192.png',

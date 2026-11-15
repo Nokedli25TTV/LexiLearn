@@ -16,6 +16,7 @@ import { setDailyGoal, setReviewBatch, setReviewStyle, tapVersion, toggleMixAudi
 import { downloadReminder, setReminderTime } from './features/reminder.js';
 import { replayStrokes } from './features/strokes.js';
 import { closeWordInfo, openWordInfo, wordInfoBack } from './features/word-info.js';
+import { closeGrammar, openGrammar, speakGrammar } from './features/grammar.js';
 import './features/quests.js';
 import './features/streak.js';
 import './habit/goal.js';
@@ -50,6 +51,7 @@ Object.assign(window, {
   activateNewSW,
   applyFilters,
   checkAnswer,
+  closeGrammar,
   checkHardcoreAnswer,
   checkSentenceAnswer,
   clearAllBookmarks,
@@ -80,6 +82,7 @@ Object.assign(window, {
   onTagSearch,
   openAddModal,
   openCurrentLesson,
+  openGrammar,
   openImportModal,
   openPoolSource,
   openReviewQueue,
@@ -129,6 +132,7 @@ Object.assign(window, {
   speakQuestionWord,
   startLearnSession,
   startLessonTest,
+  speakGrammar,
   startNextRound,
   startPractice,
   sbGiveUp,

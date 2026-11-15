@@ -14,6 +14,7 @@ import { closeLibraryOverlays } from '../library/menus.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { showQuestion } from './engine.js';
+import { grammarRowHtml } from '../features/grammar.js';
 
 const PASS_PCT = 90;
 
@@ -94,13 +95,13 @@ function lessonTestHomeRowHtml() {
   return lesson ? testRowHtml(lesson) : '';
 }
 
-// Gyakorlás fül: ha pontosan egy lecke van kiválasztva a szűrőben
-function renderLessonTestSlot() {
-  const slot = document.getElementById('lesson-test-slot');
+// Gyakorlás fül: ha pontosan egy lecke van kiválasztva a szűrőben, a lecke nyelvtana és a zárása
+function renderLessonTools() {
+  const slot = document.getElementById('lesson-tools-slot');
   if (!slot) return;
   const f = state.filters || {};
   const lessons = Array.isArray(f.lesson) ? f.lesson : [];
-  slot.innerHTML = hasLessonTest() && lessons.length === 1 ? testRowHtml(lessons[0]) : '';
+  slot.innerHTML = hasLessonTest() && lessons.length === 1 ? (grammarRowHtml(lessons[0]) + testRowHtml(lessons[0])).trim() : '';
   slot.hidden = !slot.innerHTML;
 }
 
@@ -171,4 +172,4 @@ function finishLessonTestRound(p, pct) {
   }
 }
 
-export { KINDS as LESSON_TEST_KINDS, PASS_PCT, applyLessonTestKind, finishLessonTestRound, isLessonClosed, lessonTestBadge, lessonTestHomeRowHtml, lessonTestResult, lessonTestWords, renderLessonTestSlot, startLessonTest, suggestedLessonTest };
+export { KINDS as LESSON_TEST_KINDS, PASS_PCT, applyLessonTestKind, finishLessonTestRound, isLessonClosed, lessonTestBadge, lessonTestHomeRowHtml, lessonTestResult, lessonTestWords, renderLessonTools, startLessonTest, suggestedLessonTest };
