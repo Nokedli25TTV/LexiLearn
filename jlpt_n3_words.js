@@ -1528,7 +1528,6 @@ const N3_WORDS = [
   { kana: 'ひこうじょう', kanji: '飛行場', romaji: 'hikoujou', hu: 'repülőtér', tags: ['közlekedés','helyek'], jlpt: 'N4' },
   { kana: 'びじゅつかん', kanji: '美術館', romaji: 'bijutsukan', hu: 'művészeti múzeum', tags: ['helyek','kultúra'], jlpt: 'N4' },
   { kana: 'ぶんがく', kanji: '文学', romaji: 'bungaku', hu: 'irodalom', tags: ['iskola','kultúra'], jlpt: 'N4' },
-  { kana: 'ぶんぽう', kanji: '文法', romaji: 'bunpou', hu: 'nyelvtan', tags: ['iskola'], jlpt: 'N4' },
   { kana: 'ほうそう', kanji: '放送・包装', romaji: 'housou', hu: 'közvetítés, adás (放送) / csomagolás (包装)', tags: ['kommunikáció'], jlpt: 'N4' },
   { kana: 'ほうりつ', kanji: '法律', romaji: 'houritsu', hu: 'törvény', tags: ['társadalom'], jlpt: 'N4' },
   { kana: 'ほんやく', kanji: '翻訳', romaji: "hon'yaku", hu: 'fordítás (írásos)', tags: ['iskola','munka'], jlpt: 'N4' },

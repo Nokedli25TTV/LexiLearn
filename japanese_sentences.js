@@ -782,8 +782,8 @@ const JAPANESE_SENTENCES_L6 = [
   { baseWord: "にしえき", sentenceWithBlank: "___BLANK___ から でんしゃに のります。", fullSentenceHTML: "<ruby>西駅<rt>にしえき</rt></ruby>から <ruby>電車<rt>でんしゃ</rt></ruby>に のります。", ttsSentence: "にしえきから でんしゃに のります。", correctAnswer: "にしえき", hungarian: "A Nyugati pályaudvartól szállok vonatra." },
   { baseWord: "ひろば", sentenceWithBlank: "おおきい ___BLANK___ ですね。", fullSentenceHTML: "<ruby>大<rt>おお</rt></ruby>きい <ruby>広場<rt>ひろば</rt></ruby>ですね。", ttsSentence: "おおきい ひろばですね。", correctAnswer: "ひろば", hungarian: "Nagy tér, ugye?" },
   { baseWord: "ひろば", sentenceWithBlank: "___BLANK___ に ひとが たくさん います。", fullSentenceHTML: "<ruby>広場<rt>ひろば</rt></ruby>に <ruby>人<rt>ひと</rt></ruby>が たくさん います。", ttsSentence: "ひろばに ひとが たくさん います。", correctAnswer: "ひろば", hungarian: "Sok ember van a téren." },
-  { baseWord: "ぶんぼう", sentenceWithBlank: "にほんごの ___BLANK___ は むずかしいです。", fullSentenceHTML: "にほんごの <ruby>文法<rt>ぶんぼう</rt></ruby>は <ruby>難<rt>むずか</rt></ruby>しいです。", ttsSentence: "にほんごの ぶんぼうは むずかしいです。", correctAnswer: "ぶんぼう", hungarian: "A japán nyelvtan nehéz." },
-  { baseWord: "ぶんぼう", sentenceWithBlank: "___BLANK___ を べんきょうします。", fullSentenceHTML: "<ruby>文法<rt>ぶんぼう</rt></ruby>を <ruby>勉強<rt>べんきょう</rt></ruby>します。", ttsSentence: "ぶんぼうを べんきょうします。", correctAnswer: "ぶんぼう", hungarian: "Nyelvtant tanulok." },
+  { baseWord: "ぶんぽう", sentenceWithBlank: "にほんごの ___BLANK___ は むずかしいです。", fullSentenceHTML: "にほんごの <ruby>文法<rt>ぶんぽう</rt></ruby>は <ruby>難<rt>むずか</rt></ruby>しいです。", ttsSentence: "にほんごの ぶんぼうは むずかしいです。", correctAnswer: "ぶんぼう", hungarian: "A japán nyelvtan nehéz." },
+  { baseWord: "ぶんぽう", sentenceWithBlank: "___BLANK___ を べんきょうします。", fullSentenceHTML: "<ruby>文法<rt>ぶんぽう</rt></ruby>を <ruby>勉強<rt>べんきょう</rt></ruby>します。", ttsSentence: "ぶんぼうを べんきょうします。", correctAnswer: "ぶんぼう", hungarian: "Nyelvtant tanulok." },
 
   // --- Ételek és Napszakok ---
   { baseWord: "ごはん", sentenceWithBlank: "___BLANK___ を たべます。", fullSentenceHTML: "ごはんを <ruby>食<rt>た</rt></ruby>べます。", ttsSentence: "ごはんを たべます。", correctAnswer: "ごはん", hungarian: "Rizst eszem." },

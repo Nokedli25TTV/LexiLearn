@@ -103,7 +103,9 @@ function remapWordReferences(oldToNew) {
 const RENAMED_WORDS = {
   japanese: { 'ハンがリー': 'ハンガリー', 'ブルがリア': 'ブルガリア', 'がス': 'ガス', 'しゅっえんする': 'しゅつえんする',
     // V13.33: latin betű a kanában (a kana mező most teszttel védett)
-    'おototoi': 'おととい', 'きょねn': 'きょねん', 'でnき': 'でんき', 'うde': 'うで' }
+    'おototoi': 'おととい', 'きょねn': 'きょねん', 'でnき': 'でんき', 'うde': 'うで',
+    // V13.37: ぶんぽう (nyelvtan) helyett ぶんぼう állt (a ぶんぼうぐ írószer más szó)
+    'ぶんぼう': 'ぶんぽう' }
 };
 const hasWordProgress = w => !!(w && (w.bookmarked || w.lessonFocus || (w.stats && (w.stats.lastAttempt || w.stats.learnedAt || w.stats.introducedAt || w.stats.srs || w.stats.totalCorrect || w.stats.totalWrong))));
 

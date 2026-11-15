@@ -430,7 +430,7 @@ const DEKIRU_L6 = [
   { kana: 'ロシア', romaji: 'roshia', hu: 'Oroszország', tags: ['országok'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
   { kana: 'にしえき', romaji: 'nishieki', hu: 'Nyugati pályaudvar', tags: ['helyek'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
   { kana: 'ひろば', romaji: 'hiroba', hu: 'tér', tags: ['helyek'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
-  { kana: 'ぶんぼう', romaji: 'bunbou', hu: 'nyelvtan', tags: ['iskola'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
+  { kana: 'ぶんぽう', romaji: 'bunpou', hu: 'nyelvtan', tags: ['iskola'], jlpt: 'N4', lesson: [6], source: 'dekiru' },
 
   // Ételek és napszakok
   { kana: 'ごはん', romaji: 'gohan', hu: 'főtt rizs, étkezés', tags: ['ételek'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
