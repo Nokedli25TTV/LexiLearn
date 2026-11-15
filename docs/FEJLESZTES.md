@@ -47,7 +47,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `word_notes.js` | a japán szavak kézzel írt tudnivalói (`WORD_NOTES`, kana szerint: `pos`, `use`, `watch`, `rel`), klasszikus script, adagonként bővül (1. adag: Dekiru 1–5); a `tests/word-notes.test.js` ellenőrzi |
 | `js/features/word-info.js` | szómagyarázat: „i” gomb a kártyák hátoldalán, a Figyelj sor, a hibás válasz utáni magyarázat és az alulról nyíló lap (`openWordInfo`) |
 | `js/practice/lesson-test.js` | Lecke-zárás (japán): egy lecke elkezdett szavai egyszer, vegyes kérdésfajtával (`mix`: szavanként `meaning` / `reverse` / `typed` / `listen`, a motor `applyLessonTestKind()`-dal állítja be a típust és az irányt); az első kör eredménye `globalStats.lessonTests[lecke] = { date, pct, total, best }`, 90%-tól lezárt |
-| `grammar_notes.js` | nyelvtan leckénként (`GRAMMAR_NOTES`, lecke → `{ title, points: [{ pattern, name, text, ex: [[japán, magyar]], watch }] }`), klasszikus script; 1. adag: Dekiru 1–12. lecke, a könyv sorrendjében, saját magyarázattal és példákkal |
+| `grammar_notes.js` | nyelvtan leckénként (`GRAMMAR_NOTES`, lecke → `{ title, points: [{ pattern, name, text, ex: [[japán, magyar]], watch }] }`), klasszikus script; mind a 48 Dekiru-lecke (1. könyv 1–24., 2. könyv 25–48., a 2. könyv japán leckecímei magyarul), a könyv sorrendjében, saját magyarázattal és példákkal |
 | `js/features/grammar.js` | a lecke nyelvtana: sor a Gyakorlás fülön (egy lecke kiválasztva, a Lecke-zárás fölött), alulról nyíló lap kinyitható pontokkal, felolvasással (`speakGrammar`) és leckelapozással (`openGrammar`) |
 | `tools/` | fejlesztői eszközök, az app nem tölti be őket: KanjiVG feldolgozás, demó, a README képei (lásd lent) |
 

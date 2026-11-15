@@ -348,7 +348,7 @@ Japán módban egy Dekiru-lecke elkezdett szavai egyszer, vegyes kérdésekkel: 
 - **Hang:** nem vizsga, nincs bukás; „Majdnem kész, a záráshoz 90% kell”, „Ezt a leckét érdemes még gyakorolni, mielőtt továbblépsz”.
 
 ### Nyelvtan leckénként (V13.35)
-A Dekiru leckéinek nyelvtani szerkezetei a könyv sorrendjében (`grammar_notes.js`), saját rövid magyarázattal és saját példákkal.
+A Dekiru leckéinek nyelvtani szerkezetei a könyv sorrendjében (`grammar_notes.js`, mind a 48 lecke, V13.36), saját rövid magyarázattal és saját példákkal. A magyar szövegbe ágyazott japán szó sem törik ketté.
 - **Helye:** a Gyakorlás fülön, ha pontosan egy lecke van kiválasztva, a lista fölött két sor: „4. lecke nyelvtana” (semleges szövegszín, alatta a szerkezetek száma és mintái egy sorban, levágva), alatta a Lecke-zárás (zöld). A leckekártya a Kezdőlapon ide nyit.
 - **A lap:** a szómagyarázat alulról nyíló lapja. Fent „NYELVTAN · DEKIRU 1. KÖNYV” (Label stílus) és a cím (22px 900). A pontok egy keretes listában, kinyitható sorokban: a minta (17px 800, japán szavak nem törnek, csak a ／ és a szóköz után), alatta a név (13px, másodlagos). Kinyitva: magyarázat, példák (40px kerek felolvasó gomb Felület 2 alapon, japán 17px, alatta a magyar 14px), Figyelj blokk. Alul: előző / következő lecke (zöld szöveges gomb).
 - **Hang:** tárgyszerű, tegező; a magyar toldalék nem válik el a kötőjelétől (nem törő kötőjel).

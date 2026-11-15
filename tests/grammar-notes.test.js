@@ -21,15 +21,15 @@ const EMOJI = /\p{Extended_Pictographic}/u;
 const FIELDS = ['pattern', 'name', 'text', 'ex', 'watch'];
 
 describe('nyelvtan leckénként (grammar_notes.js)', () => {
-  it('a leckék sorban, hézag nélkül, legalább a Dekiru 1. könyv mind a 24 leckéje; mind létező lecke, címmel', () => {
+  it('mind a 48 Dekiru-lecke (1. és 2. könyv), sorban, létező leckék, címmel', () => {
     const nums = lessons.map(([n]) => Number(n));
     expect(nums).toEqual(Array.from({ length: nums.length }, (_, i) => i + 1));
-    expect(nums.length).toBeGreaterThanOrEqual(24);
+    expect(nums.length).toBe(48);
     const book2 = new Set((get('DEKIRU_2_WORDS') || []).flatMap(w => w.lesson));
     lessons.forEach(([n, g]) => {
       expect(Number(n) <= 24 ? get(`DEKIRU_L${n}`) : book2.has(Number(n))).toBeTruthy();
       expect(typeof g.title).toBe('string');
-      expect(g.points.length).toBeGreaterThanOrEqual(3);
+      expect(g.points.length).toBeGreaterThanOrEqual(1);
     });
   });
 

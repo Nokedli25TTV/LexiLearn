@@ -18,8 +18,11 @@ const hasGrammar = lesson => currentMode === 'japanese' && !!grammarOf(lesson)?.
 const grammarLessons = () => Object.keys(GRAMMAR_NOTES).map(Number).filter(n => grammarOf(n).points?.length).sort((a, b) => a - b);
 const bookOf = lesson => (Number(lesson) >= 25 ? 2 : 1);
 // Tördelés: a magyar toldalék (-ba, -tól) nem válik el a kötőjelétől (nem törő kötőjel, U+2011);
-// a minta darabjai egyben maradnak, csak a ／, a ・ és a szóköz után törhet (utánuk nulla szélességű szóköz)
-const huText = t => escHtml(t).replace(/(^|[\s(„])-(?=\p{L})/gu, '$1‑');
+// a magyar szövegbe ágyazott japán szó sem törik ketté; a minta darabjai egyben maradnak, csak a ／,
+// a ・ és a szóköz után törhet (utánuk nulla szélességű szóköz)
+const huText = t => escHtml(t)
+  .replace(/(^|[\s(„])-(?=\p{L})/gu, '$1‑')
+  .replace(/[぀-ヿ㐀-鿿～]+/g, m => `<span class="gr-nb" lang="ja">${m}</span>`);
 const jaPattern = t => String(t).split(/([／・ ]+)/)
   .map(part => (/^[／・ ]+$/.test(part) ? `${escHtml(part)}​` : part ? `<span class="gr-nb">${escHtml(part)}</span>` : ''))
   .join('');

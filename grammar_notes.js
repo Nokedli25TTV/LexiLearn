@@ -2,7 +2,7 @@
    A Dekiru nyelvkönyv leckéinek nyelvtani szerkezetei, a könyv sorrendjében, saját rövid
    magyarázattal és saját példákkal (kana, szóközzel tagolva, mint a könyv első leckéi).
    Lecke → { title, points: [{ pattern, name, text, ex: [[japán, magyar], …], watch? }] }
-   Dekiru 1: 1–24. lecke (1. adag: 1–12., 2. adag: 13–24.). */
+   Dekiru 1: 1–24. lecke, Dekiru 2: 25–48. lecke (a könyvben japán leckecímek, itt magyarul). */
 const GRAMMAR_NOTES = {
   1: { title: 'Bemutatkozás', points: [
     { pattern: 'A は B です', name: 'Azonosítás, bemutatkozás',
@@ -526,5 +526,371 @@ const GRAMMAR_NOTES = {
     { pattern: 'tárgyatlan ige + て います', name: 'Eredmény, állapot',
       text: 'Tárgyatlan ige + て います: egy változás eredménye most is látszik (はなが さいて います: virágzik). Múlt időben: már megtörtént, és úgy volt.',
       ex: [['にわに はなが さいて います。', 'Virágok nyílnak a kertben.'], ['みせに ついた とき、もう しまって いました。', 'Mire a bolthoz értem, már zárva volt.']] }
+  ] },
+
+  /* ── Dekiru 2 (25–48. lecke) ── */
+  25: { title: 'Repülőtér', points: [
+    { pattern: '～だろう', name: 'Feltételezés (bizalmas)',
+      text: 'A でしょう egyszerű alakja: talán, valószínűleg. Gyakran と おもいます követi. Főnév és な-melléknév után だ nélkül: あめだろう.',
+      ex: [['あしたは あめだろう。', 'Holnap valószínűleg esni fog.'], ['ちかてつの ほうが はやいだろうと おもいます。', 'Szerintem a metró gyorsabb lesz.']],
+      watch: 'Feljebbvalóval önmagában udvariatlan; と おもいます-mal már rendben van.' },
+    { pattern: 'kérdőszó ～か', name: 'Beágyazott kérdés kérdőszóval',
+      text: 'Kérdőszavas kérdés egyszerű alakban + か, utána a fő mondat: いつ くるか わかりません (nem tudom, mikor jön). Főnév és な-melléknév után だ nélkül.',
+      ex: [['だれが くるか しって いますか。', 'Tudod, ki jön?'], ['なんじに つくか おしえて ください。', 'Mondd meg, hány órakor érkezel.']] },
+    { pattern: '～か どうか', name: 'Beágyazott kérdés: -e',
+      text: 'Kérdőszó nélküli kérdésnél: egyszerű alak + か どうか (…-e vagy sem).',
+      ex: [['この みせが あいて いるか どうか しらべます。', 'Megnézem, nyitva van-e ez a bolt.'], ['パーティーに いくか どうか まだ きめて いません。', 'Még nem döntöttem el, megyek-e a buliba.']] },
+    { pattern: '～はずです', name: 'Úgy kell lennie',
+      text: 'Egyszerű alak + はずです: biztosra veszem, hogy…; kell, hogy… (ésszerű következtetés). Főnév + の はず, な-melléknév + な はず.',
+      ex: [['かれは もう ついて いる はずです。', 'Már oda kell érnie.'], ['きょうは にちようびだから、ぎんこうは やすみの はずです。', 'Ma vasárnap van, a banknak zárva kell lennie.']],
+      watch: 'Saját szándékra nem használjuk: azt a つもり fejezi ki.' },
+    { pattern: '～の？', name: 'Közvetlen kérdés',
+      text: 'Barátok közt a mondat végi の emelkedő hanglejtéssel kérdez, magyarázatot vár: どうしたの？ (mi történt?). Főnév és な-melléknév után なの.',
+      ex: [['どこへ いくの？', 'Hová mész?'], ['ほんとうなの？', 'Tényleg?']] }
+  ] },
+
+  26: { title: 'Álmok, remények', points: [
+    { pattern: '～たら', name: 'Feltétel: ha, amikor',
+      text: 'た-forma + ら: ha …, (akkor). Ha a feltétel biztosan bekövetkezik, időt jelent: うちに ついたら でんわします (amikor hazaérek, hívlak). Főnév és な-melléknév: だったら.',
+      ex: [['あめが ふったら、いきません。', 'Ha esik, nem megyek.'], ['しごとが おわったら、のみに いきましょう。', 'Ha végeztünk a munkával, menjünk inni.']],
+      watch: 'A feltétel mindig megelőzi a fő mondat történését.' },
+    { pattern: '～う／～よう', name: 'Akaratlagos alak',
+      text: 'A ～ましょう egyszerű alakja: …-junk, …-jak. I. csoport: u helyett o + う (いく → いこう), II.: る helyett よう (たべよう), III.: しよう, こよう.',
+      ex: [['いっしょに かえろう。', 'Menjünk haza együtt.'], ['ちょっと やすもうか。', 'Pihenjünk egy kicsit?']] },
+    { pattern: '～う／～ようと おもって います', name: 'Elhatározás, terv',
+      text: 'Akaratlagos alak + と おもって います: azt tervezem, úgy döntöttem, hogy…. A saját, jövőre vonatkozó szándékodra.',
+      ex: [['らいねん、にほんごの しけんを うけようと おもって います。', 'Jövőre le akarom tenni a japán nyelvvizsgát.']] },
+    { pattern: '～までに', name: 'Határidő',
+      text: 'Időpont + までに: legkésőbb addigra. まで: addig folyamatosan; までに: addigra megtörténik.',
+      ex: [['きんようびまでに レポートを だして ください。', 'Péntekig add le a beszámolót.'], ['じゅうじまで べんきょうします。', 'Tízig tanulok.']],
+      watch: 'じゅうじまでに おわります: tízre befejezem; じゅうじまで: tízig (folyamatosan).' },
+    { pattern: 'főnév + らしい', name: 'Rá jellemző',
+      text: 'Főnév + らしい: olyan, amilyennek lennie kell, jellemző rá (こどもらしい: gyermeki). い-melléknévként ragozódik.',
+      ex: [['きょうは はるらしい てんきですね。', 'Igazi tavaszi idő van ma.'], ['かれは ほんとうに おとこらしい ひとです。', 'Igazán férfias ember.']] }
+  ] },
+
+  27: { title: 'Készülődés a bulira', points: [
+    { pattern: '～える／～られる', name: 'Ható alak: tud, lehet',
+      text: 'I. csoport: u helyett e + る (かく → かける), II.: る helyett られる (たべられる), III.: こられる, する → できる. A tárgy gyakran が-t kap. Jelentése: tud, képes, lehet.',
+      ex: [['わたしは およげません。', 'Nem tudok úszni.'], ['この みずは のめますか。', 'Iható ez a víz?']],
+      watch: 'Az ある, いる, わかる igéknek nincs ható alakja.' },
+    { pattern: '～に きまって います', name: 'Biztos, hogy',
+      text: 'Egyszerű alak + に きまって います: az biztos, hogy…; magától értetődik. Főnév és な-melléknév után だ nélkül. Élőbeszédben gyakori.',
+      ex: [['あの チームが かつに きまって いるよ。', 'Biztos, hogy az a csapat nyer.'], ['そんなの、うそに きまって います。', 'Ez egészen biztosan hazugság.']] },
+    { pattern: '～とか ～とか', name: 'Például ez, az',
+      text: 'Hasonló dolgok példaszerű felsorolása, főleg élőbeszédben, mint a や: すしとか てんぷらとか (szusi, tempura, meg ilyesmik).',
+      ex: [['やさいとか くだものとか、からだに いい ものを たべて ください。', 'Egyél egészséges dolgokat, például zöldséget, gyümölcsöt.']] },
+    { pattern: '～さ', name: 'Főnévképző',
+      text: 'Melléknévből főnevet képez (mint a magyar -ság, -ség): い-melléknév い nélkül, な-melléknév な nélkül + さ. たかい → たかさ (magasság), しずか → しずかさ (csend).',
+      ex: [['この やまの たかさは どのくらいですか。', 'Milyen magas ez a hegy?'], ['かぞくの たいせつさが わかりました。', 'Rájöttem, milyen fontos a család.']] },
+    { pattern: '～が／～の + jelzett szó', name: 'Alany a jelző mondatban',
+      text: 'A jelző mondatban az alanyt が jelöli (は nem állhat), és ez a が gyakran の-ra cserélhető: ははが／の つくった りょうり.',
+      ex: [['ともだちの かいた え', 'a kép, amit a barátom rajzolt'], ['わたしが すんで いる まち', 'a város, ahol lakom']] }
+  ] },
+
+  28: { title: 'Az elektronikai boltban', points: [
+    { pattern: '～なら', name: 'Ha (abban az esetben)',
+      text: 'Főnév, な-melléknév, illetve ige és い-melléknév egyszerű alakja + なら: ha az a helyzet, hogy…. Gyakran ajánlásra: ～なら、～が いいですよ.',
+      ex: [['カメラなら、あの みせが やすいですよ。', 'Ha fényképezőt keresel, az a bolt olcsó.'], ['にほんへ いくなら、あきが いいです。', 'Ha Japánba mész, az ősz jó.']] },
+    { pattern: '～ば', name: 'Feltételes alak',
+      text: 'I. csoport: u helyett e + ば (かけば), II.: る helyett れば (たべれば), III.: くれば, すれば. い-melléknév: い helyett ければ, főnév és な-melléknév: なら. Valódi feltétel: ha…, akkor.',
+      ex: [['この ボタンを おせば、でんげんが はいります。', 'Ha megnyomod ezt a gombot, bekapcsol.'], ['じかんが あれば、てつだいます。', 'Ha lesz időm, segítek.']],
+      watch: 'いい → よければ.' },
+    { pattern: '～で ございます', name: 'Udvarias です',
+      text: 'A です udvariasabb, üzleti alakja (boltban, szállodában hallod).',
+      ex: [['こちらが あたらしい モデルで ございます。', 'Ez az új modell, kérem.'], ['おてあらいは あちらで ございます。', 'A mosdó arra található.']] },
+    { pattern: '～し、～し', name: 'Ráadásul',
+      text: 'Egyszerű (vagy udvarias) alak + し: érveket, okokat sorol (ez is, az is, és még…). A végén gyakran következtetés áll.',
+      ex: [['この へやは ひろいし、えきから ちかいし、いいですね。', 'Ez a lakás tágas, közel van az állomáshoz, tényleg jó.']] },
+    { pattern: '～に ちがい ありません', name: 'Kétségtelenül',
+      text: 'Egyszerű alak + に ちがい ありません (ちがいない): biztosan, kétségtelenül. Főnév és な-melléknév után だ nélkül. Erősebb, mint a でしょう.',
+      ex: [['かれは つかれて いるに ちがい ありません。', 'Biztosan fáradt.'], ['あれは たなかさんの くるまに ちがいない。', 'Az biztosan Tanaka úr autója.']] }
+  ] },
+
+  29: { title: 'Új tanév', points: [
+    { pattern: '～ところ', name: 'Épp most',
+      text: 'Szótári alak + ところ: épp most kezdené. ～て いる ところ: épp csinálja. ～た ところ: épp most fejezte be.',
+      ex: [['いま でかける ところです。', 'Épp indulni készülök.'], ['いま ごはんを たべて いる ところです。', 'Épp eszem.'], ['いま かえって きた ところです。', 'Épp most értem haza.']] },
+    { pattern: '～ように いう', name: 'Üzenet átadása',
+      text: 'Ige egyszerű alakja + ように いう: megkér, szól valakinek, hogy…. Kérés továbbadására; magyarul felszólítással fordítjuk.',
+      ex: [['あとで でんわする ように いって ください。', 'Mondja meg neki, kérem, hogy hívjon vissza később.'], ['ははは わたしに はやく ねる ように いいました。', 'Anyukám mondta, hogy feküdjek le korán.']] },
+    { pattern: '～と いう ことです', name: 'Vagyis, azt jelenti',
+      text: 'Egyszerű alak + と いう ことです: azaz, más szóval; az elhangzottak összefoglalása, értelmezése.',
+      ex: [['つまり、あしたは やすみと いう ことですね。', 'Vagyis holnap szünnap van, igaz?'], ['「ペコペコ」は おなかが すいたと いう ことです。', 'A „pekopeko” azt jelenti, hogy éhes vagyok.']] },
+    { pattern: '～に ついて', name: 'Valamiről',
+      text: 'Főnév + に ついて: -ról, -ről, valamivel kapcsolatban (beszél, kérdez, ír).',
+      ex: [['にほんの ぶんかに ついて はなします。', 'A japán kultúráról beszélek.'], ['この もんだいに ついて どう おもいますか。', 'Mit gondolsz erről a kérdésről?']] }
+  ] },
+
+  30: { title: 'Iskolaújság', points: [
+    { pattern: '～のに', name: 'Annak ellenére, hogy',
+      text: 'Egyszerű alak + のに: pedig, annak ellenére, hogy (csalódást, elégedetlenséget fejez ki). Főnév és な-melléknév után なのに.',
+      ex: [['たくさん べんきょうしたのに、しけんに おちました。', 'Pedig sokat tanultam, mégis megbuktam.'], ['にちようびなのに、しごとが あります。', 'Vasárnap van, mégis dolgoznom kell.']] },
+    { pattern: '～なくても いい／かまわない', name: 'Nem kell',
+      text: 'A ない-forma い nélkül + くても いいです: nem kell, felesleges. ～なくても かまいません: az sem baj, ha nem.',
+      ex: [['あしたは こなくても いいです。', 'Holnap nem kell bejönnöd.'], ['ぜんぶ たべなくても かまいません。', 'Nem baj, ha nem eszed meg az egészet.']] },
+    { pattern: '～に よって', name: 'Valamitől függően',
+      text: 'Főnév + に よって: valamitől függően, valaminek megfelelően (ひとに よって: emberenként más).',
+      ex: [['くにに よって しゅうかんが ちがいます。', 'Országonként mások a szokások.'], ['ひに よって きぶんが かわります。', 'Naponta változik a kedvem.']] }
+  ] },
+
+  31: { title: 'Kanszai nyelvjárás', points: [
+    { pattern: '～と (feltétel)', name: 'Ha, (mindig) akkor',
+      text: 'Szótári alak + と: ha …, akkor (természetes, magától bekövetkező következmény, útbaigazítás). A fő mondatban nem állhat kérés vagy szándék.',
+      ex: [['この みちを まっすぐ いくと、えきが あります。', 'Ha egyenesen mész ezen az úton, ott az állomás.'], ['はるに なると、さくらが さきます。', 'Ha jön a tavasz, kivirágzik a cseresznye.']] },
+    { pattern: '～ようです', name: 'Úgy tűnik',
+      text: 'Egyszerű alak + ようです: úgy tűnik, hogy… (látottak, tapasztaltak alapján). Főnév + の ようです, な-melléknév + な ようです.',
+      ex: [['だれも いない ようです。', 'Úgy tűnik, nincs itt senki.'], ['かぜを ひいた ようです。', 'Úgy tűnik, megfáztam.']] },
+    { pattern: '～に くらべて', name: 'Valamihez képest',
+      text: 'Főnév + に くらべて: valamihez képest, valamivel összevetve.',
+      ex: [['きょねんに くらべて、ことしは あついです。', 'Tavalyhoz képest idén meleg van.']] },
+    { pattern: '～ように なります', name: 'Valamivé válik, képes lesz',
+      text: 'Szótári alak + ように なります: fokozatosan változik, szokássá válik. Ható alakkal: képessé válik (はなせる ように なりました: megtanultam beszélni).',
+      ex: [['にほんごが すこし はなせる ように なりました。', 'Már tudok egy kicsit beszélni japánul.'], ['まいあさ うんどうする ように なりました。', 'Rászoktam a reggeli tornára.']] },
+    { pattern: 'みえます ・ きこえます', name: 'Látszik, hallatszik',
+      text: 'みえる, きこえる: magától látszik, hallatszik (akaratlanul). A ható alak (みられる, きける) akarattól függő lehetőség: ott meg lehet nézni, meg lehet hallgatni.',
+      ex: [['ここから ふじさんが みえます。', 'Innen látszik a Fudzsi.'], ['となりの へやから おんがくが きこえます。', 'A szomszéd szobából zene hallatszik.']] }
+  ] },
+
+  32: { title: 'Tanulmányok Japánban', points: [
+    { pattern: '～ても／～でも', name: 'Még ha…, akkor is',
+      text: 'て-forma + も: még ha … is. い-melléknév: くても, főnév és な-melléknév: でも.',
+      ex: [['あめが ふっても、しあいは あります。', 'Még ha esik is, lesz meccs.'], ['たかくても、かいたいです。', 'Még ha drága is, meg akarom venni.']] },
+    { pattern: '～ことが あります', name: 'Előfordul, hogy',
+      text: 'Szótári (vagy ない-) alak + ことが あります: néha előfordul, hogy…. (A ～た ことが あります tapasztalatot jelent.)',
+      ex: [['ときどき ねぼうする ことが あります。', 'Előfordul, hogy elalszom.'], ['でんしゃが おくれる ことも あります。', 'Az is előfordul, hogy késik a vonat.']] },
+    { pattern: '～ことに なる／なって いる', name: 'Úgy alakult, az a szabály',
+      text: 'Szótári alak + ことに なる: rajtad kívül álló döntés. ことに なりました: már eldőlt. ことに なって います: szabály, megállapodás. Saját döntés: ことに します.',
+      ex: [['らいげつ、おおさかへ てんきんする ことに なりました。', 'Úgy alakult, hogy jövő hónapban Oszakába helyeznek.'], ['ここでは くつを ぬぐ ことに なって います。', 'Itt le kell venni a cipőt (ez a szabály).']] },
+    { pattern: 'főnév + ばかり', name: 'Csupa, csak',
+      text: 'Főnév + ばかり: csupa, kizárólag (a だけ-nál erősebb, gyakran rosszalló).',
+      ex: [['こどもは あまい ものばかり たべます。', 'A gyerek csak édességet eszik.'], ['この クラスは おんなの ひとばかりです。', 'Ebben az osztályban csupa nő van.']] },
+    { pattern: '～ために', name: 'Valamiért, azért, hogy',
+      text: 'Főnév + の ために, vagy szótári alak + ために: valakiért, valami érdekében; azért, hogy… (szándékos cél).',
+      ex: [['かぞくの ために はたらきます。', 'A családomért dolgozom.'], ['りゅうがくする ために、おかねを ためて います。', 'Pénzt gyűjtök, hogy külföldön tanulhassak.']] }
+  ] },
+
+  33: { title: 'Főzés', points: [
+    { pattern: '～の ようだ ・ ～みたいだ', name: 'Hasonlóság: mint',
+      text: 'Főnév + の ようだ, élőbeszédben főnév + みたいだ: olyan, mint…; úgy, mint…. な-melléknévként ragozódik: ～の ような (jelző), ～の ように (határozó).',
+      ex: [['この ケーキは はなの ような かたちです。', 'Ez a sütemény virág alakú.'], ['ゆめみたいな はなしですね。', 'Olyan, mint egy álom.']] },
+    { pattern: 'melléknév + そうです', name: 'Látszat: …nak tűnik',
+      text: 'い-melléknév い nélkül, な-melléknév な nélkül + そうです: ránézésre valamilyennek látszik. な-melléknévként ragozódik: おいしそうな ケーキ.',
+      ex: [['この ラーメンは おいしそうですね。', 'Ez a rámen finomnak tűnik.'], ['この もんだいは かんたんそうです。', 'Ez a feladat könnyűnek látszik.']],
+      watch: 'いい → よさそう, ない → なさそう.' },
+    { pattern: '～くらい／～ぐらい', name: 'Annyira, hogy',
+      text: 'Egyszerű alak + くらい／ぐらい: annyira…, hogy (mértéket érzékeltet).',
+      ex: [['あるけない くらい つかれました。', 'Annyira elfáradtam, hogy járni sem tudok.'], ['ねむれない くらい うれしかったです。', 'Annyira örültem, hogy aludni sem tudtam.']] },
+    { pattern: '～が します', name: 'Érzékelés',
+      text: 'Íz, hang, illat főneve + が します: érezni, hallani valamit (あじが する, おとが する, においが する).',
+      ex: [['いい においが しますね。', 'Jó illat van!'], ['へんな おとが します。', 'Furcsa hang hallatszik.']] }
+  ] },
+
+  34: { title: 'Mentőautó', points: [
+    { pattern: '～そうです (hallomás)', name: 'Állítólag',
+      text: 'Egyszerű alak + そうです: azt mondják, állítólag (hallott információ). Tovább nem ragozódik.',
+      ex: [['あしたは ゆきが ふる そうです。', 'Állítólag holnap havazik.'], ['たなかさんは けっこんした そうです。', 'Úgy hallottam, Tanaka úr megnősült.']],
+      watch: 'ふりそうです: úgy néz ki, esni fog; ふる そうです: állítólag esni fog.' },
+    { pattern: '～らしいです', name: 'Úgy tűnik, úgy hallom',
+      text: 'Egyszerű alak + らしい: bizonytalan, közvetett információn alapuló következtetés. Főnév és な-melléknév után だ nélkül.',
+      ex: [['あの みせは もう しまった らしいです。', 'Úgy tűnik, az a bolt már bezárt.'], ['かれは びょうき らしいです。', 'Úgy hallom, beteg.']] },
+    { pattern: '～に よると', name: 'Valaki szerint',
+      text: 'Főnév + に よると: …szerint (az információ forrása). Gyakran a hallomás そうです zárja.',
+      ex: [['てんきよほうに よると、あしたは はれる そうです。', 'Az időjárás-jelentés szerint holnap derült idő lesz.'], ['ニュースに よると、じこが あった そうです。', 'A hírek szerint baleset történt.']] }
+  ] },
+
+  35: { title: 'Média és tanulás', points: [
+    { pattern: '～かた', name: 'Hogyan kell? (mód)',
+      text: 'Ige ～ます nélküli alakja + かた: a módja. つくりかた (elkészítés módja), よみかた (olvasat), つかいかた (használat). A tárgya の-val áll: パソコンの つかいかた.',
+      ex: [['この かんじの よみかたを おしえて ください。', 'Mondd meg, hogy kell olvasni ezt a kandzsit.'], ['すしの つくりかたを ならいました。', 'Megtanultam, hogyan készül a szusi.']] },
+    { pattern: '～に かわって', name: 'Valaki helyett, felváltva',
+      text: 'Főnév + に かわって: valaki helyett, valamit felváltva (helyettesítés, változás).',
+      ex: [['ちちに かわって、わたしが あいさつします。', 'Apám helyett én mondok köszöntőt.']] },
+    { pattern: '～(の) かわりに', name: 'Helyett',
+      text: 'Főnév + の かわりに, ige + かわりに: helyett, helyette.',
+      ex: [['ペンの かわりに えんぴつを つかいます。', 'Toll helyett ceruzát használok.'], ['ははの かわりに、わたしが かいものに いきました。', 'Anyukám helyett én mentem bevásárolni.']] },
+    { pattern: '～まま', name: 'Úgy, ahogy van',
+      text: 'た-forma, ない-forma, melléknév vagy főnév + の + まま: abban az állapotban, változatlanul (くつの まま: cipőben).',
+      ex: [['でんきを つけた まま ねて しまいました。', 'Égve hagytam a villanyt, és elaludtam.'], ['くつの まま はいらないで ください。', 'Ne gyere be cipőben.']] }
+  ] },
+
+  36: { title: 'Rendezvényt tartunk', points: [
+    { pattern: '～れる／～られる (szenvedő 1)', name: 'Szenvedő szerkezet',
+      text: 'I. csoport: ない-tő + れる (かかれる), II.: る helyett られる, III.: される, こられる. Az alany elszenvedi a cselekvést; magyarul gyakran általános alannyal fordítjuk.',
+      ex: [['この おてらは ごひゃくねんまえに たてられました。', 'Ezt a templomot ötszáz éve építették.'], ['この ほんは せかいじゅうで よまれて います。', 'Ezt a könyvet az egész világon olvassák.']] },
+    { pattern: '～から ～に かけて', name: 'Valamitől valameddig',
+      text: 'Főnév + から + főnév + に かけて: …-tól …-ig terjedően (térben vagy időben, nem éles határral).',
+      ex: [['ろくがつから しちがつに かけて あめが おおいです。', 'Júniustól júliusig sok az eső.']] },
+    { pattern: '～でも', name: 'Akár, például',
+      text: 'Főnév + でも: akár, például (egy lehetőséget kiemelve, de nem kizárólag).',
+      ex: [['コーヒーでも のみませんか。', 'Nem iszunk egy kávét vagy valamit?'], ['えいがでも みに いきましょう。', 'Menjünk el mondjuk moziba.']] }
+  ] },
+
+  37: { title: 'Rendőrség', points: [
+    { pattern: 'A は B に C を ～れる', name: 'Szenvedő tárggyal: elszenvedett kár',
+      text: 'A szenvedő szerkezetben tárgy is állhat: valaki elvesz, tesz valamit velem (gyakran kár, kellemetlenség). Akitől: に.',
+      ex: [['でんしゃで さいふを とられました。', 'A vonaton ellopták a pénztárcámat.'], ['いもうとに ケーキを たべられました。', 'A húgom megette a süteményemet.']],
+      watch: 'Magyarul cselekvő mondattal fordítjuk: ellopták, megette.' },
+    { pattern: '～(の) おかげで', name: 'Valakinek köszönhetően',
+      text: 'Főnév + の おかげで, vagy ige た-forma + おかげで: hála valakinek, valaminek köszönhetően (jó eredmény).',
+      ex: [['せんせいの おかげで、しけんに ごうかくしました。', 'A tanárnak köszönhetően átmentem a vizsgán.'], ['まいにち れんしゅうした おかげで、じょうずに なりました。', 'A napi gyakorlásnak köszönhetően ügyes lettem.']],
+      watch: 'Rossz következményre: ～の せいで (48. lecke).' }
+  ] },
+
+  38: { title: 'Magyart tanítunk', points: [
+    { pattern: '～れる／～られる (tiszteleti)', name: 'Tisztelet szenvedő alakkal',
+      text: 'A szenvedő alak tiszteleti jelentésű is lehet: a feljebbvaló cselekvéséről beszélsz. Magadra sosem használod.',
+      ex: [['せんせいは もう かえられました。', 'A tanár úr már hazament.'], ['しゃちょうは なんじに こられますか。', 'Hány órakor érkezik az igazgató úr?']] },
+    { pattern: 'お／ご～に なります', name: 'Tiszteleti forma',
+      text: 'お + ige ～ます nélküli alakja + に なります (おかえりに なります); kínai eredetű szavaknál ご.',
+      ex: [['せんせいは もう おかえりに なりました。', 'A tanár úr már hazament.'], ['この ほんを およみに なりましたか。', 'Olvasta ezt a könyvet?']] },
+    { pattern: 'お／ご～ください', name: 'Udvarias felszólítás',
+      text: 'お／ご + ige ～ます nélküli alakja + ください: tisztelettudó felkérés (ごれんらく ください: kérem, értesítsen).',
+      ex: [['こちらで おまち ください。', 'Kérem, várjon itt.'], ['ごじゆうに おとり ください。', 'Kérem, vegyen bátran.']] },
+    { pattern: 'いらっしゃる ・ めしあがる ・ おっしゃる', name: 'Tiszteleti igék',
+      text: 'Külön tiszteleti ige: いく, くる, いる → いらっしゃる; たべる, のむ → めしあがる; いう → おっしゃる; みる → ごらんに なる; する → なさる; くれる → くださる.',
+      ex: [['せんせいは いま どちらに いらっしゃいますか。', 'Hol van most a tanár úr?'], ['どうぞ めしあがって ください。', 'Tessék, egyen.']] },
+    { pattern: '～うちに', name: 'Amíg még',
+      text: 'Szótári vagy ない-alak, い-melléknév, な-melléknév + な, főnév + の + うちに: amíg még… (addig, mielőtt megváltozik).',
+      ex: [['あたたかい うちに たべて ください。', 'Egyél, amíg meleg.'], ['わかい うちに いろいろな くにへ いきたいです。', 'Amíg fiatal vagyok, sok országba szeretnék elmenni.']] }
+  ] },
+
+  39: { title: 'Újévi összejövetel', points: [
+    { pattern: 'お／ご～します ・ いたします', name: 'Szerény forma',
+      text: 'A saját cselekvésedről szerényen: お + ige ～ます nélküli alakja + します (おもちします), kínai eredetű szónál ご (ごあんないします). Az いたします még szerényebb.',
+      ex: [['にもつを おもちしましょうか。', 'Vigyem a csomagját?'], ['のちほど ごれんらく いたします。', 'Később jelentkezem.']] },
+    { pattern: 'まいる ・ おる ・ もうす ・ いただく', name: 'Szerény igék',
+      text: 'いく, くる → まいる; いる → おる; いう → もうす; たべる, のむ, もらう → いただく; みる → はいけんする; する → いたす; あう → おめに かかる.',
+      ex: [['わたしは ハンガリーから まいりました。', 'Magyarországról jöttem.'], ['キシュと もうします。', 'Kisnek hívnak.']] },
+    { pattern: 'お～ ・ ご～', name: 'Tiszteleti előképző',
+      text: 'Az お／ご tiszteletet vagy finomságot fejez ki: おなまえ, ごかぞく. Japán eredetű szó elé általában お, kínai eredetű elé ご kerül; jövevényszó elé nem.',
+      ex: [['おなまえは なんですか。', 'Mi a neve?'], ['ごかぞくは おげんきですか。', 'Jól van a családja?']] },
+    { pattern: '～やすい ・ ～にくい', name: 'Könnyű, nehéz megcsinálni',
+      text: 'Ige ～ます nélküli alakja + やすい: könnyű …-ni; + にくい: nehéz …-ni. い-melléknévként ragozódik.',
+      ex: [['この ペンは かきやすいです。', 'Ezzel a tollal könnyű írni.'], ['この かんじは おぼえにくいです。', 'Ezt a kandzsit nehéz megjegyezni.']] },
+    { pattern: '～すぎます', name: 'Túl…',
+      text: 'Ige ～ます nélküli alakja, い-melléknév い nélkül, な-melléknév + すぎます: túlságosan, túl sokat.',
+      ex: [['きのうは たべすぎました。', 'Tegnap túl sokat ettem.'], ['この くつは おおきすぎます。', 'Ez a cipő túl nagy.']] }
+  ] },
+
+  40: { title: 'Interjú', points: [
+    { pattern: 'kérdőszó + ～ても', name: 'Akármi, akárhogy',
+      text: 'Kérdőszó + て-forma + も: akármit…, akárhogy…, akkor is (なにを たべても: akármit eszem). Főnévnél でも: だれでも (akárki).',
+      ex: [['なんど よんでも わかりません。', 'Akárhányszor olvasom, nem értem.'], ['いつ いっても こんで います。', 'Akármikor megyek, tele van.']] },
+    { pattern: '～だす ・ ～はじめる ・ ～つづける ・ ～おわる', name: 'Összetett igék',
+      text: 'Ige ～ます nélküli alakja + だす (hirtelen elkezd), はじめる (elkezd), つづける (tovább csinál), おわる (befejez).',
+      ex: [['きゅうに あめが ふりだしました。', 'Hirtelen elkezdett esni.'], ['この ほんを よみおわりました。', 'Kiolvastam ezt a könyvet.']] },
+    { pattern: 'ige + そうです (látszat)', name: 'Úgy néz ki, hogy',
+      text: 'Ige ～ます nélküli alakja + そうです: úgy néz ki, hogy (mindjárt)…; látható jelekből következtetsz. な-melléknévként ragozódik.',
+      ex: [['あめが ふりそうです。', 'Úgy néz ki, esni fog.'], ['にもつが おちそうですよ。', 'Mindjárt leesik a csomag!']] }
+  ] },
+
+  41: { title: 'Rendezvény bemutatása', points: [
+    { pattern: 'まるで ～ようです', name: 'Mintha',
+      text: 'まるで + főnév + の ようだ, vagy ige egyszerű alakja + ようだ: szinte olyan, mintha…; egészen olyan, mint.',
+      ex: [['まるで ゆめを みて いる ようです。', 'Mintha álmodnék.'], ['かれの にほんごは まるで にほんじんの ようです。', 'Úgy beszél japánul, mintha japán lenne.']] },
+    { pattern: 'mennyiség + も', name: 'Nyomaték: egészen',
+      text: 'Szám + も: az elvártnál nagyobb (vagy kisebb) mennyiséget érzékeltet: さんじかんも (egészen három órán át).',
+      ex: [['えきで いちじかんも まちました。', 'Egy egész órát vártam az állomáson.'], ['この ほんは いちまんえんも します。', 'Ez a könyv tízezer jenbe kerül!']] },
+    { pattern: '～しか ない', name: 'Nincs más lehetőség',
+      text: 'Szótári alak + しか ない: nem tehetek mást, csak…; ez az egyetlen lehetőség.',
+      ex: [['バスが ないから、あるいて いく しか ない。', 'Nincs busz, nem marad más, mint gyalog menni.']] },
+    { pattern: '～だけ あって', name: 'Nem csoda, hiszen',
+      text: 'Egyszerű alak (főnév közvetlenül) + だけ あって: ahogy várható, hiszen…; valamiből természetesen adódik (a ので-nél erősebb, elismerő).',
+      ex: [['プロの コックだけ あって、りょうりが じょうずです。', 'Nem csoda, hogy jól főz, hiszen profi szakács.']] }
+  ] },
+
+  42: { title: 'Vita', points: [
+    { pattern: '～に とって', name: 'Valaki számára',
+      text: 'Főnév + に とって: valaki számára, valakinek a szempontjából (értékítélet).',
+      ex: [['わたしに とって かぞくが いちばん たいせつです。', 'Számomra a család a legfontosabb.']] },
+    { pattern: '～から みると', name: 'Valaki felől nézve',
+      text: 'Főnév + から みると: valaki szemével nézve, valami felől.',
+      ex: [['こどもから みると、おとなは みんな せが たかいです。', 'Egy gyerek szemével minden felnőtt magas.']] },
+    { pattern: '～こそ', name: 'Éppen az',
+      text: 'Főnév + こそ: éppen az, épp ez (erős nyomaték). Kedves fordulatban: こちらこそ (részemről is).',
+      ex: [['ことしこそ にほんへ いきたいです。', 'Idén aztán tényleg el akarok menni Japánba.'], ['こちらこそ よろしく おねがいします。', 'Részemről a szerencse.']] }
+  ] },
+
+  43: { title: 'A tanulásról', points: [
+    { pattern: 'parancsoló alak', name: 'Parancs',
+      text: 'I. csoport: u helyett e (かけ, まて), II.: る helyett ろ (たべろ, みろ), III.: しろ, こい. Durva, főleg férfibeszédben, feliratokon, sportban.',
+      ex: [['はやく しろ。', 'Igyekezz!'], ['とまれ', 'Állj! (közlekedési tábla)']] },
+    { pattern: '～な (tiltás)', name: 'Erős tiltás',
+      text: 'Szótári alak + な: ne…! Durva, erős tiltás, feliratokon is.',
+      ex: [['ここで あそぶな。', 'Itt ne játssz!'], ['さわるな', 'Ne nyúlj hozzá!']] },
+    { pattern: '～の ように ・ ～の ような', name: 'Úgy, mint; olyan, mint',
+      text: 'Főnév + の ように (határozó): úgy, mint…; + の ような (jelző): olyan…, mint….',
+      ex: [['わたしも せんせいの ように はなしたいです。', 'Én is úgy szeretnék beszélni, mint a tanár.'], ['パリの ような おしゃれな まちに いって みたいです。', 'Szeretnék elmenni egy Párizshoz hasonló elegáns városba.']] },
+    { pattern: '～ように', name: 'Azért, hogy',
+      text: 'Szótári vagy ない-alak + ように: azért, hogy… (nem akaraton múló célra: ható ige, tárgyatlan ige, tagadás). Akaratlagos célra ために.',
+      ex: [['わすれない ように メモします。', 'Felírom, hogy el ne felejtsem.'], ['よく みえる ように まえに すわります。', 'Előre ülök, hogy jól lássak.']] },
+    { pattern: '～ように します', name: 'Igyekszik',
+      text: 'Szótári vagy ない-alak + ように します: igyekszik, odafigyel arra, hogy…; szokásává teszi.',
+      ex: [['まいにち やさいを たべる ように して います。', 'Igyekszem minden nap zöldséget enni.'], ['よる おそく たべない ように して います。', 'Igyekszem nem enni későn este.']] },
+    { pattern: '～とおりに', name: 'Úgy, ahogy',
+      text: 'Egyszerű alak + とおりに, főnév + の とおりに: úgy, ahogy…; valami szerint.',
+      ex: [['せつめいしょの とおりに くみたてました。', 'A leírás szerint raktam össze.'], ['わたしが いう とおりに して ください。', 'Csináld úgy, ahogy mondom.']] }
+  ] },
+
+  44: { title: 'Szónokverseny', points: [
+    { pattern: '～を ちゅうしんに', name: 'Középpontban',
+      text: 'Főnév + を ちゅうしんに: elsősorban, főleg arra összpontosítva.',
+      ex: [['きょうは かんきょうもんだいを ちゅうしんに はなします。', 'Ma főleg a környezetvédelemről beszélek.']] },
+    { pattern: '～べきです ・ ～べきでは ありません', name: 'Kellene, illik',
+      text: 'Szótári alak + べきです: kellene, illik (erkölcsi kötelesség, határozott vélemény). Tagadás: べきでは ありません. する mellett すべき is.',
+      ex: [['やくそくは まもる べきです。', 'Az ígéretet be kell tartani.'], ['ひとの わるくちを いう べきでは ありません。', 'Nem illik másokról rosszat mondani.']] },
+    { pattern: '～ずに', name: 'Anélkül, hogy (írott)',
+      text: 'Ige ない-tő + ずに: anélkül, hogy… (a ～ないで írottabb alakja). する → せずに, くる → こずに.',
+      ex: [['あさごはんを たべずに でかけました。', 'Reggeli nélkül indultam el.'], ['じしょを つかわずに よみました。', 'Szótár nélkül olvastam el.']] }
+  ] },
+
+  45: { title: 'Félreértés', points: [
+    { pattern: '～う／～ようと します', name: 'Megpróbál, épp készül',
+      text: 'Akaratlagos alak + と します: megpróbál, megkísérel; épp készült megcsinálni.',
+      ex: [['ねようと したら、でんわが なりました。', 'Épp le akartam feküdni, amikor megszólalt a telefon.'], ['ドアを あけようと しましたが、あきませんでした。', 'Megpróbáltam kinyitni az ajtót, de nem nyílt.']] },
+    { pattern: 'A は B に ～を ～せる (műveltető 1)', name: 'Megcsináltat valakivel',
+      text: 'I. csoport: ない-tő + せる (かかせる), II.: る helyett させる, III.: させる, こさせる. Valakivel elvégeztet valamit (akivel: に, a tárgy: を).',
+      ex: [['ははは こどもに やさいを たべさせました。', 'Az anya megetette a gyerekkel a zöldséget.'], ['せんせいは がくせいに さくぶんを かかせました。', 'A tanár fogalmazást íratott a diákokkal.']] },
+    { pattern: '～がります', name: 'Más érzése',
+      text: 'Érzést kifejező melléknév (い, illetve な nélkül) + がる: más (harmadik személy) érzését, viselkedését írja le: こわがる (fél), いやがる (nem szereti).',
+      ex: [['おとうとは いぬを こわがります。', 'Az öcsém fél a kutyáktól.'], ['こどもは くすりを いやがります。', 'A gyerek nem szereti a gyógyszert.']] },
+    { pattern: '～たがります', name: 'Más vágya',
+      text: 'A ～たい い nélkül + がる: ő akar valamit (harmadik személy vágya). Folyamatos alakban gyakori: いきたがって います.',
+      ex: [['むすこは にほんへ いきたがって います。', 'A fiam Japánba akar menni.']] }
+  ] },
+
+  46: { title: 'Megbeszélés', points: [
+    { pattern: '～なさい', name: 'Felszólítás (szülő, tanár)',
+      text: 'Ige ～ます nélküli alakja + なさい: felszólítás feljebbvalótól (szülő a gyereknek, tanár a diáknak, feladatlapon).',
+      ex: [['はやく ねなさい。', 'Feküdj le gyorsan!'], ['ただしい こたえを えらびなさい。', 'Válaszd ki a helyes választ!']] },
+    { pattern: 'A は B を ～せる (műveltető 2)', name: 'Késztet, enged',
+      text: 'Tárgyatlan igénél, akit késztetsz, を-t kap. Érzelmet okozni is: びっくりさせる (meglep), わらわせる (megnevettet). Engedést is jelenthet.',
+      ex: [['じょうだんを いって ともだちを わらわせました。', 'Viccet mondtam, és megnevettettem a barátomat.'], ['こどもを こうえんで あそばせます。', 'Hagyom a gyereket a parkban játszani.']] },
+    { pattern: '～させて ください', name: 'Hadd csináljam',
+      text: 'Műveltető alak て-formája + ください (vagy いただけませんか): hadd tegyem, engedje meg, hogy…. Udvarias engedélykérés.',
+      ex: [['わたしに やらせて ください。', 'Hadd csináljam én.'], ['きょうは はやく かえらせて いただけませんか。', 'Elmehetnék ma korábban?']] }
+  ] },
+
+  47: { title: 'Nyelv', points: [
+    { pattern: '～せられる／～させられる', name: 'Szenvedő-műveltető: kénytelen',
+      text: 'Akaratunk ellenére megcsináltatnak velünk valamit. I. csoportban rövid alak is van: かかされる (a す-végűeknél nincs). II.: たべさせられる, III.: させられる, こさせられる.',
+      ex: [['こどもの ころ、ははに ピアノを ならわされました。', 'Gyerekkoromban anyám zongorázni járatott.'], ['ぶちょうに おさけを のまされました。', 'A főnököm itatott, kénytelen voltam inni.']],
+      watch: 'Magyarul gyakran cselekvő mondattal fordítjuk: kellett…, kénytelen voltam….' }
+  ] },
+
+  48: { title: 'Búcsú', points: [
+    { pattern: '～を きっかけに', name: 'Valami hatására',
+      text: 'Főnév (vagy の-val főnevesített mondat) + を きっかけに: valami apropóján, hatására indult el valami.',
+      ex: [['りゅうがくを きっかけに、にほんの ぶんかに きょうみを もちました。', 'A külföldi tanulmányaim hatására kezdtem érdeklődni a japán kultúra iránt.']] },
+    { pattern: '～せいで', name: 'Valami miatt (rossz)',
+      text: 'Főnév + の せいで, vagy egyszerű alak + せいで: valami miatt, valaki hibájából (rossz következmény). Jó eredménynél おかげで.',
+      ex: [['あめの せいで、しあいが ちゅうしに なりました。', 'Az eső miatt elmaradt a meccs.'], ['ねぶそくの せいで、あたまが いたいです。', 'A kialvatlanság miatt fáj a fejem.']] },
+    { pattern: '～ば ～ほど', name: 'Minél…, annál',
+      text: 'Feltételes alak + ugyanannak a szónak a szótári alakja + ほど: minél…, annál….',
+      ex: [['にほんごは べんきょうすれば するほど おもしろく なります。', 'A japán minél többet tanulom, annál érdekesebb.'], ['やさいは あたらしければ あたらしいほど おいしいです。', 'A zöldség minél frissebb, annál finomabb.']] },
+    { pattern: '～として', name: 'Valamiként',
+      text: 'Főnév + として: valamiként, valaminek a minőségében.',
+      ex: [['りゅうがくせいとして にほんに いきました。', 'Külföldi diákként mentem Japánba.'], ['しゅみとして えを かいて います。', 'Hobbiként festek.']] }
   ] }
 };

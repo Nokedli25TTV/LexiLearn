@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.35" src="https://img.shields.io/badge/verzi%C3%B3-13.35-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.36" src="https://img.shields.io/badge/verzi%C3%B3-13.36-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -66,7 +66,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Aktuális lecke:** a Kezdőlapon látszik a lecke haladása, a hátralévő és ismétlés alatt álló szavak száma, valamint a következő napi adag lecke szerinti összetétele.
 - **A lecke nehéz szavai egy koppintással:** a leckekártya alatt, ha a leckében van zászlós, makacs vagy elrontott (még nem sorozatban menő) szó. A Gyakorlás fül beállításaival indul, a kijelölésedhez nem nyúl, és a végén a Kezdőlapra tér vissza.
 - **Lecke-zárás (japán):** ha egy Dekiru-lecke minden szavát elkezdted, a leckekártya alatt felajánlja a zárását (a Gyakorlás fülön egy leckét kiválasztva bármelyikét): a lecke szavai egyszer, vegyes kérdésekkel (jelentés, magyarból választva, gépelve, hallás után). A végén a **Még nem ül** lista azt is megmutatja, melyik kérdésnél bukott el a szó, és a hibásak még egyszer jöhetnek ugyanúgy. Az első kör eredménye leckénként megmarad; 90%-tól a lecke lezárt, ez a leckelistában és a Statisztika Dekiru-fülén is látszik.
-- **Nyelvtan leckénként (japán):** a Gyakorlás fülön egy Dekiru-leckét kiválasztva a lecke nyelvtani szerkezetei a könyv sorrendjében, alulról nyíló lapon: minta és név, kinyitva rövid magyarázat, felolvasható példák (kana, szóközzel tagolva) és a buktató („Figyelj”). A lapon belül előre-hátra lapozhatsz a leckék között. Az első adag a Dekiru 1. könyv 1–12. leckéje.
+- **Nyelvtan leckénként (japán):** a Gyakorlás fülön egy Dekiru-leckét kiválasztva a lecke nyelvtani szerkezetei a könyv sorrendjében, alulról nyíló lapon: minta és név, kinyitva rövid magyarázat, felolvasható példák (kana, szóközzel tagolva) és a buktató („Figyelj”). A lapon belül előre-hátra lapozhatsz a leckék között. Mind a 48 lecke megvan: a Dekiru 1. könyv (1–24.) és a 2. könyv (25–48.).
 - **Előrejelzés:** egy csendes sor arról, mennyi ismétlés jön holnap és a következő héten, hogy ne érjen meglepetés.
 - **Napi feladatok:** naponta három, változó feladat, például egy hibátlan kör, tematikus nap, a nap szava, régen látott szavak vagy a legtöbbször elrontott szavak javítása.
 - **Egyetlen ünneplés:** konfetti csak akkor, ha a napi cél teljesült, és akkor is naponta egyszer.
