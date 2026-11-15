@@ -291,6 +291,7 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 - **Fókuszált idő (14 nap):** legfeljebb 24px széles oszlopok, 4px-es lekerekített tetővel, szögletes alappal; csak a csúcsérték kap címkét.
 - **Tooltip:** fordított semleges buborék, az érték elöl (15px 800), a címke utána; `textContent`-tel épül.
 - **Táblázatos nézet:** minden ábra alatt "Adatok táblázatban" nyitható `<details>`.
+- **Szólista lap** (V13.32): az „Úton a megtanuláshoz” és a forrás-csempék listájának alján ragadós „Gyakorlás ezekkel · 19 szó” gomb: fordított semleges (szöveg színű háttér, felület színű felirat, 52px, 16px lekerekítés), nem korall, mert a lapon nem ez az egyetlen cél. A Gyakorlás fülre visz a szavakkal kijelölve (toast: „19 szó kijelölve. Válassz típust, és indíthatod.”); a típus és az Indítás a dokkban marad. Üres listán nincs gomb.
 
 ### Rögzített alsó műveletsáv
 - Gyakorlás közben a "Tovább" (hibás válasz után) a képernyő aljára rögzül: teljes szélesség, 56px, korall.
@@ -321,7 +322,7 @@ A tanulás / ismétlés vége képernyők családja, közös komponensekből, eg
 ### JLPT haladás (Signature Component, V13.6)
 - **Mérföldkő-sáv:** vízszintes sáv, amelynek szegmensei a mérföldkövek (szókincs: N5-N4 100-anként, N3 250-enként; kandzsi 25 / 50 / 50); a szegmens szélessége arányos a darabszámmal, így a sáv lineáris. 2px rés a szegmensek között, 3px a szintek határán; alatta szintjelek (N5, N4, N3) a határpontoknál, elért szintnél erősebb szürkével.
 - **Két réteg, egy skála:** üres = `--hm-0`, megtanult = `--mat-1`, rögzült (21+ napos ismétlési köz) = `--mat-3`. Új szín nincs: a már validált érettség-skálát használja. A jelmagyarázat "halványabb / erősebb zöld" (sötétben a rögzült a világosabb, ezért a "sötétebb" szó tilos).
-- **Statisztika kártya:** a lap tetején (a KPI sáv fölött), csak japán és kandzsi módban; két sáv (Szókincs, Kandzsi) számmal és százalékkal, alatta link a Haladás képernyőre.
+- **Statisztika kártya:** a lap tetején (a KPI sáv fölött), csak japán és kandzsi módban; két sáv (Szókincs, Kandzsi) számmal és százalékkal. Alatta két teljes szélességű, 48px-es sor hajszálvonal-elválasztóval (V13.32; korábban egymás mellett szorultak): „Hogyan számoljuk a haladást?” és „Célidőpont, tempó és mérföldkövek”, levélzöld felirattal (`--primary-h`), jobbra halvány nyíllal (`.card-link`).
 - **Haladás képernyő:** a Statisztika alképernyője (a navigációban a Statisztika marad kiemelve), vissza gombbal. Célidőpont pilla alakú dátummezővel, "N nap van hátra"; soronként nagy szám (Stat stílus), sáv, "X rögzült · Y még ismétlés alatt"; tempó-panel (Hátravan, Szükséges tempó, 14 napos átlag, A mostani tempóval) és egy őszinte állapotmondat; mérföldkő lista (utolsó kettő teljesített dátummal, az aktuális "még N", a következő kettő), a teljes lista táblázatban; szótár-lefedettség.
 - **Kezdőlap sor:** a cselekvések alatt egy csendes, 48px-es sor: "N3 FELÉ szókincs 24% · kandzsi 20%", nyíllal, a Haladás képernyőre visz.
 - **Mérföldkő elérése:** a tanulás és az ismétlés végén egy zöld-köd pilla ("Mérföldkő: 150 kandzsi"); konfetti nincs. V13.27 óta a napi szavak az ismétlésben lesznek megtanultak, így a mérföldkő jellemzően ott következik be.
@@ -332,6 +333,11 @@ A tanulás / ismétlés vége képernyők családja, közös komponensekből, eg
 
 ### Tanuló kártya (Signature Component)
 28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat; kandzsi módban fölötte a vonássorrend). A "Tudom" csak elkezdi a szót (Tanulás alatt, V13.27): megtanult két egymás utáni sikeres ismétlés után lesz, vagy ha a gyakorlásban ötször egymás után eltalálod. A vége képernyő ezért "N új szó elkezdve", alatta egy csendes sor a szabályról.
+
+### Számlálószó-címke (V13.32)
+- **Mit mond:** „Számláló · emberek”, „Számláló · lapos tárgyak (papír, ing, tányér)”; ismeretlen számlálónál csak „Számláló”. Az adat a `core/counters.js`-ben (a `számlálószavak` címkéjű szavak és a ～さい, ～ばい-féle toldalékok).
+- **Alak:** Felület 2 pilla, 12px 800, másodlagos szövegszín, teljesen lekerekített; csendes, nem jelvény (nem zöld, nem korall).
+- **Helye:** a tanuló és az ismétlő kártyán mindkét oldalon (elöl az olvasat alatt, hátul a jelentés alatt), a fordított kártyán is; a gyakorló kérdés fölött; a 3D kártya mindkét oldalán (a fejlécben ott nem ismétlődik). A „mit számol” nem árulja el a számot, ezért az előoldalon is maradhat.
 
 ### Kandzsi vonássorrend (Signature Component, V13.9)
 - **Helye:** kandzsi módban a tanuló és az ismétlő kártya hátoldalán, a jelentés fölött (a kis kandzsi-sor helyén). Az előoldalon nincs: ott a felidézés a feladat.
@@ -359,7 +365,7 @@ A Statisztika alképernyője (a navigációban a Statisztika marad kiemelve), vi
 - **Egy mondat:** „7 aktív nap a 7-ből. A pontosság 92%.” (15px, 600), a számok előtt.
 - **Négy szám:** a Statisztika KPI sávja 2×2-ben: Megtanult szó, Válasz és kártya, Pontosság, Fókuszált idő; mindegyik alatt a változás-jelvény és az előző heti érték. Három válasz alatt a pontosság helyén gondolatjel áll.
 - **Szakaszok:** „N3 felé a héten” (soronként szint, a heti növekmény változás-jelvényben, jobbra az állás), „Még bizonytalan” (a héten elrontott, azóta nem javított szavak semleges listája és egy másodlagos „Gyakorlás ezekkel” gomb), „Előtted” (a következő hét ismétlései egy mondatban), „Módonként” és a napi táblázat `<details>`-ben.
-- **Belépés:** a Statisztika tetején és (a lezárt múlt hétről, amíg meg nem nézted) a Kezdőlapon egy csendes, 48px-es sor, a „N3 FELÉ” sor mintájára. Értesítés, jelvény és konfetti nincs.
+- **Belépés** (`.wk-link`, V13.32): a Statisztika tetején („EZ A HÉT”) és (a lezárt múlt hétről, amíg meg nem nézted) a Kezdőlapon („MÚLT HÉT”) egy felület-kártya, 18px lekerekítéssel. Fent a címke (Label stílus) és jobbra a „Részletek” levélzöld nyíllal; alatta a hét hét napja 16px-es négyzetekben a hőtérkép színeivel (`--hm-0..4`; a ma gyűrűvel, a még el nem jött nap szaggatott kerettel), mellette „7 aktív nap · 55 megtanult szó” a számok 800-as súllyal. A mini hőtérkép miatt hétről hétre más, így nem olvad bele a csendes sorokba; korall, értesítés, jelvény és konfetti nincs.
 
 ### README képek (V13.13)
 A GitHub-oldal „Így néz ki” képei (`tools/showcase.html`): erdőzöld átmenet egy korall és egy levélzöld fényfolttal, mögötte nagy, halvány írásjegyek (7,5%); soronként négy telefonkeret az élő demó egy-egy jelenetével, soronként egy világos témában. A feliratok Nunito 800 / 600, fehérrel és halvány zölddel. A keret és az átmenet csak itt él: az appban nincs díszítő átmenet.

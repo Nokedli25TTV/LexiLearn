@@ -19,6 +19,7 @@ import { initWriting, isWritingCorrect, resetWritingOutline, writingHtml } from 
 import { buildableSentences, initSentenceBuild, sentenceBuildHtml } from './sentence-build.js';
 import { hasKatakana, romajiToHiragana, toKatakana } from '../core/romaji.js';
 import { checkJapanese, checkMeaning } from '../core/answer.js';
+import { counterTagHtml } from '../core/counters.js';
 import { wordWriting } from '../features/kanji-links.js';
 import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
@@ -397,6 +398,7 @@ function showQuestion() {
             <div class="fc-corner-hint">${isEnHu ? 'Forrás' : 'Magyar'}</div>
             <div class="fc-main ${isKanjiFront ? 'kanji-display' : ''}">${escHtml(frontMain)}</div>
             ${frontReading ? `<div class="fc-reading">${escHtml(frontReading)}</div>` : ''}
+            ${counterTagHtml(word)}
             <div class="fc-bottom-hint">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 8"/><polyline points="21 3 21 8 16 8"/><path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6-2.3L3 16"/><polyline points="8 16 3 16 3 21"/></svg>
               Koppints vagy húzd el
@@ -406,6 +408,7 @@ function showQuestion() {
             <div class="fc-corner-hint">${isEnHu ? 'Magyar' : 'Forrás'}</div>
             <div class="fc-main fc-main-back ${isKanjiBack ? 'kanji-display' : ''}">${escHtml(backMain)}</div>
             ${backReading ? `<div class="fc-reading">${escHtml(backReading)}</div>` : ''}
+            ${counterTagHtml(word)}
             ${exampleSentenceHTML ? `
               <div class="fc-example">
                 <div class="fc-example-sentence">${exampleSentenceHTML}</div>
@@ -476,6 +479,7 @@ function showQuestion() {
           <span style="margin: 0 8px; color: var(--border);">|</span>
           <span class="diff-pill d${word.diff}" style="font-size:11px; padding:2px 8px;">${word.diff}</span>
         </div>
+        ${p.type !== 'flashcard3d' && counterTagHtml(word) ? `<div class="q-note">${counterTagHtml(word)}</div>` : ''}
         ${contentHtml}
       </div>
       <!-- V13.2: hibás válasz után a Tovább a képernyő aljára rögzül, hüvelykujjal elérhető -->

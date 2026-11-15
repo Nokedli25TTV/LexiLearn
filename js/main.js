@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.31)
+// LexiLearn – belépési pont (V13.32)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -11,7 +11,7 @@ import { escHtml, jsArg } from './core/util.js';
 import { clearAllBookmarks, clearLessonFocus, toggleBookmark, toggleLessonFocus } from './features/bookmarks.js';
 import { openLeeches, practiceLessonHard } from './features/leeches.js';
 import { doAddWord, doImport, exportData, exportSelectedToAnki, importData, openAddModal, openImportModal } from './features/import-export.js';
-import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord } from './features/learning-inspector.js';
+import { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord, practiceInspected } from './features/learning-inspector.js';
 import { setDailyGoal, setReviewBatch, setReviewStyle, tapVersion, toggleMixAudio } from './features/profile.js';
 import { downloadReminder, setReminderTime } from './features/reminder.js';
 import { replayStrokes } from './features/strokes.js';
@@ -142,6 +142,7 @@ Object.assign(window, {
   seedSrsAll,
   lexiRenamedWords: RENAMED_WORDS, // V13.18: a firebase-sync.js így a régi alakú felhőszót is párosítja
   showGoalScreen,
+  practiceInspected,
   setGoalDate,
   setPathGoalDate,
   setPathTarget,
@@ -167,7 +168,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.31 indítása...");
+console.log("[LexiLearn] V13.32 indítása...");
 initV6Features();
 initViewportFix(); // V13.20: iOS 26 standalone – a fix sávok ne csússzanak el a billentyűzet után
 initLibraryEvents();

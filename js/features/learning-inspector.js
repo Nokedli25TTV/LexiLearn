@@ -1,7 +1,7 @@
 // LexiLearn – tanulási állapot és ismétlési sor átlátható kezelése.
 import { fmtDay, fmtDayLong, fmtDuration, fmtNum, lastNDays, todayKey } from '../core/dates.js';
 import { appData, currentMode, state, unitOf } from '../core/state.js';
-import { saveWords } from '../core/storage.js';
+import { saveSettings, saveWords } from '../core/storage.js';
 import { escHtml, jsArg } from '../core/util.js';
 import { LEVELS, TARGETS, introducedDate, isLearnedWord, isLearningWord, isMatureWord, isPracticeLearned, isStartedWord, srsInterval } from '../goal/jlpt.js';
 import { getDailyGoal } from '../habit/goal.js';
@@ -159,8 +159,27 @@ function openWordInspector(kind, mode = currentMode) {
     </li>`;
   }).join('');
   const more = words.length > shown.length ? `<p class="inspect-limit">Az első ${shown.length} szó látható.</p>` : '';
+  // V13.32: egy koppintással a Gyakorlás fülre, a lista minden szava kijelölve (ne kelljen egyesével kikeresni)
+  _inspected = { mode: selectedMode, ids: words.map(w => w.id) };
+  const practice = words.length
+    ? `<div class="inspector-actions"><button class="inspector-practice" onclick="practiceInspected()">Gyakorlás ezekkel · ${fmtNum(words.length)} ${unitOf(selectedMode)}</button></div>`
+    : '';
   showInspector(title, `${fmtNum(words.length)} ${unitOf(selectedMode)}`,
-    words.length ? `<ul class="inspect-list">${rows}</ul>${more}` : '<p class="inspect-empty">Ebben a csoportban még nincs szó.</p>');
+    words.length ? `<ul class="inspect-list">${rows}</ul>${more}${practice}` : '<p class="inspect-empty">Ebben a csoportban még nincs szó.</p>');
+}
+
+let _inspected = null;
+// A legutóbb megnyitott szólista szavai kijelölve a Gyakorlás fülön; a típust és a kérdésszámot a dokkban választod
+function practiceInspected() {
+  if (!_inspected || !_inspected.ids.length) return;
+  const { mode, ids } = _inspected;
+  if (mode !== currentMode && window.setMode) window.setMode(mode);
+  state.selectedIds = new Set(ids);
+  saveSettings();
+  if (window.closeModal) window.closeModal('learning-inspector-modal');
+  else modal()?.classList.remove('open');
+  if (window.showScreen) window.showScreen('dashboard');
+  if (window.showToast) window.showToast(`${fmtNum(ids.length)} ${unitOf(mode)} kijelölve. Válassz típust, és indíthatod.`);
 }
 
 function dailyDetailRow(key, entry) {
@@ -217,4 +236,4 @@ function openStatsExplanation(mode = currentMode) {
     </div>`);
 }
 
-export { openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord };
+export { practiceInspected, openReviewQueue, openStatsBreakdown, openStatsExplanation, openWordInspector, postponeReviewWord, restoreReviewWord, suspendReviewWord };

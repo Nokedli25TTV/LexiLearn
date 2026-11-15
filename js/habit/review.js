@@ -10,6 +10,7 @@
 // Minden kártya első mai eredménye a napi naplóba kerül (megtartási arány a Statisztikában).
 import { todayKey } from '../core/dates.js';
 import { checkJapanese, checkMeaning } from '../core/answer.js';
+import { counterTagHtml } from '../core/counters.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
 import { currentMode, isCharMode, NEW_ITEMS, state, unitOf } from '../core/state.js';
 import { saveStats, saveWords } from '../core/storage.js';
@@ -192,17 +193,19 @@ function showReviewCard() {
 
   // Fordított kártya: elöl a magyar jelentés, hátul a szó (írásmóddal, olvasattal)
   const front = rev
-    ? `${pills}<div class="learn-meaning review-prompt">${escHtml(word.hu)}</div>${hint ? `<div class="learn-tap-hint">${hint}</div>` : ''}`
+    ? `${pills}<div class="learn-meaning review-prompt">${escHtml(word.hu)}</div>${counterTagHtml(word)}${hint ? `<div class="learn-tap-hint">${hint}</div>` : ''}`
     : `${pills}<div class="learn-word ${isKanji ? 'learn-word-kanji' : ''}">${escHtml(word.en)}</div>
             ${frontReading ? `<div class="learn-reading">${escHtml(frontReading)}</div>` : ''}
+            ${counterTagHtml(word)}
             ${hint ? `<div class="learn-tap-hint">${hint}</div>` : ''}`;
   const back = rev
     ? `<div class="learn-back-src">${escHtml(word.hu)}</div>
             <div class="learn-word"${currentMode === 'japanese' ? ' lang="ja"' : ''}>${escHtml(word.en)}</div>
             ${currentMode === 'japanese' ? `<div class="learn-reading">${escHtml([writing, word.romaji].filter(Boolean).join(' · '))}</div>` : ''}
-            ${links}${exampleHtml}`
+            ${counterTagHtml(word)}${links}${exampleHtml}`
     : `${strokes || `<div class="learn-back-src">${escHtml(backSrc)}</div>`}
             <div class="learn-meaning">${escHtml(word.hu)}</div>
+            ${counterTagHtml(word)}
             ${kanjiReadings}
             ${links}${exampleHtml}`;
 

@@ -31,7 +31,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `data.js`, `japanese_words.js`, `jlpt_n3_words.js`, `dekiru.js`, `kanji_data.js`, `japanese_sentences.js`, `english_sentences2.js` | a szótár adatai, **kézzel szerkeszthető** klasszikus scriptek (a `jlpt_n3_words.js` szavai `kanji` írásmódot is kapnak, ami a kártya hátoldalán jelenik meg) |
 | `data-registry.js` | a fenti adatokat `eval` nélkül gyűjti a `window.LEXI_DATA`-ba (új Dekiru lecke 30-ig magától bekerül) |
 | `js/main.js` | belépési pont: betölti a modulokat, az inline `onclick` kezelőknek a `window`-ra teszi a függvényeket, elindítja az appot |
-| `js/core/` | állapot (`state`), statikus adatok (`data`), mentés / betöltés / migráció (`storage`), dátumok, segédek |
+| `js/core/` | állapot (`state`), statikus adatok (`data`), mentés / betöltés / migráció (`storage`), dátumok, segédek, hibatűrő válaszellenőrző (`answer`), számlálószó-címkék (`counters`) |
 | `js/library/` | Gyakorlás fül: szűrők, lenyíló menük, szólista, gyakorlás dokk, saját listák |
 | `js/practice/` | gyakorló motor (kvíz, gépelős, mondat), 3D kártya, kandzsi írásgyakorlás (`writing.js`), felolvasás (TTS) |
 | `js/habit/` | napi szokás: napi penzum, új szavak tanulása, esedékes ismétlés (`review.js`), Kezdőlap |
@@ -197,6 +197,7 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/unit/srs.test.js`, `tests/review.test.js`, `tests/learn-srs.test.js`** – FSRS számítások,
   ütemezés, beosztás; az ismétlés a Kezdőlaptól az összegzésig, és a "Tudom" → ütemezés a teljes appal.
 - **`tests/unit/answer.test.js`, `tests/review-typed.test.js`** – a hibatűrő ellenőrző; gépelős, választós, vegyes és fordított ismétlés a teljes appal, a megtartási arány számolása.
+- **`tests/unit/counters.test.js`, `tests/stats-shortcuts.test.js`** – mit számol a számlálószó; a Statisztika szólistájából gyakorlás, a JLPT-kártya két sora, a heti sor hét napja, és a számlálószó-címke a tanuló, a gyakorló és a 3D kártyán.
 - **`tests/tts.test.js`, `tests/tts-android.test.js`** – a hangútvonal: Google-hang, újrapróbálás, nyelvhez illő tartalék, a hangkimenet ébren tartása, napló.
 - **`tests/learned-rule.test.js`, `tests/practice-card.test.js`** – a "Tudom" csak elkezd, két sikeres ismétlés tesz megtanulttá; az ötödik gyakorlási találat kártyát ad, a kör végén értékelhető; a régi szavak napi adagban jönnek.
 - Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).

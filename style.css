@@ -2740,6 +2740,55 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .home-jlpt-value b { font-weight: 800; color: var(--text); }
 .home-jlpt svg { flex-shrink: 0; color: var(--text-3); }
 
+/* V13.32: "Ez a hét" / "Múlt hét": a hét napjai mini hőtérképként (a Konzisztencia színeivel), jobbra fent "Részletek" */
+.wk-link {
+  width: 100%; display: flex; flex-direction: column; gap: 10px; padding: 14px 16px;
+  border: 1px solid var(--border); border-radius: 18px; background: var(--surface); color: var(--text-2);
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 600; text-align: left; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: transform 140ms var(--ease-out), border-color 0.18s;
+}
+.wk-link:active { transform: scale(0.98); }
+@media (hover: hover) { .wk-link:hover { border-color: var(--primary-h); } }
+.wk-link-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wk-link-more { display: inline-flex; align-items: center; gap: 2px; font-size: 13px; font-weight: 800; color: var(--primary-h); }
+.wk-link-body { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 14px; }
+.wk-link-days { display: inline-flex; gap: 4px; }
+.wk-link-days i { width: 16px; height: 16px; border-radius: 4px; background: var(--hm-0); }
+.wk-link-days i.hm-1 { background: var(--hm-1); } .wk-link-days i.hm-2 { background: var(--hm-2); }
+.wk-link-days i.hm-3 { background: var(--hm-3); } .wk-link-days i.hm-4 { background: var(--hm-4); }
+.wk-link-days i.is-today { box-shadow: 0 0 0 1.5px var(--surface), 0 0 0 3px var(--text-2); }
+.wk-link-days i.is-future { background: transparent; box-shadow: inset 0 0 0 1px var(--border); }
+.wk-link-value { font-size: 15px; }
+.wk-link-value b { font-weight: 800; color: var(--text); }
+
+/* V13.32: a kártya alján a továbblépések sorai (JLPT-kártya) */
+.card-links { margin-top: 10px; border-top: 1px solid var(--border); }
+.card-link {
+  width: 100%; min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0;
+  border: none; border-bottom: 1px solid var(--border); background: none; color: var(--primary-h);
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; text-align: left; cursor: pointer;
+}
+.card-link:last-child { border-bottom: none; }
+.card-link svg { flex: none; color: var(--text-3); }
+@media (hover: hover) { .card-link:hover span { text-decoration: underline; } }
+
+/* V13.32: számlálószó-címke a kártyákon ("Számláló · emberek"): semleges, nem színes pilla */
+.counter-tag {
+  display: inline-block; max-width: 100%; margin-top: 10px; padding: 4px 10px; border-radius: 999px;
+  background: var(--surface-2); color: var(--text-2); font-size: 12px; font-weight: 800; line-height: 1.35; text-align: center;
+}
+.q-note { display: flex; justify-content: center; margin: -6px 0 12px; }
+.q-note .counter-tag { margin-top: 0; }
+
+/* V13.32: a szólista alján, a hüvelykujj alatt: Gyakorlás ezekkel (fordított semleges, mint a Kész) */
+.inspector-actions { position: sticky; bottom: -1px; margin-top: 14px; padding: 12px 0 2px; background: var(--surface); }
+.inspector-practice {
+  width: 100%; min-height: 52px; border: none; border-radius: 16px; background: var(--text); color: var(--surface);
+  font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900; cursor: pointer;
+  transition: transform 140ms var(--ease-out);
+}
+.inspector-practice:active { transform: scale(0.98); }
+
 /* Haladás képernyő */
 .jl-screen-head { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
 .jl-screen-head .page-title { margin-bottom: 0; }

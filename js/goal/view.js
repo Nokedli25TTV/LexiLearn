@@ -21,6 +21,9 @@ const TRACKS = [
 const fmt = n => Number(n || 0).toLocaleString('hu-HU');
 const pctText = p => `${Math.floor(p * 100)}%`;
 const Az = n => (az(n) === 'az' ? 'Az' : 'A'); // mondat elején
+// V13.32: a kártya alján a továbblépések külön, teljes szélességű sorok (eddig két link egy sorban)
+const LINK_CHEVRON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
+
 function fmtDate(key) { const d = keyToDate(key); return `${d.getFullYear()}. ${HU_MONTHS[d.getMonth()]} ${d.getDate()}.`; }
 function fmtMonth(key) { const d = keyToDate(key); return `${d.getFullYear()}. ${HU_MONTHS[d.getMonth()]}`; }
 
@@ -95,8 +98,10 @@ function renderJlptCard() {
   const host = document.getElementById('jlpt-card-body');
   host.innerHTML = tracks.map(t => `<div class="jl-track">${trackHead(t)}${milestoneBar(t)}</div>`).join('') + `
     <p class="viz-caption">Egy szakasz egy mérföldkő. Halványabb zöld: megtanult, erősebb zöld: rögzült (21+ napos ismétlési köz).</p>
-    <button class="link-btn jl-open" onclick="openStatsExplanation('${currentMode === 'kanji' ? 'kanji' : 'japanese'}')">Hogyan számoljuk a haladást?</button>
-    <button class="link-btn jl-open" onclick="showGoalScreen()">Célidőpont, tempó és mérföldkövek</button>`;
+    <div class="card-links">
+      <button class="card-link" onclick="openStatsExplanation('${currentMode === 'kanji' ? 'kanji' : 'japanese'}')"><span>Hogyan számoljuk a haladást?</span>${LINK_CHEVRON}</button>
+      <button class="card-link" onclick="showGoalScreen()"><span>Célidőpont, tempó és mérföldkövek</span>${LINK_CHEVRON}</button>
+    </div>`;
   bindBarTips(host, tracks);
 }
 

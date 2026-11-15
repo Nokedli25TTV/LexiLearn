@@ -308,10 +308,12 @@ function weekRowHtml(offset, label) {
     ? `<b>${w.activeDays}</b> aktív nap · <b>${fmtNum(w.learned)}</b> megtanult ${unitOf(currentMode)}`
     : 'még nincs aktivitás';
   return `
-    <button class="home-jlpt wk-link" onclick="showWeekScreen(${offset})">
-      <span class="home-jlpt-label">${label}</span>
-      <span class="home-jlpt-value">${value}</span>
-      ${CHEVRON}
+    <button class="wk-link" onclick="showWeekScreen(${offset})" aria-label="${label}: ${w.activeDays} aktív nap, ${w.learned} megtanult ${unitOf(currentMode)}. Heti összefoglaló">
+      <span class="wk-link-head"><span class="home-jlpt-label">${label}</span><span class="wk-link-more">Részletek${CHEVRON}</span></span>
+      <span class="wk-link-body">
+        <span class="wk-link-days" aria-hidden="true">${w.days.map(d => `<i class="hm-${d.level}${d.isToday ? ' is-today' : ''}${d.future ? ' is-future' : ''}"></i>`).join('')}</span>
+        <span class="wk-link-value">${value}</span>
+      </span>
     </button>`;
 }
 

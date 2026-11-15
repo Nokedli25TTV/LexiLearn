@@ -12,6 +12,7 @@ import { crossedMilestones, isLearnedWord } from '../goal/jlpt.js';
 import { completedLessons, coverageOf, kanjiUnlockStatus } from '../goal/radical-path.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { japaneseBackLine } from '../core/util.js';
+import { counterTagHtml } from '../core/counters.js';
 import { renderHome } from './home.js';
 import { getExampleSentence, showQuestion, updatePracticeTop } from '../practice/engine.js';
 import { speakWord } from '../practice/tts.js';
@@ -126,11 +127,13 @@ function showLearnCard() {
             <span class="learn-pill ${isAgain ? 'is-again' : ''}">${isAgain ? 'Újra' : (isKanji ? 'Új kanji' : 'Új szó')}</span>
             <div class="learn-word ${isKanji ? 'learn-word-kanji' : ''}">${escHtml(word.en)}</div>
             ${frontReading ? `<div class="learn-reading">${escHtml(frontReading)}</div>` : ''}
+            ${counterTagHtml(word)}
             <div class="learn-tap-hint">Koppints a jelentésért</div>
           </div>
           <div class="learn-face learn-back${strokes ? ' has-strokes' : ''}">
             ${strokes || `<div class="learn-back-src">${escHtml(backSrc)}</div>`}
             <div class="learn-meaning">${escHtml(word.hu)}</div>
+            ${counterTagHtml(word)}
             ${kanjiReadings}
             ${links}
             ${example.html ? `
