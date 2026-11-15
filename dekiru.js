@@ -1174,7 +1174,7 @@ const DEKIRU_L19 = [
 
   // Főnevek (Helyek és közlekedés)
   { kana: 'ばしょ', romaji: 'basho', hu: 'hely', tags: ['helyek'], jlpt: 'N5', lesson: [19], source: 'dekiru' }, // [cite: 2184]
-  { kana: 'はし', romaji: 'hashi', hu: 'hid', tags: ['helyek'], jlpt: 'N5', lesson: [19], source: 'dekiru' }, // [cite: 2184]
+  { kana: 'はし', romaji: 'hashi', hu: 'híd', tags: ['helyek'], jlpt: 'N5', lesson: [19], source: 'dekiru' }, // [cite: 2184]
   { kana: 'かど', romaji: 'kado', hu: 'sarok (külső)', tags: ['helyek'], jlpt: 'N4', lesson: [19], source: 'dekiru' }, // [cite: 2184]
   { kana: 'とおり', romaji: 'toori', hu: 'utca, út', tags: ['helyek'], jlpt: 'N5', lesson: [19], source: 'dekiru' }, // [cite: 2184]
   { kana: 'いりぐち', romaji: 'iriguchi', hu: 'bejárat', tags: ['helyek'], jlpt: 'N4', lesson: [19], source: 'dekiru' }, // [cite: 2184]

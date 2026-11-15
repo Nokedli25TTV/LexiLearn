@@ -52,6 +52,11 @@ it('a régi kanájú szó haladása, hivatkozásai és felhőadata az új alakra
   expect(ja.words.filter(w => w.en === 'ハンガリー')).toHaveLength(1);
   expect(api.migrateRenamedWords()).toBe(false);          // második futásra nincs teendő
 
+  // V13.39: elírt jelentésrész javítása a mentett szóban is (a betöltés a mentett jelentéshez fűz)
+  find('はし').hu = 'hid; (evő)pálcika';
+  api.syncNewWords();
+  expect(find('はし').hu).toBe('híd; (evő)pálcika');
+
   // Felhő: egy még régi alakú felhőszó (régi eszközről) is párt talál
   const bg = find('ブルガリア');
   f.put(`users/u1/data/${LEGACY_ID}`, {

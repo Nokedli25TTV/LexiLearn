@@ -107,6 +107,14 @@ const RENAMED_WORDS = {
     // V13.37: ぶんぽう (nyelvtan) helyett ぶんぼう állt (a ぶんぼうぐ írószer más szó)
     'ぶんぼう': 'ぶんぽう' }
 };
+
+// V13.39: elírt jelentésrész a Dekiru-szavakban (kana → { régi rész: új rész }). A betöltés a mentett
+// jelentéshez fűzi az adatfájlét, ezért a javítás nélkül a régi alak a mentett szóban megmaradna.
+const MEANING_FIXES = { 'はし': { 'hid': 'híd' } };
+const fixMeaning = (kana, hu) => {
+  const fixes = MEANING_FIXES[kana];
+  return fixes ? String(hu || '').split(';').map(s => fixes[s.trim()] ?? s.trim()).join('; ') : hu;
+};
 const hasWordProgress = w => !!(w && (w.bookmarked || w.lessonFocus || (w.stats && (w.stats.lastAttempt || w.stats.learnedAt || w.stats.introducedAt || w.stats.srs || w.stats.totalCorrect || w.stats.totalWrong))));
 
 function migrateRenamedWords() {
@@ -474,7 +482,7 @@ function syncNewWords() {
     } else {
       existingWord.lesson = [...new Set([...lessonValues(existingWord.lesson), ...lessons])].sort((a, b) => a - b);
       existingWord.source = 'dekiru';
-      existingWord.hu = mergeText(existingWord.hu, w.hu);
+      existingWord.hu = mergeText(fixMeaning(existingWord.en, existingWord.hu), w.hu);
       existingWord.tags = [...new Set([...(existingWord.tags || []), ...(w.tags || [])])];
       if (w.romaji) existingWord.romaji = w.romaji; // V13.18: az adatfájl az irányadó (romaji-javítások)
       if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
