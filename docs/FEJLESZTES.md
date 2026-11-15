@@ -203,6 +203,7 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/data.test.js`** (V13.33 óta) a kana mezőben latin betűt sem enged (elgépelés); az így javított szavak a `RENAMED_WORDS`-be kerülnek, hogy a haladás átköltözzön.
 - **`tests/unit/counters.test.js`, `tests/stats-shortcuts.test.js`** – mit számol a számlálószó; a Statisztika szólistájából gyakorlás, a JLPT-kártya két sora, a heti sor hét napja, és a számlálószó-címke a tanuló, a gyakorló és a 3D kártyán.
 - **`tests/tts.test.js`, `tests/tts-android.test.js`** – a hangútvonal: Google-hang, újrapróbálás, nyelvhez illő tartalék, a hangkimenet ébren tartása, napló.
+- **`tests/flashcard-fit.test.js`** – a 3D kártya főszövegének méretosztálya (`is-long` / `is-very-long`, latin és kana küszöbök, kandzsi mód), a `.fc-body` szerkezet (a sarokelemek kívül), és hogy a `style.css` ugyanezeket az osztályneveket használja.
 - **`tests/learned-rule.test.js`, `tests/practice-card.test.js`** – a "Tudom" csak elkezd, két sikeres ismétlés tesz megtanulttá; az ötödik gyakorlási találat kártyát ad, a kör végén értékelhető; a régi szavak napi adagban jönnek.
 - Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).
 - **`tests/cloud-sync.test.js`** – a valódi `firebase-sync.js` a teljes appal, memóriabeli Firestore-ral

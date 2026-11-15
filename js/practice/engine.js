@@ -240,6 +240,19 @@ function getSmartDistractors(targetWord, count, isEnHu, exclude = null) {
   return distractors.slice(0, count);
 }
 
+// V13.34: a 3D kártya főszövege a hosszával arányosan kisebb, hogy a hosszú magyar jelentés
+// ("van, létezik (élőlény); szükség van (vmire)") se lógjon ki a kártyából. A kana / kandzsi
+// bárhol törhet, de a szó közepén törve csúnya, ezért ott jóval kevesebb karakter számít hosszúnak.
+const CJK_CHAR = /[぀-ヿ㐀-鿿ｦ-ﾟ]/;
+function fcMainSizeClass(text) {
+  const chars = [...String(text || '')];
+  const isCjk = chars.filter(c => CJK_CHAR.test(c)).length * 2 > chars.length;
+  const [long, veryLong] = isCjk ? [8, 10] : [16, 30];
+  if (chars.length > veryLong) return 'is-very-long';
+  if (chars.length > long) return 'is-long';
+  return '';
+}
+
 function showQuestion() {
   _learnedHold = false;
   const p = state.practice;
@@ -391,15 +404,21 @@ function showQuestion() {
 
     const isKanjiFront = isCharMode() && isEnHu;
     const isKanjiBack  = isCharMode() && !isEnHu;
+    const frontClass = isKanjiFront ? 'kanji-display' : fcMainSizeClass(frontMain);
+    const backClass  = isKanjiBack  ? 'kanji-display' : fcMainSizeClass(backMain);
 
+    // V13.34: a lap tartalma egy .fc-body-ban, ami auto margóval zár középre (túl hosszúnál görgethető);
+    // a sarokjelölő, az "i" gomb és az alsó tipp kívül marad, abszolút helyen.
     contentHtml = `
       <div class="flashcard-3d" id="flashcard-3d">
         <div class="flashcard-3d-inner">
           <div class="flashcard-3d-front">
             <div class="fc-corner-hint">${isEnHu ? 'Forrás' : 'Magyar'}</div>
-            <div class="fc-main ${isKanjiFront ? 'kanji-display' : ''}">${escHtml(frontMain)}</div>
-            ${frontReading ? `<div class="fc-reading">${escHtml(frontReading)}</div>` : ''}
-            ${counterTagHtml(word)}
+            <div class="fc-body">
+              <div class="fc-main ${frontClass}">${escHtml(frontMain)}</div>
+              ${frontReading ? `<div class="fc-reading">${escHtml(frontReading)}</div>` : ''}
+              ${counterTagHtml(word)}
+            </div>
             <div class="fc-bottom-hint">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 8"/><polyline points="21 3 21 8 16 8"/><path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6-2.3L3 16"/><polyline points="8 16 3 16 3 21"/></svg>
               Koppints vagy húzd el
@@ -408,15 +427,17 @@ function showQuestion() {
           <div class="flashcard-3d-back">
             ${infoButtonHtml(word)}
             <div class="fc-corner-hint">${isEnHu ? 'Magyar' : 'Forrás'}</div>
-            <div class="fc-main fc-main-back ${isKanjiBack ? 'kanji-display' : ''}">${escHtml(backMain)}</div>
-            ${backReading ? `<div class="fc-reading">${escHtml(backReading)}</div>` : ''}
-            ${counterTagHtml(word)}
-            ${exampleSentenceHTML ? `
-              <div class="fc-example">
-                <div class="fc-example-sentence">${exampleSentenceHTML}</div>
-                ${exampleHU && exampleHU !== backMain && exampleHU !== frontMain ? `<div class="fc-example-hu">${escHtml(exampleHU)}</div>` : ''}
-              </div>
-            ` : '<div class="fc-no-example">— Nincs példamondat ehhez a szóhoz —</div>'}
+            <div class="fc-body">
+              <div class="fc-main fc-main-back ${backClass}">${escHtml(backMain)}</div>
+              ${backReading ? `<div class="fc-reading">${escHtml(backReading)}</div>` : ''}
+              ${counterTagHtml(word)}
+              ${exampleSentenceHTML ? `
+                <div class="fc-example">
+                  <div class="fc-example-sentence">${exampleSentenceHTML}</div>
+                  ${exampleHU && exampleHU !== backMain && exampleHU !== frontMain ? `<div class="fc-example-hu">${escHtml(exampleHU)}</div>` : ''}
+                </div>
+              ` : '<div class="fc-no-example">— Nincs példamondat ehhez a szóhoz —</div>'}
+            </div>
           </div>
         </div>
       </div>
@@ -1048,4 +1069,4 @@ function getExampleSentence(word) {
   return { html, hu };
 }
 
-export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, finishSession, finishWriting, getExampleSentence, getSmartDistractors, manualNextQuestion, practiceDir, revealHardcoreAnswer, setLearnedRating, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, updateKanaPreview, toggleEye, toggleSentenceTranslation, updatePracticeTop };
+export { checkAnswer, checkHardcoreAnswer, checkSentenceAnswer, confirmQuit, eyeState, fcMainSizeClass, finishSession, finishWriting, getExampleSentence, getSmartDistractors, manualNextQuestion, practiceDir, revealHardcoreAnswer, setLearnedRating, showQuestion, showRoundEnd, speakQuestionWord, startNextRound, startPractice, updateKanaPreview, toggleEye, toggleSentenceTranslation, updatePracticeTop };

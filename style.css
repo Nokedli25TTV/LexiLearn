@@ -477,13 +477,16 @@ rt {
 .flashcard-3d-inner {
   position: relative;
   width: 100%;
-  min-height: 280px;
+  min-height: 320px;
   transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
 }
 .flashcard-3d.flipped .flashcard-3d-inner {
   transform: rotateY(180deg);
 }
+/* V13.34: a tartalom (.fc-body) auto margóval zár középre, mint a tanuló kártya hátoldala: ha nem fér el,
+   a teteje nem vágódik le, hanem a lap görgethető. A felső / alsó belső margó 20px+ helyet hagy a
+   sarokjelölőnek (14px + 20px magas), az "i" gombnak (8px + 44px) és az alsó tippnek (14px + 15px). */
 .flashcard-3d-front,
 .flashcard-3d-back {
   position: absolute;
@@ -491,11 +494,12 @@ rt {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   border-radius: 24px;
-  padding: 30px 24px 26px;
+  padding: 56px 24px 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow-y: auto;
   text-align: center;
   box-shadow: 0 4px 14px rgba(45,26,90,0.06), 0 22px 50px -12px rgba(45,26,90,0.14);
   border: 1px solid var(--border);
@@ -506,6 +510,16 @@ rt {
 .flashcard-3d-back {
   background: linear-gradient(155deg, var(--surface) 0%, var(--accent-dim) 100%);
   transform: rotateY(180deg);
+  padding-top: 72px;
+  padding-bottom: 26px;
+}
+.fc-body {
+  width: 100%;
+  flex-shrink: 0;
+  margin-block: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 [data-theme="dark"] .flashcard-3d-front,
 [data-theme="dark"] .flashcard-3d-back {
@@ -548,7 +562,7 @@ rt {
   background: rgba(255,255,255,0.06);
 }
 
-/* A főszöveg középen, nagy betűkkel */
+/* A főszöveg középen, nagy betűkkel; hosszú szövegnél két lépésben kisebb (fcMainSizeClass az engine.js-ben) */
 .fc-main {
   font-family: 'Lora', serif;
   font-size: 42px;
@@ -556,8 +570,12 @@ rt {
   color: var(--text);
   line-height: 1.15;
   margin-bottom: 10px;
-  word-break: break-word;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
+.fc-main.is-long { font-size: 34px; line-height: 1.2; }
+.fc-main.is-very-long { font-size: 28px; line-height: 1.25; }
 .fc-main-back {
   color: var(--accent-h);
 }
@@ -740,9 +758,12 @@ rt {
 
 /* Mobil */
 @media (max-width: 680px) {
-  .flashcard-3d-inner { min-height: 270px; }
+  .flashcard-3d-inner { min-height: 300px; min-height: clamp(300px, 40svh, 360px); }
   .fc-main { font-size: 32px; }
-  .flashcard-3d-front, .flashcard-3d-back { padding: 26px 18px 22px; }
+  .fc-main.is-long { font-size: 26px; }
+  .fc-main.is-very-long { font-size: 22px; }
+  .flashcard-3d-front, .flashcard-3d-back { padding-inline: 18px; }
+  .flashcard-3d-back { padding-bottom: 22px; }
   .fc-example { margin-top: 14px; padding: 13px 14px; }
   .fc-example-sentence { font-size: 16px; line-height: 1.45; }
   .flashcard-speak-btn { width: 42px; }

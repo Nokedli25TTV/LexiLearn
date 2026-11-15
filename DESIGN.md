@@ -334,6 +334,12 @@ A tanulás / ismétlés vége képernyők családja, közös komponensekből, eg
 ### Tanuló kártya (Signature Component)
 28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat; kandzsi módban fölötte a vonássorrend). A "Tudom" csak elkezdi a szót (Tanulás alatt, V13.27): megtanult két egymás utáni sikeres ismétlés után lesz, vagy ha a gyakorlásban ötször egymás után eltalálod. A vége képernyő ezért "N új szó elkezdve", alatta egy csendes sor a szabályról.
 
+### 3D kártya (Gyakorlás, V13.34)
+A gyakorlás önértékelős kártyája: elöl a forrás, hátul a cél és a példamondat, sarokban a „MAGYAR” / „FORRÁS” jelölő, a hátoldalon az „i” gomb, elöl alul a „Koppints vagy húzd el” tipp.
+- **Főszöveg a hosszával:** három méret, nem folyékony skála (`fcMainSizeClass` az `engine.js`-ben): alap 42px (mobilon 32px), `is-long` 34 / 26px, `is-very-long` 28 / 22px. Latin írásnál 16 és 30 karakter fölött vált, kanánál 8 és 10 fölött (a kana szóhatár nélkül törne). Kandzsi módban a kandzsi oldal marad 64 / 50px. Több sornál kiegyensúlyozott tördelés (`text-wrap: balance`), szó közepén csak végső esetben tör.
+- **Középre zárás, görgetés:** a lap tartalma egy `.fc-body`-ban, auto margóval középen; ha nem fér el, a teteje nem vágódik le, hanem a lap görgethető (mint a tanuló kártya hátoldala). A kártya mobilon `clamp(300px, 40svh, 360px)` magas, asztalon 320px.
+- **Sarokelemek:** a tartalom legalább 20px-re marad a sarokjelölőtől, az „i” gomb 44px-es érintési felületétől és az alsó tipptől (felső belső margó elöl 56px, hátul 72px; alsó elöl 50px). Új szín nincs.
+
 ### Szómagyarázat (V13.33)
 Japán módban minden szónak van tudnivaló-lapja; a kézzel írt jegyzetek a `word_notes.js`-ben, kana szerint (szófaj, Használat, Figyelj, kapcsolódó szavak), adagonként (1. adag: Dekiru 1–5).
 - **„i” gomb:** a tanuló, az ismétlő és a 3D kártya **hátoldalának** jobb felső sarkában (az előoldalon nincs: ott a felidézés a feladat, és a lap a jelentést is mutatja). 44px érintési felület, 34px látható kör: Felület 2 háttér, másodlagos szöveg; ha van kézzel írt jegyzet, erdő-köd háttér zöld ikonnal. A még nem látszó hátoldalon rejtett (nem fókuszálható), a húzást nem indítja.
