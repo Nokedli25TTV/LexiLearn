@@ -57,7 +57,9 @@ it('a régi kanájú szó haladása, hivatkozásai és felhőadata az új alakra
   // V13.41: kétszer szereplő rész törlése, elírt pontozás javítása
   find('あう').hu = 'találkozik; megfelel, illik, megegyezik; megfelel, illik';
   find('いじょう').hu = 'több, mint. ..; vmi felett';
+  find('しょうわ').hu = 'Shöwa-korszak (1926—1989)';         // V13.42
   api.syncNewWords();
+  expect(find('しょうわ').hu).toBe('Shôwa-korszak (1926–1989)');
   expect(find('はし').hu).toBe('híd; (evő)pálcika');
   expect(find('あう').hu).toBe('találkozik; megfelel, illik, megegyezik');
   expect(find('いじょう').hu).toBe('több, mint...; vmi felett');
@@ -72,6 +74,9 @@ it('a régi kanájú szó haladása, hivatkozásai és felhőadata az új alakra
   expect(find('せつけいする')).toBeUndefined();
   expect(find('せっけいする')).toMatchObject({ id: 'ja_せっけいする', romaji: 'sekkeisuru' });
   expect(find('せっけいする').stats.totalCorrect).toBe(3);
+  // V13.42: (お)としょり → (お)としより
+  expect(find('(お)としょり')).toBeUndefined();
+  expect(find('(お)としより').romaji).toBe('o toshiyori');
 
   // Felhő: egy még régi alakú felhőszó (régi eszközről) is párt talál
   const bg = find('ブルガリア');

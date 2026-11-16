@@ -107,7 +107,9 @@ const RENAMED_WORDS = {
     // V13.37: ぶんぽう (nyelvtan) helyett ぶんぼう állt (a ぶんぼうぐ írószer más szó)
     'ぶんぼう': 'ぶんぽう',
     // V13.41: せっけいする (megtervez) kis っ nélkül állt, a romaji is (setsukeisuru)
-    'せつけいする': 'せっけいする' }
+    'せつけいする': 'せっけいする',
+    // V13.42: (お)としより (idős ember) kis ょ-val állt
+    '(お)としょり': '(お)としより' }
 };
 
 // V13.39: elírt jelentésrész a Dekiru-szavakban (kana → { régi rész: új rész }). A betöltés a mentett
@@ -116,7 +118,14 @@ const RENAMED_WORDS = {
 const MEANING_FIXES = {
   'はし': { 'hid': 'híd' },
   'あう': { 'megfelel, illik': '' },
-  'いじょう': { 'több, mint. ..': 'több, mint...' }
+  'いじょう': { 'több, mint. ..': 'több, mint...' },
+  // V13.42: a korszaknevekben elírás (Shöwa) és gondolatjel; a がくもん egy szó
+  'へいあんじだい': { 'Heian-korszak (794—1192)': 'Heian-korszak (794–1192)' },
+  'えどじだい': { 'Edo-korszak (1603-1868)': 'Edo-korszak (1603–1868)' },
+  'しょうわ': { 'Shöwa-korszak (1926—1989)': 'Shôwa-korszak (1926–1989)' },
+  'たいしょう': { 'Taishô-korszak (1912—1926)': 'Taishô-korszak (1912–1926)' },
+  'めいじじだい': { 'Meiji-korszak (1868—1912)': 'Meiji-korszak (1868–1912)' },
+  'がくもん': { 'tudomány terület': 'tudományterület' }
 };
 const fixMeaning = (kana, hu) => {
   const fixes = MEANING_FIXES[kana];
