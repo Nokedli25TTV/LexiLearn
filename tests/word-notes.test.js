@@ -44,6 +44,15 @@ describe('szómagyarázatok (word_notes.js)', () => {
     expect(bad.map(([k, v]) => `${k} → ${(v.rel || []).filter(r => !KANA.has(r) || r === k).join(', ')}`)).toEqual([]);
   });
 
+  it('nincs kétszer szereplő kulcs (a második csendben felülírná az elsőt), és kanához nem tapad latin betű', () => {
+    const src = readFileSync(path.join(ROOT, 'word_notes.js'), 'utf8');
+    const keys = [...src.matchAll(/^\s{2}'([^']+)':\s*\{/gm)].map(m => m[1]);
+    expect(keys.filter((k, i) => keys.indexOf(k) !== i)).toEqual([]);
+    expect(keys.length).toBe(entries.length);
+    const glued = /[぀-ヿ][A-Za-zÀ-ž]|[A-Za-zÀ-ž][぀-ヿ]/;
+    expect(entries.filter(([, v]) => ['pos', 'use', 'watch'].some(f => v[f] && glued.test(v[f]))).map(([k]) => k)).toEqual([]);
+  });
+
   it('a szövegben nincs emoji, gondolatjel, és a szófaj kisbetűvel kezdődik', () => {
     const texts = entries.flatMap(([k, v]) => ['pos', 'use', 'watch'].filter(f => v[f]).map(f => [k, v[f]]));
     expect(texts.filter(([, t]) => EMOJI.test(t) || /[—]|--/.test(t)).map(([k]) => k)).toEqual([]);

@@ -6,13 +6,13 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.40" src="https://img.shields.io/badge/verzi%C3%B3-13.40-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.41" src="https://img.shields.io/badge/verzi%C3%B3-13.41-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
   <img alt="Vanilla JS, ES modulok" src="https://img.shields.io/badge/vanilla%20JS-ES%20modulok-de9300?style=for-the-badge&logo=javascript&logoColor=white&labelColor=171c1a">
   <img alt="Firebase felhő szinkron" src="https://img.shields.io/badge/Firebase-felh%C5%91%20szinkron-1a73e8?style=for-the-badge&logo=firebase&logoColor=white&labelColor=171c1a">
-  <img alt="Vitest, 181 teszt" src="https://img.shields.io/badge/Vitest-181%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
+  <img alt="Vitest, 182 teszt" src="https://img.shields.io/badge/Vitest-182%20teszt-52b788?style=for-the-badge&logo=vitest&logoColor=white&labelColor=171c1a">
   <img alt="KanjiVG, CC BY-SA 3.0" src="https://img.shields.io/badge/KanjiVG-CC%20BY--SA%203.0-7a837e?style=for-the-badge&labelColor=171c1a">
 </p>
 
@@ -77,7 +77,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - Koppintásra megfordul: jelentés, kandzsi írásmód, romaji és egy példamondat furiganával, magyar fordítással.
 - **Kandzsi ↔ szó:** a japán szó hátoldalán a benne lévő kandzsik a jelentésükkel (名 név · 前 előtt), a kandzsi hátoldalán legfeljebb három szó, amelyben szerepel (a már megtanultak elöl). Az írásmód a szó saját adatából vagy a saját példamondataiból jön, csak ha egyértelmű.
 - A „Még nem” kártya a sor végére kerül, és addig visszajön, amíg egyszer nem megy.
-- **Szómagyarázat (japán):** a kártya hátoldalán egy „i” gomb alulról nyíló lapot nyit: szófaj (igéknél az igecsoport), témakör, szint és lecke, **Használat** (mikor, kinek, milyen szerkezetben), **Figyelj** (a buktató: partikula, párja, azonos hangzású szó, rendhagyó alak), kapcsolódó szavak és példa. A zöld „i” jelzi, hogy van kézzel írt leírás; a Dekiru 1. könyv (1–24. lecke) 1000+ szava kész, a 2. könyv leckénként érkezik. A tanuló kártyán a „Figyelj” sor rögtön látszik.
+- **Szómagyarázat (japán):** a kártya hátoldalán egy „i” gomb alulról nyíló lapot nyit: szófaj (igéknél az igecsoport), témakör, szint és lecke, **Használat** (mikor, kinek, milyen szerkezetben), **Figyelj** (a buktató: partikula, párja, azonos hangzású szó, rendhagyó alak), kapcsolódó szavak és példa. A zöld „i” jelzi, hogy van kézzel írt leírás; a Dekiru 1. könyv (1–24. lecke) és a 2. könyv 25–29. leckéje kész (1200+ szó), a többi leckénként érkezik. A tanuló kártyán a „Figyelj” sor rögtön látszik.
 - **Hibás válasz után** (gyakorlás és ismétlés) egy rövid magyarázat: mit választottál helyette („Összekeverted: びよういん = fodrászat”, ha a párját), mire figyelj, és egy koppintással a teljes leírás.
 - **Számlálószavak:** a számlálók (ひとつ, ひとり, ～さい, 枚, 匹 …) kártyáján egy kis címke mondja meg, mit számolnak („Számláló · emberek”, „Számláló · lapos tárgyak”). A tanuló, az ismétlő, a gyakorló és a 3D kártyán is ott van.
 - Kiejtés japánul, angolul és magyarul (iOS kezdőképernyős appban is, a némító kapcsoló mellett is szól, ha a Zene mellett ki van kapcsolva), billentyűzettel a nyilak és a Szóköz is működik.
@@ -221,7 +221,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **181 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **182 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash

@@ -4,7 +4,7 @@
 const DEKIRU_2_WORDS = [
   // 25. lecke
   { kana: 'きこくする', romaji: 'kikokusuru', hu: 'hazautazik', tags: ['igék', 'utazás'], jlpt: 'N4', lesson: [25], source: 'dekiru', book: 2 },
-  { kana: 'あう', romaji: 'au', hu: 'megfelel, illik, megegyezik; megfelel, illik', tags: ['igék'], jlpt: 'N5', lesson: [25, 31], source: 'dekiru', book: 2 },
+  { kana: 'あう', romaji: 'au', hu: 'megfelel, illik, megegyezik', tags: ['igék'], jlpt: 'N5', lesson: [25, 31], source: 'dekiru', book: 2 },
   { kana: '(ゆびを)あてる', romaji: 'yubiwo ateru', hu: 'ráteszi (az ujját)', tags: ['igék', 'testrészek'], jlpt: 'N4', lesson: [25], source: 'dekiru', book: 2 },
   { kana: '(めがねを)はずす', romaji: 'meganewo hazusu', hu: 'levesz (szemüveget)', tags: ['igék'], jlpt: 'N4', lesson: [25], source: 'dekiru', book: 2 },
   { kana: '(ポーズを)とる', romaji: 'poozuwo toru', hu: 'felvesz (egy pózt)', tags: ['igék'], jlpt: 'N4', lesson: [25], source: 'dekiru', book: 2 },
@@ -104,7 +104,7 @@ const DEKIRU_2_WORDS = [
   { kana: 'おる', romaji: 'oru', hu: 'hajt, hajtogat; van (szerény stílus)', tags: ['igék', 'udvariasság'], jlpt: 'N5', lesson: [27, 39], source: 'dekiru', book: 2 },
   { kana: 'ひらく', romaji: 'hiraku', hu: 'kinyit, szétnyit; megrendez', tags: ['igék'], jlpt: 'N4', lesson: [27], source: 'dekiru', book: 2 },
   { kana: 'うらがえす', romaji: 'uragaesu', hu: 'kifordít', tags: ['igék'], jlpt: 'N4', lesson: [27], source: 'dekiru', book: 2 },
-  { kana: 'いじょう', romaji: 'ijou', hu: 'több, mint. ..; vmi felett', tags: ['alapszavak'], jlpt: 'N4', lesson: [27], source: 'dekiru', book: 2 },
+  { kana: 'いじょう', romaji: 'ijou', hu: 'több, mint...; vmi felett', tags: ['alapszavak'], jlpt: 'N4', lesson: [27], source: 'dekiru', book: 2 },
   { kana: 'いか', romaji: 'ika', hu: 'kevesebb, mint...; vmi alatt', tags: ['ételek', 'állatok'], jlpt: 'N3', lesson: [27], source: 'dekiru', book: 2 },
   { kana: 'ひとりぐらし', romaji: 'hitorigurashi', hu: 'egyedül lakás', tags: ['alapszavak'], jlpt: 'N4', lesson: [27], source: 'dekiru', book: 2 },
   { kana: 'おこのみやき', romaji: 'okonomiyaki', hu: 'okonomiyaki (japán étel)', tags: ['ételek', 'országok'], jlpt: 'N4', lesson: [27], source: 'dekiru', book: 2 },
@@ -134,7 +134,7 @@ const DEKIRU_2_WORDS = [
   { kana: 'しつもんする', romaji: 'shitsumonsuru', hu: 'kérdez', tags: ['igék', 'kommunikáció'], jlpt: 'N4', lesson: [28], source: 'dekiru', book: 2 },
   { kana: 'アドバイスする', romaji: 'adobaisusuru', hu: 'tanácsot ad', tags: ['igék'], jlpt: 'N4', lesson: [28], source: 'dekiru', book: 2 },
   { kana: '(でんげんを)いれる', romaji: 'dengenwo ireru', hu: 'bekapcsol', tags: ['igék'], jlpt: 'N4', lesson: [28], source: 'dekiru', book: 2 },
-  { kana: 'せつけいする', romaji: 'setsukeisuru', hu: '(meg)tervez', tags: ['igék'], jlpt: 'N4', lesson: [28], source: 'dekiru', book: 2 },
+  { kana: 'せっけいする', romaji: 'sekkeisuru', hu: '(meg)tervez', tags: ['igék'], jlpt: 'N4', lesson: [28], source: 'dekiru', book: 2 },
   { kana: 'だいひょうする', romaji: 'daihyousuru', hu: 'képvisel', tags: ['igék'], jlpt: 'N4', lesson: [28], source: 'dekiru', book: 2 },
   { kana: 'しゅうごうする', romaji: 'shuugousuru', hu: 'gyülekezik', tags: ['igék'], jlpt: 'N4', lesson: [28], source: 'dekiru', book: 2 },
   { kana: 'ちゅうしゃする', romaji: 'chuushasuru', hu: 'parkol; injekciót bead', tags: ['igék', 'egészség', 'közlekedés'], jlpt: 'N4', lesson: [28, 34], source: 'dekiru', book: 2 },

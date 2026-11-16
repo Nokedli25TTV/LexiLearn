@@ -54,8 +54,24 @@ it('a régi kanájú szó haladása, hivatkozásai és felhőadata az új alakra
 
   // V13.39: elírt jelentésrész javítása a mentett szóban is (a betöltés a mentett jelentéshez fűz)
   find('はし').hu = 'hid; (evő)pálcika';
+  // V13.41: kétszer szereplő rész törlése, elírt pontozás javítása
+  find('あう').hu = 'találkozik; megfelel, illik, megegyezik; megfelel, illik';
+  find('いじょう').hu = 'több, mint. ..; vmi felett';
   api.syncNewWords();
   expect(find('はし').hu).toBe('híd; (evő)pálcika');
+  expect(find('あう').hu).toBe('találkozik; megfelel, illik, megegyezik');
+  expect(find('いじょう').hu).toBe('több, mint...; vmi felett');
+
+  // V13.41: せつけいする → せっけいする, a mentett haladással együtt
+  const sekkei = find('せっけいする');
+  expect(sekkei.romaji).toBe('sekkeisuru');
+  Object.assign(sekkei, { en: 'せつけいする', id: 'ja_せつけいする', romaji: 'setsukeisuru' });
+  Object.assign(sekkei.stats, { totalCorrect: 3, streak: 3 });
+  expect(api.migrateRenamedWords()).toBe(true);
+  api.syncNewWords();
+  expect(find('せつけいする')).toBeUndefined();
+  expect(find('せっけいする')).toMatchObject({ id: 'ja_せっけいする', romaji: 'sekkeisuru' });
+  expect(find('せっけいする').stats.totalCorrect).toBe(3);
 
   // Felhő: egy még régi alakú felhőszó (régi eszközről) is párt talál
   const bg = find('ブルガリア');

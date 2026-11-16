@@ -105,12 +105,19 @@ const RENAMED_WORDS = {
     // V13.33: latin betű a kanában (a kana mező most teszttel védett)
     'おototoi': 'おととい', 'きょねn': 'きょねん', 'でnき': 'でんき', 'うde': 'うで',
     // V13.37: ぶんぽう (nyelvtan) helyett ぶんぼう állt (a ぶんぼうぐ írószer más szó)
-    'ぶんぼう': 'ぶんぽう' }
+    'ぶんぼう': 'ぶんぽう',
+    // V13.41: せっけいする (megtervez) kis っ nélkül állt, a romaji is (setsukeisuru)
+    'せつけいする': 'せっけいする' }
 };
 
 // V13.39: elírt jelentésrész a Dekiru-szavakban (kana → { régi rész: új rész }). A betöltés a mentett
 // jelentéshez fűzi az adatfájlét, ezért a javítás nélkül a régi alak a mentett szóban megmaradna.
-const MEANING_FIXES = { 'はし': { 'hid': 'híd' } };
+// Üres új rész = a rész törlése (V13.41: az あう két leckéje ugyanazt a jelentést kétszer adta).
+const MEANING_FIXES = {
+  'はし': { 'hid': 'híd' },
+  'あう': { 'megfelel, illik': '' },
+  'いじょう': { 'több, mint. ..': 'több, mint...' }
+};
 const fixMeaning = (kana, hu) => {
   const fixes = MEANING_FIXES[kana];
   return fixes ? String(hu || '').split(';').map(s => fixes[s.trim()] ?? s.trim()).join('; ') : hu;
