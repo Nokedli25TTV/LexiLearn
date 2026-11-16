@@ -125,7 +125,8 @@ const MEANING_FIXES = {
   'しょうわ': { 'Shöwa-korszak (1926—1989)': 'Shôwa-korszak (1926–1989)' },
   'たいしょう': { 'Taishô-korszak (1912—1926)': 'Taishô-korszak (1912–1926)' },
   'めいじじだい': { 'Meiji-korszak (1868—1912)': 'Meiji-korszak (1868–1912)' },
-  'がくもん': { 'tudomány terület': 'tudományterület' }
+  'がくもん': { 'tudomány terület': 'tudományterület' },
+  'ぼうはん': { 'búnmegelőzés': 'bűnmegelőzés' }  // V13.43
 };
 const fixMeaning = (kana, hu) => {
   const fixes = MEANING_FIXES[kana];

@@ -502,7 +502,7 @@ const DEKIRU_2_WORDS = [
   { kana: 'ころす', romaji: 'korosu', hu: 'öl, gyilkol', tags: ['igék'], jlpt: 'N3', lesson: [37], source: 'dekiru', book: 2 },
   { kana: 'つかまえる', romaji: 'tsukamaeru', hu: 'elfog, megfog', tags: ['igék'], jlpt: 'N3', lesson: [37], source: 'dekiru', book: 2 },
   { kana: 'まとめる', romaji: 'matomeru', hu: 'összeállít, összefoglal', tags: ['igék'], jlpt: 'N3', lesson: [37], source: 'dekiru', book: 2 },
-  { kana: 'ぼうはん', romaji: 'bouhan', hu: 'búnmegelőzés', tags: ['társadalom'], jlpt: 'N3', lesson: [37], source: 'dekiru', book: 2 },
+  { kana: 'ぼうはん', romaji: 'bouhan', hu: 'bűnmegelőzés', tags: ['társadalom'], jlpt: 'N3', lesson: [37], source: 'dekiru', book: 2 },
   { kana: 'ステッカー', romaji: 'sutekkaa', hu: 'azonosító címke', tags: ['tárgyak'], jlpt: 'N4', lesson: [37], source: 'dekiru', book: 2 },
   { kana: 'チェーン', romaji: 'cheen', hu: 'lánc', tags: ['jövevényszavak', 'bolt'], jlpt: 'N3', lesson: [37], source: 'dekiru', book: 2 },
   { kana: 'しゃしゅ', romaji: 'shashu', hu: 'kocsitípus', tags: ['alapszavak'], jlpt: 'N4', lesson: [37], source: 'dekiru', book: 2 },
