@@ -61,6 +61,13 @@ describe('japán válasz', () => {
     expect(checkJapanese('駅', eki).ok).toBe(true);
     expect(checkJapanese('eke', eki).ok).toBe(false);
   });
+  it('több írásmódból (以下・烏賊) egy is elég', () => {
+    const ika = { kana: 'いか', writing: '以下・烏賊', romaji: 'ika' };
+    expect(checkJapanese('以下', ika).ok).toBe(true);
+    expect(checkJapanese('烏賊', ika).ok).toBe(true);
+    expect(checkJapanese('以下・烏賊', ika).ok).toBe(true);
+    expect(checkJapanese('以上', ika).ok).toBe(false);
+  });
   it('a hosszú magánhangzó és a kettőzött mássalhangzó írásmódja mindegy', () => {
     const tokyo = { kana: 'とうきょう', romaji: 'toukyou' };
     expect(checkJapanese('tokyo', tokyo).ok).toBe(true);

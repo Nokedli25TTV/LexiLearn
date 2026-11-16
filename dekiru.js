@@ -296,7 +296,7 @@ const DEKIRU_L4 = [
 const DEKIRU_L5 = [
   // Mozgást kifejező igék
   { kana: 'いく', romaji: 'iku', hu: 'megy', tags: ['igék'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
-  { kana: 'かえる', romaji: 'kaeru', hu: 'hazamegy', tags: ['igék'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
+  { kana: 'かえる', kanji: '帰る', romaji: 'kaeru', hu: 'hazamegy', tags: ['igék'], jlpt: 'N5', lesson: [5], source: 'dekiru' }, // homográf (蛙: béka)
   { kana: 'くる', romaji: 'kuru', hu: 'jön', tags: ['igék'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
 
   // Közlekedés
@@ -1014,7 +1014,7 @@ const DEKIRU_L16 = [
   { kana: 'ふく', romaji: 'fuku', hu: '(furulyát) fúj', tags: ['igék', 'szórakozás'], jlpt: 'N5', lesson: [16], source: 'dekiru' }, // [cite: 1897, 1909]
   { kana: 'やく', romaji: 'yaku', hu: 'süt', tags: ['igék', 'ételek'], jlpt: 'N5', lesson: [16], source: 'dekiru' }, // [cite: 1898, 1910]
   { kana: 'はたらく', romaji: 'hataraku', hu: 'dolgozik', tags: ['igék', 'munka'], jlpt: 'N4', lesson: [16], source: 'dekiru' }, // [cite: 1899, 1911]
-  { kana: 'かえる', romaji: 'kaeru', hu: '(pénzt) vált', tags: ['igék'], jlpt: 'N5', lesson: [16], source: 'dekiru' }, // [cite: 1901, 1912]
+  { kana: 'かえる', kanji: '替える', romaji: 'kaeru', hu: '(pénzt) vált', tags: ['igék'], jlpt: 'N5', lesson: [16], source: 'dekiru' }, // [cite: 1901, 1912] homográf (蛙: béka)
   { kana: 'あつめる', romaji: 'atsumeru', hu: 'összegyűjt', tags: ['igék'], jlpt: 'N4', lesson: [16], source: 'dekiru' }, // [cite: 1902, 1913]
   { kana: 'できる', romaji: 'dekiru', hu: 'tud, képes vmire', tags: ['igék'], jlpt: 'N5', lesson: [16], source: 'dekiru' }, // [cite: 1903, 1914]
   { kana: 'ならべる', romaji: 'naraberu', hu: 'sorba rak, sorba állít', tags: ['igék'], jlpt: 'N5', lesson: [16], source: 'dekiru' }, // [cite: 1904, 1915]
@@ -1489,7 +1489,7 @@ const DEKIRU_L24 = [
   { kana: 'けんがくする', romaji: 'kengakusuru', hu: 'tanulmányi célból megtekint, látogatást tesz vhol', tags: ['iskola', 'igék'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 515, 537]
 
   // Főnevek
-  { kana: 'くも', romaji: 'kumo', hu: 'felhő', tags: ['időjárás'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 539, 540]
+  { kana: 'くも', kanji: '雲', romaji: 'kumo', hu: 'felhő', tags: ['időjárás'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 539, 540] homográf (蜘蛛: pók)
   { kana: 'つき', romaji: 'tsuki', hu: 'hold', tags: ['természet'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 541, 543]
   { kana: 'ほし', romaji: 'hoshi', hu: 'csillag', tags: ['természet'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 544, 550]
   { kana: 'にじ', romaji: 'niji', hu: 'szivárvány', tags: ['természet'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 545, 551]

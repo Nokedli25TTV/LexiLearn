@@ -109,7 +109,9 @@ function checkJapanese(input, { kana, writing, romaji } = {}) {
   if (!raw) return { ok: false, exact: false };
   if (JAPANESE.test(raw)) {
     const a = foldKana(raw);
-    return { ok: [kana, writing].filter(Boolean).some(t => foldKana(t) === a), exact: true };
+    // V13.45: több írásmód (以下・烏賊, 性格・正確) közül egy is elég, vagy mind együtt
+    const writings = [writing, ...String(writing || '').split('・')];
+    return { ok: [kana, ...writings].filter(Boolean).some(t => foldKana(t) === a), exact: true };
   }
   if (romaji && normalizeRomaji(raw) === normalizeRomaji(romaji)) return { ok: true, exact: true };
   if (kana && foldKana(romajiToHiragana(raw.toLowerCase())) === foldKana(kana)) return { ok: true, exact: true };

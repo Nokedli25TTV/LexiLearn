@@ -33,14 +33,14 @@ const JAPANESE_WORDS = [
   { kana: 'たか', romaji: 'taka', hu: 'ölyv / héja', tags: ['állatok'], jlpt: 'N3' },
   { kana: 'かも', romaji: 'kamo', hu: 'vadkacsa', tags: ['állatok','ételek'], jlpt: 'N4' },
   { kana: 'つばめ', romaji: 'tsubame', hu: 'fecske', tags: ['állatok'], jlpt: 'N4' },
-  { kana: 'かえる', romaji: 'kaeru', hu: 'béka', tags: ['állatok'], jlpt: 'N5' },
+  { kana: 'かえる', kanji: '蛙', romaji: 'kaeru', hu: 'béka', tags: ['állatok'], jlpt: 'N5' },
   { kana: 'へび', romaji: 'hebi', hu: 'kígyó', tags: ['állatok'], jlpt: 'N5' },
   { kana: 'とかげ', romaji: 'tokage', hu: 'gyík', tags: ['állatok'], jlpt: 'N4' },
   { kana: 'かめ', romaji: 'kame', hu: 'teknős', tags: ['állatok'], jlpt: 'N5' },
   { kana: 'あり', romaji: 'ari', hu: 'hangya', tags: ['állatok'], jlpt: 'N5' },
   { kana: 'はち', romaji: 'hachi', hu: 'méh', tags: ['állatok'], jlpt: 'N5' },
   { kana: 'ちょう', romaji: 'chō', hu: 'pillangó', tags: ['állatok'], jlpt: 'N4' },
-  { kana: 'くも', romaji: 'kumo', hu: 'pók', tags: ['állatok'], jlpt: 'N5' },
+  { kana: 'くも', kanji: '蜘蛛', romaji: 'kumo', hu: 'pók', tags: ['állatok'], jlpt: 'N5' },
   { kana: 'たこ', romaji: 'tako', hu: 'polip', tags: ['állatok','ételek'], jlpt: 'N4' },
 
   // ─── N5 – Kapcsolatok / Család ────────────────────
@@ -202,7 +202,7 @@ const JAPANESE_WORDS = [
   { kana: 'めんぜい', romaji: 'menzei', hu: 'Tax-Free / adómentes', tags: ['bolt'], jlpt: 'N2' }, // 免税
   // — 9. nap —
   { kana: 'おみやげ', romaji: 'omiyage', hu: 'szuvenír / helyi ajándék', tags: ['bolt'], jlpt: 'N4' }, // お土産
-  { kana: 'かい', romaji: 'kai', hu: 'emelet', tags: ['bolt'], jlpt: 'N4' }, // 階
+  { kana: 'かい', kanji: '階', romaji: 'kai', hu: 'emelet', tags: ['bolt'], jlpt: 'N4' },
   { kana: 'えいぎょうちゅう', romaji: 'eigyou chuu', hu: 'nyitva (üzemel)', tags: ['bolt'], jlpt: 'N2' }, // 営業中
   { kana: 'じゅんびちゅう', romaji: 'junbi chuu', hu: 'zárva (előkészületben)', tags: ['bolt'], jlpt: 'N3' }, // 準備中
   { kana: 'さがしています', romaji: 'sagashite imasu', hu: 'keresek (valamit)', tags: ['bolt'], jlpt: 'N4' }, // 探しています

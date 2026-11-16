@@ -28,7 +28,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | Hely | Tartalom |
 |---|---|
 | `index.html`, `style.css` | az oldal szerkezete és stílusa |
-| `data.js`, `japanese_words.js`, `jlpt_n3_words.js`, `dekiru.js`, `kanji_data.js`, `japanese_sentences.js`, `english_sentences2.js` | a szótár adatai, **kézzel szerkeszthető** klasszikus scriptek (a `jlpt_n3_words.js` szavai `kanji` írásmódot is kapnak, ami a kártya hátoldalán jelenik meg) |
+| `data.js`, `japanese_words.js`, `jlpt_n3_words.js`, `dekiru.js`, `dekiru2.js`, `kanji_data.js`, `japanese_sentences.js`, `english_sentences2.js` | a szótár adatai, **kézzel szerkeszthető** klasszikus scriptek (a `jlpt_n3_words.js` szavai `kanji` írásmódot is kapnak, ami a kártya hátoldalán jelenik meg; a Dekiru-szavak csak homográfnál, lásd lent) |
 | `data-registry.js` | a fenti adatokat `eval` nélkül gyűjti a `window.LEXI_DATA`-ba (új Dekiru lecke 30-ig magától bekerül) |
 | `js/main.js` | belépési pont: betölti a modulokat, az inline `onclick` kezelőknek a `window`-ra teszi a függvényeket, elindítja az appot |
 | `js/core/` | állapot (`state`), statikus adatok (`data`), mentés / betöltés / migráció (`storage`), dátumok, segédek, hibatűrő válaszellenőrző (`answer`), számlálószó-címkék (`counters`) |
@@ -49,7 +49,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `js/practice/lesson-test.js` | Lecke-zárás (japán): egy lecke elkezdett szavai egyszer, vegyes kérdésfajtával (`mix`: szavanként `meaning` / `reverse` / `typed` / `listen`, a motor `applyLessonTestKind()`-dal állítja be a típust és az irányt); az első kör eredménye `globalStats.lessonTests[lecke] = { date, pct, total, best }`, 90%-tól lezárt |
 | `grammar_notes.js` | nyelvtan leckénként (`GRAMMAR_NOTES`, lecke → `{ title, points: [{ pattern, name, text, ex: [[japán, magyar]], watch }] }`), klasszikus script; mind a 48 Dekiru-lecke (1. könyv 1–24., 2. könyv 25–48., a 2. könyv japán leckecímei magyarul), a könyv sorrendjében, saját magyarázattal és példákkal |
 | `js/features/grammar.js` | a lecke nyelvtana: sor a Gyakorlás fülön (egy lecke kiválasztva, a Lecke-zárás fölött), alulról nyíló lap kinyitható pontokkal, felolvasással (`speakGrammar`) és leckelapozással (`openGrammar`) |
-| `tools/` | fejlesztői eszközök, az app nem tölti be őket: KanjiVG feldolgozás, demó, a README képei (lásd lent) |
+| `tools/` | fejlesztői eszközök, az app nem tölti be őket: KanjiVG feldolgozás, demó, a README képei, az azonos kanájú szavak listája (`homographs.mjs`, lásd lent) |
 
 ### Új függvény, amit HTML-ből hívsz
 
@@ -62,6 +62,23 @@ Minden kiadásnál együtt emeld a verziót: `index.html` (`?v=` a script / styl
 `sw.js` (`CACHE_NAME`), `package.json` és a `js/main.js` fejléce. Új modul fájlnál vedd fel a `sw.js`
 `STATIC_ASSETS` listájába is; a `tests/sw.test.js` elbukik, ha kimarad, vagy ha a lista nem létező fájlt tartalmaz
 (egyetlen hiányzó fájl miatt a service worker nem települ, és az app nem működik offline).
+
+## Azonos kanájú szavak (homográfok)
+
+Az app a japán szavakat kana szerint azonosítja (`ja_<kana>`), ezért egy Dekiru-szó és egy azonos kanájú
+`japanese_words.js` / `jlpt_n3_words.js` szó egy kártyát kap (`syncNewWords`, `js/core/storage.js`).
+
+- **Ugyanaz a szó** (もくてき = 目的): a jelentés és az írásmód az N3 adatából jön. A szó Dekiru-szó marad
+  (`source: 'dekiru'`), így a Statisztika lecke-nézete is számolja.
+- **Más szó (homográf):** a Dekiru-rekordnak saját `kanji` mezője van, ami eltér a másikétól (いか: `kanji: '以下'`
+  a 27. leckében, 烏賊 az N3-ban). A kártyán a lecke jelentése áll elöl, utána a másik szóé (mint az いる / かける
+  több leckés jelentéseinél), az írásmód mindkettő (`以下・烏賊`); ami a leckében már szerepel, nem ismétlődik.
+  Gépelésnél bármelyik írásmód jó. Jelenleg 12 ilyen szó van, kettő az 1. könyvben (かえる, くも).
+- **Új adag után** (N3 vagy Dekiru): a `node tools/homographs.mjs` listázza a jelölt homográfokat és a gyanús,
+  jelöletlen párokat (nincs közös szótő a két jelentésben). Ezeket kézzel kell átnézni, a legtöbb csak szinonima.
+  A `--all` minden azonos kanájú párt kiír.
+- **Témakörök:** a Dekiru-szavak címkéi betöltéskor az adatfájlból jönnek (V13.45 óta nem adódnak a mentett
+  címkékhez), így egy címkejavítás a meglévő mentésekben is érvényes, külön migráció nélkül.
 
 ## Felhő adat (Firestore)
 
@@ -205,6 +222,7 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/word-notes.test.js`, `tests/word-info.test.js`** – a jegyzetek létező szóhoz és létező kapcsolódó szóhoz tartoznak, rövidek; az „i” gomb, a Figyelj sor, a lap (lapozás, vissza, Escape) és a hibás válasz utáni magyarázat a gyakorlásban és az ismétlésben.
 - **`tests/lesson-test.test.js`** – a Lecke-zárás: melyik leckét ajánlja a Kezdőlap, minden szó egyszer és mind a négy kérdésfajta, a toldalékos szó nem gépelős, a kör vége (Még nem ül a kérdésfajtával, mentett eredmény, a második kör nem írja felül), a Gyakorlás fül sora, a lezárt lecke a menüben és a Statisztikában.
 - **`tests/grammar-notes.test.js`, `tests/grammar.test.js`** – a nyelvtan adatai (létező lecke, minden pontban minta, név, magyarázat és japán példa, hossz, írásjelek); a Gyakorlás fül sora, a lap (pontok, példák, buktató, lapozás, Escape), több lecke és angol mód esetén nincs nyelvtan.
+- **`tests/homographs.test.js`** – a homográfok (いか, だい, かい, かえる, くも …) a lecke jelentésével és mindkét írásmóddal, a régi mentés helyreállása (felülírt jelentés, téves címkék), és a `tools/homographs.mjs` besorolása.
 - **`tests/data.test.js`** (V13.33 óta) a kana mezőben latin betűt sem enged (elgépelés); az így javított szavak a `RENAMED_WORDS`-be kerülnek, hogy a haladás átköltözzön.
 - **`tests/unit/counters.test.js`, `tests/stats-shortcuts.test.js`** – mit számol a számlálószó; a Statisztika szólistájából gyakorlás, a JLPT-kártya két sora, a heti sor hét napja, és a számlálószó-címke a tanuló, a gyakorló és a 3D kártyán.
 - **`tests/tts.test.js`, `tests/tts-android.test.js`** – a hangútvonal: Google-hang, újrapróbálás, nyelvhez illő tartalék, a hangkimenet ébren tartása, napló.

@@ -467,6 +467,19 @@ function syncNewWords() {
   };
   const lessonValues = value => (Array.isArray(value) ? value : [value])
     .map(Number).filter(n => Number.isFinite(n) && n >= 1);
+  // V13.45: írásmódok egyesítése (以下 + 烏賊 → 以下・烏賊), ismétlés nélkül
+  const joinWritings = (...writings) => [...new Set(writings.flatMap(w => String(w || '').split('・')).map(s => s.trim()).filter(Boolean))].join('・');
+  // Homográfnál a másik szó jelentései a lecke jelentése után; ami a leckében már szerepel
+  // (zárójeles megjegyzés nélkül is, pl. cikk = cikk (újságban)), nem ismétlődik
+  const meaningCore = s => s.replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  const appendMeanings = (first, second) => {
+    const parts = String(first || '').split(';').map(s => s.trim()).filter(Boolean);
+    const cores = new Set(parts.map(meaningCore));
+    String(second || '').split(';').map(s => s.trim()).filter(Boolean).forEach(p => {
+      if (!cores.has(meaningCore(p))) { parts.push(p); cores.add(meaningCore(p)); }
+    });
+    return parts.join('; ');
+  };
   // A két könyvben ismétlődő olvasatok egyetlen alkalmazásbeli rekordot kapnak.
   // A jelentések, témakörök és leckecímkék összeadódnak, így pl. ugyanaz a szó
   // mindkét érintett lecke szűrőjében megjelenik.
@@ -476,6 +489,7 @@ function syncNewWords() {
     merged.lesson = [...new Set([...lessonValues(merged.lesson), ...lessonValues(w.lesson)])].sort((a, b) => a - b);
     merged.tags = [...new Set([...(merged.tags || []), ...(w.tags || [])])];
     merged.hu = mergeText(merged.hu, w.hu);
+    merged.kanji = joinWritings(merged.kanji, w.kanji); // V13.45: csak a homográfoknál van (lásd lent)
     if (!merged.romaji && w.romaji) merged.romaji = w.romaji;
     if (!merged.jlpt || Number(w.jlpt?.slice(1)) < Number(merged.jlpt?.slice(1))) merged.jlpt = w.jlpt;
     dekiruByKana.set(w.kana, merged);
@@ -496,6 +510,7 @@ function syncNewWords() {
       appData.japanese.words.push({
         id: stableWordId('ja', w.kana),
         en: w.kana, hu: w.hu, romaji: w.romaji, tags: w.tags || [], diff: w.jlpt || 'N5',
+        ...(w.kanji ? { kanji: w.kanji } : {}),
         lesson: lessons, source: 'dekiru', sentence: '',
         bookmarked: false,
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
@@ -504,14 +519,30 @@ function syncNewWords() {
       existingWord.lesson = [...new Set([...lessonValues(existingWord.lesson), ...lessons])].sort((a, b) => a - b);
       existingWord.source = 'dekiru';
       existingWord.hu = mergeText(fixMeaning(existingWord.en, existingWord.hu), w.hu);
-      existingWord.tags = [...new Set([...(existingWord.tags || []), ...(w.tags || [])])];
+      // V13.45: a témakör az adatfájlból jön (a két könyv címkéi már egyesítve). Korábban a mentett
+      // címkékhez fűződött, így egy téves címke (pl. いか: ételek) a javítás után is megmaradt.
+      existingWord.tags = [...(w.tags || [])];
+      if (w.kanji) existingWord.kanji = w.kanji;
       if (w.romaji) existingWord.romaji = w.romaji; // V13.18: az adatfájl az irányadó (romaji-javítások)
       if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
     }
   });
 
+  // V13.45: ha egy Dekiru-szó kanája egy JAPANESE_WORDS / N3 szóéval egyezik, egy kártya lesz belőlük.
+  // Ugyanaz a szó (もくてき = 目的): a jelentés és az írásmód az N3 adatából jön, ahogy eddig. Más szó
+  // (homográf, a Dekiru-rekordnak saját, eltérő írásmódja van, pl. いか = 以下 / 烏賊): a lecke
+  // jelentése marad elöl, utána a másik szóé, ahogy az いる / かける több leckés jelentései is
+  // egymás után állnak, és mindkét írásmód látszik. A szó mindkét esetben Dekiru-szó marad (source),
+  // így a Statisztika lecke-nézete is számolja. Listázás: node tools/homographs.mjs
   JAPANESE_WORDS.forEach((w, i) => {
     let existingWord = appData.japanese.words.find(x => x.en === w.kana);
+    const lessonWord = dekiruByKana.get(w.kana);
+    if (existingWord && lessonWord?.kanji && lessonWord.kanji !== (w.kanji || '')) {
+      existingWord.hu = appendMeanings(lessonWord.hu, w.hu);
+      existingWord.kanji = joinWritings(lessonWord.kanji, w.kanji);
+      if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
+      return;
+    }
     if (!existingWord) {
       appData.japanese.words.push({
         id: stableWordId('ja', w.kana),
@@ -523,7 +554,7 @@ function syncNewWords() {
       });
     } else {
       existingWord.hu = w.hu;
-      existingWord.source = 'data_js';
+      existingWord.source = lessonWord ? 'dekiru' : 'data_js';
       if (w.kanji) existingWord.kanji = w.kanji;
       if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
     }

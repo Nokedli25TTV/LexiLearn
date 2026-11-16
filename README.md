@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.44" src="https://img.shields.io/badge/verzi%C3%B3-13.44-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.45" src="https://img.shields.io/badge/verzi%C3%B3-13.45-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -74,7 +74,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 ### Új szavak: húzható kártyák
 
 - Jobbra húzva „Tudom”, balra „Még nem”; a pecsét a húzás mértékével jelenik meg, küszöb felett a kártya kirepül.
-- Koppintásra megfordul: jelentés, kandzsi írásmód, romaji és egy példamondat furiganával, magyar fordítással.
+- Koppintásra megfordul: jelentés, kandzsi írásmód, romaji és egy példamondat furiganával, magyar fordítással. Ha egy Dekiru-szó ugyanúgy hangzik, mint egy másik szó (いか: 以下 „kevesebb, mint” / 烏賊 „tintahal”), a lecke jelentése áll elöl, utána a másiké, és mindkét írásmód látszik.
 - **Kandzsi ↔ szó:** a japán szó hátoldalán a benne lévő kandzsik a jelentésükkel (名 név · 前 előtt), a kandzsi hátoldalán legfeljebb három szó, amelyben szerepel (a már megtanultak elöl). Az írásmód a szó saját adatából vagy a saját példamondataiból jön, csak ha egyértelmű.
 - A „Még nem” kártya a sor végére kerül, és addig visszajön, amíg egyszer nem megy.
 - **Szómagyarázat (japán):** a kártya hátoldalán egy „i” gomb alulról nyíló lapot nyit: szófaj (igéknél az igecsoport), témakör, szint és lecke, **Használat** (mikor, kinek, milyen szerkezetben), **Figyelj** (a buktató: partikula, párja, azonos hangzású szó, rendhagyó alak), kapcsolódó szavak és példa. A zöld „i” jelzi, hogy van kézzel írt leírás; a Dekiru 1. könyv (1–24. lecke) és a 2. könyv 25–44. leckéje kész (1740+ szó), a többi leckénként érkezik. A tanuló kártyán a „Figyelj” sor rögtön látszik.
@@ -221,7 +221,7 @@ flowchart LR
 
 - **Build lépés nélkül:** vanilla JavaScript ES modulokkal, a GitHub Pages közvetlenül a `main` ágból szolgálja ki.
 - **FSRS-5** saját megvalósítással (`js/srs/`), **localforage** (IndexedDB), **Firebase** Auth és Firestore.
-- **182 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
+- **185 automata teszt** Vitesttel és jsdommal: golden master a teljes app kimenetére, adatellenőrzés (N3 szókincs, kandzsi olvasatok, vonássorrend), a vonásillesztő mind az 1715 kandzsin, a felhő szinkron memóriabeli Firestore-ral, a service worker előtöltési listája, és minden gombhoz tartozó kezelő.
 - **Demó** (`tools/demo.html`): az appot memóriabeli tárolóval és kb. 110 napnyi generált előzménnyel tölti be. A fenti képeket ebből készíti a `node tools/readme-shots.mjs`.
 
 ```bash
