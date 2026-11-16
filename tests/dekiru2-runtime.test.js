@@ -8,7 +8,7 @@ it('a Dekiru 2 betöltése az ismétlődő szavakat jelentéssel, témákkal és
   for (let i = 0; i < 200 && !win.appData.japanese.words.length; i++) await wait(10);
 
   const words = win.appData.japanese.words;
-  expect(words).toHaveLength(4256);
+  expect(words).toHaveLength(4254); // V13.44: でんきゅう, じっけん egyesült az N3 párjával
   const au = words.find(word => word.en === 'あう');
   expect(au.lesson).toEqual([6, 25, 31]);
   expect(au.hu).toContain('találkozik');

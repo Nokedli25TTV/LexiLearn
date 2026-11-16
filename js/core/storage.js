@@ -109,7 +109,9 @@ const RENAMED_WORDS = {
     // V13.41: せっけいする (megtervez) kis っ nélkül állt, a romaji is (setsukeisuru)
     'せつけいする': 'せっけいする',
     // V13.42: (お)としより (idős ember) kis ょ-val állt
-    '(お)としょり': '(お)としより' }
+    '(お)としょり': '(お)としより',
+    // V13.44: kis っ / zöngésség hiányzott; a javított alak az N3 szóval egyesül
+    'てんきゅう': 'でんきゅう', 'じつけん': 'じっけん' }
 };
 
 // V13.39: elírt jelentésrész a Dekiru-szavakban (kana → { régi rész: új rész }). A betöltés a mentett
@@ -126,7 +128,9 @@ const MEANING_FIXES = {
   'たいしょう': { 'Taishô-korszak (1912—1926)': 'Taishô-korszak (1912–1926)' },
   'めいじじだい': { 'Meiji-korszak (1868—1912)': 'Meiji-korszak (1868–1912)' },
   'がくもん': { 'tudomány terület': 'tudományterület' },
-  'ぼうはん': { 'búnmegelőzés': 'bűnmegelőzés' }  // V13.43
+  'ぼうはん': { 'búnmegelőzés': 'bűnmegelőzés' },  // V13.43
+  'くさ': { 'fú': 'fű' },                          // V13.44
+  'であい': { '(sorsszerú) találkozás': '(sorsszerű) találkozás' }
 };
 const fixMeaning = (kana, hu) => {
   const fixes = MEANING_FIXES[kana];

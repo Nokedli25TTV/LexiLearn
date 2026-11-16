@@ -77,6 +77,11 @@ it('a régi kanájú szó haladása, hivatkozásai és felhőadata az új alakra
   // V13.42: (お)としょり → (お)としより
   expect(find('(お)としょり')).toBeUndefined();
   expect(find('(お)としより').romaji).toBe('o toshiyori');
+  // V13.44: てんきゅう → でんきゅう; a Dekiru szó az N3 párjával egyesül (lecke + kandzsi)
+  expect(find('てんきゅう')).toBeUndefined();
+  expect(find('でんきゅう')).toMatchObject({ kanji: '電球', romaji: 'denkyuu' });
+  expect(find('でんきゅう').lesson).toEqual([41]);
+  expect(find('じっけん')).toMatchObject({ kanji: '実験', lesson: [43] });
 
   // Felhő: egy még régi alakú felhőszó (régi eszközről) is párt talál
   const bg = find('ブルガリア');
