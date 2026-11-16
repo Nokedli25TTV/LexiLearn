@@ -83,6 +83,31 @@ it('a régi kanájú szó haladása, hivatkozásai és felhőadata az új alakra
   expect(find('でんきゅう').lesson).toEqual([41]);
   expect(find('じっけん')).toMatchObject({ kanji: '実験', lesson: [43] });
 
+  // V13.45: マイベース(な) → マイペース(な)
+  expect(find('マイベース(な)')).toBeUndefined();
+  expect(find('マイペース(な)').romaji).toBe('maipeesu na');
+
+  // V13.45: a Dekiru 1 villamosa (しでん) elírva してん volt, és a Dekiru 2 してん (szempont) szóval egy
+  // rekordba olvadt. A régi mentés szétválik: a haladás a villamosé marad, a szempont tisztán, újként jön.
+  expect(find('しでん')).toMatchObject({ hu: 'villamos', lesson: [5] });
+  expect(find('してん')).toMatchObject({ hu: 'szempont', lesson: [47] });
+  ja.words = ja.words.filter(w => w.en !== 'しでん');
+  const merged = find('してん');
+  Object.assign(merged, { hu: 'villamos; szempont', lesson: [5, 47], tags: ['közlekedés'], bookmarked: true });
+  Object.assign(merged.stats, { totalCorrect: 4, streak: 2 });
+  ja.selectedIds = new Set(['ja_してん']);
+  expect(api.migrateRenamedWords()).toBe(true);
+  api.syncNewWords();
+  expect(find('しでん')).toMatchObject({ id: 'ja_しでん', hu: 'villamos', lesson: [5], romaji: 'shiden', bookmarked: true });
+  expect(find('しでん').stats.totalCorrect).toBe(4);
+  expect(find('してん')).toMatchObject({ id: 'ja_してん', hu: 'szempont', lesson: [47], tags: ['gondolkodás'] });
+  expect(find('してん').stats.totalCorrect).toBe(0);
+  expect([...ja.selectedIds]).toEqual(['ja_しでん']);
+  find('してん').stats.totalCorrect = 1;                 // a szempont saját haladása megmarad
+  expect(api.migrateRenamedWords()).toBe(false);
+  expect(find('してん').stats.totalCorrect).toBe(1);
+  expect(api.JAPANESE_SENTENCES.filter(s => s.baseWord === 'しでん')).toHaveLength(2);
+
   // Felhő: egy még régi alakú felhőszó (régi eszközről) is párt talál
   const bg = find('ブルガリア');
   f.put(`users/u1/data/${LEGACY_ID}`, {

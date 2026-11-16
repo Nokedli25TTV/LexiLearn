@@ -304,7 +304,7 @@ const DEKIRU_L5 = [
   { kana: 'くるま', romaji: 'kuruma', hu: 'autó, kocsi, kerék', tags: ['közlekedés'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
   { kana: 'じどうしゃ', romaji: 'jidousha', hu: 'autó, gépkocsi', tags: ['közlekedés'], jlpt: 'N4', lesson: [5], source: 'dekiru' },
   { kana: 'バス', romaji: 'basu', hu: 'busz', tags: ['közlekedés'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
-  { kana: 'してん', romaji: 'shiten', hu: 'villamos', tags: ['közlekedés'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
+  { kana: 'しでん', romaji: 'shiden', hu: 'villamos', tags: ['közlekedés'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
   { kana: 'ひこうき', romaji: 'hikouki', hu: 'repülőgép', tags: ['közlekedés'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
   { kana: 'ちかてつ', romaji: 'chikatetsu', hu: 'metró, földalatti vasút', tags: ['közlekedés'], jlpt: 'N5', lesson: [5], source: 'dekiru' },
   { kana: 'でんしゃ', romaji: 'densha', hu: '(villany)vonat', tags: ['közlekedés'], jlpt: 'N5', lesson: [5], source: 'dekiru' },

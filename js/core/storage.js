@@ -111,7 +111,16 @@ const RENAMED_WORDS = {
     // V13.42: (お)としより (idős ember) kis ょ-val állt
     '(お)としょり': '(お)としより',
     // V13.44: kis っ / zöngésség hiányzott; a javított alak az N3 szóval egyesül
-    'てんきゅう': 'でんきゅう', 'じつけん': 'じっけん' }
+    'てんきゅう': 'でんきゅう', 'じつけん': 'じっけん',
+    // V13.45: マイペース (a ペース tempó) ベ-vel állt
+    'マイベース(な)': 'マイペース(な)', 'はつけん': 'はっけん' }
+};
+
+// V13.45: elírt kana, ami egy másik, valódi szóval olvadt össze. A Dekiru 1 villamosa しでん, nem
+// してん; a Dekiru 2 してん (szempont) önálló szó. Csak a régi, összevont mentett szó költözik (amelyikben
+// még a villamos jelentés van), a haladásával együtt; a szempont újként jön, így nem fut le újra.
+const SPLIT_RENAMES = {
+  japanese: [{ from: 'してん', to: 'しでん', when: w => /villamos/.test(w.hu || '') }]
 };
 
 // V13.39: elírt jelentésrész a Dekiru-szavakban (kana → { régi rész: új rész }). A betöltés a mentett
@@ -130,7 +139,11 @@ const MEANING_FIXES = {
   'がくもん': { 'tudomány terület': 'tudományterület' },
   'ぼうはん': { 'búnmegelőzés': 'bűnmegelőzés' },  // V13.43
   'くさ': { 'fú': 'fű' },                          // V13.44
-  'であい': { '(sorsszerú) találkozás': '(sorsszerű) találkozás' }
+  'であい': { '(sorsszerú) találkozás': '(sorsszerű) találkozás' },
+  // V13.45: a szétválasztott しでん mentett jelentéséből kikerül a szempont; két pontozási elírás
+  'しでん': { 'szempont': '' },
+  '～だて': { '.. .szintes (épület)': '...szintes (épület)' },
+  '～せい': { '. gyártmányú': '...gyártmányú' }
 };
 const fixMeaning = (kana, hu) => {
   const fixes = MEANING_FIXES[kana];
@@ -162,6 +175,18 @@ function migrateRenamedWords() {
         old.id = newId;
       }
       oldToNew.set(oldId, newId);
+      changed = true;
+    });
+  });
+  Object.entries(SPLIT_RENAMES).forEach(([lang, splits]) => {
+    const words = appData[lang].words;
+    splits.forEach(({ from, to, when }) => {
+      const old = words.find(w => w.en === from && when(w));
+      if (!old || words.some(w => w.en === to)) return;
+      const oldId = old.id;
+      old.en = to;
+      old.id = stableWordId('ja', to);
+      oldToNew.set(oldId, old.id);
       changed = true;
     });
   });
@@ -516,7 +541,9 @@ function syncNewWords() {
         stats: { streak: 0, totalCorrect: 0, totalWrong: 0, lastAttempt: null }
       });
     } else {
-      existingWord.lesson = [...new Set([...lessonValues(existingWord.lesson), ...lessons])].sort((a, b) => a - b);
+      // V13.45: a lecke az adatfájlból jön (a két könyv már egyesítve); a mentettel összefésülve egy
+      // adatjavítás után a régi lecke megmaradna (pl. a szétválasztott しでん a 47. leckében is ott maradt volna)
+      existingWord.lesson = lessons;
       existingWord.source = 'dekiru';
       existingWord.hu = mergeText(fixMeaning(existingWord.en, existingWord.hu), w.hu);
       // V13.45: a témakör az adatfájlból jön (a két könyv címkéi már egyesítve). Korábban a mentett

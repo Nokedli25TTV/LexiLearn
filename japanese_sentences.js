@@ -543,8 +543,8 @@ const JAPANESE_SENTENCES_L5 = [
   { baseWord: "じどうしゃ", sentenceWithBlank: "___BLANK___ の かいしゃ です。", fullSentenceHTML: "<ruby>自動車<rt>じどうしゃ</rt></ruby> の <ruby>会社<rt>かいしゃ</rt></ruby> です。", ttsSentence: "じどうしゃの かいしゃ です。", correctAnswer: "じどうしゃ", hungarian: "Autóipari vállalat." }, //
   { baseWord: "バス", sentenceWithBlank: "___BLANK___ に のります。", fullSentenceHTML: "バス に のります。", ttsSentence: "バスに のります。", correctAnswer: "バス", hungarian: "Felszállok a buszra." }, //
   { baseWord: "バス", sentenceWithBlank: "___BLANK___ で かえります。", fullSentenceHTML: "バス で <ruby>帰<rt>かえ</rt></ruby>ります。", ttsSentence: "バスで かえります。", correctAnswer: "バス", hungarian: "Busszal megyek haza." }, //
-  { baseWord: "してん", sentenceWithBlank: "___BLANK___ に のります。", fullSentenceHTML: "してん に のります。", ttsSentence: "してんに のります。", correctAnswer: "してん", hungarian: "Felszállok a villamosra." }, //
-  { baseWord: "してん", sentenceWithBlank: "___BLANK___ は おそいです。", fullSentenceHTML: "してん は おそいです。", ttsSentence: "してんは おそいです。", correctAnswer: "してん", hungarian: "A villamos lassú." }, //
+  { baseWord: "しでん", sentenceWithBlank: "___BLANK___ に のります。", fullSentenceHTML: "しでん に のります。", ttsSentence: "しでんに のります。", correctAnswer: "しでん", hungarian: "Felszállok a villamosra." }, //
+  { baseWord: "しでん", sentenceWithBlank: "___BLANK___ は おそいです。", fullSentenceHTML: "しでん は おそいです。", ttsSentence: "しでんは おそいです。", correctAnswer: "しでん", hungarian: "A villamos lassú." }, //
   { baseWord: "ひこうき", sentenceWithBlank: "___BLANK___ で にほんへ いきます。", fullSentenceHTML: "<ruby>飛行機<rt>ひこうき</rt></ruby> で <ruby>日本<rt>にほん</rt></ruby>へ いきます。", ttsSentence: "ひこうきで にほんへ いきます。", correctAnswer: "ひこうき", hungarian: "Repülővel megyek Japánba." }, //
   { baseWord: "ひこうき", sentenceWithBlank: "___BLANK___ は とても はやいです。", fullSentenceHTML: "<ruby>飛行機<rt>ひこうき</rt></ruby> は とても はやいです。", ttsSentence: "ひこうきは とても はやいです。", correctAnswer: "ひこうき", hungarian: "A repülő nagyon gyors." }, //
   { baseWord: "ちかてつ", sentenceWithBlank: "___BLANK___ は べんりです。", fullSentenceHTML: "<ruby>地下鉄<rt>ちかてつ</rt></ruby> は べんりです。", ttsSentence: "ちかてつは べんりです。", correctAnswer: "ちかてつ", hungarian: "A metró praktikus." }, //

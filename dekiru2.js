@@ -861,7 +861,7 @@ const DEKIRU_2_WORDS = [
   { kana: 'べつに', romaji: 'betsuni', hu: '(nem) különösebben', tags: ['határozószavak'], jlpt: 'N3', lesson: [46], source: 'dekiru', book: 2 },
   { kana: 'しばらく', romaji: 'shibaraku', hu: 'kis ideig, egy ideig', tags: ['határozószavak'], jlpt: 'N3', lesson: [46], source: 'dekiru', book: 2 },
   { kana: 'ぐうぜん', romaji: 'guuzen', hu: 'véletlenül', tags: ['gondolkodás', 'határozószavak'], jlpt: 'N3', lesson: [46], source: 'dekiru', book: 2 },
-  { kana: '～だて', romaji: 'date', hu: '.. .szintes (épület)', tags: ['alapszavak'], jlpt: 'N4', lesson: [46], source: 'dekiru', book: 2 },
+  { kana: '～だて', romaji: 'date', hu: '...szintes (épület)', tags: ['alapszavak'], jlpt: 'N4', lesson: [46], source: 'dekiru', book: 2 },
 
   // 47. lecke
   { kana: 'きょうどうする', romaji: 'kyoudousuru', hu: 'közösen, együtt végez vmit', tags: ['igék'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
@@ -880,7 +880,7 @@ const DEKIRU_2_WORDS = [
   { kana: 'ちしき', romaji: 'chishiki', hu: 'tudás, ismeret', tags: ['iskola', 'gondolkodás'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'タイプ', romaji: 'taipu', hu: 'típus', tags: ['jövevényszavak'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'たようか', romaji: 'tayouka', hu: 'sokszínűsödés, diverzifikáció', tags: ['társadalom'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
-  { kana: 'してん', romaji: 'shiten', hu: 'szempont', tags: ['gondolkodás'], jlpt: 'N5', lesson: [47], source: 'dekiru', book: 2 },
+  { kana: 'してん', romaji: 'shiten', hu: 'szempont', tags: ['gondolkodás'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'ちいき', romaji: 'chiiki', hu: 'régió, körzet, terület', tags: ['helyek'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'どりょく', romaji: 'doryoku', hu: 'erőfeszítés, igyekezet', tags: ['gondolkodás'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'こくみん', romaji: 'kokumin', hu: 'nép, nemzet', tags: ['társadalom'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
@@ -888,13 +888,13 @@ const DEKIRU_2_WORDS = [
   { kana: 'デモ', romaji: 'demo', hu: 'tüntetés', tags: ['társadalom', 'jövevényszavak'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'ペンキ', romaji: 'penki', hu: 'falfesték', tags: ['tárgyak'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'すみ', romaji: 'sumi', hu: 'sarok (belső)', tags: ['helyek'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
-  { kana: 'はつけん', romaji: 'hatsuken', hu: 'felfedezés', tags: ['alapszavak'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
+  { kana: 'はっけん', romaji: 'hakken', hu: 'felfedezés', tags: ['alapszavak'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'クリエイティブ(な)', romaji: 'kurieitibu na', hu: 'kreatív', tags: ['melléknevek'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'けいざいてき(な)', romaji: 'keizaiteki na', hu: 'gazdasági, gazdaságos', tags: ['melléknevek', 'gazdaság'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'いんしょうてき(な)', romaji: 'inshouteki na', hu: 'impresszív, megragadó', tags: ['melléknevek'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
   { kana: '～ばい', romaji: 'bai', hu: 'valahányszoros', tags: ['számlálószavak'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
   { kana: 'すると', romaji: 'suruto', hu: 'és akkor ...', tags: ['határozószavak'], jlpt: 'N3', lesson: [47], source: 'dekiru', book: 2 },
-  { kana: '～せい', romaji: 'sei', hu: '. gyártmányú', tags: ['munka'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
+  { kana: '～せい', romaji: 'sei', hu: '...gyártmányú', tags: ['munka'], jlpt: 'N4', lesson: [47], source: 'dekiru', book: 2 },
 
   // 48. lecke
   { kana: 'ひろげる', romaji: 'hirogeru', hu: 'kitár, kinyit; elterjeszt', tags: ['igék'], jlpt: 'N3', lesson: [48], source: 'dekiru', book: 2 },
@@ -930,7 +930,7 @@ const DEKIRU_2_WORDS = [
   { kana: 'こうどう', romaji: 'koudou', hu: 'viselkedés, cselekvés', tags: ['gondolkodás'], jlpt: 'N3', lesson: [48], source: 'dekiru', book: 2 },
   { kana: 'みらい', romaji: 'mirai', hu: 'jövő', tags: ['idő'], jlpt: 'N3', lesson: [48], source: 'dekiru', book: 2 },
   { kana: 'ふあん(な)', romaji: 'fuan na', hu: 'bizonytalan, aggódó', tags: ['melléknevek'], jlpt: 'N4', lesson: [48], source: 'dekiru', book: 2 },
-  { kana: 'マイベース(な)', romaji: 'maibeesu na', hu: 'saját tempója szerinti', tags: ['melléknevek'], jlpt: 'N4', lesson: [48], source: 'dekiru', book: 2 },
+  { kana: 'マイペース(な)', romaji: 'maipeesu na', hu: 'saját tempója szerinti', tags: ['melléknevek'], jlpt: 'N4', lesson: [48], source: 'dekiru', book: 2 },
   { kana: 'えらい', romaji: 'erai', hu: 'magas rangú', tags: ['melléknevek'], jlpt: 'N3', lesson: [48], source: 'dekiru', book: 2 },
   { kana: 'りっぱ(な)', romaji: 'rippa na', hu: 'nagyszerű', tags: ['melléknevek'], jlpt: 'N4', lesson: [48], source: 'dekiru', book: 2 },
   { kana: 'もともと', romaji: 'motomoto', hu: 'eredetileg', tags: ['határozószavak'], jlpt: 'N3', lesson: [48], source: 'dekiru', book: 2 },
