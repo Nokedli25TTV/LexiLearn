@@ -30,7 +30,8 @@ function lessonLabel(word) {
 function posLabel(word, note) {
   const fromTag = (word.tags || []).map(t => POS_TAGS[t]).find(Boolean) || '';
   if (!note || !note.pos) return fromTag;
-  return /ige\b/.test(note.pos) && !/melléknév/.test(note.pos) ? `Ige · ${note.pos}` : note.pos[0].toUpperCase() + note.pos.slice(1);
+  // V13.51: a „hangutánzó határozószó, する-ige” sem ige elsősorban (mint a melléknév)
+  return /ige\b/.test(note.pos) && !/melléknév|határozószó/.test(note.pos) ? `Ige · ${note.pos}` : note.pos[0].toUpperCase() + note.pos.slice(1);
 }
 
 const topicsOf = word => (word.tags || []).filter(t => !POS_TAGS[t]);

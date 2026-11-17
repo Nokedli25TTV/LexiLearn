@@ -133,6 +133,11 @@ it('i gomb, Figyelj sor, alulról nyíló lap és a hibás válasz utáni magyar
   expect(api.infoButtonHtml(en)).toBe('');
   expect(api.missNoteHtml(en, null)).toBe('');
   api.setMode('japanese');
+  // V13.51: a szófaj címkéje: igénél „Ige ·” előtag, határozószónál és melléknévnél nem
+  expect(api.posLabel({ tags: [] }, { pos: 'u-ige (1. csoport)' })).toBe('Ige · u-ige (1. csoport)');
+  expect(api.posLabel({ tags: [] }, { pos: 'hangutánzó határozószó, する-ige' })).toBe('Hangutánzó határozószó, する-ige');
+  expect(api.posLabel({ tags: [] }, { pos: 'na-melléknév' })).toBe('Na-melléknév');
+
   // A hibás válasz utáni 500 ms-os időzítő (Tovább gomb) ne a lebontott környezetben fusson le
   await wait(600);
 });
