@@ -2840,6 +2840,26 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .flashcard-3d:not(.flipped) .flashcard-3d-back .info-btn { visibility: hidden; }
 /* a hátoldal az első és utolsó elem auto margójával zár középre: a sarokgomb nem számít bele */
 .learn-back > .info-btn:first-child + * { margin-top: auto; }
+.learn-back > .info-btn:first-child + .focus-flag-btn + *,
+.learn-back > .focus-flag-btn:first-child + * { margin-top: auto; }
+
+/* V13.61: lecke fókusz zászló az ismétlő kártya hátoldalán, a bal felső sarokban (az "i" gombbal szemben).
+   Csak hibás válasz után (önértékelésnél a jelentés megnézése után) jelenik meg; terrakotta, mint a gyakorlásban. */
+.focus-flag-btn {
+  position: absolute; top: 8px; left: 8px; z-index: 2; width: 44px; height: 44px;
+  display: grid; place-items: center; padding: 0; border: none; border-radius: 50%;
+  background: transparent; color: var(--text-2); cursor: pointer;
+  transition: opacity 220ms var(--ease-out), visibility 0s linear 0s;
+}
+.focus-flag-btn::before { content: ''; position: absolute; inset: 5px; z-index: -1; border-radius: 50%; background: var(--surface-2); transition: transform 140ms var(--ease-out), background-color 160ms var(--ease-out); }
+.focus-flag-btn svg { fill: none; }
+.focus-flag-btn.is-on { color: var(--accent-h); }
+.focus-flag-btn.is-on::before { background: var(--accent-dim); }
+.focus-flag-btn.is-on svg { fill: currentColor; }
+.focus-flag-btn:active::before { transform: scale(0.92); }
+.focus-flag-btn:focus-visible { outline: 2px solid var(--primary-h); outline-offset: 0; }
+.review-card:not(.show-flag) .focus-flag-btn,
+.learn-card:not(.flipped) .focus-flag-btn { visibility: hidden; opacity: 0; transition: none; }
 
 .card-watch { max-width: 34ch; margin-top: 12px; font-size: 14px; font-weight: 650; line-height: 1.45; color: var(--text-2); }
 .card-watch-label, .miss-label, .wi-label {

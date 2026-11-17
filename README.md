@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.60" src="https://img.shields.io/badge/verzi%C3%B3-13.60-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.61" src="https://img.shields.io/badge/verzi%C3%B3-13.61-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -130,7 +130,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Keresés** szóra, jelentésre és olvasatra; **lenyíló szűrőpillák:** Lecke (Dekiru), Állapot, Úti terv (nap), Témakör, Szint, Lista, Rendezés. Egyszerre **több lecke** is kijelölhető, az **Állapot** szűrővel pedig csak a még nem tanult (vagy csak a megtanult) szavak maradnak a listán. A témakörök darabszámai a többi aktív szűrő (például a kiválasztott lecke) találataiból számolódnak, a leckelistában pedig külön jelölés mutatja a Dekiru 2. könyv kezdetét a 25. leckénél.
 - Szavak és Mondatok nézet, kijelölés, csillag (könyvjelző), saját listák. A kijelölt szavak a Lista menü aljáról **Anki-importfájlként** is letölthetők (japánnál elöl írásmód és kana, hátul jelentés és romaji, címkékkel).
 - **Makacs szavak:** az app magától felismeri, ami többször is kifogott rajtad (az ismétlésben legalább 4 visszaesés, vagy a gyakorlásban legalább 4 hiba, legalább annyi, mint a helyes). A Kezdőlapon egy csendes sor jelzi, egy koppintással kijelölve a Gyakorlás fülre visz; ha a szó már megy, magától kikerül.
-- **Leckék fókusz listái:** gyakorlás közben a kártya zászlójával egy nehéz szó a saját leckéjének fókusz listájába kerül (a csillagos Fókusz Listától külön). A Lista menüben leckénként külön szakaszban jelennek meg, így egy lecke nehéz szavai külön gyakorolhatók.
+- **Leckék fókusz listái:** gyakorlás közben a kártya zászlójával egy nehéz szó a saját leckéjének fókusz listájába kerül (a csillagos Fókusz Listától külön). Ismétlésnél a zászló hibás válasz után jelenik meg a kártya hátoldalának bal felső sarkában (önértékelésnél a jelentés megnézése után). A Lista menüben leckénként külön szakaszban jelennek meg, így egy lecke nehéz szavai külön gyakorolhatók.
 - **Lebegő dokk** a képernyő alján: a kijelöltek száma, a beállítások összefoglalója és a korall Indítás gomb.
 - **Hét gyakorlástípus:**
 

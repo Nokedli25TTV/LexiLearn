@@ -50,9 +50,19 @@ it('gépelés hibatűréssel, választás, vegyes, fordított kártya és megtar
   expect(current()).toBe(plain.id);
 
   // Hibás válasz: Újra, a Jó nem nyomható; az "Elírás volt" után igen
+  expect(doc.getElementById('review-card').classList.contains('show-flag')).toBe(false); // jó válasz előtt nincs zászló
   input().value = 'teljesen más szó';
   win.submitReviewAnswer();
   expect(controls().classList.contains('is-miss')).toBe(true);
+  // V13.61: hibás válasz után a zászló megjelenik, és a szót a lecke fókusz listájába teszi
+  const flag = doc.querySelector('#review-card .focus-flag-btn');
+  expect(doc.getElementById('review-card').classList.contains('show-flag')).toBe(true);
+  expect(flag.getAttribute('aria-pressed')).toBe('false');
+  expect(flag.getAttribute('onclick')).toContain('toggleLessonFocus');
+  win.toggleLessonFocus(plain.id); // jsdom-ban az inline onclick nem látja az ablak függvényeit
+  expect(plain.lessonFocus).toBe(true);
+  expect(flag.classList.contains('is-on')).toBe(true);
+  expect(flag.getAttribute('aria-pressed')).toBe('true');
   win.rateReview(3);
   await wait(300);
   expect(current()).toBe(plain.id); // nem történt semmi

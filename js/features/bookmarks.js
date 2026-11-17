@@ -2,9 +2,10 @@
 // (V13.3: az egykori app.js-ből bontva; a kód változatlan, csak az import/export sorok újak)
 import { currentMode, state } from '../core/state.js';
 import { saveWords } from '../core/storage.js';
+import { escHtml, jsArg } from '../core/util.js';
 import { LESSON_FOCUS_PREFIX, lessonFocusKeys, lessonFocusLabel } from '../library/filters.js';
 import { applyFilters } from '../library/list.js';
-import { refreshLibraryChrome } from '../library/menus.js';
+import { UI_ICONS, refreshLibraryChrome } from '../library/menus.js';
 import { showToast } from '../ui/toast.js';
 
 /* ══════════════════════════════════════════════════════
@@ -70,6 +71,16 @@ function lessonFocusTitle(w) {
   return w.lessonFocus ? `Eltávolítás a lecke fókusz listájából (${where})` : `Hozzáadás a lecke fókusz listájához (${where})`;
 }
 
+// V13.61: ugyanez a zászló az ismétlő kártya hátoldalán, a bal felső sarokban (az "i" gombbal szemben).
+// Csak hibás válasz után (önértékelésnél a jelentés megnézése után) látszik; a többit a CSS rejti.
+function focusFlagHtml(word) {
+  if (!word || !hasLessonFocus()) return '';
+  const title = escHtml(lessonFocusTitle(word));
+  return `<button type="button" class="focus-flag-btn${word.lessonFocus ? ' is-on' : ''}" id="lesson-focus-btn-${escHtml(word.id)}" data-no-swipe
+    onclick="event.stopPropagation(); toggleLessonFocus(${jsArg(word.id)})"
+    aria-pressed="${!!word.lessonFocus}" aria-label="${title}" title="${title}">${UI_ICONS.flag}</button>`;
+}
+
 function toggleLessonFocus(wordId) {
   const w = state.words.find(x => x.id === wordId);
   if (!w || !hasLessonFocus()) return;
@@ -110,4 +121,4 @@ function clearLessonFocus(key) {
   showToast(`${label} fókusz listája kiürítve.`);
 }
 
-export { clearAllBookmarks, clearLessonFocus, getBookmarkedWords, hasLessonFocus, lessonFocusTitle, toggleBookmark, toggleLessonFocus };
+export { clearAllBookmarks, clearLessonFocus, focusFlagHtml, getBookmarkedWords, hasLessonFocus, lessonFocusTitle, toggleBookmark, toggleLessonFocus };

@@ -11,6 +11,7 @@
 import { todayKey } from '../core/dates.js';
 import { checkJapanese, checkMeaning } from '../core/answer.js';
 import { counterTagHtml } from '../core/counters.js';
+import { focusFlagHtml } from '../features/bookmarks.js';
 import { fillMissNote, infoButtonHtml, isWordInfoOpen } from '../features/word-info.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
 import { currentMode, isCharMode, NEW_ITEMS, state, unitOf } from '../core/state.js';
@@ -221,7 +222,7 @@ function showReviewCard() {
             ${front}
           </div>
           <div class="learn-face learn-back${!rev && strokes ? ' has-strokes' : ''}">
-            ${infoButtonHtml(word)}
+            ${infoButtonHtml(word)}${focusFlagHtml(word)}
             ${back}
           </div>
         </div>
@@ -279,6 +280,7 @@ function flipReviewCard() {
     controls.querySelectorAll('.rate-btn').forEach(b => b.removeAttribute('tabindex'));
     const good = controls.querySelector('.rate-3');
     if (good && document.activeElement && document.activeElement.classList.contains('review-reveal')) good.focus();
+    card.classList.add('show-flag'); // önértékelés: a jelentés után dől el, hogy hibás-e
     if (currentCard().rev) speakReviewWord();
   }
 }
@@ -295,7 +297,10 @@ function showAnswer(result, verdict, picked = null) {
   controls.classList.toggle('is-revealed', result === 'pass');
   const v = document.getElementById('review-verdict');
   if (v) { v.textContent = verdict; v.classList.toggle('is-pass', result === 'pass'); }
-  if (result === 'miss') fillMissNote('review-miss-note', currentCard().word, picked); // V13.33: mit választottál, mire figyelj
+  if (result === 'miss') {
+    fillMissNote('review-miss-note', currentCard().word, picked); // V13.33: mit választottál, mire figyelj
+    card.classList.add('show-flag'); // V13.61: a hibás szó egy koppintással a lecke fókusz listájába
+  }
   controls.querySelectorAll('.review-ask input, .review-ask button').forEach(el => { el.disabled = true; });
   controls.querySelectorAll('.rate-btn').forEach(b => b.removeAttribute('tabindex'));
   const focus = result === 'pass' ? controls.querySelector('.rate-3') : controls.querySelector('.review-miss .review-reveal');
