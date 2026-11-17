@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.62" src="https://img.shields.io/badge/verzi%C3%B3-13.62-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.63" src="https://img.shields.io/badge/verzi%C3%B3-13.63-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -68,7 +68,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Lecke-zárás (japán):** ha egy Dekiru-lecke minden szavát elkezdted, a leckekártya alatt felajánlja a zárását (a Gyakorlás fülön egy leckét kiválasztva bármelyikét): a lecke szavai egyszer, vegyes kérdésekkel (jelentés, magyarból választva, gépelve, hallás után). A végén a **Még nem ül** lista azt is megmutatja, melyik kérdésnél bukott el a szó, és a hibásak még egyszer jöhetnek ugyanúgy. Az első kör eredménye leckénként megmarad; 90%-tól a lecke lezárt, ez a leckelistában és a Statisztika Dekiru-fülén is látszik.
 - **Nyelvtan leckénként (japán):** a Gyakorlás fülön egy Dekiru-leckét kiválasztva a lecke nyelvtani szerkezetei a könyv sorrendjében, teljes képernyős, lépésenként lapozható olvasóban: fent töltődő csík a lépésszámmal és Tartalom gomb (ugrás bármelyik szerkezetre, előző és következő lecke), szerkezetenként egy oldal (minta és név, rövid magyarázat, felolvasható példák kanával, szóközzel tagolva, és a buktató, „Figyelj”), alul Vissza és Következő. Húzással és nyílbillentyűvel is lapozható. Mind a 48 lecke megvan: a Dekiru 1. könyv (1–24.) és a 2. könyv (25–48.).
 - **Előrejelzés:** egy csendes sor arról, mennyi ismétlés jön holnap és a következő héten, hogy ne érjen meglepetés.
-- **Napi feladatok:** naponta három, változó feladat, például egy hibátlan kör, tematikus nap, a nap szava, régen látott szavak vagy a legtöbbször elrontott szavak javítása.
+- **Napi feladatok** (V13.63): a Kezdőlapon a Napi penzum alatt, naponta három feladat három fajtából (gyakorlás, szokás, tartalom): például az aktuális lecke szavai, tematikus nap, a legtöbbször elrontott vagy régen látott szavak, az esedékes ismétlés, a lecke nyelvtana, egy hibátlan kör, a nap szava, és ha már elkezdted, kandzsi vagy radikál gyakorlás (az a saját módjában halad), kandzsi módban írás. Minden feladat koppintásra indul: az ismétlés és a nyelvtan közvetlenül, a gyakorlós feladatok egy lebegő indító lappal, ahol a szavak szűrhetők (Állapot: új, tanulás alatt, megtanult; Lecke vagy bármelyik), alatta a szokásos beállítások (típus, irány, kérdésszám, sorrend), előre kitöltve a feladathoz.
 - **Egyetlen ünneplés:** konfetti csak akkor, ha a napi cél teljesült, és akkor is naponta egyszer.
 
 ### Új szavak: húzható kártyák

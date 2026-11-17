@@ -35,9 +35,9 @@ function getPracticeOptions() {
   return state.practiceOptions;
 }
 
-function renderPracticeDock() {
-  const box = document.getElementById('dock-settings');
-  if (!box) return;
+// A beállítások jelölése (típus, irány, kérdésszám, sorrend). V13.63 óta a napi feladat indító lapja is
+// ezt használja; az id-k előtagja (idp) választja el a két példányt egymástól.
+function practiceSettingsHtml(idp = 'dock') {
   const o = getPracticeOptions();
   const dirLabels = DIRECTION_LABELS[currentMode];
   const types = practiceTypesFor(currentMode);
@@ -46,48 +46,62 @@ function renderPracticeDock() {
   // Írásnál és hallásnál nincs irány: a jelentésből rajzolsz, illetve a hangból a jelentésre
   const directionGroup = ['writing', 'listening', 'sentenceBuild'].includes(type.value) ? '' : `
     <div class="dock-group">
-      <span class="dock-label" id="dock-dir-label">Irány</span>
-      <div class="segmented" role="radiogroup" aria-labelledby="dock-dir-label">
+      <span class="dock-label" id="${idp}-dir-label">Irány</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="${idp}-dir-label">
         ${['en-hu', 'hu-en'].map((d, i) => radio(state.direction === d, `onclick="setDirection('${d}')"`, dirLabels[i])).join('')}
       </div>
     </div>`;
 
-  box.innerHTML = `
+  return `
     <div class="dock-group">
-      <span class="dock-label" id="dock-type-label">Gyakorlás típusa</span>
-      <div class="type-list" role="radiogroup" aria-labelledby="dock-type-label">
+      <span class="dock-label" id="${idp}-type-label">Gyakorlás típusa</span>
+      <div class="type-list" role="radiogroup" aria-labelledby="${idp}-type-label">
         ${types.map(t => radio(type.value === t.value, `onclick="setPracticeOption('type', '${t.value}')"`,
           `<span class="type-ico" aria-hidden="true">${t.icon}</span><span class="type-text"><b>${t.name}</b><small>${t.desc}</small></span>`, 'type-opt')).join('')}
       </div>
     </div>${directionGroup}
     <div class="dock-group">
-      <span class="dock-label" id="dock-count-label">Kérdések száma</span>
-      <div class="segmented" role="radiogroup" aria-labelledby="dock-count-label">
+      <span class="dock-label" id="${idp}-count-label">Kérdések száma</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="${idp}-count-label">
         ${PRACTICE_COUNTS.map(c => radio(o.count === c, `onclick="setPracticeOption('count', ${c === 'all' ? `'all'` : c})"`, c === 'all' ? 'Mind' : c)).join('')}
       </div>
     </div>
     <div class="dock-group">
-      <span class="dock-label" id="dock-order-label">Sorrend</span>
-      <div class="chip-grid chip-grid-flat" role="radiogroup" aria-labelledby="dock-order-label">
+      <span class="dock-label" id="${idp}-order-label">Sorrend</span>
+      <div class="chip-grid chip-grid-flat" role="radiogroup" aria-labelledby="${idp}-order-label">
         ${PRACTICE_ORDERS.map(([v, l]) => radio(o.order === v, `onclick="setPracticeOption('order', '${v}')"`, l, 'chip')).join('')}
       </div>
     </div>`;
+}
+
+function renderPracticeDock() {
+  const box = document.getElementById('dock-settings');
+  if (!box) return;
+  const o = getPracticeOptions();
+  const types = practiceTypesFor(currentMode);
+  const type = types.find(t => t.value === o.type) || types[0];
+  box.innerHTML = practiceSettingsHtml('dock');
 
   const summary = document.getElementById('dock-summary');
   if (summary) summary.textContent = `${type.name} · ${o.count === 'all' ? 'mind' : o.count}`;
   updateStartPanel();
 }
 
+// A beállítás változásáról a napi feladat indító lapja is tud (ha nyitva van, újrarajzol)
+const notifyOptions = () => { if (typeof document !== 'undefined') document.dispatchEvent(new CustomEvent('lexi:practice-options')); };
+
 function setPracticeOption(key, value) {
   getPracticeOptions()[key] = value;
   renderPracticeDock();
   saveSettings();
+  notifyOptions();
 }
 
 function setDirection(dir) {
   state.direction = dir;
   renderPracticeDock();
   saveSettings();
+  notifyOptions();
 }
 
 let _dockOpen = false;
@@ -104,4 +118,4 @@ function toggleDockSettings(force) {
   setScrim(next || !!_openMenu);
 }
 
-export { DIRECTION_LABELS, PRACTICE_COUNTS, PRACTICE_ORDERS, PRACTICE_TYPES, _dockOpen, getPracticeOptions, practiceTypesFor, renderPracticeDock, setDirection, setPracticeOption, toggleDockSettings };
+export { DIRECTION_LABELS, PRACTICE_COUNTS, PRACTICE_ORDERS, PRACTICE_TYPES, _dockOpen, getPracticeOptions, practiceSettingsHtml, practiceTypesFor, renderPracticeDock, setDirection, setPracticeOption, toggleDockSettings };

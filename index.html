@@ -28,7 +28,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.62">
+<link rel="stylesheet" href="style.css?v=13.63">
 </head>
 <body data-screen="home">
 
@@ -88,14 +88,18 @@
       <div class="goal-source" id="goal-source"></div>
     </section>
 
+    <!-- V13.63: a napi feladatok a Napi penzum alatt, koppintásra indulnak -->
+    <section class="dq" aria-labelledby="quests-title">
+      <div class="dq-head">
+        <h2 class="dq-label" id="quests-title">Napi feladatok</h2>
+        <span class="dq-done" id="quests-done"></span>
+      </div>
+      <div class="dq-list" id="daily-quests-container"></div>
+    </section>
+
     <section id="home-current-lesson" hidden></section>
 
     <div class="home-actions" id="home-actions"></div>
-
-    <section class="home-quests">
-      <h2 class="home-section-title">Napi feladatok</h2>
-      <div id="daily-quests-container"></div>
-    </section>
   </div>
 </main>
 
@@ -576,6 +580,13 @@
   <div class="gr-reader-inner" id="grammar-body"></div>
 </div>
 
+<!-- V13.63: a napi feladat indító lapja (szűrők + gyakorlás-beállítások) -->
+<div class="modal-overlay" id="quest-modal" aria-hidden="true">
+  <div class="modal quest-modal" role="dialog" aria-modal="true" aria-labelledby="ql-title">
+    <div id="quest-body"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="word-info-modal" aria-hidden="true">
   <div class="modal word-info-modal" role="dialog" aria-modal="true" aria-labelledby="word-info-word">
     <div id="word-info-body"></div>
@@ -617,19 +628,19 @@
 <div class="toast" id="toast"></div>
 
 <!-- Statikus szótár-adatok (klasszikus scriptek, kézzel szerkeszthetők) -->
-<script src="data.js?v=13.62"></script>
-<script src="japanese_words.js?v=13.62"></script>
-<script src="jlpt_n3_words.js?v=13.62"></script>
-<script src="dekiru.js?v=13.62"></script>
-<script src="dekiru2.js?v=13.62"></script>
-<script src="kanji_data.js?v=13.62"></script>
-<script src="radicals_data.js?v=13.62"></script>
-<script src="japanese_sentences.js?v=13.62"></script>
-<script src="english_sentences2.js?v=13.62"></script>
-<script src="word_notes.js?v=13.62"></script>
-<script src="grammar_notes.js?v=13.62"></script>
+<script src="data.js?v=13.63"></script>
+<script src="japanese_words.js?v=13.63"></script>
+<script src="jlpt_n3_words.js?v=13.63"></script>
+<script src="dekiru.js?v=13.63"></script>
+<script src="dekiru2.js?v=13.63"></script>
+<script src="kanji_data.js?v=13.63"></script>
+<script src="radicals_data.js?v=13.63"></script>
+<script src="japanese_sentences.js?v=13.63"></script>
+<script src="english_sentences2.js?v=13.63"></script>
+<script src="word_notes.js?v=13.63"></script>
+<script src="grammar_notes.js?v=13.63"></script>
 <!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
-<script src="data-registry.js?v=13.62"></script>
+<script src="data-registry.js?v=13.63"></script>
 
 <!-- V13.3: ES modulok nem futnak file:// alól (duplakattintással megnyitott index.html) -->
 <script>
@@ -645,8 +656,8 @@
 
 <!-- V13.3: az alkalmazás ES modulokként (js/). A main.js a firebase-sync előtt fut,
      hogy az auth / szinkron események hallgatói már feliratkozva legyenek. -->
-<script type="module" src="js/main.js?v=13.62"></script>
-<script type="module" src="firebase-sync.js?v=13.62"></script>
+<script type="module" src="js/main.js?v=13.63"></script>
+<script type="module" src="firebase-sync.js?v=13.63"></script>
 
 </body>
 </html>

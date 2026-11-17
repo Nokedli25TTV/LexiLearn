@@ -8,7 +8,7 @@
      Tanulási adatok → SOHA nem kerülnek ide (IndexedDB kezeli)
 ══════════════════════════════════════════════════════ */
 
-const CACHE_NAME = 'lexilearn-v13-62';
+const CACHE_NAME = 'lexilearn-v13-63';
 // A vonássorrend-adat (1,7 MB) igény szerint töltődik le, és az app frissítései túlélik.
 // Ha a tools/build-kanjivg.mjs újragenerálja a fájlokat, ezt a nevet kell léptetni.
 const KANJIVG_CACHE = 'lexilearn-kanjivg-1';
@@ -40,6 +40,7 @@ const STATIC_ASSETS = [
   './js/features/leeches.js',
   './js/features/profile.js',
   './js/features/quests.js',
+  './js/features/quest-launcher.js',
   './js/features/reminder.js',
   './js/features/streak.js',
   './js/features/strokes.js',

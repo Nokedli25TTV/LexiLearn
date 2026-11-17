@@ -12,6 +12,7 @@ import { todayKey } from '../core/dates.js';
 import { checkJapanese, checkMeaning } from '../core/answer.js';
 import { counterTagHtml } from '../core/counters.js';
 import { focusFlagHtml } from '../features/bookmarks.js';
+import { updateQuestProgress } from '../features/quests.js';
 import { fillMissNote, infoButtonHtml, isWordInfoOpen } from '../features/word-info.js';
 import { kanjiLinksHtml, wordWriting } from '../features/kanji-links.js';
 import { currentMode, isCharMode, NEW_ITEMS, state, unitOf } from '../core/state.js';
@@ -378,6 +379,7 @@ function resolveReview(rating) {
     const first = !p.loggedIds.includes(key);
     if (first) p.loggedIds.push(key);
     logActivity({ known: rating !== AGAIN, review: first ? { passed: rating !== AGAIN, mature } : null });
+    if (first) updateQuestProgress('reviewDone'); // V13.63: napi feladat (esedékes ismétlés)
     if (!state.globalStats.studyDays) state.globalStats.studyDays = {};
     state.globalStats.studyDays[today] = true; // az ismétlés is számít a konzisztenciába
     if (rating === AGAIN) {

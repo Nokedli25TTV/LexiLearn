@@ -3211,3 +3211,67 @@ html.gr-lock, html.gr-lock body { overflow: hidden; }
 .type-ico { display: grid; place-items: center; color: var(--primary-h); }
 .type-opt.is-selected .type-ico { color: var(--primary-h); }
 .week-day-dot svg { display: block; }
+
+/* ══════════════════════════════════════════════════════
+   V13.63: NAPI FELADATOK a Kezdőlap tetején (a Napi penzum alatt): egy felület, három koppintható sor
+   hajszálvonallal. Koppintásra indul: ismétlés, nyelvtan, vagy az indító lap (szűrők + beállítások).
+══════════════════════════════════════════════════════ */
+.dq-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 4px 10px; }
+.dq-label { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.dq-done { font-size: 13px; font-weight: 800; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.dq-list { overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: var(--surface); }
+.dq-item {
+  width: 100%; min-height: 64px; display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 14px;
+  border: none; background: none; color: var(--text); font-family: 'Nunito', sans-serif; text-align: left;
+  -webkit-tap-highlight-color: transparent;
+}
+button.dq-item { cursor: pointer; transition: background-color 160ms var(--ease-out); }
+.dq-item + .dq-item { border-top: 1px solid var(--border); }
+.dq-icon { flex: none; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 12px; background: var(--surface-2); color: var(--primary-h); }
+.dq-body { flex: 1; min-width: 0; display: grid; gap: 3px; }
+.dq-title { font-size: 15px; font-weight: 800; line-height: 1.3; }
+.dq-meta { overflow: hidden; font-size: 13px; font-weight: 650; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
+.dq-bar { height: 4px; margin-top: 5px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+.dq-bar i { display: block; height: 100%; border-radius: inherit; background: var(--primary); transform-origin: left center; transition: transform 420ms var(--ease-out); }
+.dq-prog { flex: none; font-size: 13px; font-weight: 800; color: var(--primary-h); font-variant-numeric: tabular-nums; }
+.dq-chev { flex: none; margin-left: -4px; color: var(--text-3); }
+.dq-item.is-done .dq-title { color: var(--text-2); }
+.dq-item.is-done .dq-icon { background: var(--primary-dim); }
+.dq-item.is-done .dq-prog { color: var(--text-3); }
+button.dq-item:active { background: var(--surface-2); }
+button.dq-item:focus-visible { outline: 3px solid var(--primary-h); outline-offset: -3px; }
+@media (hover: hover) { button.dq-item:hover { background: var(--surface-2); } }
+
+/* Indító lap: lebegő lap, fent a feladat, alatta „Mit gyakorolsz” (állapot, lecke) és „Hogyan” (a dokk
+   beállításai), alul ragadós korall Indítás a kör méretével */
+.quest-modal { max-width: 520px; padding-bottom: 0; }
+.ql-title { margin-top: 4px; font-size: 22px; font-weight: 900; line-height: 1.25; color: var(--text); }
+.ql-sec { margin-top: 22px; }
+.ql-sec-title { margin: 0 0 12px; font-size: 16px; font-weight: 900; color: var(--text); }
+.ql-source { margin: -4px 0 14px; font-size: 14px; font-weight: 700; color: var(--text-2); }
+.ql-tag { display: inline-flex; padding: 5px 10px; border-radius: 999px; background: var(--primary-dim); color: var(--primary-h); font-size: 13px; font-weight: 800; }
+.ql-lessons {
+  display: flex; gap: 8px; margin: 0 -28px; padding: 2px 28px 8px; overflow-x: auto;
+  scroll-snap-type: x proximity; scrollbar-width: none; overscroll-behavior-x: contain;
+}
+.ql-lessons::-webkit-scrollbar { display: none; }
+.ql-lessons .chip { flex: none; scroll-snap-align: center; }
+.ql-lesson { min-width: 48px; justify-content: center; font-variant-numeric: tabular-nums; }
+.ql-match { margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--text-2); }
+.quest-modal .ql-actions {
+  position: sticky; bottom: 0; z-index: 1; margin: 20px -28px 0; padding: 14px 28px 18px;
+  background: var(--surface); border-top: 1px solid var(--border);
+}
+.ql-start {
+  width: 100%; min-height: 56px; border: none; border-radius: 18px; background: var(--cta); color: var(--cta-ink);
+  font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 900; cursor: pointer;
+  box-shadow: 0 14px 30px -14px var(--cta-glow); transition: transform 140ms var(--ease-out), background-color 160ms var(--ease-out);
+}
+.ql-start:active:not(:disabled) { transform: scale(0.98); }
+.ql-start:disabled { background: color-mix(in oklch, var(--text) 10%, transparent); color: var(--text-3); box-shadow: none; cursor: not-allowed; }
+@media (hover: hover) { .ql-start:hover:not(:disabled) { background: var(--cta-h); } }
+@media (max-width: 680px) {
+  .ql-lessons { margin: 0 -18px; padding-inline: 18px; }
+  .quest-modal .ql-actions { margin: 18px -18px 0; padding: 12px 18px 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .dq-bar i { transition: none; } }

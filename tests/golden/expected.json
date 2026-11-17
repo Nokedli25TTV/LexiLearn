@@ -664,22 +664,22 @@
   },
   "quests": [
     {
-      "type": "StrictPerfect",
-      "target": 1,
-      "label": "Teljesíts hibátlanul egy 10+ szavas kört"
-    },
-    {
-      "type": "Speed5in30",
+      "type": "GhostHunter",
       "target": 5,
-      "label": "5 helyes válasz 30 mp alatt"
+      "label": "Ismételj át 5 régen látott szót"
     },
     {
       "type": "Combo5",
       "target": 5,
       "label": "5 helyes válasz egymás után"
+    },
+    {
+      "type": "GrammarRead",
+      "target": 1,
+      "label": "Olvasd végig az 1. lecke nyelvtanát"
     }
   ],
-  "questsHtml": "1889:faf73524",
+  "questsHtml": "2789:ebc19435",
   "practice": {
     "roundWords": [
       "ja_ハンガリー",
@@ -927,7 +927,7 @@
         "selectedIds"
       ]
     },
-    "statsHash": "14664:65155d32"
+    "statsHash": "9507:4101ca64"
   },
   "__errors": []
 }

@@ -7,6 +7,7 @@
 import { GRAMMAR_NOTES } from '../core/data.js';
 import { currentMode } from '../core/state.js';
 import { escHtml } from '../core/util.js';
+import { updateQuestProgress } from './quests.js';
 import { speakWord } from '../practice/tts.js';
 
 const CHEVRON = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 6 15 12 9 18"/></svg>';
@@ -199,7 +200,11 @@ function grammarStep(delta) {
   const g = grammarOf(_lesson);
   if (!g || !isGrammarOpen()) return;
   const target = _step + delta;
-  if (target >= g.points.length) { closeGrammar(); return; }
+  if (target >= g.points.length) { // Befejezés: a napi feladat (a lecke nyelvtana) teljesül
+    updateQuestProgress('grammarDone', { lesson: _lesson });
+    closeGrammar();
+    return;
+  }
   if (target < 0) return;
   _step = target;
   renderStep(delta);

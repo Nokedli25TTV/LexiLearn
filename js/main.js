@@ -1,4 +1,4 @@
-// LexiLearn – belépési pont (V13.62)
+// LexiLearn – belépési pont (V13.63)
 // 1) betölti az összes modult, 2) az inline eseménykezelőknek (onclick="…") és a
 // firebase-sync.js-nek a window-ra teszi a szükséges függvényeket, 3) elindítja az appot
 // ugyanabban a sorrendben, ahogy az egykori app.js tette.
@@ -17,7 +17,8 @@ import { downloadReminder, setReminderTime } from './features/reminder.js';
 import { replayStrokes } from './features/strokes.js';
 import { closeWordInfo, openWordInfo, wordInfoBack } from './features/word-info.js';
 import { closeGrammar, grammarGo, grammarStep, openGrammar, speakGrammar, toggleGrammarToc } from './features/grammar.js';
-import './features/quests.js';
+import { openQuest } from './features/quests.js';
+import { closeQuestLauncher, openQuestLauncher, qlAnyLesson, qlSetStatus, qlToggleLesson, startQuestPractice } from './features/quest-launcher.js';
 import './features/streak.js';
 import './habit/goal.js';
 import { clearFilters, openCurrentLesson, openPoolSource, renderHome } from './habit/home.js';
@@ -53,6 +54,13 @@ Object.assign(window, {
   checkAnswer,
   closeGrammar,
   grammarGo,
+  openQuest,
+  openQuestLauncher,
+  closeQuestLauncher,
+  qlAnyLesson,
+  qlSetStatus,
+  qlToggleLesson,
+  startQuestPractice,
   grammarStep,
   toggleGrammarToc,
   checkHardcoreAnswer,
@@ -179,7 +187,7 @@ Object.assign(window, {
 /* ══════════════════════════════════════════════════════
    DEBUG ÉS BIZTONSÁGI ELLENŐRZÉS
 ══════════════════════════════════════════════════════ */
-console.log("[LexiLearn] V13.62 indítása...");
+console.log("[LexiLearn] V13.63 indítása...");
 initV6Features();
 initViewportFix(); // V13.20: iOS 26 standalone – a fix sávok ne csússzanak el a billentyűzet után
 initLibraryEvents();
