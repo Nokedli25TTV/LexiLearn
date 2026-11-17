@@ -13,6 +13,8 @@ export default defineConfig({
     environment: 'jsdom',
     environmentOptions: { jsdom: { url: 'http://localhost:5599/', pretendToBeVisual: true } },
     include: ['tests/**/*.test.js'],
+    // A tesztfájl végén megvárja az app függő időzítőit (lásd a fájlt)
+    setupFiles: ['tests/setup/settle-timers.js'],
     testTimeout: 30000,
     // Minden tesztfájl saját, tiszta környezetet kap (a modulok állapota nem szivárog át)
     isolate: true,

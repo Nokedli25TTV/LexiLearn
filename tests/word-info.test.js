@@ -133,4 +133,6 @@ it('i gomb, Figyelj sor, alulról nyíló lap és a hibás válasz utáni magyar
   expect(api.infoButtonHtml(en)).toBe('');
   expect(api.missNoteHtml(en, null)).toBe('');
   api.setMode('japanese');
+  // A hibás válasz utáni 500 ms-os időzítő (Tovább gomb) ne a lebontott környezetben fusson le
+  await wait(600);
 });

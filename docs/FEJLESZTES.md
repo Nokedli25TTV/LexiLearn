@@ -44,7 +44,7 @@ npm run test:watch # tesztek figyelő módban fejlesztés közben
 | `sw.js` | service worker (offline gyorsítótár) |
 | `kanjivg/n5.json` … `n1.json` | a kandzsik vonássorrendje (KanjiVG), JLPT-szintenként; a `tools/build-kanjivg.mjs` állítja elő |
 | `js/features/strokes.js` | vonássorrend a tanuló / ismétlő kártya hátoldalán (lusta betöltés, rajzolás, újrajátszás) |
-| `word_notes.js` | a japán szavak kézzel írt tudnivalói (`WORD_NOTES`, kana szerint: `pos`, `use`, `watch`, `rel`), klasszikus script, mind a 48 Dekiru-leckéhez (1. könyv: 1–24., 2. könyv: 25–48., tíz adagban) és az alapszótár szavaihoz, az N3 szókincshez témakörönként (1–2. adag: az összes ige); a `tests/word-notes.test.js` ellenőrzi |
+| `word_notes.js` | a japán szavak kézzel írt tudnivalói (`WORD_NOTES`, kana szerint: `pos`, `use`, `watch`, `rel`), klasszikus script, mind a 48 Dekiru-leckéhez (1. könyv: 1–24., 2. könyv: 25–48., tíz adagban) és az alapszótár szavaihoz, az N3 szókincshez témakörönként (1–2. adag: az összes ige, 3. adag: a melléknevek); a `tests/word-notes.test.js` ellenőrzi |
 | `js/features/word-info.js` | szómagyarázat: „i” gomb a kártyák hátoldalán, a Figyelj sor, a hibás válasz utáni magyarázat és az alulról nyíló lap (`openWordInfo`) |
 | `js/practice/lesson-test.js` | Lecke-zárás (japán): egy lecke elkezdett szavai egyszer, vegyes kérdésfajtával (`mix`: szavanként `meaning` / `reverse` / `typed` / `listen`, a motor `applyLessonTestKind()`-dal állítja be a típust és az irányt); az első kör eredménye `globalStats.lessonTests[lecke] = { date, pct, total, best }`, 90%-tól lezárt |
 | `grammar_notes.js` | nyelvtan leckénként (`GRAMMAR_NOTES`, lecke → `{ title, points: [{ pattern, name, text, ex: [[japán, magyar]], watch }] }`), klasszikus script; mind a 48 Dekiru-lecke (1. könyv 1–24., 2. könyv 25–48., a 2. könyv japán leckecímei magyarul), a könyv sorrendjében, saját magyarázattal és példákkal |
@@ -229,5 +229,6 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/flashcard-fit.test.js`** – a 3D kártya főszövegének méretosztálya (`is-long` / `is-very-long`, latin és kana küszöbök, kandzsi mód), a `.fc-body` szerkezet (a sarokelemek kívül), és hogy a `style.css` ugyanezeket az osztályneveket használja.
 - **`tests/learned-rule.test.js`, `tests/practice-card.test.js`** – a "Tudom" csak elkezd, két sikeres ismétlés tesz megtanulttá; az ötödik gyakorlási találat kártyát ad, a kör végén értékelhető; a régi szavak napi adagban jönnek.
 - Egy tesztfájl a `bootApp()`-ot csak egyszer hívhatja (az adatfájlok globális konstansai miatt).
+- **`tests/setup/settle-timers.js`** (V13.50) – minden tesztfájl végén 700 ms-ot vár, hogy az app rövid időzítői (kiejtés 300 ms, Tovább gomb 500 ms) még élő környezetben fussanak le. Nélküle időnként „window / document is not defined” kezeletlen hiba jött a lebontott jsdom-ból, miközben minden teszt átment.
 - **`tests/cloud-sync.test.js`** – a valódi `firebase-sync.js` a teljes appal, memóriabeli Firestore-ral
   (`tests/fakes/`; a `vitest.config.js` a Firebase CDN importokat ezekre cseréli).
