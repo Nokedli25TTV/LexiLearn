@@ -145,7 +145,7 @@ const JAPANESE_WORDS = [
   { kana: 'ぜいかん', romaji: 'zeikan', hu: 'vám', tags: ['közlekedés'], jlpt: 'N2' }, // 税関
   { kana: 'とうちゃく', romaji: 'touchaku', hu: 'érkezés', tags: ['közlekedés'], jlpt: 'N3' }, // 到着
   { kana: 'しゅっぱつ', romaji: 'shuppatsu', hu: 'indulás', tags: ['közlekedés'], jlpt: 'N4' }, // 出発
-  { kana: 'あんないじょ', romaji: 'annaisho', hu: 'információs pult', tags: ['közlekedés'], jlpt: 'N3' }, // 案内所
+  { kana: 'あんないじょ', romaji: 'annaijo', hu: 'információs pult', tags: ['közlekedés'], jlpt: 'N3' }, // 案内所
   { kana: 'とほ', romaji: 'toho', hu: 'gyalog', tags: ['közlekedés'], jlpt: 'N2' }, // 徒歩
   { kana: 'とまります', romaji: 'tomarimasu', hu: 'megáll', tags: ['közlekedés'], jlpt: 'N5' }, // 止まります
   { kana: 'まよいました', romaji: 'mayoimashita', hu: 'eltévedtem', tags: ['közlekedés'], jlpt: 'N4' }, // 迷いました

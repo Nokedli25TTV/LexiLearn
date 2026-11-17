@@ -583,6 +583,8 @@ function syncNewWords() {
       existingWord.hu = w.hu;
       existingWord.source = lessonWord ? 'dekiru' : 'data_js';
       if (w.kanji) existingWord.kanji = w.kanji;
+      // V13.47: a nem Dekiru-szavak romajija is az adatfájlból jön (romaji-javítás, pl. あんないじょ)
+      if (!lessonWord && w.romaji) existingWord.romaji = w.romaji;
       if (existingWord.bookmarked === undefined) existingWord.bookmarked = false;
     }
   });

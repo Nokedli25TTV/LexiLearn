@@ -108,6 +108,11 @@ it('a régi kanájú szó haladása, hivatkozásai és felhőadata az új alakra
   expect(find('してん').stats.totalCorrect).toBe(1);
   expect(api.JAPANESE_SENTENCES.filter(s => s.baseWord === 'しでん')).toHaveLength(2);
 
+  // V13.47: az alapszótár szavainak romajija is az adatfájlból jön (a mentett elírás javul)
+  find('あんないじょ').romaji = 'annaisho';
+  api.syncNewWords();
+  expect(find('あんないじょ').romaji).toBe('annaijo');
+
   // Felhő: egy még régi alakú felhőszó (régi eszközről) is párt talál
   const bg = find('ブルガリア');
   f.put(`users/u1/data/${LEGACY_ID}`, {
