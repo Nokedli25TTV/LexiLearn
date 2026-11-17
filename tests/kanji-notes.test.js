@@ -21,9 +21,9 @@ const FIELDS = ['parts', 'mn', 'kun', 'on'];
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 it('kandzsi jegyzetek: adat', () => {
-  expect(entries.length).toBeGreaterThanOrEqual(120); // 1–2. adag: 1–10. lecke
-  // a kész leckék (1–10.) minden kandzsijának van jegyzete
-  const batch1 = [...KANJI.values()].filter(k => k.lesson >= 1 && k.lesson <= 10).map(k => k.kanji);
+  expect(entries.length).toBeGreaterThanOrEqual(180); // 1–3. adag: 1–15. lecke
+  // a kész leckék (1–15.) minden kandzsijának van jegyzete
+  const batch1 = [...KANJI.values()].filter(k => k.lesson >= 1 && k.lesson <= 15).map(k => k.kanji);
   expect(batch1.filter(k => !NOTES[k])).toEqual([]);
   expect(entries.filter(([k]) => !KANJI.has(k)).map(([k]) => k)).toEqual([]);
   expect(entries.filter(([, v]) => Object.keys(v).some(f => !FIELDS.includes(f))).map(([k]) => k)).toEqual([]);

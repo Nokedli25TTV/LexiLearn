@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -147,5 +147,75 @@ const KANJI_NOTES = {
   '方': { mn: 'Képírás: kétfelé ágazó eke; az irány, amerre halad, és a mód.', kun: '方 (かた) személy (udvarias); 書き方 (かきかた) írásmód', on: 'ホウ: 方法 (ほうほう) módszer; 地方 (ちほう) vidék' },
   '家': { parts: 'tető (宀) + disznó (豕)', mn: 'A tető (宀) alatt egy disznó (豕), a régi háztartás kincse: ház, család.', kun: '家 (いえ) ház; や: 大家 (おおや) háziúr', on: 'カ: 家族 (かぞく) család; ケ: 田中家 (たなかけ) a Tanaka család' },
   '場': { parts: 'föld (土) + napos (昜)', mn: 'A napsütötte (昜) földdarab (土): hely.', kun: '場 (ば) hely; 場所 (ばしょ) hely', on: 'ジョウ: 会場 (かいじょう) helyszín; 駐車場 (ちゅうしゃじょう) parkoló' },
-  '曜': { parts: 'nap (日) + toll (羽) + madár (隹)', mn: 'A nap (日) fényében csillogó madártoll: a hét napjai (az égitestekről nevezték el őket).', on: 'ヨウ: 月曜日 (げつようび) hétfő; 何曜日 (なんようび) milyen nap' }
+  '曜': { parts: 'nap (日) + toll (羽) + madár (隹)', mn: 'A nap (日) fényében csillogó madártoll: a hét napjai (az égitestekről nevezték el őket).', on: 'ヨウ: 月曜日 (げつようび) hétfő; 何曜日 (なんようび) milyen nap' },
+
+  // ─── 11. lecke: helyek, gondolat (V13.68) ──────
+  '店': { parts: 'épület (广) + elfoglal (占)', mn: 'Egy nyitott épület (广), ahol helyet foglalsz (占): bolt.', kun: '店 (みせ) bolt', on: 'テン: 店員 (てんいん) eladó; 喫茶店 (きっさてん) kávézó' },
+  '意': { parts: 'hang (音) + szív (心)', mn: 'A szív (心) hangja (音): szándék, gondolat, jelentés.', on: 'イ: 意味 (いみ) jelentés; 注意 (ちゅうい) figyelem; 意見 (いけん) vélemény' },
+  '手': { mn: 'Képírás: kéz öt ujjal és a csuklóval.', kun: '手 (て) kéz; 手紙 (てがみ) levél', on: 'シュ: 歌手 (かしゅ) énekes; 選手 (せんしゅ) sportoló. A 上手 (じょうず) és a 下手 (へた) rendhagyó.' },
+  '台': { parts: 'emelvény (厶) + száj (口)', mn: 'Egy emelvény a beszélő száj (口) alatt: állvány, alap; a gépek számlálója is.', on: 'ダイ: 台所 (だいどころ) konyha; 車一台 (くるまいちだい) egy autó; タイ: 台風 (たいふう) tájfun' },
+  '去': { parts: 'föld (土) + magán (厶)', mn: 'A földről (土) elinduló alak: elmegy, elmúlik.', kun: '去る (さる) elmegy, távozik', on: 'キョ: 去年 (きょねん) tavaly; コ: 過去 (かこ) múlt' },
+  '室': { parts: 'tető (宀) + érkezik (至)', mn: 'A tető (宀) alá érkezel (至): szoba.', kun: 'むろ: pince, raktár (ritka)', on: 'シツ: 教室 (きょうしつ) tanterem; 会議室 (かいぎしつ) tárgyaló' },
+  '堂': { parts: 'magas, ragyogó (尚) + föld (土)', mn: 'Magas, ragyogó (尚) épület a földön (土): csarnok, terem.', on: 'ドウ: 食堂 (しょくどう) étkezde; 講堂 (こうどう) díszterem' },
+  '死': { parts: 'csont (歹) + meggörnyedt ember (匕)', mn: 'A csontok (歹) mellett meggörnyedt ember (匕): halál.', kun: '死ぬ (しぬ) meghal', on: 'シ: 死亡 (しぼう) elhalálozás' },
+  '力': { mn: 'Képírás: megfeszített kar az izommal: erő.', kun: '力 (ちから) erő', on: 'リョク: 努力 (どりょく) erőfeszítés; リキ: 力士 (りきし) szumóbirkózó' },
+  '私': { parts: 'gabona (禾) + magán (厶)', mn: 'A saját (厶) gabonám (禾): ami az enyém, én.', kun: '私 (わたし) én; 私 (わたくし) én (udvarias)', on: 'シ: 私立 (しりつ) magán- (iskola)' },
+  '答': { parts: 'bambusz (竹) + összeillik (合)', mn: 'A bambuszlapra (竹) írt, a kérdéshez illő (合) sor: válasz.', kun: '答え (こたえ) válasz; 答える (こたえる) válaszol', on: 'トウ: 回答 (かいとう) válasz (hivatalos)' },
+  '仕': { parts: 'ember (亻) + úr, harcos (士)', mn: 'Az ember (亻) az úrnak (士) szolgál: munka.', kun: '仕える (つかえる) szolgál', on: 'シ: 仕事 (しごと) munka; 仕方 (しかた) mód' },
+
+  // ─── 12. lecke: idő, dolgok, hely ──────────────
+  '代': { parts: 'ember (亻) + karó (弋)', mn: 'Az ember (亻) a karónál (弋) leváltja a másikat: helyett, korszak, díj.', kun: '代わる (かわる) helyettesít; 代わりに (かわりに) helyett', on: 'ダイ: 時代 (じだい) korszak; 電気代 (でんきだい) villanyszámla; タイ: 交代 (こうたい) váltás' },
+  '肉': { mn: 'Képírás: egy szelet hús a rostjaival.', on: 'ニク: 肉 (にく) hús; 牛肉 (ぎゅうにく) marhahús' },
+  '以': { parts: 'ember (人) + egy eszköz', mn: 'Egy ember egy eszközt fog: valamivel, valamitől kezdve.', on: 'イ: 以上 (いじょう) legalább, felett; 以下 (いか) legfeljebb; 以外 (いがい) kívül' },
+  '夜': { parts: 'fedő (亠) + ember (亻) + este (夕)', mn: 'A tető (亠) alatt az ember (亻) és az este (夕): éjszaka.', kun: '夜 (よる) éjszaka, este; 夜中 (よなか) éjjel', on: 'ヤ: 今夜 (こんや) ma este; 深夜 (しんや) késő éjjel' },
+  '旅': { parts: 'zászló (方) + vonuló emberek', mn: 'A zászló alatt vonuló emberek: utazás.', kun: '旅 (たび) utazás', on: 'リョ: 旅行 (りょこう) utazás; 旅館 (りょかん) japán fogadó' },
+  '物': { parts: 'marha (牛) + zászló (勿)', mn: 'A marha (牛), régen a legfontosabb tulajdon: dolog, tárgy.', kun: '物 (もの) dolog; 食べ物 (たべもの) étel', on: 'ブツ: 動物 (どうぶつ) állat; モツ: 荷物 (にもつ) csomag' },
+  '屋': { parts: 'tető (尸) + érkezik (至)', mn: 'A tető (尸) alá érkezel (至): ház, bolt; utótagként -bolt, -árus.', kun: 'や: 本屋 (ほんや) könyvesbolt; 部屋 (へや) szoba (rendhagyó)', on: 'オク: 屋上 (おくじょう) tetőterasz' },
+  '昼': { parts: 'test (尸) + nap (日) + egy (一)', mn: 'A nap (日) fent a vonal fölött: dél, nappal.', kun: '昼 (ひる) dél, nappal; 昼ご飯 (ひるごはん) ebéd', on: 'チュウ: 昼食 (ちゅうしょく) ebéd (hivatalos)' },
+  '近': { parts: 'út (⻌) + fejsze (斤)', mn: 'Fejszényi (斤) távolság az úton (⻌): közel.', kun: '近い (ちかい) közel; 近く (ちかく) a közelben', on: 'キン: 最近 (さいきん) mostanában; 近所 (きんじょ) szomszédság' },
+  '事': { mn: 'Egy kézben tartott hivatali jelvény: ügy, dolog, munka.', kun: '事 (こと) dolog, ügy (gyakran kanával)', on: 'ジ: 仕事 (しごと) munka; 食事 (しょくじ) étkezés' },
+  '図': { parts: 'keret (囗) + benne rajz', mn: 'Keretbe (囗) zárt rajz: térkép, ábra, terv.', kun: '図る (はかる) tervez (írott)', on: 'ズ: 地図 (ちず) térkép; ト: 図書館 (としょかん) könyvtár' },
+  '用': { mn: 'Képírás: kerítés vagy edény; amit használsz.', kun: '用いる (もちいる) használ (írott)', on: 'ヨウ: 用事 (ようじ) elintéznivaló; 使用 (しよう) használat; 利用 (りよう) igénybevétel' },
+
+  // ─── 13. lecke: mérték, ruha, étel ─────────────
+  '度': { parts: 'épület (广) + kéz (又)', mn: 'Az épületben (广) a kézzel (又) mért arasz: mérték, fok, alkalom.', kun: '度 (たび) alkalom; その度に (そのたびに) minden alkalommal', on: 'ド: 今度 (こんど) legközelebb; 一度 (いちど) egyszer; 温度 (おんど) hőmérséklet' },
+  '不': { mn: 'Egy vonal alatt lefelé ágazó gyökér, ami nem nőhet tovább: nem.', on: 'フ: 不便 (ふべん) kényelmetlen; ブ: 不器用 (ぶきよう) ügyetlen' },
+  '写': { parts: 'fedő (冖) + ad (与)', mn: 'A fedél (冖) alatt átadott kép: másol, lefényképez.', kun: '写す (うつす) lemásol, lefényképez', on: 'シャ: 写真 (しゃしん) fénykép' },
+  '者': { parts: 'öreg (耂) + nap (日)', mn: 'Az öreg (耂) a napon (日) ül: valaki, személy.', kun: '者 (もの) személy (írott)', on: 'シャ: 医者 (いしゃ) orvos; 学者 (がくしゃ) tudós' },
+  '院': { parts: 'domb (⻖) + teljes (完)', mn: 'A dombon (⻖) álló teljes (完) épület: intézmény.', on: 'イン: 病院 (びょういん) kórház; 大学院 (だいがくいん) doktori iskola; 美容院 (びよういん) fodrászat' },
+  '終': { parts: 'fonal (糸) + tél (冬)', mn: 'A fonal (糸) vége és a tél (冬), az év vége: befejeződik.', kun: '終わる (おわる) véget ér; 終わり (おわり) vége', on: 'シュウ: 終電 (しゅうでん) utolsó vonat; 最終 (さいしゅう) végső' },
+  '服': { parts: 'test (月) + térdelő ember (卩) + kéz (又)', mn: 'A testre (月) kézzel (又) igazított ruha.', on: 'フク: 服 (ふく) ruha; 洋服 (ようふく) nyugati ruha' },
+  '通': { parts: 'út (⻌) + átjáró (甬)', mn: 'Az úton (⻌) átjárható csatorna: áthalad, rendszeresen jár.', kun: '通る (とおる) áthalad; 通う (かよう) jár (iskolába, munkába)', on: 'ツウ: 交通 (こうつう) közlekedés; 普通 (ふつう) szokásos' },
+  '飯': { parts: 'étel (飠) + újra (反)', mn: 'Az étel (飠), amit újra és újra (反) eszel: főtt rizs, étkezés.', kun: '飯 (めし) étel (férfias, köznapi)', on: 'ハン: ご飯 (ごはん) főtt rizs, étkezés; 朝ご飯 (あさごはん) reggeli' },
+  '飲': { parts: 'étel (飠) + tátott száj (欠)', mn: 'Tátott szájjal (欠) veszed magadhoz: iszik.', kun: '飲む (のむ) iszik; 飲み物 (のみもの) ital', on: 'イン: 飲食 (いんしょく) étel és ital' },
+  '館': { parts: 'étel (飠) + hivatal (官)', mn: 'Ahol a hivatalnokot (官) étellel (飠) fogadják: nagy épület, csarnok.', kun: 'やかた: kastély (ritka)', on: 'カン: 図書館 (としょかん) könyvtár; 映画館 (えいがかん) mozi' },
+  '問': { parts: 'kapu (門) + száj (口)', mn: 'A kapuban (門) a száj (口) kérdez: kérdés.', kun: '問う (とう) kérdez (írott)', on: 'モン: 問題 (もんだい) kérdés, probléma; 質問 (しつもん) kérdés' },
+
+  // ─── 14. lecke: egészség, írás, színek ─────────
+  '病': { parts: 'betegség (疒) + harmadik (丙)', mn: 'A betegágy (疒) jele fölötte: betegség.', kun: '病 (やまい) betegség (írott)', on: 'ビョウ: 病気 (びょうき) betegség; 病院 (びょういん) kórház' },
+  '医': { parts: 'doboz (匸) + nyíl (矢)', mn: 'A dobozba (匸) zárt nyílhegy (矢): a sebet gyógyító orvos.', on: 'イ: 医者 (いしゃ) orvos; 医学 (いがく) orvostudomány' },
+  '発': { parts: 'két láb (癶) + két (二) + lábak (儿)', mn: 'Két láb (癶) elrugaszkodik: indul, kibocsát.', on: 'ハツ: 出発 (しゅっぱつ) indulás; 発音 (はつおん) kiejtés; ホツ: 発作 (ほっさ) roham' },
+  '文': { mn: 'Képírás: egy mellkasra rajzolt minta: írásjel, szöveg.', kun: '文 (ふみ) levél (régies)', on: 'ブン: 文 (ぶん) mondat; 作文 (さくぶん) fogalmazás; モン: 文句 (もんく) panasz' },
+  '英': { parts: 'fű (艹) + közép (央)', mn: 'A fű (艹) közepéből (央) kinyíló virág: kiváló; ma Angliát jelöli.', on: 'エイ: 英語 (えいご) angol nyelv; 英国 (えいこく) Anglia' },
+  '色': { mn: 'Két egymásba hajló alak: szín, és régen a vágy is.', kun: '色 (いろ) szín; 色々 (いろいろ) sokféle', on: 'ショク: 特色 (とくしょく) jellegzetesség; シキ: 景色 (けしき) táj' },
+  '紙': { parts: 'fonal (糸) + nemzetség (氏)', mn: 'A fonalakból (糸) préselt rostlap: papír.', kun: '紙 (かみ) papír; 手紙 (てがみ) levél', on: 'シ: 用紙 (ようし) űrlap; 新聞紙 (しんぶんし) újságpapír' },
+  '駅': { parts: 'ló (馬) + mér (尺)', mn: 'A lovak (馬) váltóhelye egy kimért (尺) szakasz végén: állomás.', on: 'エキ: 駅 (えき) állomás; 駅前 (えきまえ) az állomás előtt' },
+  '送': { parts: 'út (⻌) + két felemelt kéz (关)', mn: 'Két kézzel útnak (⻌) indítod: küld, elkísér.', kun: '送る (おくる) küld, elkísér', on: 'ソウ: 放送 (ほうそう) adás; 送料 (そうりょう) szállítási díj' },
+  '田': { mn: 'Képírás: rizsföld felülről, gátakkal négy részre osztva.', kun: '田 (た) rizsföld; 田んぼ (たんぼ) rizsföld; 田中 (たなか) családnév', on: 'デン: 水田 (すいでん) vizes rizsföld' },
+  '古': { parts: 'tíz (十) + száj (口)', mn: 'Tíz (十) száj (口) adja tovább a történetet: régi.', kun: '古い (ふるい) régi', on: 'コ: 中古 (ちゅうこ) használt' },
+  '世': { mn: 'Három összekötött tízes (十): harminc év, egy nemzedék; világ, korszak.', kun: '世 (よ) világ; 世の中 (よのなか) a világ', on: 'セイ: 世紀 (せいき) évszázad; セ: 世界 (せかい) világ' },
+
+  // ─── 15. lecke: emberek, munka, nyár ───────────
+  '員': { parts: 'száj (口) + kagyló, pénz (貝)', mn: 'Egy száj (口) és egy fizetés (貝): tag, alkalmazott.', on: 'イン: 会社員 (かいしゃいん) irodai dolgozó; 店員 (てんいん) eladó' },
+  '工': { mn: 'Képírás: egy szerszám, mint az ácsderékszög: munka, gyártás.', on: 'コウ: 工場 (こうじょう) gyár; 工事 (こうじ) építkezés; ク: 工夫 (くふう) leleményesség' },
+  '切': { parts: 'hét (七) + kés (刀)', mn: 'Késsel (刀) hét (七) darabra vág: vág.', kun: '切る (きる) vág; 切符 (きっぷ) jegy', on: 'セツ: 大切 (たいせつ) fontos; 親切 (しんせつ) kedves; サイ: 一切 (いっさい) egyáltalán' },
+  '兄': { parts: 'száj (口) + lábak (儿)', mn: 'A nagy szájú (口) ember (儿), aki a kisebbeknek parancsol: báty.', kun: '兄 (あに) báty (a sajátunk); お兄さん (おにいさん) báty (rendhagyó)', on: 'キョウ: 兄弟 (きょうだい) testvérek; ケイ: 父兄 (ふけい) szülők (régies)' },
+  '黒': { parts: 'falu (里) + tűz (灬)', mn: 'A falu (里) alatt égő tűz (灬) kormos füstje: fekete.', kun: '黒い (くろい) fekete; 黒 (くろ) a fekete szín', on: 'コク: 黒板 (こくばん) iskolai tábla' },
+  '安': { parts: 'tető (宀) + nő (女)', mn: 'A tető (宀) alatt a nő (女): béke, nyugalom; olcsó is.', kun: '安い (やすい) olcsó', on: 'アン: 安心 (あんしん) megnyugvás; 安全 (あんぜん) biztonság' },
+  '妹': { parts: 'nő (女) + még nem (未)', mn: 'A nő (女), aki még nem (未) nőtt fel: húg.', kun: '妹 (いもうと) húg (a sajátunk); 妹さん (いもうとさん) valakinek a húga', on: 'マイ: 姉妹 (しまい) lánytestvérek' },
+  '犬': { parts: 'nagy (大) + pont', mn: 'A nagy (大) mellett egy pont, a kutya füle: kutya.', kun: '犬 (いぬ) kutya', on: 'ケン: 番犬 (ばんけん) házőrző kutya' },
+  '界': { parts: 'rizsföld (田) + közé (介)', mn: 'A rizsföldek (田) közé (介) húzott határ: határ, világ.', on: 'カイ: 世界 (せかい) világ; 限界 (げんかい) határ' },
+  '理': { parts: 'drágakő (王) + falu (里)', mn: 'A drágakő (王) erezete, ami szerint csiszolják: rend, logika.', on: 'リ: 料理 (りょうり) főzés, étel; 理由 (りゆう) ok; 無理 (むり) lehetetlen' },
+  '注': { parts: 'víz (氵) + úr (主)', mn: 'Vizet (氵) önt, amire a gazda (主) figyel: önt, figyelem, megjegyzés.', kun: '注ぐ (そそぐ) önt', on: 'チュウ: 注意 (ちゅうい) figyelem; 注文 (ちゅうもん) rendelés' },
+  '夏': { parts: 'fej (頁 része) + vonszolt láb (夂)', mn: 'A hőségben lassan vonszolt láb (夂): nyár.', kun: '夏 (なつ) nyár; 夏休み (なつやすみ) nyári szünet', on: 'カ: 初夏 (しょか) kora nyár' }
 };
