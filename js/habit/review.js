@@ -30,6 +30,7 @@ import { speakWord } from '../practice/tts.js';
 import { showScreen } from '../ui/screens.js';
 import { attachSwipe, flyOut } from '../ui/swipe.js';
 import { showToast } from '../ui/toast.js';
+import { pulse } from '../ui/motion.js';
 
 const RATINGS = [
   { rating: AGAIN, label: 'Újra', key: '1' },
@@ -301,6 +302,7 @@ function showAnswer(result, verdict, picked = null) {
   if (result === 'miss') {
     fillMissNote('review-miss-note', currentCard().word, picked); // V13.33: mit választottál, mire figyelj
     card.classList.add('show-flag'); // V13.61: a hibás szó egy koppintással a lecke fókusz listájába
+    pulse(controls.querySelector('.review-ask'), 'nudge'); // V13.65: halk rezdülés, piros nélkül
   }
   controls.querySelectorAll('.review-ask input, .review-ask button').forEach(el => { el.disabled = true; });
   controls.querySelectorAll('.rate-btn').forEach(b => b.removeAttribute('tabindex'));

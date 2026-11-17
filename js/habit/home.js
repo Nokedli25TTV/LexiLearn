@@ -9,6 +9,7 @@ import { LEARN_BATCH_SIZE, describePoolSource, getCurrentLessonProgress, getDail
 import { applyFilters } from '../library/list.js';
 import { closeFilterMenu, renderFilterBar } from '../library/menus.js';
 import { showToast } from '../ui/toast.js';
+import { countTo, pulse } from '../ui/motion.js';
 import { dueForecast } from '../srs/schedule.js';
 import { goalLineHtml } from '../goal/view.js';
 import { weekHomeRowHtml } from '../stats/week.js';
@@ -16,6 +17,9 @@ import { leechHomeRowHtml, lessonHardWords } from '../features/leeches.js';
 import { lessonTestHomeRowHtml } from '../practice/lesson-test.js';
 
 /* ── KEZDŐLAP ─────────────────────────────────────────── */
+// V13.65: melyik módban láttuk már a mai napot tanulás nélkül (a pötty kiemeléséhez)
+const _studiedSeen = new Map();
+
 function renderHome() {
   if (!document.getElementById('screen-home')) return;
   checkDailyReset();
@@ -29,19 +33,26 @@ function renderHome() {
   const greeting = hour < 5 ? 'Jó éjszakát' : hour < 10 ? 'Jó reggelt' : hour < 18 ? 'Szia' : 'Jó estét';
   const setText = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
   setText('home-greeting', greeting);
-  setText('home-streak-text', `${streak} nap`);
+  // V13.65: a konzisztencia a legutóbb mutatott értékről pörög fel, és egy finom kiemelést kap
+  const streakEl = document.getElementById('home-streak-text');
+  if (countTo(streakEl, `streak:${currentMode}`, streak, v => `${v} nap`)) pulse(streakEl);
   setText('home-streak-hint',
     studiedToday ? `A mai ${currentMode === 'radicals' ? 'radikál' : MODE_LABELS[currentMode].toLowerCase()} adag megvan.`
     : streak > 0 ? 'Egy rövid alkalom ma is elég a folytonossághoz.'
     : 'Egy rövid alkalom ma: ebből épül a rutin.');
   renderWeekTracker();
+  // a mai nap pöttye egyszer kiemelkedik, amikor a mai alkalom megvan
+  const todayKeyMode = `${currentMode}:${today}`;
+  if (studiedToday && _studiedSeen.get(todayKeyMode) === false) pulse(document.querySelector('#week-tracker .today-studied'), 'is-popped');
+  _studiedSeen.set(todayKeyMode, studiedToday);
 
   // ── Napi cél ──
   const goal = getDailyGoal();
   const learnedToday = getTodayWords().length;
   const goalReached = learnedToday >= goal;
   const pct = Math.min(1, learnedToday / goal);
-  setText('goal-done', learnedToday);
+  const goalDoneEl = document.getElementById('goal-done');
+  if (countTo(goalDoneEl, `goal:${currentMode}`, learnedToday)) pulse(goalDoneEl);
   setText('goal-total', goal);
   setText('goal-unit', `új ${unitOf()}`);
   const goalSection = document.getElementById('home-goal');

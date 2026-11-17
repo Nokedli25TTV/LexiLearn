@@ -14,6 +14,7 @@ import { isStartedWord } from '../goal/jlpt.js';
 import { getCurrentLessonProgress, logActivity } from '../habit/goal.js';
 import { wordLessons } from '../library/filters.js';
 import { getDueCards } from '../srs/schedule.js';
+import { canAnimate } from '../ui/motion.js';
 
 const svg = body => `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
 const glyph = ch => `<svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="17.5" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor">${ch}</text></svg>`;
@@ -220,6 +221,9 @@ function progressText(q) {
   return `${Math.min(q.progress, q.target)}/${q.target}`;
 }
 
+// V13.65: a most teljesült feladat sora egyszer kiemelkedik (a pipa beúszik); mód és nap szerint
+const _doneSeen = new Map();
+
 function renderDailyQuests() {
   checkDailyReset();
   const cont = document.getElementById('daily-quests-container');
@@ -228,6 +232,10 @@ function renderDailyQuests() {
   const doneEl = document.getElementById('quests-done');
   if (doneEl) doneEl.textContent = list.length ? `${list.filter(q => q.completed).length} / ${list.length} kész` : '';
   if (!list.length) { cont.innerHTML = ''; return; }
+  const seenKey = `${currentMode}:${state.dailyQuests.date}`;
+  const seen = _doneSeen.get(seenKey);
+  const justDone = new Set(seen && canAnimate() ? list.filter(q => q.completed && !seen.has(q.id)).map(q => q.id) : []);
+  _doneSeen.set(seenKey, new Set(list.filter(q => q.completed).map(q => q.id)));
 
   cont.innerHTML = list.map(q => {
     const done = q.completed;
@@ -243,7 +251,7 @@ function renderDailyQuests() {
       </span>
       <span class="dq-prog">${done ? 'Kész' : progressText(q)}</span>`;
     return done
-      ? `<div class="dq-item is-done" data-q="${escHtml(q.id)}">${inner}</div>`
+      ? `<div class="dq-item is-done${justDone.has(q.id) ? ' just-done' : ''}" data-q="${escHtml(q.id)}">${inner}</div>`
       : `<button type="button" class="dq-item" data-q="${escHtml(q.id)}" onclick="openQuest(${jsArg(q.id)})" aria-label="${label}, ${escHtml(progressText(q))}. Indítás">${inner}${CHEVRON}</button>`;
   }).join('');
 }

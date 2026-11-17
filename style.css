@@ -266,10 +266,11 @@ textarea.import-area { width: 100%; height: 160px; border: 2px solid var(--borde
 
 @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .animate-in { animation: fadeSlideUp 0.35s ease forwards; }
-@keyframes shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-10px); } 40% { transform: translateX(10px); } 60% { transform: translateX(-7px); } 80% { transform: translateX(7px); } }
-.shake { animation: shake 0.38s ease; }
-@keyframes bounce-in { 0% { transform: scale(0.95); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
-.bounce { animation: bounce-in 0.3s ease; }
+/* V13.65: nyugodtabb visszajelzés: a hiba halk rezdülés (4px), a helyes válasz túllövés nélkül ül a helyére */
+@keyframes shake { 0%, 100% { transform: none; } 25% { transform: translateX(-4px); } 55% { transform: translateX(3px); } 80% { transform: translateX(-1.5px); } }
+.shake, .nudge { animation: shake 320ms var(--ease-out); }
+@keyframes bounce-in { from { transform: scale(0.985); } to { transform: none; } }
+.bounce { animation: bounce-in 260ms var(--ease-out); }
 
 /* ══════════════════════════════════════════════════════
    MOBIL RESZPONZIVITÁS
@@ -3295,3 +3296,29 @@ button.dq-item:focus-visible { outline: 3px solid var(--primary-h); outline-offs
   font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900; cursor: pointer; transition: transform 140ms var(--ease-out);
 }
 .hw-practice:active { transform: scale(0.98); }
+
+/* ══════════════════════════════════════════════════════
+   V13.65: NYUGODT MIKROANIMÁCIÓK – csak állapotváltásra, transform és opacity, 240–900 ms,
+   exponenciális lassulással; csökkentett mozgásnál mind kikapcsol.
+══════════════════════════════════════════════════════ */
+/* Helyes válasz: a gomb egy árnyalattal kisebbről ül a helyére; a döntés felirata beúszik */
+@keyframes optSettle { from { transform: scale(0.97); } to { transform: none; } }
+.opt-btn.correct { animation: optSettle 260ms var(--ease-out); }
+@keyframes verdictIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.review-controls.is-answered .review-verdict { animation: verdictIn 240ms var(--ease-out); }
+/* Kezdőlap: a konzisztencia és a napi penzum száma felpörög, majd egyszer finoman kiemelkedik */
+#home-streak-text, #goal-done { display: inline-block; transform-origin: left bottom; }
+@keyframes numBump { 0% { transform: none; } 35% { transform: scale(1.08); } 100% { transform: none; } }
+#home-streak-text.is-bumped, #goal-done.is-bumped { animation: numBump 560ms var(--ease-out) 380ms; }
+@keyframes dotPop { 0% { transform: scale(0.82); opacity: 0.6; } 100% { transform: none; opacity: 1; } }
+.week-day-dot.is-popped { animation: dotPop 420ms var(--ease-out); }
+/* Napi feladat teljesült: a sor egyszer erdő-ködbe borul és kihalványul, a pipa beúszik */
+@keyframes dqDoneBg { from { background-color: var(--primary-dim); } to { background-color: transparent; } }
+@keyframes dqDoneIcon { from { transform: scale(0.6); opacity: 0; } to { transform: none; opacity: 1; } }
+.dq-item.just-done { animation: dqDoneBg 900ms var(--ease-out); }
+.dq-item.just-done .dq-icon { animation: dqDoneIcon 360ms var(--ease-out) 120ms both; }
+@media (prefers-reduced-motion: reduce) {
+  .shake, .nudge, .bounce, .opt-btn.correct, .review-controls.is-answered .review-verdict,
+  #home-streak-text.is-bumped, #goal-done.is-bumped, .week-day-dot.is-popped,
+  .dq-item.just-done, .dq-item.just-done .dq-icon { animation: none; }
+}

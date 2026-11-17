@@ -336,6 +336,12 @@ A Kezdőlapon a Napi penzum alatt, a leckekártya és a fő cselekvés fölött 
 - **Koppintásra:** az esedékes ismétlés és a nyelvtan közvetlenül indul (a nyelvtan a Befejezésnél teljesül); a nap szava japánul a tudnivaló-lapot nyitja; a többi az indító lapot.
 - **Indító lap:** lebegő lap, fent „NAPI FELADAT” címke és a feladat címe (22px 900). „Mit gyakorolsz” (16px 900): a feladat forrása (témakör pilla vagy „A legtöbbször elrontottak · 5 szó”), Állapot választó chipek darabszámmal (Minden, Új, Tanulás alatt, Megtanult), Lecke vízszintesen görgethető chipsorban („Bármelyik”, 1., 2., …; többet is lehet), alatta egy mondat: „30 szó felel meg, 20 kerül a körbe.” „Hogyan”: a Gyakorlás dokk beállításai ugyanazzal a jelöléssel (típus, irány, kérdésszám, sorrend; a változás a dokkban is megmarad). Alul ragadós, teljes szélességű korall „Indítás · 20 szó” (56px); találat nélkül letiltva. Az Indítás a meglévő gyakorlást indítja a feladat szavaival; a Gyakorlás fül kijelölése és szűrői nem változnak.
 
+### Mikroanimációk (V13.65)
+Csak állapotváltásra, transform és opacity, 240–900 ms, `--ease-out` lassulással; túllövés (bounce, elastic) nincs. `prefers-reduced-motion` alatt mind kikapcsol, a számok azonnal a végértéken állnak (`js/ui/motion.js`).
+- **Válasz:** a helyes gomb 0,97-ről ül a helyére (260 ms), a kérdéskártya 0,985-ről; a hiba 4px-es halk rezdülés (320 ms) a kártyán, ismétlésnél a válaszmezőn; az ítélet mondata 6px-ről úszik be. A korábbi 10px-es rázás és a 1,04-es túllövés megszűnt.
+- **Kezdőlap:** a konzisztencia és a napi penzum száma a legutóbb mutatott értékről pörög fel (420–900 ms, ease-out-quart), utána egyszer 1,08-ra emelkedik és visszaül; az első megnyitáskor nem animál. A mai nap pöttye 0,82-ről ugrik a helyére, amikor a mai alkalom megvan.
+- **Napi feladat teljesült:** a sor erdő-köd háttérből halványul ki (900 ms), a pipa 0,6-ról úszik be. Ünneplés (konfetti) továbbra is csak a napi cél elérésekor.
+
 ### Kezdőlap cselekvések (V13.5)
 - Ha van esedékes ismétlés, az "Ismétlés" a korall fő gomb (darabszám chippel, "kb. N perc"), az "Új szavak tanulása" alatta másodlagos (felület háttér, nyíl nélkül). Ha nincs esedékes, az új szavak a fő gomb.
 - Alattuk egy csendes, középre zárt előrejelző sor: "Holnap 15 · a következő 7 napban 45" (13px, a számok 800-as súllyal). Így nincs meglepetés-hegy.
