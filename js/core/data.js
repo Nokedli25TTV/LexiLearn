@@ -15,6 +15,7 @@ const KANJI_FREQ_TOTAL = raw.kanjiFreqTotal || 0;
 const english_sentences2 = raw.englishSentences || [];
 const WORD_NOTES = raw.wordNotes || {};         // V13.33: szómagyarázatok (kana → { pos, use, watch, rel })
 const GRAMMAR_NOTES = raw.grammarNotes || {};   // V13.35: nyelvtan leckénként (lecke → { title, points })
+const KANJI_NOTES = raw.kanjiNotes || {};       // V13.66: kandzsi jegyzetek (kandzsi → { parts, mn, kun, on })
 const TRAVEL_PLAN = raw.travelPlan || null;
 const TRAVEL_PLAN_KANJI = raw.travelPlanKanji || null;
 const MY_CUSTOM_LISTS = raw.myCustomLists;
@@ -26,5 +27,5 @@ console.log(`[LexiLearn] ÖSSZES mondat betöltve: ${JAPANESE_SENTENCES.length} 
 
 export {
   SAMPLE_WORDS, JAPANESE_WORDS, KANJI_DATA, KANJI_FREQ, KANJI_FREQ_TOTAL, KANJI_RADICALS, RADICAL_LESSONS, RADICALS_DATA, english_sentences2, TRAVEL_PLAN, TRAVEL_PLAN_KANJI,
-  MY_CUSTOM_LISTS, DEKIRU_LESSONS, JAPANESE_SENTENCES, WORD_NOTES, GRAMMAR_NOTES
+  MY_CUSTOM_LISTS, DEKIRU_LESSONS, JAPANESE_SENTENCES, WORD_NOTES, GRAMMAR_NOTES, KANJI_NOTES
 };

@@ -19,6 +19,8 @@ window.LEXI_DATA = {
   wordNotes:        typeof WORD_NOTES !== 'undefined' ? WORD_NOTES : {},
   // V13.35: nyelvtan leckénként (grammar_notes.js)
   grammarNotes:     typeof GRAMMAR_NOTES !== 'undefined' ? GRAMMAR_NOTES : {},
+  // V13.66: a kandzsik kézzel írt jegyzetei (kanji_notes.js), kandzsi szerint
+  kanjiNotes:       typeof KANJI_NOTES !== 'undefined' ? KANJI_NOTES : {},
   englishSentences: typeof english_sentences2 !== 'undefined' ? english_sentences2 : [],
   travelPlan:       typeof TRAVEL_PLAN !== 'undefined' ? TRAVEL_PLAN : null,
   travelPlanKanji:  typeof TRAVEL_PLAN_KANJI !== 'undefined' ? TRAVEL_PLAN_KANJI : null,

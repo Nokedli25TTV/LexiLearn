@@ -4,7 +4,7 @@
 // és hibás válasz után egy rövid sor: mit választottál helyette, és mire figyelj.
 // A kézzel írt jegyzetek a word_notes.js-ben vannak (kana szerint); ahol nincs, az automatikus
 // adatok akkor is megjelennek.
-import { WORD_NOTES } from '../core/data.js';
+import { KANJI_NOTES, WORD_NOTES } from '../core/data.js';
 import { currentMode, state } from '../core/state.js';
 import { escHtml, jsArg } from '../core/util.js';
 import { counterNote } from '../core/counters.js';
@@ -19,6 +19,9 @@ const INFO_ICON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" s
 const hasWordInfo = word => !!word && currentMode === 'japanese';
 const noteOf = word => (hasWordInfo(word) && WORD_NOTES[word.en]) || null;
 const wordByEn = en => state.words.find(w => w.en === en) || null;
+// V13.66: kandzsi módban is van lap (felépítés, olvasatok); a hibás válasz utáni sor és a Figyelj japán marad
+const hasInfoSheet = word => !!word && (currentMode === 'japanese' || currentMode === 'kanji');
+const kanjiNoteOf = word => (word && currentMode === 'kanji' && KANJI_NOTES[word.en]) || null;
 
 function lessonLabel(word) {
   const lessons = (Array.isArray(word.lesson) ? word.lesson : [word.lesson])
@@ -40,11 +43,12 @@ const topicsOf = word => (word.tags || []).filter(t => !POS_TAGS[t]);
 
 // A kártya hátoldalának jobb felső sarkába; a húzást nem indítja (data-no-swipe)
 function infoButtonHtml(word) {
-  if (!hasWordInfo(word)) return '';
-  const has = !!noteOf(word);
+  if (!hasInfoSheet(word)) return '';
+  const kanji = currentMode === 'kanji';
+  const has = kanji ? !!kanjiNoteOf(word) : !!noteOf(word);
   return `<button type="button" class="info-btn${has ? ' has-note' : ''}" data-no-swipe
     onclick="event.stopPropagation(); openWordInfo(${jsArg(word.id)})"
-    aria-label="Tudnivalók a szóról${has ? '' : ' (témakör, szint, példa)'}">${INFO_ICON}</button>`;
+    aria-label="${kanji ? 'Tudnivalók a kandzsiról' : `Tudnivalók a szóról${has ? '' : ' (témakör, szint, példa)'}`}">${INFO_ICON}</button>`;
 }
 
 // A tanuló kártya hátoldalán: a buktató egy sorban (ha van)
@@ -141,10 +145,40 @@ function sheetHtml(word) {
     </section>` : ''}`;
 }
 
+// V13.66: a kandzsi lapja: a kandzsi nagyban, jelentés, szint és lecke, Felépítés (részek + emlékeztető),
+// Olvasatok (a jegyzet teljes alakjai, ahol nincs, az adat olvasatai)
+// A japán szavak és olvasatok nem törnek ketté (ユ / ウ), csak a szóközöknél és az írásjeleknél
+const jaKeep = t => escHtml(t).replace(/[぀-ヿ㐀-鿿～々]+/g, m => `<span class="gr-nb" lang="ja">${m}</span>`);
+
+function kanjiSheetHtml(word) {
+  const note = kanjiNoteOf(word);
+  const lesson = Number(Array.isArray(word.lesson) ? word.lesson[0] : word.lesson);
+  const chips = [word.diff, Number.isFinite(lesson) && lesson >= 1 ? `Kandzsi ${lesson}. lecke` : '', ...topicsOf(word).map(t => `Témakör: ${t}`)].filter(Boolean);
+  const row = (label, text) => `<div class="wi-reading"><span class="wi-reading-label">${label}</span><p class="wi-text">${jaKeep(text)}</p></div>`;
+  const kun = (note && note.kun) || word.kunyomi;
+  const on = (note && note.on) || word.onyomi;
+  const parts = note && (note.parts || note.mn)
+    ? `<section class="wi-sec"><h3 class="wi-label">Felépítés</h3>${note.parts ? `<p class="wi-parts">${jaKeep(note.parts)}</p>` : ''}${note.mn ? `<p class="wi-text">${jaKeep(note.mn)}</p>` : ''}</section>`
+    : '';
+  return `
+    <div class="wi-head">
+      <div class="wi-title">
+        <div class="wi-word wi-kanji" id="word-info-word" lang="ja">${escHtml(word.en)}</div>
+        ${word.romaji ? `<div class="wi-sub">${escHtml(word.romaji)}</div>` : ''}
+      </div>
+      <button type="button" class="inspector-close" onclick="closeWordInfo()" aria-label="Bezárás">×</button>
+    </div>
+    <p class="wi-meaning">${escHtml(word.hu)}</p>
+    ${chips.length ? `<div class="wi-chips">${chips.map(c => `<span class="wi-chip">${escHtml(c)}</span>`).join('')}</div>` : ''}
+    ${parts}
+    ${kun || on ? `<section class="wi-sec"><h3 class="wi-label">Olvasatok</h3>${kun ? row('Kun', kun) : ''}${on ? row('On', on) : ''}</section>` : ''}
+    ${note ? '' : '<p class="wi-empty">Ehhez a kandzsihoz még nincs leírás.</p>'}`;
+}
+
 function render(word) {
   const body = document.getElementById('word-info-body');
   if (!body) return;
-  body.innerHTML = sheetHtml(word);
+  body.innerHTML = currentMode === 'kanji' ? kanjiSheetHtml(word) : sheetHtml(word);
   body.scrollTop = 0;
   const host = modal()?.querySelector('.modal');
   if (host) host.scrollTop = 0;
@@ -154,7 +188,7 @@ function render(word) {
 function openWordInfo(id, fromSheet = false) {
   const word = state.words.find(w => w.id === id);
   const host = modal();
-  if (!word || !host || !hasWordInfo(word)) return;
+  if (!word || !host || !hasInfoSheet(word)) return;
   if (fromSheet) {
     const current = document.getElementById('word-info-word');
     const currentWord = current ? wordByEn(current.textContent) : null;
@@ -202,4 +236,4 @@ if (typeof document !== 'undefined') {
   });
 }
 
-export { closeWordInfo, fillMissNote, hasWordInfo, infoButtonHtml, isWordInfoOpen, missNoteHtml, noteOf, openWordInfo, posLabel, watchLineHtml, wordInfoBack };
+export { closeWordInfo, fillMissNote, hasInfoSheet, hasWordInfo, infoButtonHtml, kanjiNoteOf, isWordInfoOpen, missNoteHtml, noteOf, openWordInfo, posLabel, watchLineHtml, wordInfoBack };
