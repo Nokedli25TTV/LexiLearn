@@ -292,6 +292,7 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 - **Tooltip:** fordított semleges buborék, az érték elöl (15px 800), a címke utána; `textContent`-tel épül.
 - **Táblázatos nézet:** minden ábra alatt "Adatok táblázatban" nyitható `<details>`.
 - **Szólista lap** (V13.32): az „Úton a megtanuláshoz” és a forrás-csempék listájának alján ragadós „Gyakorlás ezekkel · 19 szó” gomb: fordított semleges (szöveg színű háttér, felület színű felirat, 52px, 16px lekerekítés), nem korall, mert a lapon nem ez az egyetlen cél. A Gyakorlás fülre visz a szavakkal kijelölve (toast: „19 szó kijelölve. Válassz típust, és indíthatod.”); a típus és az Indítás a dokkban marad. Üres listán nincs gomb.
+- **Előtted · 14 nap** (V13.64): oszlopok a Fókuszált idő mintájára (legfeljebb 24px széles, 4px-es lekerekített tető, csak a csúcs kap címkét), a mai oszlopban a lemaradás is; felirat „Ma 39 · holnap 37 · két hét alatt 349 kártya”. **Szókincs növekedése · 60 nap:** egy 2px-es vonal (folytonos, mert összesített), csak a végpont kap pontot és címkét, crosshair tooltip, a táblázat hetente. **Legnehezebb szavak** (széles kártya): számozott, 52px-es sorok hajszálvonallal (szám Felület 2 körben, szó 17px 800, jelentés 13px, jobbra „3 hiba · 25%”), alatta fordított semleges „Gyakorlás ezekkel · 10 szó” (52px), ami a napi feladatok indító lapját nyitja a szavakkal (típus, kérdésszám ott választható). Új szín nincs.
 
 ### Rögzített alsó műveletsáv
 - Gyakorlás közben a "Tovább" (hibás válasz után) a képernyő aljára rögzül: teljes szélesség, 56px, korall.

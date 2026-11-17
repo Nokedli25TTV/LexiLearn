@@ -3275,3 +3275,23 @@ button.dq-item:focus-visible { outline: 3px solid var(--primary-h); outline-offs
   .quest-modal .ql-actions { margin: 18px -18px 0; padding: 12px 18px 14px; }
 }
 @media (prefers-reduced-motion: reduce) { .dq-bar i { transition: none; } }
+
+/* V13.64: Statisztika – előrejelzés (a mai oszlop a lemaradással együtt, ugyanazzal a színnel),
+   szókincs növekedése (egy vonal), legnehezebb szavak (számozott lista, gyakorlás az indító lappal) */
+.hw-list { margin: 0; padding: 0; list-style: none; counter-reset: hw; overflow: hidden; border: 1px solid var(--border); border-radius: 16px; }
+.hw-row { counter-increment: hw; display: flex; align-items: center; gap: 12px; min-height: 52px; padding: 8px 14px; }
+.hw-row + .hw-row { border-top: 1px solid var(--border); }
+.hw-row::before {
+  content: counter(hw); flex: none; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 999px;
+  background: var(--surface-2); color: var(--text-2); font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.hw-main { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.hw-main b { overflow: hidden; font-size: 17px; font-weight: 800; color: var(--text); text-overflow: ellipsis; white-space: nowrap; }
+.hw-main span { overflow: hidden; font-size: 13px; font-weight: 650; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
+.hw-side { flex: none; font-size: 13px; font-weight: 700; color: var(--text-2); font-variant-numeric: tabular-nums; }
+.hw-side b { color: var(--text); font-weight: 800; }
+.hw-practice {
+  width: 100%; min-height: 52px; margin-top: 14px; border: none; border-radius: 16px; background: var(--text); color: var(--surface);
+  font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 900; cursor: pointer; transition: transform 140ms var(--ease-out);
+}
+.hw-practice:active { transform: scale(0.98); }

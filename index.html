@@ -28,7 +28,7 @@
 <!-- IndexedDB könyvtár (localForage) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
 
-<link rel="stylesheet" href="style.css?v=13.63">
+<link rel="stylesheet" href="style.css?v=13.64">
 </head>
 <body data-screen="home">
 
@@ -352,6 +352,32 @@
         <div class="chart" id="focus-chart"></div>
         <details class="viz-table"><summary>Adatok táblázatban</summary><div id="focus-table"></div></details>
       </section>
+      <!-- V13.64: előrejelzés, szókincs növekedése, legnehezebb szavak -->
+      <section class="viz-card" aria-labelledby="viz-fc-title">
+        <header class="viz-head">
+          <h2 class="viz-title" id="viz-fc-title">Előtted · 14 nap</h2>
+          <p class="viz-note" id="viz-fc-note"></p>
+        </header>
+        <div class="chart" id="forecast-chart"></div>
+        <details class="viz-table"><summary>Adatok táblázatban</summary><div id="forecast-table"></div></details>
+      </section>
+
+      <section class="viz-card" aria-labelledby="viz-growth-title">
+        <header class="viz-head">
+          <h2 class="viz-title" id="viz-growth-title">Szókincs növekedése · 60 nap</h2>
+          <p class="viz-note" id="viz-growth-note"></p>
+        </header>
+        <div class="chart" id="growth-chart"></div>
+        <details class="viz-table"><summary>Adatok táblázatban (hetente)</summary><div id="growth-table"></div></details>
+      </section>
+
+      <section class="viz-card viz-wide" aria-labelledby="viz-hard-title">
+        <header class="viz-head">
+          <h2 class="viz-title" id="viz-hard-title">Legnehezebb szavak</h2>
+          <p class="viz-note" id="viz-hard-note"></p>
+        </header>
+        <div id="hardest-words"></div>
+      </section>
     </div>
 
     <section class="stats-details" aria-labelledby="stats-details-title">
@@ -628,19 +654,19 @@
 <div class="toast" id="toast"></div>
 
 <!-- Statikus szótár-adatok (klasszikus scriptek, kézzel szerkeszthetők) -->
-<script src="data.js?v=13.63"></script>
-<script src="japanese_words.js?v=13.63"></script>
-<script src="jlpt_n3_words.js?v=13.63"></script>
-<script src="dekiru.js?v=13.63"></script>
-<script src="dekiru2.js?v=13.63"></script>
-<script src="kanji_data.js?v=13.63"></script>
-<script src="radicals_data.js?v=13.63"></script>
-<script src="japanese_sentences.js?v=13.63"></script>
-<script src="english_sentences2.js?v=13.63"></script>
-<script src="word_notes.js?v=13.63"></script>
-<script src="grammar_notes.js?v=13.63"></script>
+<script src="data.js?v=13.64"></script>
+<script src="japanese_words.js?v=13.64"></script>
+<script src="jlpt_n3_words.js?v=13.64"></script>
+<script src="dekiru.js?v=13.64"></script>
+<script src="dekiru2.js?v=13.64"></script>
+<script src="kanji_data.js?v=13.64"></script>
+<script src="radicals_data.js?v=13.64"></script>
+<script src="japanese_sentences.js?v=13.64"></script>
+<script src="english_sentences2.js?v=13.64"></script>
+<script src="word_notes.js?v=13.64"></script>
+<script src="grammar_notes.js?v=13.64"></script>
 <!-- V13.3: a fenti adatokat eval nélkül gyűjti a window.LEXI_DATA-ba -->
-<script src="data-registry.js?v=13.63"></script>
+<script src="data-registry.js?v=13.64"></script>
 
 <!-- V13.3: ES modulok nem futnak file:// alól (duplakattintással megnyitott index.html) -->
 <script>
@@ -656,8 +682,8 @@
 
 <!-- V13.3: az alkalmazás ES modulokként (js/). A main.js a firebase-sync előtt fut,
      hogy az auth / szinkron események hallgatói már feliratkozva legyenek. -->
-<script type="module" src="js/main.js?v=13.63"></script>
-<script type="module" src="firebase-sync.js?v=13.63"></script>
+<script type="module" src="js/main.js?v=13.64"></script>
+<script type="module" src="firebase-sync.js?v=13.64"></script>
 
 </body>
 </html>

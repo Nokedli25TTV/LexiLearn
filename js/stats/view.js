@@ -9,6 +9,7 @@ import { PRACTICE_LEARNED_CORRECT, isLearnedWord, isLearningWord, isPracticeLear
 import { RETENTION_TARGET, accuracyOf, activityLevel, buildDailyIndex, computeMaturity, computeRetention, weekFocusSeconds } from './model.js';
 import { renderJlptCard } from '../goal/view.js';
 import { renderWeekLink } from './week.js';
+import { renderInsights } from './insights.js';
 import { PASS_PCT } from '../practice/lesson-test.js';
 
 const HEAT_LEVEL_LABELS = ['Nem tanultál', 'Aktív nap', 'Napi penzum', 'Penzum + ismétlés', 'Intenzív nap'];
@@ -56,6 +57,7 @@ function renderStats() {
   renderStreakProgress();
   renderAccuracyChart(idx);
   renderFocusChart(idx);
+  renderInsights(); // V13.64: előrejelzés, szókincs növekedése, legnehezebb szavak
   renderStatsDetails();
 }
 

@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.63" src="https://img.shields.io/badge/verzi%C3%B3-13.63-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.64" src="https://img.shields.io/badge/verzi%C3%B3-13.64-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -153,6 +153,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 
 - **KPI sáv:** Konzisztencia, Aktív napok (30), Rögzült szavak, Fókusz a héten.
 - **Konzisztencia hőtérkép** GitHub-stílusú naptárban, **tudás-érettség** (Ismerkedés, Gyakorlás alatt, Rögzült), **pontosság** és **fókuszált idő** az elmúlt 14 napról. Minden ábrának van táblázatos nézete is.
+- **Előtted · 14 nap** (V13.64): hány ismétlőkártya esedékes naponta a következő két hétben (ma a lemaradással együtt), hogy lásd a jövő heti terhelést. **Szókincs növekedése:** a megtanult szavak összesített száma az elmúlt 60 napban. **Legnehezebb szavak:** a legtöbbször elrontott tíz szó hibaszámmal és pontossággal; a „Gyakorlás ezekkel” gomb az indító lapot nyitja ezekkel a szavakkal.
 - A tudás-érettség, a JLPT-haladás és a tanulási forrás számai megnyithatók: külön listázhatók a napi tanulásból, az 5× egymás után helyes gyakorlásból (dátummal, a legfrissebb elöl), az aktív ismétlésből és a rögzült állapotból származó szavak. A „Hogyan számoljuk?” nézet képlettel vezeti le a JLPT-összesítést.
 - A Konzisztencia, Aktív napok és Fókusz KPI-k napi bontást nyitnak válaszszámmal, új szavakkal és aktív idővel.
 - **Heti összefoglaló:** hetenként lapozható képernyő az aktív napokkal és négy számmal (megtanult szó, válasz és kártya, pontosság, fókuszált idő), mindegyik az előző héthez mérve. Alatta az N3 haladás heti változása, a héten elrontott és azóta nem javított szavak egy „Gyakorlás ezekkel” gombbal, és a módonkénti bontás. A Statisztika tetején az „Ez a hét” sor a hét hét napját is mutatja kis négyzetekben; a lezárt hétről ugyanilyen sor szól a Kezdőlapon, amíg meg nem nézted.
