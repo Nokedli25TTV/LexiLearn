@@ -295,7 +295,7 @@ Csoportosított lista, 62px-es sorok: kerek pipa, szó (17px, kanji 24px) + jele
 
 ### Rögzített alsó műveletsáv
 - Gyakorlás közben a "Tovább" (hibás válasz után) a képernyő aljára rögzül: teljes szélesség, 56px, korall.
-- A kör vége képernyő gombjai és a modálok műveletei mobilon a lap aljára ragadnak (sticky), így kis kijelzőn sem kerülnek a képernyő alá. A modálok mobilon alulról nyíló lapok.
+- A kör vége képernyő gombjai és a modálok műveletei mobilon a lap aljára ragadnak (sticky), így kis kijelzőn sem kerülnek a képernyő alá. A modálok mobilon is lebegnek (V13.62): 10px rés körben, minden sarok 28px-es, a hüvelykujj közelében a biztonsági sáv fölött; megjelenéskor 18px-et emelkednek és beúsznak (280 ms), csökkentett mozgásnál csak áttűnnek. A képernyő aljából kinövő lap a felhasználónak nem tetszett.
 
 ### Kör vége (V13.8)
 A tanulás / ismétlés vége képernyők családja, közös komponensekből, egyedi stílus nélkül:
@@ -351,7 +351,7 @@ Japán módban egy Dekiru-lecke elkezdett szavai egyszer, vegyes kérdésekkel: 
 ### Nyelvtan leckénként (V13.35)
 A Dekiru leckéinek nyelvtani szerkezetei a könyv sorrendjében (`grammar_notes.js`, mind a 48 lecke, V13.36), saját rövid magyarázattal és saját példákkal. A magyar szövegbe ágyazott japán szó sem törik ketté.
 - **Helye:** a Gyakorlás fülön, ha pontosan egy lecke van kiválasztva, a lista fölött két sor: „4. lecke nyelvtana” (semleges szövegszín, alatta a szerkezetek száma és mintái egy sorban, levágva), alatta a Lecke-zárás (zöld). A leckekártya a Kezdőlapon ide nyit.
-- **A lap:** a szómagyarázat alulról nyíló lapja. Fent „NYELVTAN · DEKIRU 1. KÖNYV” (Label stílus) és a cím (22px 900). A pontok egy keretes listában, kinyitható sorokban: a minta (17px 800, japán szavak nem törnek, csak a ／ és a szóköz után), alatta a név (13px, másodlagos). Kinyitva: magyarázat, példák (40px kerek felolvasó gomb Felület 2 alapon, japán 17px, alatta a magyar 14px), Figyelj blokk. Alul: előző / következő lecke (zöld szöveges gomb).
+- **Az olvasó** (V13.62, a NihonCore olvasójának mintájára): teljes képernyő a háttér színén. Fent egy 44px-es × (Felület, 1px szegély, 14px lekerekítés), középen 6px-es töltődő csík (`--primary` kitöltés `--surface-2` sávon, scaleX, 380 ms), alatta a cím (13px 800, másodlagos) és a lépésszám („2 / 7”, harmadlagos, tabuláris), jobbra „Tartalom” gomb listaikonnal (nyitva erdő-köd háttér). Középen a „NYELVTAN · DEKIRU 1. KÖNYV” címke és egy szerkezet egy felületen (24px lekerekítés): minta 26px 900, név 15px 700 másodlagos, magyarázat 16px 600, 1.65-ös sorközzel, „PÉLDÁK” címke alatt 44px-es kerek felolvasó gombok, japán 18px, magyar 14px, végül a Figyelj blokk. Lépésváltáskor a tartalom 20px-ről úszik be a lapozás irányából (280 ms). Alul a hüvelykujj alatt Vissza (másodlagos, 1/3 szélesség) és Következő (fordított semleges, 2/3; az utolsó lépésen Befejezés, alatta csendes „5. lecke nyelvtana” link); korall nincs. A Tartalom lebegő lista a felső sáv alatt, elsötétítéssel: számozott, 56px-es sorok (a mostani erdő-köd háttérrel és teli zöld számmal), alul az előző és a következő lecke. Billentyű: nyilak, Escape (előbb a Tartalmat zárja); vízszintes húzás a tartalmon. Az utolsó lépésen a húzás és a nyíl nem zár be, arra a Befejezés való.
 - **Hang:** tárgyszerű, tegező; a magyar toldalék nem válik el a kötőjelétől (nem törő kötőjel).
 
 ### Szómagyarázat (V13.33)

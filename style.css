@@ -2507,15 +2507,20 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 }
 
 @media (max-width: 680px) {
-  /* Modálok alulról nyíló lapként; a műveletgombok a lap aljára ragadnak */
-  .modal-overlay { align-items: flex-end; padding: 0; }
-  .modal { max-width: none; width: 100%; max-height: 90vh; padding: 22px 18px 0; border-radius: 26px 26px 0 0; transform: translateY(24px); }
-  .modal-overlay.open .modal { transform: none; }
+  /* V13.62: a modálok mobilon is lebegnek (nem nőnek ki a képernyő aljából): körben rés, minden sarok
+     lekerekítve, a hüvelykujj közelében, a biztonsági sáv fölött. A műveletgombok a lap aljára ragadnak. */
+  .modal-overlay { align-items: flex-end; padding: calc(12px + var(--safe-t)) 10px calc(10px + var(--safe-b)); }
+  .modal {
+    max-width: none; width: 100%; max-height: 100%; padding: 22px 18px 0; border: 1px solid var(--border); border-radius: 28px;
+    opacity: 0; transform: translateY(18px); transition: transform 280ms var(--ease-out), opacity 200ms var(--ease-out);
+  }
+  .modal-overlay.open .modal { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .modal { transform: none; transition: opacity 120ms linear; } }
   .modal-actions {
     position: sticky;
     bottom: 0;
     margin: 16px -18px 0;
-    padding: 12px 18px calc(14px + var(--safe-b));
+    padding: 12px 18px 14px;
     background: var(--surface);
     border-top: 1px solid var(--border);
   }
@@ -2910,44 +2915,126 @@ body[data-screen="dashboard"]:not([data-screen="practice"]):not([data-screen="ro
 .wi-example { font-size: 18px; line-height: 1.75; color: var(--text); }
 .wi-example .fc-highlight { color: var(--cta); font-weight: 800; }
 [data-theme="light"] .wi-example .fc-highlight { color: var(--accent-h); }
-/* V13.35: Nyelvtan leckénként – a szómagyarázat lapjára épül, kinyitható szerkezetekkel */
-.gr-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
-.gr-title { margin-top: 4px; font-size: 22px; font-weight: 900; line-height: 1.25; color: var(--text); }
-.gr-list { margin-top: 18px; overflow: hidden; border: 1px solid var(--border); border-radius: 16px; }
-.gr-point + .gr-point { border-top: 1px solid var(--border); }
-.gr-point summary {
-  display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 12px 14px 12px 16px;
-  list-style: none; cursor: pointer; -webkit-tap-highlight-color: transparent;
+/* V13.35: Nyelvtan leckénként. V13.62 óta teljes képernyős, lépésenként lapozható olvasó (a NihonCore
+   olvasójának mintájára): fent töltődő csík és Tartalom, középen egy szerkezet egy felületen, alul a
+   hüvelykujj alatt Vissza (másodlagos) és Következő (fordított semleges; a korall a Kezdőlapé). */
+.gr-reader {
+  position: fixed; inset: 0; z-index: 300; display: flex; justify-content: center;
+  background: var(--bg); visibility: hidden; opacity: 0; transform: translateY(14px);
+  transition: opacity 200ms var(--ease-out), transform 260ms var(--ease-out), visibility 0s linear 260ms;
 }
-.gr-point summary::-webkit-details-marker { display: none; }
-@media (hover: hover) { .gr-point summary:hover { background: var(--surface-2); } }
-.gr-sum { flex: 1; min-width: 0; display: grid; gap: 2px; }
-.gr-pattern { font-size: 17px; font-weight: 800; line-height: 1.4; color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
-.gr-name { font-size: 13px; font-weight: 700; line-height: 1.4; color: var(--text-2); }
+.gr-reader.open { visibility: visible; opacity: 1; transform: none; transition: opacity 200ms var(--ease-out), transform 260ms var(--ease-out), visibility 0s; }
+.gr-reader-inner { position: relative; width: 100%; max-width: 680px; height: 100%; display: flex; flex-direction: column; }
+html.gr-lock, html.gr-lock body { overflow: hidden; }
+
+.gr-top { flex: none; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: calc(10px + var(--safe-t)) 16px 10px; }
+.gr-icon-btn, .gr-toc-btn {
+  min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 0 12px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); color: var(--text-2);
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: transform 140ms var(--ease-out), background-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+.gr-icon-btn { width: 44px; padding: 0; }
+.gr-toc-btn { color: var(--text); padding: 0 14px 0 12px; }
+.gr-toc-btn[aria-expanded="true"] { background: var(--primary-dim); border-color: transparent; color: var(--primary-h); }
+.gr-icon-btn:active, .gr-toc-btn:active { transform: scale(0.95); }
+.gr-progress { min-width: 0; display: grid; gap: 7px; }
+.gr-track { height: 6px; overflow: hidden; border-radius: 999px; background: var(--surface-2); }
+.gr-fill { height: 100%; border-radius: inherit; background: var(--primary); transform-origin: left center; transform: scaleX(0); transition: transform 380ms var(--ease-out); }
+.gr-caption { min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.gr-title { min-width: 0; margin: 0; overflow: hidden; font-size: 13px; font-weight: 800; line-height: 1.3; color: var(--text-2); text-overflow: ellipsis; white-space: nowrap; }
+.gr-count { flex: none; font-size: 13px; font-weight: 800; color: var(--text-3); font-variant-numeric: tabular-nums; }
+
+.gr-stage { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 4px 16px 24px; }
+.gr-kicker { margin: 4px 6px 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-3); }
+.gr-step { padding: 24px 22px; border: 1px solid var(--border); border-radius: 24px; background: var(--surface); }
+.gr-step.enter-next { animation: grEnterNext 280ms var(--ease-out); }
+.gr-step.enter-prev { animation: grEnterPrev 280ms var(--ease-out); }
+@keyframes grEnterNext { from { opacity: 0; transform: translateX(20px); } }
+@keyframes grEnterPrev { from { opacity: 0; transform: translateX(-20px); } }
+.gr-pattern { margin: 0; font-size: 26px; font-weight: 900; line-height: 1.35; color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+.gr-name { margin-top: 4px; font-size: 15px; font-weight: 700; line-height: 1.4; color: var(--text-2); }
+.gr-text { max-width: 62ch; margin-top: 16px; font-size: 16px; font-weight: 600; line-height: 1.65; color: var(--text); }
 .gr-nb { white-space: nowrap; }
-.gr-chev { flex: none; color: var(--text-3); transition: transform 200ms var(--ease-out); }
-.gr-point[open] .gr-chev { transform: rotate(180deg); }
-.gr-body { padding: 0 16px 16px; }
-.gr-examples { display: grid; gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; }
-.gr-ex { display: flex; align-items: flex-start; gap: 10px; }
+.gr-sec { margin-top: 22px; }
+.gr-examples { display: grid; gap: 14px; margin: 4px 0 0; padding: 0; list-style: none; }
+.gr-ex { display: flex; align-items: flex-start; gap: 12px; }
 .gr-speak {
-  flex: none; display: grid; place-items: center; width: 40px; height: 40px; margin-top: -2px; padding: 0;
+  flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin-top: -4px; padding: 0;
   border: none; border-radius: 999px; background: var(--surface-2); color: var(--text-2); cursor: pointer;
 }
 @media (hover: hover) { .gr-speak:hover { color: var(--primary-h); } }
 .gr-ex-text { min-width: 0; display: grid; gap: 2px; }
-.gr-ja { font-size: 17px; line-height: 1.6; color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
+.gr-ja { font-size: 18px; line-height: 1.6; color: var(--text); word-break: keep-all; overflow-wrap: anywhere; }
 .gr-hu { font-size: 14px; font-weight: 600; line-height: 1.45; color: var(--text-2); }
-.gr-body .wi-sec.is-watch { margin-top: 14px; }
-.gr-nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 14px; }
+.gr-step .wi-sec.is-watch { margin-top: 20px; }
+.gr-after { display: flex; justify-content: center; margin-top: 12px; }
+.gr-after:empty { display: none; }
+
+.gr-bottom {
+  flex: none; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px;
+  padding: 10px 16px calc(12px + var(--safe-b)); border-top: 1px solid var(--border); background: var(--bg);
+}
+.gr-prev, .gr-next {
+  min-height: 56px; border-radius: 18px; font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 900;
+  cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 140ms var(--ease-out);
+}
+.gr-prev { border: 1px solid var(--border); background: var(--surface); color: var(--text); }
+.gr-prev:disabled { color: var(--text-3); cursor: default; }
+.gr-next { border: none; background: var(--text); color: var(--surface); }
+.gr-prev:not(:disabled):active, .gr-next:active { transform: scale(0.97); }
+
+/* Tartalom: a szerkezetek listája a felső sáv alatt, ugrással; alul az előző és a következő lecke */
+.gr-toc {
+  position: absolute; z-index: 3; top: calc(66px + var(--safe-t)); left: 12px; right: 12px;
+  max-height: calc(100% - 66px - var(--safe-t) - 90px - var(--safe-b)); display: flex; flex-direction: column;
+  overflow: hidden; border: 1px solid var(--border); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow-lg);
+  animation: grTocIn 200ms var(--ease-out);
+}
+.gr-toc[hidden] { display: none; }
+@keyframes grTocIn { from { opacity: 0; transform: translateY(-8px); } }
+.gr-reader.toc-open .gr-reader-inner::after {
+  content: ''; position: absolute; z-index: 2; inset: calc(64px + var(--safe-t)) 0 0; background: oklch(0.06 0.01 165 / 0.5);
+}
+.gr-toc-list { overflow-y: auto; overscroll-behavior: contain; padding: 6px; }
+.gr-toc-item {
+  width: 100%; min-height: 56px; display: flex; align-items: center; gap: 12px; padding: 8px 12px;
+  border: none; border-radius: 14px; background: none; color: var(--text); font-family: 'Nunito', sans-serif; text-align: left; cursor: pointer;
+}
+.gr-toc-item.is-current { background: var(--primary-dim); }
+@media (hover: hover) { .gr-toc-item:not(.is-current):hover { background: var(--surface-2); } }
+.gr-toc-num {
+  flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 999px;
+  background: var(--surface-2); color: var(--text-2); font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.gr-toc-item.is-current .gr-toc-num { background: var(--primary); color: var(--on-strong); }
+.gr-toc-text { min-width: 0; display: grid; gap: 1px; }
+.gr-toc-pattern { font-size: 16px; font-weight: 800; line-height: 1.4; word-break: keep-all; overflow-wrap: anywhere; }
+.gr-toc-name { font-size: 13px; font-weight: 700; line-height: 1.35; color: var(--text-2); }
+.gr-nav { display: flex; justify-content: space-between; gap: 12px; }
+.gr-toc .gr-nav { padding: 2px 10px; border-top: 1px solid var(--border); }
 .gr-nav-btn {
   display: inline-flex; align-items: center; gap: 2px; min-height: 44px; padding: 0 6px;
   border: none; background: none; color: var(--primary-h); font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer;
 }
 .gr-nav-btn.is-next { margin-left: auto; }
-@media (prefers-reduced-motion: reduce) { .gr-chev { transition: none; } }
+@media (hover: hover) {
+  .gr-icon-btn:hover, .gr-toc-btn[aria-expanded="false"]:hover, .gr-prev:not(:disabled):hover { background: var(--surface-2); }
+  .gr-nav-btn:hover { text-decoration: underline; }
+}
+@media (min-width: 720px) {
+  .gr-top { padding-top: calc(18px + var(--safe-t)); }
+  .gr-stage { padding-top: 12px; }
+  .gr-step { padding: 32px 34px; }
+  .gr-bottom { border-top: none; padding-bottom: calc(24px + var(--safe-b)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gr-reader, .gr-reader.open { transform: none; transition: opacity 120ms linear, visibility 0s; }
+  .gr-fill { transition: none; }
+  .gr-step.enter-next, .gr-step.enter-prev, .gr-toc { animation: none; }
+}
 .wi-example-hu { margin-top: 2px; font-size: 14px; font-weight: 600; line-height: 1.5; color: var(--text-2); }
-@media (max-width: 680px) { #word-info-body { padding-bottom: calc(22px + var(--safe-b)); } }
+@media (max-width: 680px) { #word-info-body { padding-bottom: 22px; } }
 
 /* Haladás képernyő */
 .jl-screen-head { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
