@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.69" src="https://img.shields.io/badge/verzi%C3%B3-13.69-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.70" src="https://img.shields.io/badge/verzi%C3%B3-13.70-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -79,7 +79,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Kandzsi ↔ szó:** a japán szó hátoldalán a benne lévő kandzsik a jelentésükkel (名 név · 前 előtt), a kandzsi hátoldalán legfeljebb három szó, amelyben szerepel (a már megtanultak elöl). Az írásmód a szó saját adatából vagy a saját példamondataiból jön, csak ha egyértelmű.
 - A „Még nem” kártya a sor végére kerül, és addig visszajön, amíg egyszer nem megy.
 - **Szómagyarázat (japán):** a kártya hátoldalán egy „i” gomb alulról nyíló lapot nyit: szófaj (igéknél az igecsoport), témakör, szint és lecke, **Használat** (mikor, kinek, milyen szerkezetben), **Figyelj** (a buktató: partikula, párja, azonos hangzású szó, rendhagyó alak), kapcsolódó szavak és példa. A zöld „i” jelzi, hogy van kézzel írt leírás; mind a 48 Dekiru-lecke (1. és 2. könyv) és az utazós, mindennapi alapszótár szavai készek, ahogy az N3 szókincs minden szava is (szófajonként, majd témakörönként, 13 adagban); 4018 szó. A tanuló kártyán a „Figyelj” sor rögtön látszik.
-- **Kandzsi jegyzetek** (V13.66): kandzsi módban a kártya hátoldalán az „i” gomb lapja: a kandzsi felépítése a részekből egy rövid emlékeztető képpel (ahol képírás, az eredet), és az olvasatok használata: a kun olvasat teljes alakja okuriganával és jelentéssel, az on olvasat egy-egy példával. Ahol még nincs jegyzet, az adat olvasatai látszanak. Leckénként készül, az N5–N3 kandzsikkal kezdve; az 1–20. lecke 240 kandzsija kész (V13.69).
+- **Kandzsi jegyzetek** (V13.66): kandzsi módban a kártya hátoldalán az „i” gomb lapja: a kandzsi felépítése a részekből egy rövid emlékeztető képpel (ahol képírás, az eredet), és az olvasatok használata: a kun olvasat teljes alakja okuriganával és jelentéssel, az on olvasat egy-egy példával. Ahol még nincs jegyzet, az adat olvasatai látszanak. Leckénként készül, az N5–N3 kandzsikkal kezdve; az 1–25. lecke 300 kandzsija kész (V13.70).
 - **Hibás válasz után** (gyakorlás és ismétlés) egy rövid magyarázat: mit választottál helyette („Összekeverted: びよういん = fodrászat”, ha a párját), mire figyelj, és egy koppintással a teljes leírás.
 - **Számlálószavak:** a számlálók (ひとつ, ひとり, ～さい, 枚, 匹 …) kártyáján egy kis címke mondja meg, mit számolnak („Számláló · emberek”, „Számláló · lapos tárgyak”). A tanuló, az ismétlő, a gyakorló és a 3D kártyán is ott van.
 - Kiejtés japánul, angolul és magyarul (iOS kezdőképernyős appban is, a némító kapcsoló mellett is szól, ha a Zene mellett ki van kapcsolva), billentyűzettel a nyilak és a Szóköz is működik.

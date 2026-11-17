@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -287,5 +287,75 @@ const KANJI_NOTES = {
   '開': { parts: 'kapu (門) + retesz és két kéz (开)', mn: 'Két kéz a kapu (門) reteszét tolja el: nyit.', kun: '開く (あく) kinyílik; 開ける (あける) kinyit; 開く (ひらく) kitár', on: 'カイ: 開始 (かいし) kezdés; 開店 (かいてん) nyitás' },
   '重': { parts: 'falu (里) + vállra vett teher', mn: 'A falu (里) népe a vállán viszi a terhet: nehéz.', kun: '重い (おもい) nehéz; 重ねる (かさねる) egymásra rak', on: 'ジュウ: 体重 (たいじゅう) testsúly; チョウ: 貴重 (きちょう) értékes' },
   '動': { parts: 'nehéz (重) + erő (力)', mn: 'Erővel (力) mozgatod a nehezet (重): mozog.', kun: '動く (うごく) mozog; 動かす (うごかす) mozgat', on: 'ドウ: 運動 (うんどう) mozgás, sport; 動物 (どうぶつ) állat' },
-  '楽': { parts: 'fehér (白) + fa (木), két oldalt húrok', mn: 'Fára (木) feszített húrok egy hangszeren: zene, öröm, kényelem.', kun: '楽しい (たのしい) vidám; 楽しむ (たのしむ) élvez', on: 'ガク: 音楽 (おんがく) zene; ラク: 楽 (らく) kényelmes, könnyű' }
+  '楽': { parts: 'fehér (白) + fa (木), két oldalt húrok', mn: 'Fára (木) feszített húrok egy hangszeren: zene, öröm, kényelem.', kun: '楽しい (たのしい) vidám; 楽しむ (たのしむ) élvez', on: 'ガク: 音楽 (おんがく) zene; ラク: 楽 (らく) kényelmes, könnyű' },
+
+  // ─── 21. lecke: szín, tanulás, lehetőség (V13.70)
+  '映': { parts: 'nap (日) + közép (央)', mn: 'A nap (日) fénye a közepére (央) vetül: tükröz, vetít.', kun: '映る (うつる) tükröződik; 映す (うつす) vetít', on: 'エイ: 映画 (えいが) film; 映画館 (えいがかん) mozi' },
+  '赤': { parts: 'nagy (大) + tűz (火), régi alakban', mn: 'Nagy (大) tűz (火): piros, mint a láng.', kun: '赤い (あかい) piros; 赤ちゃん (あかちゃん) kisbaba', on: 'セキ: 赤道 (せきどう) egyenlítő; 赤十字 (せきじゅうじ) Vöröskereszt' },
+  '業': { mn: 'Képírás: díszes hangszertartó állvány; a munka, amit mesterként végzel.', kun: '業 (わざ) mesterség (írott)', on: 'ギョウ: 授業 (じゅぎょう) tanóra; 卒業 (そつぎょう) végzés; 工業 (こうぎょう) ipar' },
+  '悪': { parts: 'torz (亜) + szív (心)', mn: 'A torz (亜) szív (心): rossz.', kun: '悪い (わるい) rossz', on: 'アク: 悪人 (あくにん) gonosz ember; オ: 嫌悪 (けんお) undor' },
+  '鳥': { mn: 'Képírás: madár szemmel, tollakkal és lábbal (alul négy pont).', kun: '鳥 (とり) madár', on: 'チョウ: 白鳥 (はくちょう) hattyú' },
+  '勉': { parts: 'kibúvó (免) + erő (力)', mn: 'Erővel (力) kényszeríted magad, nincs kibúvó (免): igyekszik, tanul.', on: 'ベン: 勉強 (べんきょう) tanulás' },
+  '験': { parts: 'ló (馬) + mindenki (僉)', mn: 'A lovat (馬) mindenki (僉) kipróbálja: próba, vizsga.', on: 'ケン: 試験 (しけん) vizsga; 経験 (けいけん) tapasztalat' },
+  '具': { parts: 'edény (目) + két kéz (八)', mn: 'Két kéz (八) tart egy edényt: eszköz, kellék.', on: 'グ: 道具 (どうぐ) szerszám; 家具 (かぐ) bútor; 具合 (ぐあい) állapot' },
+  '可': { parts: 'száj (口) + kampós vonal (丁)', mn: 'A száj (口) kimondja az igent: lehet, szabad.', on: 'カ: 可能 (かのう) lehetséges; 許可 (きょか) engedély' },
+  '願': { parts: 'forrás (原) + fej (頁)', mn: 'A forrásnál (原) lehajtott fej (頁): kér, kíván.', kun: '願う (ねがう) kér, kíván; お願い (おねがい) kérés', on: 'ガン: 願書 (がんしょ) jelentkezési lap' },
+  '活': { parts: 'víz (氵) + nyelv (舌)', mn: 'A víz (氵) a nyelven (舌): élet, élénkség.', on: 'カツ: 生活 (せいかつ) életvitel; 活動 (かつどう) tevékenység' },
+  '点': { parts: 'jósjel (占) + tűz (灬)', mn: 'A tűz (灬) fölötti jósjel (占) apró pöttye: pont.', on: 'テン: 点 (てん) pont; 点数 (てんすう) pontszám; 欠点 (けってん) hiba' },
+
+  // ─── 22. lecke: irány, teljesség, állapot ──────
+  '向': { parts: 'ház + ablak (口)', mn: 'A ház falán az ablak (口) egy irányba néz: felé fordul.', kun: '向く (むく) felé fordul; 向こう (むこう) túloldal', on: 'コウ: 方向 (ほうこう) irány' },
+  '守': { parts: 'tető (宀) + kéz (寸)', mn: 'A tető (宀) alatt a kéz (寸) vigyáz: véd, megőriz.', kun: '守る (まもる) véd, betart', on: 'シュ: 保守 (ほしゅ) karbantartás; ス: 留守 (るす) távollét' },
+  '完': { parts: 'tető (宀) + eredet (元)', mn: 'A tető (宀) is felkerült az alapra (元): kész, teljes.', on: 'カン: 完成 (かんせい) elkészülés; 完全 (かんぜん) teljes' },
+  '未': { parts: 'fa (木) + rövid felső vonal', mn: 'A fa (木) felső ága még rövid, még nem nőtt meg: még nem. A 末-ban a felső vonal a hosszabb.', on: 'ミ: 未来 (みらい) jövő; 未満 (みまん) kevesebb mint' },
+  '末': { parts: 'fa (木) + hosszú felső vonal', mn: 'A fa (木) csúcsán a hosszú vonal: vég, csúcs. A 未-ban a felső vonal a rövidebb.', kun: '末 (すえ) vége; 末っ子 (すえっこ) legkisebb gyerek', on: 'マツ: 週末 (しゅうまつ) hétvége; 月末 (げつまつ) hónap vége' },
+  '暮': { parts: 'fű (艹) + nap (日) + nagy (大) + nap (日)', mn: 'A nap (日) lebukik a fű (艹) mögé: alkonyodik; telnek a napok.', kun: '暮らす (くらす) él (mindennapjait); 暮れる (くれる) sötétedik', on: 'ボ: 歳暮 (せいぼ) év végi ajándék' },
+  '状': { parts: 'deszka (爿) + kutya (犬)', mn: 'A deszka (爿) mellett álló kutya (犬) alakja: állapot, forma; irat is.', on: 'ジョウ: 状態 (じょうたい) állapot; 招待状 (しょうたいじょう) meghívó' },
+  '告': { parts: 'marha (牛) + száj (口)', mn: 'A marha (牛) bőgéséhez hasonló, hangos szó (口): bejelent.', kun: '告げる (つげる) közöl', on: 'コク: 報告 (ほうこく) jelentés; 広告 (こうこく) hirdetés' },
+  '合': { parts: 'fedő (𠆢) + egy (一) + edény (口)', mn: 'A fedő pontosan ráillik az edényre (口): illik, egyesül.', kun: '合う (あう) illik, egyezik; 合わせる (あわせる) összeilleszt', on: 'ゴウ: 合格 (ごうかく) sikeres vizsga; ガッ: 合唱 (がっしょう) kórus' },
+  '現': { parts: 'drágakő (王) + néz (見)', mn: 'A drágakő (王) csillogása a szem elé (見) tárul: megjelenik, jelen.', kun: '現れる (あらわれる) megjelenik', on: 'ゲン: 現在 (げんざい) jelenleg; 現金 (げんきん) készpénz' },
+  '全': { parts: 'fedő (𠆢) + drágakő (王)', mn: 'A fedél alatt sértetlen drágakő (王): egész, teljes.', kun: '全く (まったく) teljesen; tagadással egyáltalán', on: 'ゼン: 全部 (ぜんぶ) az összes; 安全 (あんぜん) biztonság' },
+  '処': { parts: 'zsámoly (几) + vonszolt láb (夂)', mn: 'A láb (夂) a zsámolyon (几) pihen: hely; ügyintézés.', on: 'ショ: 処理 (しょり) feldolgozás; 対処 (たいしょ) kezelés' },
+
+  // ─── 23. lecke: táj, cél, távolság ─────────────
+  '景': { parts: 'nap (日) + főváros (京)', mn: 'A nap (日) fénye a főváros (京) fölött: látvány, táj.', on: 'ケイ: 景色 (けしき) táj; 風景 (ふうけい) tájkép; 景気 (けいき) gazdasági helyzet' },
+  '談': { parts: 'beszéd (言) + két tűz (炎)', mn: 'A tűz (炎) mellett folyó beszélgetés (言): társalgás.', on: 'ダン: 相談 (そうだん) tanácskozás; 冗談 (じょうだん) vicc' },
+  '成': { parts: 'alabárd (戈) + kampók', mn: 'Az alabárddal (戈) véghezvitt munka: elkészül, valamivé válik.', kun: '成る (なる) válik (inkább kanával)', on: 'セイ: 成功 (せいこう) siker; 成長 (せいちょう) fejlődés; ジョウ: 成就 (じょうじゅ) beteljesülés' },
+  '定': { parts: 'tető (宀) + megvetett láb (疋)', mn: 'A tető (宀) alatt megvetett láb (疋): rögzít, eldönt.', kun: '定める (さだめる) meghatároz', on: 'テイ: 予定 (よてい) terv; 定休日 (ていきゅうび) szünnap; ジョウ: 案の定 (あんのじょう) ahogy várható volt' },
+  '遠': { parts: 'út (⻌) + hosszú köntös (袁)', mn: 'Hosszú köntösben (袁) hosszú úton (⻌): messze.', kun: '遠い (とおい) messze', on: 'エン: 遠足 (えんそく) kirándulás; 遠慮 (えんりょ) tartózkodás' },
+  '初': { parts: 'ruha (衤) + kés (刀)', mn: 'A varrás a szövet első késvágásával (刀) kezdődik: első, kezdet.', kun: '初めて (はじめて) először; 初め (はじめ) eleje; 初雪 (はつゆき) első hó', on: 'ショ: 最初 (さいしょ) első; 初級 (しょきゅう) kezdő szint' },
+  '市': { parts: 'fedő (亠) + kendő (巾)', mn: 'Kifeszített ponyva (巾) a fejünk fölött: piac, város.', kun: '市 (いち) vásár, piac', on: 'シ: 市役所 (しやくしょ) városháza; 市民 (しみん) polgár' },
+  '皆': { parts: 'egymás mellett (比) + fehér (白)', mn: 'Egymás mellett (比) álló emberek: mindenki.', kun: '皆 (みな) mindenki; 皆さん (みなさん) mindannyian (megszólítás)', on: 'カイ: 皆無 (かいむ) semmi' },
+  '欠': { mn: 'Képírás: tátott szájjal ásító ember: hiány, hiányzik.', kun: '欠ける (かける) hiányzik, csorba; 欠かす (かかす) kihagy', on: 'ケツ: 欠席 (けっせき) hiányzás; 欠点 (けってん) hiba' },
+  '次': { parts: 'jég (冫) + tátott száj (欠)', mn: 'Egy ásítás (欠) után jön a következő: következő.', kun: '次 (つぎ) következő; 次々 (つぎつぎ) egymás után', on: 'ジ: 次回 (じかい) következő alkalom; シ: 次第 (しだい) attól függően' },
+  '亡': { mn: 'Képírás: egy ember a sarokba húzódik, eltűnik: meghal.', kun: '亡くなる (なくなる) elhuny', on: 'ボウ: 死亡 (しぼう) elhalálozás; モウ: 亡者 (もうじゃ) holt lélek' },
+  '訪': { parts: 'beszéd (言) + irány (方)', mn: 'Beszélgetni (言) indulsz valaki felé (方): meglátogat.', kun: '訪ねる (たずねる) meglátogat (a 尋ねる kérdez); 訪れる (おとずれる) ellátogat', on: 'ホウ: 訪問 (ほうもん) látogatás' },
+
+  // ─── 24. lecke: magyarázat, kor, szükség ───────
+  '説': { parts: 'beszéd (言) + felvidul (兑)', mn: 'Szóval (言) addig magyaráz, míg a másik felvidul (兑): magyarázat.', kun: '説く (とく) magyaráz (írott)', on: 'セツ: 説明 (せつめい) magyarázat; 小説 (しょうせつ) regény' },
+  '歳': { parts: 'megáll (止) + alabárd (戈) + egyéb vonások', mn: 'Az alabárddal (戈) learatott évek sora: életkor.', on: 'サイ: 三歳 (さんさい) hároméves; 二十歳 (はたち) húszéves (rendhagyó); セイ: 歳暮 (せいぼ) év végi ajándék' },
+  '記': { parts: 'beszéd (言) + önmaga (己)', mn: 'A saját (己) szavaidat (言) leírod: feljegyez.', kun: '記す (しるす) leír (írott)', on: 'キ: 日記 (にっき) napló; 記念 (きねん) emlék' },
+  '達': { parts: 'út (⻌) + föld (土) + birka (羊)', mn: 'Az úton (⻌) célba érő nyáj (羊): elér; utótagként többes szám.', kun: 'たち: 私達 (わたしたち) mi; 友達 (ともだち) barát', on: 'タツ: 達成 (たっせい) elérés; 上達 (じょうたつ) fejlődés' },
+  '差': { parts: 'birka (羊) + munka (工)', mn: 'A birkák (羊) között kézzel (工) mutatott eltérés: különbség.', kun: '差す (さす) esernyőt tart; cseppent', on: 'サ: 差 (さ) különbség; 時差 (じさ) időeltolódás' },
+  '園': { parts: 'kerítés (囗) + hosszú köntös (袁)', mn: 'Kerítéssel (囗) körbevett hely: kert, park.', kun: '園 (その) kert (írott)', on: 'エン: 公園 (こうえん) park; 動物園 (どうぶつえん) állatkert' },
+  '回': { mn: 'Képírás: egymásba forduló örvény: forog; alkalom.', kun: '回る (まわる) forog, körbejár; 回す (まわす) forgat', on: 'カイ: 一回 (いっかい) egyszer; 今回 (こんかい) ez alkalommal' },
+  '息': { parts: 'orr (自) + szív (心)', mn: 'Az orron (自) át a szívig (心) jutó levegő: lélegzet.', kun: '息 (いき) lélegzet; 息子 (むすこ) fiú (rendhagyó)', on: 'ソク: 休息 (きゅうそく) pihenés' },
+  '必': { parts: 'szív (心) + átlós vonás', mn: 'A szívet (心) átszúró vonás: elkerülhetetlen, biztosan.', kun: '必ず (かならず) biztosan, mindenképp', on: 'ヒツ: 必要 (ひつよう) szükséges' },
+  '議': { parts: 'beszéd (言) + helyes (義)', mn: 'Szóban (言) keresik a helyeset (義): tanácskozás.', on: 'ギ: 会議 (かいぎ) értekezlet; 議論 (ぎろん) vita' },
+  '招': { parts: 'kéz (扌) + hív (召)', mn: 'Kézzel (扌) int és hív (召): meghív.', kun: '招く (まねく) meghív', on: 'ショウ: 招待 (しょうたい) meghívás' },
+  '存': { parts: 'ember (亻 régi alakja) + gyerek (子)', mn: 'A gyerek (子) él és megmarad: létezik.', on: 'ソン: 存在 (そんざい) létezés; ゾン: 保存 (ほぞん) mentés; ご存知 (ごぞんじ) tudja (udvarias)' },
+
+  // ─── 25. lecke: lét, megújulás, maradék ────────
+  '在': { parts: 'ember (亻 régi alakja) + föld (土)', mn: 'Az ember a földön (土) van: létezik, valahol tartózkodik.', kun: '在る (ある) van (írott, inkább kanával)', on: 'ザイ: 現在 (げんざい) jelenleg; 滞在 (たいざい) tartózkodás' },
+  '吸': { parts: 'száj (口) + elér (及)', mn: 'A száj (口) eléri és behúzza: szív, belélegez.', kun: '吸う (すう) szív (levegőt, cigarettát)', on: 'キュウ: 呼吸 (こきゅう) légzés' },
+  '更': { mn: 'Képírás: kézzel újraformált tárgy: megújít; továbbá.', kun: '更に (さらに) ráadásul, még inkább; 夜更かし (よふかし) késő éjjelig fennmaradás', on: 'コウ: 変更 (へんこう) módosítás; 更新 (こうしん) frissítés' },
+  '支': { parts: 'ág (十) + kéz (又)', mn: 'A kéz (又) egy ágat (十) tart: támaszt; ágazat.', kun: '支える (ささえる) támogat, megtart', on: 'シ: 支店 (してん) fiók; 支払い (しはらい) fizetés' },
+  '治': { parts: 'víz (氵) + emelvény, gát (台)', mn: 'A vizet (氵) gáttal (台) megfékezik: rendbe tesz, gyógyít, kormányoz.', kun: '治る (なおる) meggyógyul; 治める (おさめる) kormányoz', on: 'ジ: 政治 (せいじ) politika; チ: 治療 (ちりょう) kezelés' },
+  '窓': { parts: 'üreg (穴) + magán (厶) + szív (心)', mn: 'A falba vágott nyílás (穴), amin át a szív (心) kitekint: ablak.', kun: '窓 (まど) ablak', on: 'ソウ: 同窓会 (どうそうかい) osztálytalálkozó' },
+  '常': { parts: 'ragyogó (尚) + kendő (巾)', mn: 'A mindig viselt kendő (巾): állandó, szokásos.', kun: '常に (つねに) mindig', on: 'ジョウ: 日常 (にちじょう) hétköznapi; 非常口 (ひじょうぐち) vészkijárat' },
+  '残': { parts: 'csont (歹) + két alabárd (戋)', mn: 'A csata után megmaradt csontok (歹): marad, maradék.', kun: '残る (のこる) marad; 残す (のこす) hátrahagy', on: 'ザン: 残業 (ざんぎょう) túlóra; 残念 (ざんねん) kár' },
+  '列': { parts: 'csont (歹) + kés (刂)', mn: 'Késsel (刂) sorba vágott csontok (歹): sor.', on: 'レツ: 列車 (れっしゃ) vonat; 行列 (ぎょうれつ) sor' },
+  '最': { parts: 'nap (日) + fül (耳) + kéz (又)', mn: 'A kéz (又) a legnagyobb zsákmányt (耳) ragadja meg: leg-.', kun: '最も (もっとも) leginkább', on: 'サイ: 最近 (さいきん) mostanában; 最後 (さいご) utolsó; 最初 (さいしょ) első' },
+  '賛': { parts: 'két előremenő ember + pénz (貝)', mn: 'Két ember pénzzel (貝) áll ki mellette: egyetért, dicsér.', on: 'サン: 賛成 (さんせい) egyetértés' },
+  '失': { parts: 'kéz + kicsúszó vonás', mn: 'A kézből kicsúszik egy vonás: elveszít. A 夫 (férj) hasonló, de ott nem lóg ki a vonás.', kun: '失う (うしなう) elveszít', on: 'シツ: 失敗 (しっぱい) kudarc; 失礼 (しつれい) udvariatlanság' }
 };
