@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -567,5 +567,75 @@ const KANJI_NOTES = {
   '育': { parts: 'fejjel lefelé fordult gyerek (𠫓) + test (月)', mn: 'A megszülető gyerek teste (月) nő: nevel.', kun: '育てる (そだてる) nevel; 育つ (そだつ) felnő', on: 'イク: 教育 (きょういく) oktatás; 体育 (たいいく) testnevelés' },
   '流': { parts: 'víz (氵) + kisodródó gyerek', mn: 'A víz (氵) sodorja: folyik; áramlat.', kun: '流れる (ながれる) folyik; 流す (ながす) folyat, öblít', on: 'リュウ: 流行 (りゅうこう) divat; 交流 (こうりゅう) csere, kapcsolat' },
   '込': { parts: 'út (⻌) + bemegy (入)', mn: 'Az úton (⻌) befelé (入) tolakodik: zsúfolt, belekerül.', kun: '込む (こむ) zsúfolt; 申し込む (もうしこむ) jelentkezik' },
-  '貧': { parts: 'oszt (分) + pénz (貝)', mn: 'A pénzt (貝) szétosztják (分), nem marad: szegény.', kun: '貧しい (まずしい) szegény', on: 'ヒン: 貧乏 (びんぼう) szegény (ビン); 貧困 (ひんこん) szegénység' }
+  '貧': { parts: 'oszt (分) + pénz (貝)', mn: 'A pénzt (貝) szétosztják (分), nem marad: szegény.', kun: '貧しい (まずしい) szegény', on: 'ヒン: 貧乏 (びんぼう) szegény (ビン); 貧困 (ひんこん) szegénység' },
+
+  // ─── 41. lecke: fül, munka, igyekezet (V13.74) ─
+  '容': { parts: 'tető (宀) + völgy (谷)', mn: 'A tető (宀) alatt annyi fér el, mint egy völgyben (谷): tartalom, befogad.', on: 'ヨウ: 内容 (ないよう) tartalom; 美容院 (びよういん) fodrászat' },
+  '欲': { parts: 'völgy (谷) + tátott száj (欠)', mn: 'A völgynyi (谷) tátott száj (欠) mindent akar: vágy.', kun: '欲しい (ほしい) szeretne (valamit)', on: 'ヨク: 食欲 (しょくよく) étvágy' },
+  '破': { parts: 'kő (石) + bőr (皮)', mn: 'A kő (石) felhasítja a bőrt (皮): eltör, elszakad.', kun: '破る (やぶる) eltép, megszeg; 破れる (やぶれる) elszakad', on: 'ハ: 破産 (はさん) csőd' },
+  '耳': { mn: 'Képírás: a fül, kagylójával.', kun: '耳 (みみ) fül', on: 'ジ: 耳鼻科 (じびか) fül-orr-gégészet' },
+  '取': { parts: 'fül (耳) + kéz (又)', mn: 'A kéz (又) megragadja a fület (耳), régen a zsákmány jele: elvesz, szerez.', kun: '取る (とる) elvesz, megfog, megszerez', on: 'シュ: 取材 (しゅざい) anyaggyűjtés' },
+  '恥': { parts: 'fül (耳) + szív (心)', mn: 'A szív (心) szégyenétől a fül (耳) is elvörösödik: szégyen.', kun: '恥ずかしい (はずかしい) kínos, szégyenlős; 恥 (はじ) szégyen', on: 'チ: 無恥 (むち) szemérmetlen' },
+  '職': { parts: 'fül (耳) + hang (音) + alabárd (戈)', mn: 'Fülével (耳) a hangot (音) figyeli, kezében a szerszám: munka, állás.', on: 'ショク: 職業 (しょくぎょう) foglalkozás; 就職 (しゅうしょく) elhelyezkedés' },
+  '置': { parts: 'háló (罒) + egyenes (直)', mn: 'A hálót (罒) egyenesen (直) kifeszíti: elhelyez, rak.', kun: '置く (おく) tesz, rak', on: 'チ: 位置 (いち) helyzet; 設置 (せっち) telepítés' },
+  '夫': { parts: 'nagy (大) + egy vonás a fejen', mn: 'Felnőtt férfi (大) hajtűvel a fején: férj. A 失-ben a vonás kilóg.', kun: '夫 (おっと) férj (a sajátunk)', on: 'フ: 夫婦 (ふうふ) házaspár; 夫人 (ふじん) asszony; フウ: 工夫 (くふう) leleményesség' },
+  '規': { parts: 'férfi (夫) + néz (見)', mn: 'A férfi (夫) mércéje, amit mindenki lát (見): szabály.', on: 'キ: 規則 (きそく) szabály; 規模 (きぼ) méret' },
+  '労': { parts: 'ragyogás (⺍) + fedő (冖) + erő (力)', mn: 'Erővel (力) ég a munka a tető alatt: fáradozás.', on: 'ロウ: 苦労 (くろう) fáradozás; 労働 (ろうどう) munka' },
+  '努': { parts: 'szolga (奴) + erő (力)', mn: 'A szolga (奴) minden erejével (力) igyekszik.', kun: '努める (つとめる) igyekszik', on: 'ド: 努力 (どりょく) erőfeszítés' },
+
+  // ─── 42. lecke: haszon, mód, nevetés ───────────
+  '加': { parts: 'erő (力) + száj (口)', mn: 'Az erőhöz (力) szót (口) is ad: hozzáad.', kun: '加える (くわえる) hozzáad', on: 'カ: 参加 (さんか) részvétel; 追加 (ついか) hozzáadás' },
+  '得': { parts: 'lépés (彳) + nap (日) + kéz (寸)', mn: 'Lépésről lépésre (彳) a kezébe (寸) kerül: szerez, nyer.', kun: '得る (える) szerez', on: 'トク: 得意 (とくい) erőssége; 納得 (なっとく) belátás' },
+  '徒': { parts: 'lépés (彳) + fut (走)', mn: 'Gyalog (彳) futó (走) ember; a mester után járó tanítvány.', on: 'ト: 生徒 (せいと) diák; 徒歩 (とほ) gyalog' },
+  '役': { parts: 'lépés (彳) + bunkó (殳)', mn: 'Bunkóval (殳) őrjáratra induló (彳) katona: szerep, feladat.', on: 'ヤク: 役に立つ (やくにたつ) hasznos; 市役所 (しやくしょ) városháza; エキ: 兵役 (へいえき) katonai szolgálat' },
+  '和': { parts: 'gabona (禾) + száj (口)', mn: 'Minden szájnak (口) jut gabona (禾): béke; japán.', kun: '和らぐ (やわらぐ) enyhül', on: 'ワ: 和食 (わしょく) japán étel; 平和 (へいわ) béke' },
+  '利': { parts: 'gabona (禾) + kés (刂)', mn: 'Sarlóval (刂) learatott gabona (禾): haszon.', kun: '利く (きく) hat, működik', on: 'リ: 便利 (べんり) kényelmes; 利用 (りよう) igénybevétel' },
+  '迷': { parts: 'út (⻌) + rizs (米)', mn: 'Az út (⻌) szétágazik, mint a rizs (米) sugarai: eltéved.', kun: '迷う (まよう) eltéved, habozik', on: 'メイ: 迷惑 (めいわく) kellemetlenség; 迷子 (まいご) eltévedt gyerek (rendhagyó)' },
+  '類': { parts: 'rizs (米) + kutya (犬) + fej (頁)', mn: 'Rizs (米), kutya (犬): mindegyiknek megvan a maga feje (頁): fajta.', kun: '類 (たぐい) fajta (írott)', on: 'ルイ: 種類 (しゅるい) fajta; 書類 (しょるい) irat' },
+  '様': { parts: 'fa (木) + birka (羊) + víz (氺)', mn: 'A fa (木) mintázata: mód, alak; tiszteletteljes megszólítás.', kun: '様 (さま) úr, asszony: 田中様 (たなかさま)', on: 'ヨウ: 様子 (ようす) helyzet; 同様 (どうよう) ugyanígy' },
+  '笑': { parts: 'bambusz (竹) + ifjú (夭)', mn: 'A bambuszlevelek (竹) hajladoznak, mint a nevető ember: nevet.', kun: '笑う (わらう) nevet; 笑顔 (えがお) mosoly', on: 'ショウ: 微笑 (びしょう) mosoly (írott)' },
+  '位': { parts: 'ember (亻) + áll (立)', mn: 'Ahol az ember (亻) áll (立): helye, rangja.', kun: '位 (くらい) rang; körülbelül (gyakran ぐらい)', on: 'イ: 一位 (いちい) első hely; 位置 (いち) helyzet' },
+  '値': { parts: 'ember (亻) + egyenes (直)', mn: 'Amit az ember (亻) egyenesen (直) kér érte: érték, ár.', kun: '値 (ね) ár; 値段 (ねだん) ár', on: 'チ: 価値 (かち) érték' },
+
+  // ─── 43. lecke: változás, játék, köszönet ──────
+  '倒': { parts: 'ember (亻) + érkezik (至) + kés (刂)', mn: 'Az ember (亻) a földre ér: összedől.', kun: '倒れる (たおれる) eldől, összeesik; 倒す (たおす) ledönt', on: 'トウ: 面倒 (めんどう) macerás' },
+  '優': { parts: 'ember (亻) + gond (憂)', mn: 'Az ember (亻), aki mások gondjával (憂) törődik: kedves, kiváló.', kun: '優しい (やさしい) kedves; 優れる (すぐれる) kiváló', on: 'ユウ: 優勝 (ゆうしょう) bajnoki győzelem; 女優 (じょゆう) színésznő' },
+  '付': { parts: 'ember (亻) + kéz (寸)', mn: 'Az ember (亻) kezével (寸) hozzáilleszti: csatol.', kun: '付く (つく) hozzátapad; 付ける (つける) rátesz, bekapcsol', on: 'フ: 付近 (ふきん) környék; 寄付 (きふ) adomány' },
+  '任': { parts: 'ember (亻) + teher (壬)', mn: 'Az ember (亻) vállára tett teher (壬): rábíz, felelősség.', kun: '任せる (まかせる) rábíz', on: 'ニン: 責任 (せきにん) felelősség; 担任 (たんにん) osztályfőnök' },
+  '化': { parts: 'ember (亻) + fordított ember (匕)', mn: 'Az ember (亻) fejjel lefelé (匕) fordul: átváltozik.', kun: '化ける (ばける) átváltozik; お化け (おばけ) szellem', on: 'カ: 文化 (ぶんか) kultúra; 変化 (へんか) változás; ケ: 化粧 (けしょう) smink' },
+  '似': { parts: 'ember (亻) + által (以)', mn: 'Az ember (亻) a másik által (以) ismert alakot viseli: hasonlít.', kun: '似る (にる) hasonlít; 似合う (にあう) jól áll', on: 'ジ: 類似 (るいじ) hasonlóság' },
+  '遊': { parts: 'út (⻌) + zászló (方) + gyerek (子)', mn: 'A gyerek (子) zászlóval (方) járja az utat (⻌): játszik.', kun: '遊ぶ (あそぶ) játszik, szórakozik', on: 'ユウ: 遊園地 (ゆうえんち) vidámpark' },
+  '易': { mn: 'Képírás: gyík, ami könnyen változtat színt: könnyű; csere.', kun: '易しい (やさしい) könnyű (a kedves 優しい)', on: 'エキ: 貿易 (ぼうえき) külkereskedelem; イ: 容易 (ようい) egyszerű' },
+  '居': { parts: 'test (尸) + régi (古)', mn: 'A test (尸) régóta (古) egy helyen ül: tartózkodik.', kun: '居る (いる) van (élőlény; inkább kanával)', on: 'キョ: 住居 (じゅうきょ) lakóhely; 居間 (いま) nappali (kun)' },
+  '戻': { parts: 'ajtó (戸) + nagy (大)', mn: 'Az ajtón (戸) át visszafordul: visszatér.', kun: '戻る (もどる) visszatér; 戻す (もどす) visszatesz', on: 'レイ: 返戻 (へんれい) visszaadás (ritka)' },
+  '礼': { parts: 'oltár (礻) + horog (乚)', mn: 'Az oltár (礻) előtti meghajlás: illem, köszönet.', on: 'レイ: 失礼 (しつれい) udvariatlanság; お礼 (おれい) köszönet; ライ: 礼賛 (らいさん) magasztalás' },
+  '福': { parts: 'oltár (礻) + teli edény (畐)', mn: 'Az oltár (礻) előtt teli edény (畐): áldás, szerencse.', on: 'フク: 幸福 (こうふく) boldogság; 福祉 (ふくし) jólét' },
+
+  // ─── 44. lecke: ok, isten, eredmény ────────────
+  '察': { parts: 'tető (宀) + szertartás (祭)', mn: 'A tető (宀) alatt a szertartást (祭) figyeli: megfigyel, sejt.', on: 'サツ: 警察 (けいさつ) rendőrség; 観察 (かんさつ) megfigyelés' },
+  '由': { mn: 'Képírás: edény, amiből valami kifolyik: eredet, ok.', kun: '由 (よし) ok, hír (írott)', on: 'ユウ: 理由 (りゆう) ok; 自由 (じゆう) szabad; ユ: 経由 (けいゆ) érintve' },
+  '押': { parts: 'kéz (扌) + páncél (甲)', mn: 'Kézzel (扌) a páncélnak (甲) feszül: nyom, tol.', kun: '押す (おす) nyom, tol; 押し入れ (おしいれ) faliszekrény', on: 'オウ: 押収 (おうしゅう) lefoglalás' },
+  '神': { parts: 'oltár (礻) + villám (申)', mn: 'Az oltárnál (礻) megjelenő villám (申): isten.', kun: '神 (かみ) isten; 神様 (かみさま) isten', on: 'シン: 神社 (じんじゃ) szentély (ジン); 神経 (しんけい) ideg' },
+  '果': { mn: 'Képírás: gyümölcs a fán (木): gyümölcs, eredmény.', kun: '果たす (はたす) teljesít; 果物 (くだもの) gyümölcs (rendhagyó)', on: 'カ: 結果 (けっか) eredmény; 効果 (こうか) hatás' },
+  '折': { parts: 'kéz (扌) + fejsze (斤)', mn: 'Kézzel (扌) és fejszével (斤) eltöri: hajt, eltör.', kun: '折る (おる) hajt, eltör; 折れる (おれる) eltörik; 折り紙 (おりがみ) papírhajtogatás', on: 'セツ: 骨折 (こっせつ) csonttörés' },
+  '断': { parts: 'rizs (米) + fejsze (斤)', mn: 'Fejszével (斤) elvágja a köteget: levág, visszautasít.', kun: '断る (ことわる) visszautasít; 断つ (たつ) elvág', on: 'ダン: 判断 (はんだん) ítélet; 横断 (おうだん) átkelés' },
+  '雪': { parts: 'eső (雨) + söprű keze (彐)', mn: 'Az eső (雨), amit seprűvel (彐) söpörsz: hó.', kun: '雪 (ゆき) hó', on: 'セツ: 積雪 (せきせつ) hótakaró' },
+  '婦': { parts: 'nő (女) + seprű (帚)', mn: 'A nő (女) seprűvel (帚): háziasszony, asszony.', on: 'フ: 主婦 (しゅふ) háziasszony; 夫婦 (ふうふ) házaspár' },
+  '争': { parts: 'két kéz egy tárgyért', mn: 'Két kéz egyszerre ragadja meg ugyanazt: küzd, vitatkozik.', kun: '争う (あらそう) versenyez, vitatkozik', on: 'ソウ: 戦争 (せんそう) háború; 競争 (きょうそう) verseny' },
+  '満': { parts: 'víz (氵) + egyenlő (㒼)', mn: 'A víz (氵) a pereméig ér: tele.', kun: '満ちる (みちる) megtelik', on: 'マン: 満足 (まんぞく) elégedettség; 満員 (まんいん) zsúfolt' },
+  '歯': { parts: 'megáll (止) + száj és fogak (米, 凵)', mn: 'A szájban (凵) sorakozó fogak (米): fog.', kun: '歯 (は) fog; 歯医者 (はいしゃ) fogorvos', on: 'シ: 歯科 (しか) fogászat' },
+
+  // ─── 45. lecke: zene, győzelem, húzás ──────────
+  '曲': { mn: 'Képírás: hajlított bambuszkosár: görbe; dallam.', kun: '曲がる (まがる) befordul, hajlik; 曲げる (まげる) hajlít', on: 'キョク: 曲 (きょく) zeneszám; 作曲 (さっきょく) zeneszerzés' },
+  '科': { parts: 'gabona (禾) + mérőkanál (斗)', mn: 'A gabonát (禾) mérőkanállal (斗) szétválogatják: részleg, tantárgy.', on: 'カ: 科学 (かがく) tudomány; 教科書 (きょうかしょ) tankönyv' },
+  '備': { parts: 'ember (亻) + tegez', mn: 'Az ember (亻) megtölti a tegezét: felkészül.', kun: '備える (そなえる) felkészül', on: 'ビ: 準備 (じゅんび) előkészület; 設備 (せつび) berendezés' },
+  '昔': { parts: 'nap (日) + felette halmozott napok', mn: 'Egymásra halmozott napok (日): régen.', kun: '昔 (むかし) régen', on: 'セキ: 昔日 (せきじつ) régi napok (írott)' },
+  '散': { parts: 'üt (攵) + hús (月)', mn: 'Ütéssel (攵) szétszórja: szór.', kun: '散る (ちる) szétszóródik, lehullik; 散らかす (ちらかす) rendetlenséget csinál', on: 'サン: 散歩 (さんぽ) séta' },
+  '判': { parts: 'fél (半) + kés (刂)', mn: 'Késsel (刂) félbe (半) vágja: eldönt, megítél.', on: 'ハン: 判断 (はんだん) ítélet; 評判 (ひょうばん) hírnév; バン: 裁判 (さいばん) per' },
+  '勝': { parts: 'test (月) + felemel + erő (力)', mn: 'A test (月) minden erejével (力) felülkerekedik: győz.', kun: '勝つ (かつ) győz; 勝手 (かって) önkényes', on: 'ショウ: 優勝 (ゆうしょう) bajnoki győzelem; 勝負 (しょうぶ) mérkőzés' },
+  '務': { parts: 'lándzsa (矛) + üt (攵) + erő (力)', mn: 'Lándzsával (矛) és erővel (力) elvégzett kötelesség: feladat.', kun: '務める (つとめる) betölt (szerepet)', on: 'ム: 事務所 (じむしょ) iroda; 義務 (ぎむ) kötelesség' },
+  '引': { parts: 'íj (弓) + vonal (丨)', mn: 'Az íj (弓) húrját magához húzza: húz.', kun: '引く (ひく) húz; 引っ越す (ひっこす) költözik', on: 'イン: 引退 (いんたい) visszavonulás' },
+  '費': { parts: 'elvág (弗) + pénz (貝)', mn: 'A pénzből (貝) elfogy (弗): költség.', kun: '費やす (ついやす) elkölt', on: 'ヒ: 費用 (ひよう) költség; 交通費 (こうつうひ) útiköltség' },
+  '号': { parts: 'száj (口) + kiáltás', mn: 'A szájból (口) kiáltott szám: sorszám, jel.', on: 'ゴウ: 番号 (ばんごう) szám; 信号 (しんごう) jelzőlámpa' },
+  '与': { mn: 'Képírás: egymásba kapaszkodó kezek: ad, nyújt.', kun: '与える (あたえる) ad', on: 'ヨ: 給与 (きゅうよ) fizetés' }
 };
