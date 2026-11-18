@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1), 20. adag = 99–103. lecke (N1).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -1382,5 +1382,75 @@ const KANJI_NOTES = {
   '賃': { parts: 'megbíz (任) + pénz (貝)', mn: 'A megbízásért (任) kapott pénz (貝): bér, díj.', on: 'チン: 家賃 (やちん) lakbér; 運賃 (うんちん) viteldíj; 賃金 (ちんぎん) bér' },
   '獲': { parts: 'kutya (犭) + fű (艹) + madár (隹) + kéz (又)', mn: 'A kutya (犭) a fűből (艹) a madarat (隹) a gazda kezébe (又) hozza: zsákmányol.', kun: '獲る (える) zsákmányol', on: 'カク: 獲得 (かくとく) megszerzés; 捕獲 (ほかく) befogás' },
   '郡': { parts: 'uralkodó (君) + falu (⻏)', mn: 'Az uralkodó (君) alá tartozó falvak (⻏): járás, megye.', on: 'グン: 郡 (ぐん) járás; 郡部 (ぐんぶ) vidéki területek' },
-  '併': { parts: 'ember (亻) + egymás mellett (并)', mn: 'Két ember (亻) egymás mellé (并) áll: egyesít.', kun: '併せる (あわせる) egyesít', on: 'ヘイ: 合併 (がっぺい) egyesülés; 併用 (へいよう) együttes használat' }
+  '併': { parts: 'ember (亻) + egymás mellett (并)', mn: 'Két ember (亻) egymás mellé (并) áll: egyesít.', kun: '併せる (あわせる) egyesít', on: 'ヘイ: 合併 (がっぺい) egyesülés; 併用 (へいよう) együttes használat' },
+
+  // ─── 99. lecke: áthatolás, csapás, elemzés (V13.85, N1) ─
+  '徹': { parts: 'lépés (彳) + nevel (育 rövidítve) + üt (攵)', mn: 'Lépésről lépésre (彳) végigviszi: áthatol, végig.', on: 'テツ: 徹夜 (てつや) átvirrasztott éjszaka; 徹底 (てってい) alaposság' },
+  '貴': { parts: 'kosár + pénz (貝)', mn: 'Kosárban gondosan őrzött kagylópénz (貝): értékes, nemes.', kun: '貴い (とうとい / たっとい) értékes, nemes', on: 'キ: 貴重 (きちょう) értékes; 貴族 (きぞく) nemesség' },
+  '衝': { parts: 'út (行) + nehéz (重)', mn: 'Az út (行) közepén nehéz (重) teherrel ütközik: összecsapás.', on: 'ショウ: 衝突 (しょうとつ) ütközés; 衝撃 (しょうげき) sokk; 衝動 (しょうどう) késztetés' },
+  '焦': { parts: 'madár (隹) + tűz (灬)', mn: 'A madár (隹) a tűz (灬) fölött pörkölődik: megpörköl; türelmetlen.', kun: '焦げる (こげる) odaég; 焦る (あせる) kapkod, türelmetlen', on: 'ショウ: 焦点 (しょうてん) fókusz' },
+  '奪': { parts: 'nagy (大) + madár (隹) + kéz (寸)', mn: 'A nagy (大) madarat (隹) kézzel (寸) ragadja el: rabol.', kun: '奪う (うばう) elvesz, elrabol', on: 'ダツ: 奪回 (だっかい) visszaszerzés; 争奪 (そうだつ) versengés' },
+  '災': { parts: 'áradás (巛) + tűz (火)', mn: 'Árvíz (巛) és tűz (火): katasztrófa.', kun: '災い (わざわい) csapás', on: 'サイ: 災害 (さいがい) katasztrófa; 火災 (かさい) tűzvész; 震災 (しんさい) földrengéskár' },
+  '浦': { parts: 'víz (氵) + kiterjed (甫)', mn: 'A víz (氵) mellett kiterülő (甫) part: öböl.', kun: '浦 (うら) öböl, part', on: 'ホ: 浦 (ほ) part (ritka, főleg nevekben)' },
+  '析': { parts: 'fa (木) + fejsze (斤)', mn: 'A fát (木) fejszével (斤) széthasítja: elemez.', on: 'セキ: 分析 (ぶんせき) elemzés; 解析 (かいせき) analízis' },
+  '譲': { parts: 'szó (言) + félretesz (襄)', mn: 'Szóval (言) félreáll (襄) a másik elől: átenged.', kun: '譲る (ゆずる) átenged, átad', on: 'ジョウ: 譲歩 (じょうほ) engedmény; 謙譲 (けんじょう) szerénység' },
+  '称': { parts: 'gabona (禾) + mér (尔)', mn: 'A gabonát (禾) megméri, és nevet ad neki: megnevez; dicsér.', on: 'ショウ: 名称 (めいしょう) megnevezés; 称賛 (しょうさん) dicséret; 対称 (たいしょう) szimmetria' },
+  '納': { parts: 'fonal (糸) + belső (内)', mn: 'A fonalat (糸) befelé (内) teszi el: tárol, befizet.', kun: '納める (おさめる) befizet, elhelyez', on: 'ノウ: 納税 (のうぜい) adófizetés; 収納 (しゅうのう) tárolás; ナッ: 納得 (なっとく) belátás; トウ: 出納 (すいとう) pénzkezelés' },
+  '樹': { parts: 'fa (木) + álló dob (尌)', mn: 'A fa (木), amely egyenesen áll (尌): élő fa.', on: 'ジュ: 樹木 (じゅもく) fák; 樹立 (じゅりつ) létrehozás; 果樹園 (かじゅえん) gyümölcsös' },
+
+  // ─── 100. lecke: kihívás, világűr, pénz ────────
+  '挑': { parts: 'kéz (扌) + jel (兆)', mn: 'Kézzel (扌) jelt (兆) ad a harcra: kihív.', kun: '挑む (いどむ) kihív, megküzd', on: 'チョウ: 挑戦 (ちょうせん) kihívás' },
+  '誘': { parts: 'szó (言) + kiváló (秀)', mn: 'Szép (秀) szóval (言) hív: csábít, meghív.', kun: '誘う (さそう) meghív, csábít', on: 'ユウ: 誘惑 (ゆうわく) kísértés; 勧誘 (かんゆう) toborzás; 誘拐 (ゆうかい) emberrablás' },
+  '紛': { parts: 'fonal (糸) + szétválaszt (分)', mn: 'A szétválasztott (分) fonalak (糸) összegabalyodnak: összekeveredik.', kun: '紛れる (まぎれる) elvegyül; 紛らわしい (まぎらわしい) könnyen összetéveszthető', on: 'フン: 紛失 (ふんしつ) elvesztés; 紛争 (ふんそう) viszály' },
+  '至': { mn: 'Képírás: földbe (土) csapódó nyílvessző: elér, eljut.', kun: '至る (いたる) eljut, elér', on: 'シ: 至急 (しきゅう) sürgősen; 必至 (ひっし) elkerülhetetlen' },
+  '宗': { parts: 'tető (宀) + oltár (示)', mn: 'A tető (宀) alatt álló oltár (示): vallás, ős.', on: 'シュウ: 宗教 (しゅうきょう) vallás; 宗派 (しゅうは) szekta; ソウ: 宗家 (そうけ) főág (családé)' },
+  '促': { parts: 'ember (亻) + láb (足)', mn: 'Az ember (亻) lábát (足) sürgeti: ösztönöz.', kun: '促す (うながす) sürget, ösztönöz', on: 'ソク: 促進 (そくしん) előmozdítás; 催促 (さいそく) sürgetés' },
+  '慎': { parts: 'szív (忄) + igaz (真)', mn: 'Igaz (真) szívvel (忄) óvatoskodik: körültekintő.', kun: '慎む (つつしむ) tartózkodik, vigyáz', on: 'シン: 慎重 (しんちょう) óvatos' },
+  '控': { parts: 'kéz (扌) + üres (空)', mn: 'Kezét (扌) üresen (空) visszahúzza: visszafogja magát.', kun: '控える (ひかえる) tartózkodik; feljegyez; 控え室 (ひかえしつ) váróterem', on: 'コウ: 控除 (こうじょ) levonás (adóból)' },
+  '握': { parts: 'kéz (扌) + ház (屋)', mn: 'Kezével (扌) körbezárja, mint egy ház (屋): megmarkol.', kun: '握る (にぎる) megmarkol, formáz (szusit)', on: 'アク: 握手 (あくしゅ) kézfogás; 把握 (はあく) megértés' },
+  '宙': { parts: 'tető (宀) + ok (由)', mn: 'A tető (宀), amely mindent befed: égbolt, világűr.', on: 'チュウ: 宇宙 (うちゅう) világűr; 宙返り (ちゅうがえり) szaltó' },
+  '銭': { parts: 'fém (金) + kicsi (戋)', mn: 'Kis (戋) fémdarab (金): pénzérme.', kun: '銭 (ぜに) pénz (régies); 小銭 (こぜに) aprópénz', on: 'セン: 一銭 (いっせん) egy szen; 金銭 (きんせん) pénz' },
+  '渋': { parts: 'víz (氵) + megáll (止)', mn: 'A víz (氵) megáll (止), torlódik: fanyar; akadozik.', kun: '渋い (しぶい) fanyar; ízléses; 渋る (しぶる) vonakodik', on: 'ジュウ: 渋滞 (じゅうたい) forgalmi dugó' },
+
+  // ─── 101. lecke: fegyver, fénykép, köszönet ────
+  '銃': { parts: 'fém (金) + feltölt (充)', mn: 'A fémcső (金), amelyet lőporral töltenek (充): puska.', on: 'ジュウ: 銃 (じゅう) lőfegyver; 拳銃 (けんじゅう) pisztoly' },
+  '操': { parts: 'kéz (扌) + csiripelés a fán (喿)', mn: 'Kézzel (扌) irányítja, mint a fán csiripelő madarakat (喿): kezel, irányít.', kun: '操る (あやつる) mozgat, irányít; 操 (みさお) hűség', on: 'ソウ: 体操 (たいそう) torna; 操作 (そうさ) kezelés' },
+  '携': { parts: 'kéz (扌) + madár (隹) + kar', mn: 'Kézzel (扌) magával viszi a madarat (隹): hordoz.', kun: '携える (たずさえる) magával visz', on: 'ケイ: 携帯 (けいたい) mobiltelefon, hordozható; 提携 (ていけい) együttműködés' },
+  '診': { parts: 'szó (言) + sűrű haj (㐱)', mn: 'Szóval (言) kérdez, és aprólékosan megnéz: orvosi vizsgálat.', kun: '診る (みる) megvizsgál (orvos)', on: 'シン: 診察 (しんさつ) orvosi vizsgálat; 診断 (しんだん) diagnózis' },
+  '託': { parts: 'szó (言) + fűszál (乇)', mn: 'Szóval (言) rábízza: megbíz.', on: 'タク: 託児所 (たくじしょ) bölcsőde; 委託 (いたく) megbízás; 信託 (しんたく) bizalmi kezelés' },
+  '撮': { parts: 'kéz (扌) + legtöbb (最)', mn: 'Kézzel (扌) a legjobb (最) pillanatot ragadja meg: fényképez.', kun: '撮る (とる) fényképez', on: 'サツ: 撮影 (さつえい) fényképezés, forgatás' },
+  '誕': { parts: 'szó (言) + kinyúlik (延)', mn: 'Az első szó (言), amellyel az élet kinyúlik (延): születés.', on: 'タン: 誕生日 (たんじょうび) születésnap; 誕生 (たんじょう) születés' },
+  '侵': { parts: 'ember (亻) + seprű + kéz', mn: 'Az ember (亻) seprűvel söpör előre más földjén: betör.', kun: '侵す (おかす) megsért, betör', on: 'シン: 侵入 (しんにゅう) behatolás; 侵略 (しんりゃく) invázió' },
+  '括': { parts: 'kéz (扌) + nyelv (舌)', mn: 'Kézzel (扌) összeköti a köteget: összefog, összegez.', kun: '括る (くくる) összeköt', on: 'カツ: 一括 (いっかつ) egy összegben; 包括 (ほうかつ) átfogó' },
+  '謝': { parts: 'szó (言) + lő (射)', mn: 'A szót (言) egyenesen küldi, mint a nyilat (射): bocsánatot kér, köszön.', kun: '謝る (あやまる) bocsánatot kér', on: 'シャ: 感謝 (かんしゃ) hála; 謝罪 (しゃざい) bocsánatkérés' },
+  '駆': { parts: 'ló (馬) + terület (区)', mn: 'Lóval (馬) vágtat végig a területen (区): hajt, vágtat.', kun: '駆ける (かける) fut, vágtat', on: 'ク: 駆使 (くし) szabad használat; 先駆者 (せんくしゃ) úttörő' },
+  '透': { parts: 'út (⻌) + kiváló (秀)', mn: 'A fény akadálytalanul halad át (⻌): átlátszó, áthatol.', kun: '透く (すく) átlátszik; 透ける (すける) áttetszik', on: 'トウ: 透明 (とうめい) átlátszó' },
+
+  // ─── 102. lecke: fal, fordítás, kötél ──────────
+  '壁': { parts: 'tilalom (辟) + föld (土)', mn: 'Földből (土) emelt határ, amelyet tilos (辟) átlépni: fal.', kun: '壁 (かべ) fal', on: 'ヘキ: 壁画 (へきが) falfestmény; 城壁 (じょうへき) várfal' },
+  '稲': { parts: 'gabona (禾) + mozsár (臼) fölött kéz', mn: 'A gabona (禾), amelyet mozsárban (臼) hántolnak: rizsnövény.', kun: '稲 (いね) rizsnövény; 稲妻 (いなずま) villám', on: 'トウ: 水稲 (すいとう) vizes rizs' },
+  '仮': { parts: 'ember (亻) + megfordít (反)', mn: 'Az ember (亻), aki visszafordítható (反) alakot ölt: ideiglenes, színlelt.', kun: '仮 (かり) ideiglenes; 仮に (かりに) feltéve, hogy', on: 'カ: 仮定 (かてい) feltételezés; 仮面 (かめん) álarc; ケ: 仮病 (けびょう) színlelt betegség' },
+  '裂': { parts: 'sor (列) + ruha (衣)', mn: 'A ruha (衣) sorban (列) szétszakad: hasad.', kun: '裂く (さく) széttép; 裂ける (さける) elszakad', on: 'レツ: 分裂 (ぶんれつ) szakadás' },
+  '敏': { parts: 'mindig (毎) + üt (攵)', mn: 'Mindig (毎) gyorsan cselekszik (攵): fürge, éber.', on: 'ビン: 敏感 (びんかん) érzékeny; 機敏 (きびん) fürge' },
+  '是': { parts: 'nap (日) + egyenes (疋)', mn: 'A nap (日) alatt egyenesen áll: helyes, így van.', on: 'ゼ: 是非 (ぜひ) mindenképpen; 是正 (ぜせい) helyesbítés' },
+  '排': { parts: 'kéz (扌) + nem (非)', mn: 'Kézzel (扌) eltolja, „nem” (非): kizár, eltávolít.', on: 'ハイ: 排除 (はいじょ) kizárás; 排気ガス (はいきガス) kipufogógáz' },
+  '裕': { parts: 'ruha (衤) + völgy (谷)', mn: 'Völgynyi (谷) ruha (衤): bőség, gazdagság.', on: 'ユウ: 余裕 (よゆう) tartalék, ráérés; 裕福 (ゆうふく) jómódú' },
+  '堅': { parts: 'alattvaló (臣) + kéz (又) + föld (土)', mn: 'A szolga (臣) kézzel (又) döngöli a földet (土): szilárd.', kun: '堅い (かたい) szilárd, megbízható', on: 'ケン: 中堅 (ちゅうけん) középréteg, gerinc; 堅実 (けんじつ) megbízható' },
+  '訳': { parts: 'szó (言) + mérték (尺)', mn: 'A szót (言) megfelelő mértékre (尺) szabja át: fordít; ok.', kun: '訳 (わけ) ok, értelem; 言い訳 (いいわけ) kifogás', on: 'ヤク: 翻訳 (ほんやく) fordítás; 通訳 (つうやく) tolmács' },
+  '綱': { parts: 'fonal (糸) + hegygerinc (岡)', mn: 'A hegygerincnél (岡) is erősebb fonal (糸): kötél.', kun: '綱 (つな) kötél; 綱引き (つなひき) kötélhúzás; 横綱 (よこづな) szumó nagybajnok', on: 'コウ: 要綱 (ようこう) irányelvek' },
+  '典': { mn: 'Képírás: asztalon fekvő, zsinórral fűzött könyv (冊): szabálykönyv, szertartás.', on: 'テン: 辞典 (じてん) szótár; 古典 (こてん) klasszikus mű; 式典 (しきてん) ünnepség' },
+
+  // ─── 103. lecke: kezelés, öröm, zaj ────────────
+  '扱': { parts: 'kéz (扌) + elér (及)', mn: 'Kézzel (扌) eléri (及), és bánik vele: kezel.', kun: '扱う (あつかう) kezel, bánik vele; 取り扱い (とりあつかい) kezelés' },
+  '顧': { parts: 'ajtó (戸) + madár (隹) + fej (頁)', mn: 'Az ajtóban (戸) a madár (隹) visszafordítja a fejét (頁): visszatekint.', kun: '顧みる (かえりみる) visszatekint, törődik', on: 'コ: 顧客 (こきゃく) ügyfél; 顧問 (こもん) tanácsadó' },
+  '看': { parts: 'kéz (手) + szem (目)', mn: 'Kezét (手) a szeme (目) fölé tartja, és figyel: felügyel.', on: 'カン: 看護師 (かんごし) ápoló; 看板 (かんばん) cégtábla' },
+  '戒': { parts: 'alabárd (戈) + két kéz (廾)', mn: 'Két kézzel (廾) tartja az alabárdot (戈), őrködik: figyelmeztet.', kun: '戒める (いましめる) figyelmeztet, int', on: 'カイ: 警戒 (けいかい) készültség, óvatosság; 戒律 (かいりつ) vallási szabály' },
+  '祉': { parts: 'oltár (礻) + megáll (止)', mn: 'Az oltárnál (礻) megálló (止) áldás: jólét.', on: 'シ: 福祉 (ふくし) jólét' },
+  '誉': { parts: 'felemelt kezek (⺍) + szó (言)', mn: 'Felemelt kézzel (⺍) mondott dicsérő szó (言): hírnév.', kun: '誉れ (ほまれ) dicsőség; 誉める (ほめる) dicsér', on: 'ヨ: 名誉 (めいよ) becsület' },
+  '歓': { parts: 'madár (隹) + tátott száj (欠)', mn: 'A madár (隹) tátott szájjal (欠) énekel: öröm.', on: 'カン: 歓迎 (かんげい) üdvözlés; 歓声 (かんせい) ujjongás' },
+  '奏': { parts: 'két kéz + felajánlás', mn: 'Két kézzel ajánlja fel a zenét: előad, zenél.', kun: '奏でる (かなでる) játszik (hangszeren)', on: 'ソウ: 演奏 (えんそう) zenei előadás; 伴奏 (ばんそう) kíséret' },
+  '勧': { parts: 'madár (隹) + erő (力)', mn: 'Erővel (力) bátorítja a madarat (隹) a repülésre: rábeszél.', kun: '勧める (すすめる) ajánl, rábeszél', on: 'カン: 勧誘 (かんゆう) toborzás; 勧告 (かんこく) ajánlás' },
+  '騒': { parts: 'ló (馬) + kéz (又) + rovar (虫)', mn: 'A ló (馬) megvadul, ha rovar (虫) csípi: lármázik.', kun: '騒ぐ (さわぐ) lármázik; 騒がしい (さわがしい) zajos', on: 'ソウ: 騒音 (そうおん) zaj; 騒動 (そうどう) zűrzavar' },
+  '甲': { mn: 'Képírás: teknőspáncél vagy a mag kemény héja: páncél; az első.', on: 'コウ: 甲羅 (こうら) teknőspáncél; 甲 (こう) az első fél (szerződésben); カン: 甲高い (かんだかい) éles (hang)' },
+  '縄': { parts: 'fonal (糸) + teknős (黽 rövidítve)', mn: 'Fonalból (糸) font kötél: szalmakötél.', kun: '縄 (なわ) kötél; 沖縄 (おきなわ) Okinava', on: 'ジョウ: 縄文 (じょうもん) Dzsómon-kor' }
 };
