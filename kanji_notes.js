@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -808,5 +808,75 @@ const KANJI_NOTES = {
   '億': { parts: 'ember (亻) + gondolat (意)', mn: 'Ember (亻) számára elképzelhetetlenül (意) nagy szám: százmillió.', on: 'オク: 一億 (いちおく) százmillió' },
   '停': { parts: 'ember (亻) + pavilon (亭)', mn: 'Az ember (亻) megpihen a pavilonban (亭): megáll.', kun: '停める (とめる) leállít, leparkol', on: 'テイ: 停電 (ていでん) áramszünet; バス停 (バスてい) buszmegálló' },
   '玉': { mn: 'Képírás: a király (王) mellett egy pont: drágakő, golyó.', kun: '玉 (たま) golyó, gyöngy; 玉ねぎ (たまねぎ) hagyma', on: 'ギョク: 玉座 (ぎょくざ) trón' },
-  '帯': { mn: 'Képírás: öv, rajta lógó díszekkel (巾): öv, sáv.', kun: '帯 (おび) öv (kimonóé); 帯びる (おびる) magán visel', on: 'タイ: 携帯 (けいたい) mobiltelefon; 時間帯 (じかんたい) idősáv' }
+  '帯': { mn: 'Képírás: öv, rajta lógó díszekkel (巾): öv, sáv.', kun: '帯 (おび) öv (kimonóé); 帯びる (おびる) magán visel', on: 'タイ: 携帯 (けいたい) mobiltelefon; 時間帯 (じかんたい) idősáv' },
+
+  // ─── 58. lecke: szabály, sorrend, vár (V13.77, N2) ─
+  '延': { parts: 'hosszú lépés (廴) + lép', mn: 'A hosszú lépés (廴) tovább nyúlik: meghosszabbít, elhalaszt.', kun: '延びる (のびる) meghosszabbodik; 延ばす (のばす) elhalaszt', on: 'エン: 延長 (えんちょう) hosszabbítás; 延期 (えんき) elhalasztás' },
+  '則': { parts: 'pénz (貝) + kés (刂)', mn: 'A pénzt (貝) késsel (刂), szabály szerint mérik ki: szabály.', on: 'ソク: 規則 (きそく) szabály; 法則 (ほうそく) törvényszerűség' },
+  '普': { parts: 'egymás mellett állók + nap (日)', mn: 'A nap (日) mindenkire egyformán süt: általános.', on: 'フ: 普通 (ふつう) szokásos; 普段 (ふだん) általában' },
+  '齢': { parts: 'fog (歯) + parancs (令)', mn: 'A fogakról (歯) olvasták le a kort: életkor.', on: 'レイ: 年齢 (ねんれい) életkor; 高齢 (こうれい) idős kor' },
+  '卒': { mn: 'Képírás: egyenruhás katona köpenye: közkatona; a szolgálat vége, végzés.', on: 'ソツ: 卒業 (そつぎょう) végzés (iskoláé)' },
+  '略': { parts: 'rizsföld (田) + mindegyik (各)', mn: 'A rizsföld (田) határán mindenki (各) rövidebb úton megy: rövidít.', on: 'リャク: 省略 (しょうりゃく) kihagyás; 略語 (りゃくご) rövidítés' },
+  '承': { mn: 'Képírás: két kéz alulról tart valakit: elfogad, tudomásul vesz.', kun: '承る (うけたまわる) meghallgat, elfogad (alázatos)', on: 'ショウ: 承知 (しょうち) tudomásul vétel; 承認 (しょうにん) jóváhagyás' },
+  '順': { parts: 'folyó (川) + fej (頁)', mn: 'A fej (頁) a folyó (川) irányába néz: sorrend; engedelmes.', on: 'ジュン: 順番 (じゅんばん) sorrend; 順調 (じゅんちょう) zavartalan' },
+  '了': { mn: 'Képírás: kar nélküli, bepólyált gyerek: befejez, kész.', on: 'リョウ: 終了 (しゅうりょう) befejezés; 了解 (りょうかい) értem, rendben' },
+  '庁': { parts: 'épület (广) + utca (丁)', mn: 'Az utcán (丁) álló hivatali épület (广): hivatal.', on: 'チョウ: 県庁 (けんちょう) prefektúrai hivatal; 気象庁 (きしょうちょう) meteorológiai hivatal' },
+  '城': { parts: 'föld (土) + válik (成)', mn: 'Földből (土) emelt (成) erődítmény: vár.', kun: '城 (しろ) vár', on: 'ジョウ: 城下町 (じょうかまち) várváros' },
+  '患': { parts: 'nyárs (串) + szív (心)', mn: 'A szívet (心) átszúró gond (串): betegség, szenved.', kun: '患う (わずらう) betegeskedik', on: 'カン: 患者 (かんじゃ) páciens' },
+
+  // ─── 59. lecke: kiadás, vér, évszak ────────────
+  '版': { parts: 'deszkadarab (片) + fordít (反)', mn: 'A fadeszkába (片) fordítva vésett szöveg: nyomólemez, kiadás.', on: 'ハン: 出版 (しゅっぱん) kiadás; 版 (はん) kiadás, változat' },
+  '令': { parts: 'fedél (𠆢) + térdelő ember (卩)', mn: 'A tető alatt térdelő ember (卩) parancsot kap: parancs.', on: 'レイ: 命令 (めいれい) parancs; 令和 (れいわ) Reiva-kor' },
+  '角': { mn: 'Képírás: egy szarv: szarv, szög, sarok.', kun: '角 (かど) sarok (utcáé); 角 (つの) szarv', on: 'カク: 三角 (さんかく) háromszög; 角度 (かくど) szög' },
+  '裏': { parts: 'ruha (衣) + bélés (里)', mn: 'A ruha (衣) belseje, a bélés (里): hátoldal.', kun: '裏 (うら) hátoldal; 裏口 (うらぐち) hátsó bejárat', on: 'リ: 裏面 (りめん) hátoldal' },
+  '築': { parts: 'bambusz (竹) + döngöl + fa (木)', mn: 'Bambusszal (竹) és fával (木) döngölve épít.', kun: '築く (きずく) épít', on: 'チク: 建築 (けんちく) építészet' },
+  '貨': { parts: 'változik (化) + pénz (貝)', mn: 'Pénzzé (貝) változtatható (化) dolog: áru, pénz.', on: 'カ: 硬貨 (こうか) érme; 通貨 (つうか) valuta' },
+  '池': { parts: 'víz (氵) + kígyó (也)', mn: 'Kanyargós (也) partú víz (氵): tó.', kun: '池 (いけ) tó', on: 'チ: 電池 (でんち) elem' },
+  '血': { mn: 'Képírás: tál (皿), benne egy csepp: vér.', kun: '血 (ち) vér', on: 'ケツ: 血液 (けつえき) vér; 出血 (しゅっけつ) vérzés' },
+  '季': { parts: 'gabona (禾) + gyerek (子)', mn: 'A fiatal (子) gabona (禾) évszakonként nő: évszak.', on: 'キ: 季節 (きせつ) évszak' },
+  '永': { mn: 'Képírás: a víz (水) ágainak hosszú folyása: örök.', kun: '永い (ながい) hosszú (időben, írott)', on: 'エイ: 永遠 (えいえん) örökkévalóság; 永久 (えいきゅう) örök' },
+  '著': { parts: 'fű (艹) + személy (者)', mn: 'A fű (艹) fölé kiemelkedő személy (者): neves; ír.', kun: '著す (あらわす) könyvet ír', on: 'チョ: 著者 (ちょしゃ) szerző; 著名 (ちょめい) neves' },
+  '誌': { parts: 'beszéd (言) + szándék (志)', mn: 'A szándékot (志) szóban (言) rögzíti: feljegyzés, folyóirat.', on: 'シ: 雑誌 (ざっし) magazin; 日誌 (にっし) napló' },
+
+  // ─── 60. lecke: raktár, kép, posta ─────────────
+  '庫': { parts: 'épület (广) + kocsi (車)', mn: 'Az épület (广), ahol a kocsit (車) tartják: raktár.', on: 'コ: 冷蔵庫 (れいぞうこ) hűtő; 車庫 (しゃこ) garázs' },
+  '刊': { parts: 'szárít (干) + kés (刂)', mn: 'Késsel (刂) metszett nyomólemez: kiad.', on: 'カン: 朝刊 (ちょうかん) reggeli lap; 週刊誌 (しゅうかんし) hetilap' },
+  '像': { parts: 'ember (亻) + elefánt (象)', mn: 'Ember (亻) formázta elefánt (象) faragott képe: szobor, kép.', on: 'ゾウ: 想像 (そうぞう) képzelet; 映像 (えいぞう) mozgókép' },
+  '坂': { parts: 'föld (土) + visszafordul (反)', mn: 'A föld (土), ami felfelé fordul (反): lejtő.', kun: '坂 (さか) lejtő; 坂道 (さかみち) emelkedő út', on: 'ハン: 急坂 (きゅうはん) meredek lejtő' },
+  '底': { parts: 'épület (广) + alap (氐)', mn: 'Az épület (广) alja (氐): fenék, alap.', kun: '底 (そこ) fenék, alja', on: 'テイ: 徹底 (てってい) alaposság' },
+  '布': { parts: 'kéz + kendő (巾)', mn: 'Kézben tartott kendő (巾): szövet.', kun: '布 (ぬの) szövet', on: 'フ: 毛布 (もうふ) takaró; 財布 (さいふ) pénztárca' },
+  '寺': { parts: 'föld (土) + kéz (寸)', mn: 'A földön (土) kézzel (寸) emelt szent hely: buddhista templom.', kun: '寺 (てら) templom; お寺 (おてら) templom', on: 'ジ: 東大寺 (とうだいじ) Tódaidzsi' },
+  '依': { parts: 'ember (亻) + ruha (衣)', mn: 'Az ember (亻) a másik ruhájába (衣) kapaszkodik: támaszkodik, függ.', kun: '依る (よる) függ valamitől', on: 'イ: 依頼 (いらい) megbízás; 依存 (いぞん) függés' },
+  '複': { parts: 'ruha (衤) + kétszer (复)', mn: 'Kétszer (复) összehajtott ruha (衤): kettős, összetett.', on: 'フク: 複雑 (ふくざつ) bonyolult; 複数 (ふくすう) többes' },
+  '郵': { parts: 'határvidék (垂) + város (⻏)', mn: 'A határvidék (垂) városai (⻏) közötti levélküldés: posta.', on: 'ユウ: 郵便 (ゆうびん) posta; 郵便局 (ゆうびんきょく) postahivatal' },
+  '札': { parts: 'fa (木) + horog (乚)', mn: 'Fából (木) faragott cédula: cédula; bankjegy.', kun: '札 (ふだ) cédula, tábla; 名札 (なふだ) névkártya', on: 'サツ: 千円札 (せんえんさつ) ezerjenes bankjegy; 改札 (かいさつ) jegykezelő kapu' },
+  '板': { parts: 'fa (木) + visszafordul (反)', mn: 'A fából (木) lapjára fordított darab: deszka.', kun: '板 (いた) deszka', on: 'バン: 黒板 (こくばん) iskolai tábla; 看板 (かんばん) cégtábla' },
+
+  // ─── 61. lecke: kézbesítés, nyom, szerv ────────
+  '届': { parts: 'tető (尸) + ok (由)', mn: 'A tető (尸) alá ér a küldemény: megérkezik, kézbesít.', kun: '届く (とどく) megérkezik, elér; 届ける (とどける) kézbesít, bejelent' },
+  '巻': { parts: 'két kéz + önmaga (己)', mn: 'Két kézzel feltekert tekercs: tekercs, kötet.', kun: '巻く (まく) teker; 巻 (まき) tekercs', on: 'カン: 第一巻 (だいいっかん) első kötet' },
+  '跡': { parts: 'láb (足) + nyom (亦)', mn: 'A láb (足) hagyta nyom: lábnyom.', kun: '跡 (あと) nyom', on: 'セキ: 遺跡 (いせき) romok, régészeti lelőhely' },
+  '駐': { parts: 'ló (馬) + úr (主)', mn: 'A ló (馬) megáll a gazdája (主) mellett: megáll, állomásozik.', on: 'チュウ: 駐車場 (ちゅうしゃじょう) parkoló; 駐在 (ちゅうざい) kiküldetés' },
+  '弱': { parts: 'két íj (弓) + díszek', mn: 'Két díszes, gyenge íj (弓): gyenge.', kun: '弱い (よわい) gyenge', on: 'ジャク: 弱点 (じゃくてん) gyenge pont' },
+  '紹': { parts: 'fonal (糸) + hív (召)', mn: 'A fonal (糸) összeköti, akit hívtak (召): bemutat.', on: 'ショウ: 紹介 (しょうかい) bemutatás; 自己紹介 (じこしょうかい) bemutatkozás' },
+  '焼': { parts: 'tűz (火) + magas (尭)', mn: 'Magasra (尭) csapó tűz (火): éget, süt.', kun: '焼く (やく) süt, éget; 焼ける (やける) megsül, leég', on: 'ショウ: 燃焼 (ねんしょう) égés' },
+  '簡': { parts: 'bambusz (竹) + köz (間)', mn: 'A bambuszlapok (竹) közé (間) írt rövid szöveg: egyszerű.', on: 'カン: 簡単 (かんたん) egyszerű; 簡易 (かんい) egyszerű, gyors' },
+  '章': { parts: 'hang (音) + tíz (十)', mn: 'A dallam (音) egy teljes (十) szakasza: fejezet.', on: 'ショウ: 文章 (ぶんしょう) szöveg; 第一章 (だいいっしょう) első fejezet' },
+  '臓': { parts: 'test (月) + raktár (蔵)', mn: 'A test (月) raktára (蔵): belső szerv.', on: 'ゾウ: 心臓 (しんぞう) szív; 内臓 (ないぞう) belső szervek' },
+  '贈': { parts: 'pénz (貝) + gyarapít (曽)', mn: 'Pénzzel (貝) gyarapítja (曽) a másikat: ajándékoz.', kun: '贈る (おくる) ajándékoz (a küld 送る)', on: 'ゾウ: 寄贈 (きぞう) adomány; 贈呈 (ぞうてい) átadás' },
+  '秒': { parts: 'gabona (禾) + kevés (少)', mn: 'A kalász (禾) apró (少) szőre: a legkisebb időegység, másodperc.', on: 'ビョウ: 秒 (びょう) másodperc; 一秒 (いちびょう) egy másodperc' },
+
+  // ─── 62. lecke: belső, pár, ecset ──────────────
+  '奥': { parts: 'tető + rizs (米) + nagy (大)', mn: 'A ház legbelső zuga, ahol a rizst (米) tartják: belső rész.', kun: '奥 (おく) belső rész; 奥さん (おくさん) feleség (másé)', on: 'オウ: 奥義 (おうぎ) titkos tudás' },
+  '双': { parts: 'két kéz (又 + 又)', mn: 'Két egyforma kéz (又): pár.', kun: '双子 (ふたご) ikrek', on: 'ソウ: 双方 (そうほう) mindkét fél' },
+  '刺': { parts: 'tüske (朿) + kés (刂)', mn: 'Tüskével (朿) és késsel (刂) szúr: szúr.', kun: '刺す (さす) szúr; 刺身 (さしみ) nyers halszelet', on: 'シ: 名刺 (めいし) névjegy; 刺激 (しげき) inger' },
+  '翌': { parts: 'szárny (羽) + áll (立)', mn: 'A szárnyát (羽) kitárva felállsz (立): a következő nap.', on: 'ヨク: 翌日 (よくじつ) másnap; 翌朝 (よくあさ) másnap reggel' },
+  '片': { mn: 'Képírás: kettéhasított fa jobb fele: darab, egyik oldal.', kun: '片 (かた) egyik (a párból); 片付ける (かたづける) elpakol; 片道 (かたみち) csak oda', on: 'ヘン: 破片 (はへん) szilánk' },
+  '柱': { parts: 'fa (木) + úr (主)', mn: 'A fa (木), ami a házat tartja, mint a gazda (主): oszlop.', kun: '柱 (はしら) oszlop', on: 'チュウ: 電柱 (でんちゅう) villanyoszlop' },
+  '袋': { parts: 'helyett (代) + ruha (衣)', mn: 'Ruhából (衣) varrt zsák: zacskó, táska.', kun: '袋 (ふくろ) zacskó, zsák; 紙袋 (かみぶくろ) papírzacskó', on: 'タイ: 風袋 (ふうたい) tára (ritka)' },
+  '筆': { parts: 'bambusz (竹) + ecset (聿)', mn: 'Bambusznyelű (竹) ecset (聿): ecset, írás.', kun: '筆 (ふで) ecset', on: 'ヒツ: 鉛筆 (えんぴつ) ceruza; 筆者 (ひっしゃ) szerző' },
+  '訓': { parts: 'beszéd (言) + folyó (川)', mn: 'A folyóként (川) áradó szóval (言) tanít: tanítás; a kun olvasat.', on: 'クン: 訓読み (くんよみ) kun olvasat; 訓練 (くんれん) gyakorlat' },
+  '浴': { parts: 'víz (氵) + völgy (谷)', mn: 'A völgyben (谷) összegyűlt vízben (氵) fürdik.', kun: '浴びる (あびる) zuhanyozik, magára önt; 浴衣 (ゆかた) nyári kimonó (rendhagyó)', on: 'ヨク: 入浴 (にゅうよく) fürdés' },
+  '封': { parts: 'két föld (土) + kéz (寸)', mn: 'Kézzel (寸) földet hord a határra: lezár, pecsétel.', on: 'フウ: 封筒 (ふうとう) boríték; ホウ: 封建 (ほうけん) feudális' },
+  '塩': { parts: 'föld (土) + tál (皿)', mn: 'A tálba (皿) gyűjtött kristály a földből (土): só.', kun: '塩 (しお) só', on: 'エン: 塩分 (えんぶん) sótartalom' }
 };
