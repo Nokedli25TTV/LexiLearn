@@ -26,10 +26,10 @@ const RUBY = /<ruby>([^<]+)<rt>([^<]+)<\/rt><\/ruby>/g;
 const KANJI = /[一-龯㐀-䶿々]/;
 const FIELDS = ['baseWord', 'sentenceWithBlank', 'fullSentenceHTML', 'ttsSentence', 'correctAnswer', 'hungarian'];
 const bare = w => w.replace(/^[(（][^)）]*[)）]/, '');
-const DONE = [25, 26, 27, 28]; // a kész leckék (1–2. adag)
+const DONE = [25, 26, 27, 28, 29, 30]; // a kész leckék (1–3. adag)
 
 it('2. könyv példamondatai: adat', () => {
-  expect(BOOK2.length).toBeGreaterThanOrEqual(136); // 1–2. adag: 25–28. lecke
+  expect(BOOK2.length).toBeGreaterThanOrEqual(207); // 1–3. adag: 25–30. lecke
   const bad = (name, test) => expect(BOOK2.filter(s => !test(s)).map(s => `${name}: ${s.baseWord}`)).toEqual([]);
   bad('mezők', s => Object.keys(s).every(k => FIELDS.includes(k)) && FIELDS.every(k => typeof s[k] === 'string' && s[k].trim()));
   bad('2. könyves szó', s => firstLesson.get(s.baseWord) >= 25);
