@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -1088,5 +1088,89 @@ const KANJI_NOTES = {
   '童': { parts: 'áll (立) + falu (里)', mn: 'A faluban (里) álldogáló (立) kisgyerek: gyermek.', kun: '童 (わらべ) gyermek (régies)', on: 'ドウ: 児童 (じどう) gyermek; 童話 (どうわ) mese' },
   '宝': { parts: 'tető (宀) + drágakő (玉)', mn: 'A tető (宀) alatt őrzött drágakő (玉): kincs.', kun: '宝 (たから) kincs; 宝くじ (たからくじ) lottó', on: 'ホウ: 宝石 (ほうせき) drágakő' },
   '胸': { parts: 'test (月) + becsomagol (匈)', mn: 'A test (月) része, ami a szívet körülöleli (匈): mellkas.', kun: '胸 (むね) mellkas; szív (érzelem)', on: 'キョウ: 胸囲 (きょうい) mellbőség' },
-  '砂': { parts: 'kő (石) + kevés (少)', mn: 'Apró (少) kődarabok (石): homok.', kun: '砂 (すな) homok', on: 'サ: 砂糖 (さとう) cukor; 砂漠 (さばく) sivatag' }
+  '砂': { parts: 'kő (石) + kevés (少)', mn: 'Apró (少) kődarabok (石): homok.', kun: '砂 (すな) homok', on: 'サ: 砂糖 (さとう) cukor; 砂漠 (さばく) sivatag' },
+
+  // ─── 78. lecke: test, szín, rang (V13.81, N2) ──
+  '賢': { parts: 'alattvaló (臣) + kéz (又) + pénz (貝)', mn: 'A hűséges szolga (臣), aki jól bánik a pénzzel (貝): okos.', kun: '賢い (かしこい) okos', on: 'ケン: 賢明 (けんめい) bölcs' },
+  '腕': { parts: 'test (月) + kanyarodik (宛)', mn: 'A test (月) hajlítható része: kar; képesség.', kun: '腕 (うで) kar; 腕時計 (うでどけい) karóra', on: 'ワン: 腕力 (わんりょく) testi erő' },
+  '毛': { mn: 'Képírás: egy szőrszál vagy toll.', kun: '毛 (け) szőr, haj; 髪の毛 (かみのけ) hajszál', on: 'モウ: 毛布 (もうふ) takaró' },
+  '緑': { parts: 'fonal (糸) + kéreg (彔)', mn: 'A kéregből (彔) festett fonal (糸) színe: zöld.', kun: '緑 (みどり) zöld', on: 'リョク: 緑茶 (りょくちゃ) zöld tea' },
+  '尊': { parts: 'korsó (酉) + kéz (寸)', mn: 'Két kézzel (寸) felajánlott boroskorsó (酉): tisztelt, nemes.', kun: '尊い (とうとい) értékes, nemes', on: 'ソン: 尊敬 (そんけい) tisztelet; 尊重 (そんちょう) tiszteletben tartás' },
+  '柔': { parts: 'lándzsa (矛) + fa (木)', mn: 'A hajlékony fa (木) a lándzsa (矛) nyelén: puha, rugalmas.', kun: '柔らかい (やわらかい) puha', on: 'ジュウ: 柔道 (じゅうどう) dzsúdó; 柔軟 (じゅうなん) rugalmas' },
+  '殿': { parts: 'tető (尸) + bunkó (殳)', mn: 'Fegyveres őrök (殳) által védett ház: palota; úr.', kun: '殿 (との) úr (régies); 殿 (どの) uram (levélben)', on: 'デン: 宮殿 (きゅうでん) palota; 御殿 (ごてん) kastély' },
+  '濃': { parts: 'víz (氵) + mezőgazdaság (農)', mn: 'A szántóföld (農) sűrű, iszapos vize (氵): sűrű, tömény.', kun: '濃い (こい) sűrű, erős (íz, szín)', on: 'ノウ: 濃度 (のうど) koncentráció' },
+  '肩': { parts: 'ajtó (戸) + test (月)', mn: 'A test (月) ajtószárnyszerű (戸) része: váll.', kun: '肩 (かた) váll', on: 'ケン: 双肩 (そうけん) mindkét váll' },
+  '幼': { parts: 'kicsi fonal (幺) + erő (力)', mn: 'Még kicsi (幺) az ereje (力): kisgyermek.', kun: '幼い (おさない) kisgyerek, fiatal', on: 'ヨウ: 幼稚園 (ようちえん) óvoda' },
+  '黄': { mn: 'Képírás: derékon viselt sárga jáde dísz: sárga.', kun: '黄色 (きいろ) sárga', on: 'コウ: 黄葉 (こうよう) sárguló lomb; オウ: 黄金 (おうごん) arany; 卵黄 (らんおう) tojássárgája' },
+  '臣': { mn: 'Képírás: lehajtott fejű szolga szeme: alattvaló.', on: 'シン: 家臣 (かしん) hűbéres; ジン: 大臣 (だいじん) miniszter' },
+
+  // ─── 79. lecke: felhő, jég, szerelem ───────────
+  '浅': { parts: 'víz (氵) + kicsi (戋)', mn: 'Kevés (戋) víz (氵): sekély.', kun: '浅い (あさい) sekély', on: 'セン: 浅薄 (せんぱく) felszínes' },
+  '掃': { parts: 'kéz (扌) + seprű (帚)', mn: 'Kézben (扌) a seprű (帚): söpör.', kun: '掃く (はく) söpör', on: 'ソウ: 掃除 (そうじ) takarítás; 掃除機 (そうじき) porszívó' },
+  '雲': { parts: 'eső (雨) + mond, gomolyog (云)', mn: 'Az eső (雨) gomolygó (云) forrása: felhő.', kun: '雲 (くも) felhő', on: 'ウン: 雲海 (うんかい) felhőtenger' },
+  '掘': { parts: 'kéz (扌) + üreg (屈)', mn: 'Kézzel (扌) üreget (屈) váj: ás.', kun: '掘る (ほる) ás', on: 'クツ: 発掘 (はっくつ) ásatás' },
+  '捨': { parts: 'kéz (扌) + ház (舎)', mn: 'Kézzel (扌) kidobja a házból (舎): eldob.', kun: '捨てる (すてる) eldob', on: 'シャ: 取捨 (しゅしゃ) válogatás' },
+  '軟': { parts: 'kocsi (車) + ásít (欠)', mn: 'A kocsi (車) puha párnája: puha, lágy.', kun: '軟らかい (やわらかい) puha (anyagra; a 柔らかい általánosabb)', on: 'ナン: 柔軟 (じゅうなん) rugalmas; 軟弱 (なんじゃく) gyenge' },
+  '沈': { parts: 'víz (氵) + nyomás alá (冘)', mn: 'A víz (氵) alá nyomott ember: süllyed.', kun: '沈む (しずむ) elsüllyed, lemegy (nap)', on: 'チン: 沈黙 (ちんもく) hallgatás' },
+  '凍': { parts: 'jég (冫) + kelet (東)', mn: 'A jég (冫) a keleti szélben: befagy.', kun: '凍る (こおる) megfagy; 凍える (こごえる) dermed', on: 'トウ: 冷凍 (れいとう) fagyasztás' },
+  '恋': { parts: 'kusza (亦) + szív (心)', mn: 'A szív (心) kuszán dobog: szerelem.', kun: '恋 (こい) szerelem; 恋人 (こいびと) kedves', on: 'レン: 恋愛 (れんあい) szerelem' },
+  '紅': { parts: 'fonal (糸) + munka (工)', mn: 'Pirosra festett fonal (糸): bíbor, piros.', kun: '紅 (べに) bíbor; 口紅 (くちべに) rúzs', on: 'コウ: 紅茶 (こうちゃ) fekete tea; 紅葉 (こうよう) őszi lomb' },
+  '腰': { parts: 'test (月) + szükséges (要)', mn: 'A test (月) kulcsa (要): derék.', kun: '腰 (こし) derék, csípő', on: 'ヨウ: 腰痛 (ようつう) derékfájás' },
+  '炭': { parts: 'hegy (山) + szikla (厂) + tűz (火)', mn: 'A hegyi (山) sziklák (厂) alatt tűzzel (火) lassan égetett fa: szén.', kun: '炭 (すみ) faszén', on: 'タン: 石炭 (せきたん) kőszén; 炭酸 (たんさん) szénsav' },
+
+  // ─── 80. lecke: bátorság, rovar, könny ─────────
+  '踊': { parts: 'láb (足) + ugrál (甬)', mn: 'A láb (足) ugrál (甬): táncol.', kun: '踊る (おどる) táncol; 踊り (おどり) tánc', on: 'ヨウ: 舞踊 (ぶよう) tánc (művészet)' },
+  '冊': { mn: 'Képírás: zsinórral összefűzött bambuszlapok: könyv; kötetek számlálója.', on: 'サツ: 一冊 (いっさつ) egy könyv; 二冊 (にさつ) két könyv' },
+  '勇': { parts: 'ugrál (甬) + erő (力)', mn: 'Felugró (甬) erő (力): bátorság.', kun: '勇ましい (いさましい) bátor', on: 'ユウ: 勇気 (ゆうき) bátorság' },
+  '珍': { parts: 'drágakő (王) + sűrű haj (㐱)', mn: 'Ritka, csillogó drágakő (王): ritka, különleges.', kun: '珍しい (めずらしい) ritka, szokatlan', on: 'チン: 珍味 (ちんみ) ínyencség' },
+  '干': { mn: 'Képírás: kétágú szárítórúd: szárít.', kun: '干す (ほす) kiterít, szárít', on: 'カン: 若干 (じゃっかん) néhány' },
+  '虫': { mn: 'Képírás: kígyózó rovar.', kun: '虫 (むし) rovar, bogár', on: 'チュウ: 昆虫 (こんちゅう) rovar' },
+  '溶': { parts: 'víz (氵) + befogad (容)', mn: 'A víz (氵) befogadja (容): felold, olvad.', kun: '溶ける (とける) feloldódik, olvad; 溶かす (とかす) felold', on: 'ヨウ: 溶液 (ようえき) oldat' },
+  '鉱': { parts: 'fém (金) + tág (広)', mn: 'Tágas (広) földből kitermelt fém (金): érc.', on: 'コウ: 鉱山 (こうざん) bánya; 鉱物 (こうぶつ) ásvány' },
+  '涙': { parts: 'víz (氵) + visszatér (戻)', mn: 'A szemből visszatérő (戻) víz (氵): könny.', kun: '涙 (なみだ) könny', on: 'ルイ: 涙腺 (るいせん) könnymirigy' },
+  '匹': { mn: 'Képírás: két összeillő vég vászon: pár; kis állatok számlálója.', kun: 'ひき: 一匹 (いっぴき) egy (állat); 三匹 (さんびき) három', on: 'ヒツ: 匹敵 (ひってき) vetekszik' },
+  '孫': { parts: 'gyerek (子) + folytatás (系)', mn: 'A gyerek (子) folytatása (系): unoka.', kun: '孫 (まご) unoka', on: 'ソン: 子孫 (しそん) leszármazott' },
+  '鋭': { parts: 'fém (金) + kivált (兑)', mn: 'Hegyesre köszörült fém (金): éles.', kun: '鋭い (するどい) éles, hegyes', on: 'エイ: 鋭角 (えいかく) hegyesszög' },
+
+  // ─── 81. lecke: ág, ima, veríték ───────────────
+  '枝': { parts: 'fa (木) + ág (支)', mn: 'A fa (木) elágazása (支): ág.', kun: '枝 (えだ) ág', on: 'シ: 枝葉 (しよう) mellékes dolgok' },
+  '塗': { parts: 'víz (氵) + maradék (余) + föld (土)', mn: 'Vízzel (氵) kevert földet (土) ken a falra: fest, ken.', kun: '塗る (ぬる) fest, ken', on: 'ト: 塗装 (とそう) festés' },
+  '拝': { parts: 'kéz (扌) + két kézzel felajánl', mn: 'A kezeit (扌) összetéve meghajol: imádkozik, hódol.', kun: '拝む (おがむ) imádkozik', on: 'ハイ: 参拝 (さんぱい) templomlátogatás; 拝見 (はいけん) megtekint (alázatos)' },
+  '氷': { parts: 'víz (水) + pont', mn: 'A víz (水) egy ponttal megdermedve: jég.', kun: '氷 (こおり) jég', on: 'ヒョウ: 氷河 (ひょうが) gleccser' },
+  '乾': { parts: 'napkelte (倝) + horog (乙)', mn: 'A felkelő nap kiszárítja: száraz.', kun: '乾く (かわく) kiszárad; 乾かす (かわかす) megszárít', on: 'カン: 乾燥 (かんそう) szárazság; 乾杯 (かんぱい) egészségére' },
+  '祈': { parts: 'oltár (礻) + fejsze (斤)', mn: 'Az oltár (礻) előtt kér: imádkozik.', kun: '祈る (いのる) imádkozik, kíván', on: 'キ: 祈願 (きがん) könyörgés' },
+  '拾': { parts: 'kéz (扌) + összeillik (合)', mn: 'Kézzel (扌) összeszedi: felvesz.', kun: '拾う (ひろう) felvesz (földről)', on: 'シュウ: 拾得 (しゅうとく) találás; ジュウ: 拾 (じゅう) tíz (pénzügyi írásban)' },
+  '汗': { parts: 'víz (氵) + szárít (干)', mn: 'A bőrön kiszáradó víz (氵): veríték.', kun: '汗 (あせ) veríték', on: 'カン: 発汗 (はっかん) izzadás' },
+  '銅': { parts: 'fém (金) + ugyanaz (同)', mn: 'A fém (金), ami színre majdnem ugyanolyan (同), mint az arany: réz, bronz.', on: 'ドウ: 銅 (どう) réz; 銅メダル (どうメダル) bronzérem' },
+  '湿': { parts: 'víz (氵) + nap (日) + föld', mn: 'A nap (日) sem szárítja ki a vizes (氵) földet: nedves.', kun: '湿る (しめる) nyirkos lesz; 湿っぽい (しめっぽい) nyirkos', on: 'シツ: 湿度 (しつど) páratartalom' },
+  '咲': { parts: 'száj (口) + nevet (笑 régi alakja)', mn: 'A virág mosolygós szájként (口) kinyílik: virágzik.', kun: '咲く (さく) virágzik, kinyílik' },
+  '肌': { parts: 'test (月) + asztalka (几)', mn: 'A test (月) sima felülete: bőr.', kun: '肌 (はだ) bőr (érintésre)' },
+
+  // ─── 82. lecke: föld, orr, tatami ──────────────
+  '耕': { parts: 'eke (耒) + kút (井)', mn: 'Ekével (耒) műveli a földet a kút (井) körül: szánt.', kun: '耕す (たがやす) szánt, művel', on: 'コウ: 農耕 (のうこう) földművelés' },
+  '鈍': { parts: 'fém (金) + bimbó (屯)', mn: 'A tompa hegyű fém (金): tompa, lassú.', kun: '鈍い (にぶい) tompa, lassú', on: 'ドン: 鈍感 (どんかん) érzéketlen' },
+  '泥': { parts: 'víz (氵) + apáca (尼)', mn: 'A víz (氵) és a föld összetapad: sár. A 尼 itt a hangot adja.', kun: '泥 (どろ) sár; 泥棒 (どろぼう) tolvaj', on: 'デイ: 泥土 (でいど) iszap' },
+  '磨': { parts: 'kender (麻) + kő (石)', mn: 'Kenderrel (麻) dörzsöli a követ (石): csiszol.', kun: '磨く (みがく) fényesít; 歯を磨く (はをみがく) fogat mos', on: 'マ: 研磨 (けんま) csiszolás' },
+  '鼻': { parts: 'önmaga, orr (自) + adni (畀)', mn: 'Az arc közepén ülő orr (自): orr.', kun: '鼻 (はな) orr; 鼻水 (はなみず) orrfolyás', on: 'ビ: 耳鼻科 (じびか) fül-orr-gégészet' },
+  '粒': { parts: 'rizs (米) + áll (立)', mn: 'Egyenként álló (立) rizsszem (米): szem, részecske.', kun: '粒 (つぶ) szem, szemcse', on: 'リュウ: 粒子 (りゅうし) részecske' },
+  '畳': { parts: 'rizsföld (田) + fedő (冖) + rétegek (且)', mn: 'Rétegesen egymásra rakott szőnyeg: tatami; összehajt.', kun: '畳 (たたみ) tatami; 畳む (たたむ) összehajt', on: 'ジョウ: 六畳 (ろくじょう) hattatamis szoba' },
+  '膚': { parts: 'tigris (虍) + gyomor (胃)', mn: 'A test felszíne, mint a tigris (虍) bundája: bőr.', on: 'フ: 皮膚 (ひふ) bőr (orvosi)' },
+  '濯': { parts: 'víz (氵) + szárny (羽) + madár (隹)', mn: 'Vízben (氵) csapkod, mint a fürdő madár (隹): mos.', on: 'タク: 洗濯 (せんたく) mosás; 洗濯機 (せんたくき) mosógép' },
+  '灰': { parts: 'kéz + tűz (火)', mn: 'A tűz (火) után kézzel kikotort maradék: hamu.', kun: '灰 (はい) hamu; 灰色 (はいいろ) szürke', on: 'カイ: 石灰 (せっかい) mész' },
+  '枯': { parts: 'fa (木) + régi (古)', mn: 'A régi (古) fa (木) elszárad: hervad.', kun: '枯れる (かれる) elszárad, elhervad', on: 'コ: 枯渇 (こかつ) kimerülés' },
+  '涼': { parts: 'víz (氵) + főváros (京)', mn: 'A víz (氵) melletti hűs szellő: hűvös (kellemesen).', kun: '涼しい (すずしい) kellemesen hűvös', on: 'リョウ: 清涼 (せいりょう) üdítő' },
+
+  // ─── 83. lecke: időjárás, alapok (az N2 vége; 6 N1) ─
+  '憎': { parts: 'szív (忄) + egymásra rakott (曽)', mn: 'A szívben (忄) felhalmozott (曽) harag: gyűlöl.', kun: '憎む (にくむ) gyűlöl; 憎い (にくい) gyűlöletes', on: 'ゾウ: 憎悪 (ぞうお) gyűlölet' },
+  '燥': { parts: 'tűz (火) + madárcsicsergés (喿)', mn: 'A tűz (火) kiszárítja: száraz.', on: 'ソウ: 乾燥 (かんそう) szárazság; 乾燥機 (かんそうき) szárítógép' },
+  '畜': { parts: 'fonal, sötét (玄) + rizsföld (田)', mn: 'A rizsföldön (田) kikötve (玄) tartott állat: háziállat.', on: 'チク: 家畜 (かちく) háziállat; 畜産 (ちくさん) állattenyésztés' },
+  '挟': { parts: 'kéz (扌) + két ember közt', mn: 'Kézzel (扌) két dolog közé szorítja: befog.', kun: '挟む (はさむ) közé tesz, becsíp', on: 'キョウ: 挟撃 (きょうげき) kettős támadás' },
+  '曇': { parts: 'nap (日) + felhő (雲)', mn: 'A napot (日) felhő (雲) takarja: borús.', kun: '曇る (くもる) beborul; 曇り (くもり) borult idő', on: 'ドン: 曇天 (どんてん) borús ég' },
+  '滴': { parts: 'víz (氵) + gyökér (啇)', mn: 'A vízből (氵) egyetlen kis rész: csepp.', kun: '滴 (しずく) csepp', on: 'テキ: 水滴 (すいてき) vízcsepp; 点滴 (てんてき) infúzió' },
+  '氏': { mn: 'Képírás: lefelé futó gyökér, a nemzetség eredete: klán, család; úr.', kun: '氏 (うじ) nemzetség', on: 'シ: 田中氏 (たなかし) Tanaka úr (írott); 氏名 (しめい) teljes név' },
+  '統': { parts: 'fonal (糸) + teljes (充)', mn: 'Minden fonalat (糸) egybefog (充): egyesít, irányít.', on: 'トウ: 伝統 (でんとう) hagyomány; 大統領 (だいとうりょう) elnök' },
+  '基': { parts: 'az (其) + föld (土)', mn: 'A földbe (土) rakott alap: alap.', kun: '基 (もと) alap', on: 'キ: 基本 (きほん) alap; 基準 (きじゅん) mérce' },
+  '価': { parts: 'ember (亻) + kereskedés (覀, a 賈 rövidítése)', mn: 'Az ember (亻) kereskedése szabja meg: ár, érték.', kun: '価 (あたい) érték (írott)', on: 'カ: 価格 (かかく) ár; 物価 (ぶっか) árszínvonal' },
+  '提': { parts: 'kéz (扌) + igaz (是)', mn: 'A kézben (扌) lógatva viszi: kézben hord; előterjeszt.', kun: '提げる (さげる) kézben lógatva visz', on: 'テイ: 提出 (ていしゅつ) benyújtás; 提案 (ていあん) javaslat' },
+  '挙': { parts: 'két kéz + kéz (手)', mn: 'Több kéz együtt emel fel valamit: felemel; felsorol.', kun: '挙げる (あげる) felemel, felhoz (példát)', on: 'キョ: 選挙 (せんきょ) választás' }
 };
