@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1), 20. adag = 99–103. lecke (N1), 21. adag = 104–108. lecke (N1), 22. adag = 109–113. lecke (N1), 23. adag = 114–118. lecke (N1).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1), 20. adag = 99–103. lecke (N1), 21. adag = 104–108. lecke (N1), 22. adag = 109–113. lecke (N1), 23. adag = 114–118. lecke (N1), 24. adag = 119–123. lecke (N1).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -1662,5 +1662,75 @@ const KANJI_NOTES = {
   '盾': { parts: 'pajzs + szem (目)', mn: 'A szem (目) elé tartott pajzs: pajzs.', kun: '盾 (たて) pajzs', on: 'ジュン: 矛盾 (むじゅん) ellentmondás' },
   '脈': { parts: 'test (月) + elágazó folyó (𠂢)', mn: 'A testben (月) elágazó folyók: ér; pulzus.', on: 'ミャク: 山脈 (さんみゃく) hegylánc; 脈 (みゃく) pulzus; 文脈 (ぶんみゃく) szövegkörnyezet' },
   '軌': { parts: 'kocsi (車) + kilenc (九)', mn: 'A kocsi (車) kerekei vájta nyom: pálya.', on: 'キ: 軌道 (きどう) pálya; 常軌 (じょうき) megszokott út' },
-  '妨': { parts: 'nő (女) + irány (方)', mn: 'A nő (女) elállja az irányt (方): akadályoz.', kun: '妨げる (さまたげる) akadályoz', on: 'ボウ: 妨害 (ぼうがい) zavarás' }
+  '妨': { parts: 'nő (女) + irány (方)', mn: 'A nő (女) elállja az irányt (方): akadályoz.', kun: '妨げる (さまたげる) akadályoz', on: 'ボウ: 妨害 (ぼうがい) zavarás' },
+
+  // ─── 119. lecke: mennydörgés, tükör, démon (V13.89, N1) ─
+  '雷': { parts: 'eső (雨) + rizsföld (田)', mn: 'Az eső (雨) fölött dübörgő dobok (田): mennydörgés.', kun: '雷 (かみなり) mennydörgés, villám', on: 'ライ: 落雷 (らくらい) villámcsapás; 地雷 (じらい) taposóakna' },
+  '漂': { parts: 'víz (氵) + felszálló láng (票)', mn: 'A vízen (氵) könnyen lebeg, mint a felszálló láng (票): sodródik.', kun: '漂う (ただよう) lebeg, sodródik', on: 'ヒョウ: 漂流 (ひょうりゅう) sodródás (hajóé); 漂白 (ひょうはく) fehérítés' },
+  '懐': { parts: 'szív (忄) + ruhába rejtett könnyek (褱)', mn: 'A ruha (衣) alá, a szívhez (忄) rejtett emlék: kebel; vágyódik.', kun: '懐 (ふところ) kebel, zseb; 懐かしい (なつかしい) kedves emlékű', on: 'カイ: 懐中電灯 (かいちゅうでんとう) zseblámpa' },
+  '勘': { parts: 'nagyon (甚) + erő (力)', mn: 'Belső erő (力), amely nagyon (甚) pontosan érez: megérzés.', on: 'カン: 勘 (かん) megérzés; 勘違い (かんちがい) félreértés; 勘定 (かんじょう) számla' },
+  '拐': { parts: 'kéz (扌) + száj (口) + kés (刀)', mn: 'Kézzel (扌) befogja a szájat (口), késsel (刀) fenyeget: elrabol.', on: 'カイ: 誘拐 (ゆうかい) emberrablás' },
+  '添': { parts: 'víz (氵) + hozzátesz (忝)', mn: 'A vízhez (氵) még hozzáad (忝): mellékel, kísér.', kun: '添える (そえる) mellékel; 添う (そう) kísér', on: 'テン: 添付 (てんぷ) csatolás; 添加物 (てんかぶつ) adalékanyag' },
+  '冠': { parts: 'fedő (冖) + fej (元) + kéz (寸)', mn: 'Kézzel (寸) a fej (元) fölé teszi a fedőt (冖): korona.', kun: '冠 (かんむり) korona', on: 'カン: 王冠 (おうかん) királyi korona; 冠婚葬祭 (かんこんそうさい) családi szertartások' },
+  '斜': { parts: 'maradék (余) + merőkanál (斗)', mn: 'A merőkanalat (斗) megdönti, hogy a maradék (余) kifolyjon: ferde.', kun: '斜め (ななめ) ferde', on: 'シャ: 斜面 (しゃめん) lejtő; 傾斜 (けいしゃ) dőlés' },
+  '鏡': { parts: 'fém (金) + határ (竟)', mn: 'Fém (金) lap, amelyen a kép széléig (竟) minden látszik: tükör.', kun: '鏡 (かがみ) tükör; 眼鏡 (めがね) szemüveg', on: 'キョウ: 望遠鏡 (ぼうえんきょう) távcső; 顕微鏡 (けんびきょう) mikroszkóp' },
+  '浪': { parts: 'víz (氵) + jó (良)', mn: 'A víz (氵) szabadon hullámzik: hullám; vándorlás.', on: 'ロウ: 浪人 (ろうにん) gazdátlan szamuráj, felvételire újra készülő diák; 浪費 (ろうひ) pazarlás' },
+  '壇': { parts: 'föld (土) + bőség (亶)', mn: 'Földből (土) emelt magas emelvény: pódium.', on: 'ダン: 花壇 (かだん) virágágyás; 壇上 (だんじょう) emelvényen; タン: 土壇場 (どたんば) utolsó pillanat' },
+  '魔': { parts: 'kender (麻) + szellem (鬼)', mn: 'A kender (麻) sűrűjében lappangó szellem (鬼): démon.', on: 'マ: 邪魔 (じゃま) zavarás; 魔法 (まほう) varázslat; 悪魔 (あくま) ördög' },
+
+  // ─── 120. lecke: bíbor, faragás, nyugalom ──────
+  '紫': { parts: 'ez (此) + fonal (糸)', mn: 'Ezzel (此) a festékkel festett fonal (糸): bíbor.', kun: '紫 (むらさき) lila', on: 'シ: 紫外線 (しがいせん) ultraibolya sugárzás' },
+  '紋': { parts: 'fonal (糸) + minta (文)', mn: 'Fonallal (糸) hímzett minta (文): címer.', on: 'モン: 家紋 (かもん) családi címer; 指紋 (しもん) ujjlenyomat; 波紋 (はもん) hullámgyűrű' },
+  '奮': { parts: 'nagy (大) + madár (隹) + rizsföld (田)', mn: 'A nagy (大) madár (隹) a rizsföldről (田) felszáll, kitárja a szárnyát: felbuzdul.', kun: '奮う (ふるう) felbuzdul', on: 'フン: 興奮 (こうふん) izgalom; 奮闘 (ふんとう) küzdelem' },
+  '逸': { parts: 'út (⻌) + nyúl (兔)', mn: 'A nyúl (兔) elszalad az útról (⻌): elszökik, eltér.', kun: '逸れる (それる) eltér; 逸らす (そらす) elterel', on: 'イツ: 逸話 (いつわ) anekdota; 秀逸 (しゅういつ) kiváló' },
+  '眼': { parts: 'szem (目) + megáll (艮)', mn: 'A szem (目), amelyen a tekintet megáll (艮): szemgolyó.', kun: '眼 (まなこ) szem (írott); 眼鏡 (めがね) szemüveg', on: 'ガン: 眼科 (がんか) szemészet; 肉眼 (にくがん) szabad szem' },
+  '獄': { parts: 'kutya (犭) + szó (言) + kutya (犬)', mn: 'Két kutya (犭, 犬) őrzi azt, akit szóval (言) elítéltek: börtön.', on: 'ゴク: 地獄 (じごく) pokol; 監獄 (かんごく) börtön' },
+  '彫': { parts: 'kerek (周) + vésett vonások (彡)', mn: 'Körbe (周) vési a vonásokat (彡): farag.', kun: '彫る (ほる) farag, vés', on: 'チョウ: 彫刻 (ちょうこく) szobrászat' },
+  '穏': { parts: 'gabona (禾) + kéz (⺤) + szív (心)', mn: 'A gabonát (禾) kézzel (⺤) begyűjtötte, a szíve (心) nyugodt: békés.', kun: '穏やか (おだやか) nyugodt, szelíd', on: 'オン: 平穏 (へいおん) nyugalom; 不穏 (ふおん) nyugtalanító' },
+  '顕': { parts: 'nap (日) + selyemszálak + fej (頁)', mn: 'A napfényben (日) a fej (頁) jól látszik: nyilvánvaló.', on: 'ケン: 顕著 (けんちょ) feltűnő; 顕微鏡 (けんびきょう) mikroszkóp' },
+  '巧': { parts: 'munka (工) + kanyar (丂)', mn: 'A szerszámmal (工) ügyesen kanyarít (丂): ügyes.', kun: '巧み (たくみ) ügyes', on: 'コウ: 巧妙 (こうみょう) leleményes; 技巧 (ぎこう) technika' },
+  '垣': { parts: 'föld (土) + körbe (亘)', mn: 'Földből (土) körbe (亘) épített fal: kerítés.', kun: '垣 (かき) sövény, kerítés; 垣根 (かきね) kerítés' },
+  '欺': { parts: 'az (其) + tátott száj (欠)', mn: 'Tátott szájjal (欠) mondja: „az (其) igaz”: becsap.', kun: '欺く (あざむく) megtéveszt', on: 'ギ: 詐欺 (さぎ) csalás' },
+
+  // ─── 121. lecke: horgászat, főzés, eskü ────────
+  '釣': { parts: 'fém (金) + merőkanál (勺)', mn: 'Fémből (金) hajlított horog, mint a merőkanál (勺): horgászik.', kun: '釣る (つる) horgászik; お釣り (おつり) visszajáró pénz', on: 'チョウ: 釣果 (ちょうか) fogás (halé)' },
+  '粛': { parts: 'ecset (聿) + rizs (米 alak)', mn: 'Ecsettel (聿) lassan, csendben ír: ünnepélyes.', on: 'シュク: 静粛 (せいしゅく) csend; 自粛 (じしゅく) önkorlátozás' },
+  '愚': { parts: 'majom (禺) + szív (心)', mn: 'A majom (禺) esze a szívben (心): ostoba.', kun: '愚か (おろか) ostoba', on: 'グ: 愚痴 (ぐち) panaszkodás; 愚問 (ぐもん) buta kérdés' },
+  '遭': { parts: 'út (⻌) + csoport (曹)', mn: 'Az úton (⻌) egy csoportba (曹) botlik: balszerencsésen találkozik.', kun: '遭う (あう) belekerül (bajba)', on: 'ソウ: 遭難 (そうなん) hajótörés, baleset; 遭遇 (そうぐう) találkozás' },
+  '架': { parts: 'hozzáad (加) + fa (木)', mn: 'A fát (木) hozzáilleszti (加) a másikhoz: állvány, felállít.', kun: '架ける (かける) átível (híd)', on: 'カ: 架空 (かくう) kitalált; 架橋 (かきょう) hídépítés; 十字架 (じゅうじか) kereszt' },
+  '鬼': { mn: 'Képírás: nagy, ijesztő fejű szellem.', kun: '鬼 (おに) démon, oni; 鬼ごっこ (おにごっこ) fogócska', on: 'キ: 餓鬼 (がき) éhes szellem; kölyök (durva)' },
+  '幻': { parts: 'fonal (幺) + horog', mn: 'A fonal (幺) eltűnik a szem elől: illúzió.', kun: '幻 (まぼろし) látomás, illúzió', on: 'ゲン: 幻想 (げんそう) ábránd; 幻覚 (げんかく) hallucináció' },
+  '煮': { parts: 'valaki (者) + tűz (灬)', mn: 'Valaki (者) a tűzön (灬) főz: főz.', kun: '煮る (にる) főz (lében); 煮物 (にもの) párolt étel', on: 'シャ: 煮沸 (しゃふつ) forralás' },
+  '姫': { parts: 'nő (女) + udvar (臣 alak)', mn: 'A nő (女), akit az udvar szolgál: hercegnő.', kun: '姫 (ひめ) hercegnő; 白雪姫 (しらゆきひめ) Hófehérke' },
+  '誓': { parts: 'kettétör (折) + szó (言)', mn: 'Kettétört (折) bot fölött mondott szó (言): eskü.', kun: '誓う (ちかう) megesküszik', on: 'セイ: 宣誓 (せんせい) eskütétel' },
+  '践': { parts: 'láb (足) + kicsi (戋)', mn: 'Lábbal (足) apró (戋) lépésenként jár: gyakorlatba ültet.', on: 'セン: 実践 (じっせん) gyakorlat' },
+  '疎': { parts: 'láb (疋) + köteg (束)', mn: 'A láb (疋) a kötegek (束) között tág helyet hagy: ritka, távolságtartó.', kun: '疎い (うとい) járatlan, távoli', on: 'ソ: 過疎 (かそ) elnéptelenedés; 疎遠 (そえん) elhidegülés' },
+
+  // ─── 122. lecke: tisztelet, fészek, koto ───────
+  '仰': { parts: 'ember (亻) + felnéz (卬)', mn: 'Az ember (亻) felnéz (卬) a magasba: tisztel.', kun: '仰ぐ (あおぐ) felnéz; 仰る (おっしゃる) mond (tiszteletteljes)', on: 'ギョウ: 仰天 (ぎょうてん) megdöbbenés; コウ: 信仰 (しんこう) hit' },
+  '疾': { parts: 'betegség (疒) + nyíl (矢)', mn: 'A betegség (疒) nyílként (矢) gyorsan terjed: gyors; betegség.', on: 'シツ: 疾患 (しっかん) betegség; 疾走 (しっそう) száguldás' },
+  '砕': { parts: 'kő (石) + kilenc (九) + tíz (十)', mn: 'A követ (石) apró darabokra töri: összetör.', kun: '砕く (くだく) összezúz; 砕ける (くだける) széttörik, közvetlenné válik', on: 'サイ: 粉砕 (ふんさい) porrá zúzás' },
+  '嫁': { parts: 'nő (女) + ház (家)', mn: 'A nő (女), aki a férje házába (家) költözik: meny.', kun: '嫁 (よめ) feleség, meny; 嫁ぐ (とつぐ) férjhez megy', on: 'カ: 転嫁 (てんか) áthárítás' },
+  '謙': { parts: 'szó (言) + egyszerre kettő (兼)', mn: 'A szó (言), amely a másiknak is helyet hagy (兼): szerény.', on: 'ケン: 謙虚 (けんきょ) szerény; 謙遜 (けんそん) szerénykedés; 謙譲語 (けんじょうご) szerénységi nyelv' },
+  '后': { parts: 'ember + száj (口)', mn: 'Az uralkodó mögött álló, szavával (口) irányító nő: császárné.', on: 'コウ: 皇后 (こうごう) császárné' },
+  '嘆': { parts: 'száj (口) + nehézség (𦰩)', mn: 'A száj (口) a nehézségtől sóhajt: sóhajt, kesereg.', kun: '嘆く (なげく) siránkozik', on: 'タン: 感嘆 (かんたん) csodálat; 嘆願 (たんがん) könyörgés' },
+  '菌': { parts: 'fű (艹) + csűr (囷)', mn: 'A csűrben (囷) a fű (艹) között szaporodik: gomba, baktérium.', on: 'キン: 細菌 (さいきん) baktérium; 殺菌 (さっきん) sterilizálás' },
+  '巣': { parts: 'fiókák (⺍) + fészek a fán (果 alak)', mn: 'A fán (木) ülő fészek, benne a fiókák (⺍): fészek.', kun: '巣 (す) fészek; 巣立つ (すだつ) kirepül', on: 'ソウ: 卵巣 (らんそう) petefészek' },
+  '頻': { parts: 'lépés (歩) + fej (頁)', mn: 'A fej (頁) újra és újra lépést (歩) tesz: gyakori.', on: 'ヒン: 頻繁 (ひんぱん) gyakori; 頻度 (ひんど) gyakoriság' },
+  '琴': { parts: 'két jáde (王) + most (今)', mn: 'Jádefényű (王) húrok, alattuk a hangszer teste (今): koto.', kun: '琴 (こと) koto (citera)', on: 'キン: 木琴 (もっきん) xilofon' },
+  '班': { parts: 'jáde (王) + kés (刂) + jáde (王)', mn: 'A jádeköveket (王) késsel (刂) két csoportra osztja: csoport, egység.', on: 'ハン: 班 (はん) csoport (iskolai); 班長 (はんちょう) csoportvezető' },
+
+  // ─── 123. lecke: tisztaság, folyosó, barlang ───
+  '潔': { parts: 'víz (氵) + vés (丰 + 刀) + fonal (糸)', mn: 'Vízben (氵) mosott, tiszta fonal (糸): tiszta, becsületes.', kun: '潔い (いさぎよい) becsületes, egyenes', on: 'ケツ: 清潔 (せいけつ) tiszta; 簡潔 (かんけつ) tömör' },
+  '酷': { parts: 'korsó (酉) + jelent (告)', mn: 'A korsó (酉) erős szesze kegyetlenül csíp: kegyetlen.', kun: '酷い (ひどい) szörnyű, kegyetlen', on: 'コク: 残酷 (ざんこく) kegyetlen; 酷暑 (こくしょ) rekkenő hőség' },
+  '廊': { parts: 'tető (广) + fiatalember (郎)', mn: 'A ház (广) folyosója, ahol a fiatalemberek (郎) várnak: folyosó.', on: 'ロウ: 廊下 (ろうか) folyosó; 画廊 (がろう) galéria' },
+  '寂': { parts: 'tető (宀) + nagybácsi (叔)', mn: 'A tető (宀) alatt az idős nagybácsi (叔) egyedül: magányos.', kun: '寂しい (さびしい) magányos, szomorú', on: 'ジャク: 静寂 (せいじゃく) csend; セキ: 寂然 (せきぜん) néma magány' },
+  '伏': { parts: 'ember (亻) + kutya (犬)', mn: 'Az ember (亻) mellett lapuló kutya (犬): lefekszik, meghajol.', kun: '伏せる (ふせる) lefordít, lehajt; 伏す (ふす) leborul', on: 'フク: 起伏 (きふく) hullámzás (terepé); 降伏 (こうふく) megadás' },
+  '俗': { parts: 'ember (亻) + völgy (谷)', mn: 'A völgyben (谷) élő egyszerű ember (亻): népi, közönséges.', on: 'ゾク: 風俗 (ふうぞく) szokások; 民俗 (みんぞく) néphagyomány; 俗語 (ぞくご) szleng' },
+  '漠': { parts: 'víz (氵) + eltűnik (莫)', mn: 'A víz (氵) eltűnik (莫): sivatag; homályos.', on: 'バク: 砂漠 (さばく) sivatag; 漠然 (ばくぜん) homályos' },
+  '邪': { parts: 'agyar (牙) + falu (⻏)', mn: 'Agyarát (牙) mutató gonosz a faluban (⻏): rossz.', kun: '風邪 (かぜ) megfázás (különleges olvasat)', on: 'ジャ: 邪魔 (じゃま) zavarás; 邪悪 (じゃあく) gonosz' },
+  '鎮': { parts: 'fém (金) + igaz (真)', mn: 'Igazán (真) nehéz fémsúly (金), amely mindent lenyugtat: lecsillapít.', kun: '鎮める (しずめる) lecsillapít', on: 'チン: 鎮静 (ちんせい) nyugtatás; 鎮痛剤 (ちんつうざい) fájdalomcsillapító' },
+  '洞': { parts: 'víz (氵) + ugyanaz (同)', mn: 'A víz (氵) kivájta üreg: barlang.', kun: '洞 (ほら) barlang, üreg', on: 'ドウ: 洞窟 (どうくつ) barlang; 洞察 (どうさつ) belátás' },
+  '履': { parts: 'test (尸) + lépés (彳) + visszatér (復)', mn: 'A test (尸) lépéseit (彳) újra és újra (復) kíséri: lábbeli; felhúz.', kun: '履く (はく) felhúz (cipőt, nadrágot)', on: 'リ: 履歴書 (りれきしょ) önéletrajz; 履修 (りしゅう) tantárgy felvétele' },
+  '劣': { parts: 'kevés (少) + erő (力)', mn: 'Kevés (少) az ereje (力): gyengébb.', kun: '劣る (おとる) alulmarad', on: 'レツ: 劣等感 (れっとうかん) kisebbségi érzés; 劣化 (れっか) romlás' }
 };
