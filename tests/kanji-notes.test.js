@@ -21,12 +21,14 @@ const FIELDS = ['parts', 'mn', 'kun', 'on'];
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 it('kandzsi jegyzetek: adat', () => {
-  expect(entries.length).toBeGreaterThanOrEqual(1656); // 1–27. adag: 1–138. lecke és a lecke nélküli 無
-  // a kész leckék (1–138.) minden kandzsijának van jegyzete
-  const batch1 = [...KANJI.values()].filter(k => k.lesson >= 1 && k.lesson <= 138).map(k => k.kanji);
+  expect(entries.length).toBeGreaterThanOrEqual(1715); // 1–28. adag: 1–142. lecke és mind a 17 lecke nélküli kandzsi
+  // a kész leckék (1–142.) minden kandzsijának van jegyzete
+  const batch1 = [...KANJI.values()].filter(k => k.lesson >= 1 && k.lesson <= 142).map(k => k.kanji);
   expect(batch1.filter(k => !NOTES[k])).toEqual([]);
   // az N5–N3 minden kandzsijának van jegyzete (V13.75), a lecke nélküliekének is
   expect([...KANJI.values()].filter(k => ['N5', 'N4', 'N3'].includes(k.jlpt) && !NOTES[k.kanji]).map(k => k.kanji)).toEqual([]);
+  // V13.93 óta minden kandzsinak van jegyzete: N2, N1 és a lecke nélküli ételnevek is
+  expect([...KANJI.values()].filter(k => !NOTES[k.kanji]).map(k => k.kanji)).toEqual([]);
   expect(entries.filter(([k]) => !KANJI.has(k)).map(([k]) => k)).toEqual([]);
   expect(entries.filter(([, v]) => Object.keys(v).some(f => !FIELDS.includes(f))).map(([k]) => k)).toEqual([]);
   expect(entries.filter(([, v]) => !(v.mn || v.parts) ||
@@ -48,7 +50,9 @@ it('kandzsi lap az appban', async () => {
   api.setMode('kanji');
   const kj = win.appData.kanji.words;
   const rest = kj.find(w => w.en === '休');
-  const bare = kj.find(w => !NOTES[w.en] && w.onyomi);
+  // V13.93 óta minden kandzsinak van jegyzete: a jegyzet nélküli lapot egy ideiglenesen kivett jegyzettel nézzük
+  const bare = kj.find(w => w.en !== '休' && w.onyomi);
+  const saved = api.KANJI_NOTES[bare.en];
 
   // „i” gomb jegyzettel zöld, a lap a felépítéssel és a teljes olvasatokkal
   expect(api.infoButtonHtml(rest)).toContain('has-note');
@@ -66,11 +70,14 @@ it('kandzsi lap az appban', async () => {
   api.closeWordInfo();
 
   // jegyzet nélkül: az adat olvasatai és a „még nincs leírás” sor
+  expect(saved).toBeTruthy();
+  delete api.KANJI_NOTES[bare.en];
   expect(api.infoButtonHtml(bare)).not.toContain('has-note');
   api.openWordInfo(bare.id);
   expect(body.querySelector('.wi-empty').textContent).toBe('Ehhez a kandzsihoz még nincs leírás.');
   expect(body.textContent).toContain(bare.onyomi);
   api.closeWordInfo();
+  api.KANJI_NOTES[bare.en] = saved;
 
   // a hibás válasz utáni sor kandzsinál nincs (csak a lap)
   expect(api.missNoteHtml(rest)).toBe('');

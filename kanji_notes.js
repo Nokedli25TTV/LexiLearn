@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1), 20. adag = 99–103. lecke (N1), 21. adag = 104–108. lecke (N1), 22. adag = 109–113. lecke (N1), 23. adag = 114–118. lecke (N1), 24. adag = 119–123. lecke (N1), 25. adag = 124–128. lecke (N1), 26. adag = 129–133. lecke (N1), 27. adag = 134–138. lecke (N1).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1), 20. adag = 99–103. lecke (N1), 21. adag = 104–108. lecke (N1), 22. adag = 109–113. lecke (N1), 23. adag = 114–118. lecke (N1), 24. adag = 119–123. lecke (N1), 25. adag = 124–128. lecke (N1), 26. adag = 129–133. lecke (N1), 27. adag = 134–138. lecke (N1), 28. adag = 139–142. lecke (N1, és a 16 lecke nélküli kandzsi).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -1941,5 +1941,74 @@ const KANJI_NOTES = {
   '墜': { parts: 'domb (阝) + disznó (豕) + föld (土)', mn: 'A dombról (阝) a disznó (豕) a földre (土) zuhan: lezuhan.', on: 'ツイ: 墜落 (ついらく) lezuhanás; 撃墜 (げきつい) lelövés' },
   '沼': { parts: 'víz (氵) + hív (召)', mn: 'A víz (氵), amely magához hív (召), és nem enged: mocsár.', kun: '沼 (ぬま) mocsár, tó', on: 'ショウ: 沼沢 (しょうたく) lápvidék' },
   '肥': { parts: 'test (月) + kígyó (巴)', mn: 'A test (月) kerekre hízik, mint a jóllakott kígyó (巴): kövér; trágya.', kun: '肥える (こえる) hízik, termékeny lesz; 肥やし (こやし) trágya', on: 'ヒ: 肥料 (ひりょう) műtrágya; 肥満 (ひまん) elhízás' },
-  '搬': { parts: 'kéz (扌) + hajó (般)', mn: 'Kézzel (扌) hajóra (般) rakja: szállít.', on: 'ハン: 運搬 (うんぱん) szállítás; 搬入 (はんにゅう) beszállítás' }
+  '搬': { parts: 'kéz (扌) + hajó (般)', mn: 'Kézzel (扌) hajóra (般) rakja: szállít.', on: 'ハン: 運搬 (うんぱん) szállítás; 搬入 (はんにゅう) beszállítás' },
+
+  // ─── 139. lecke: pénz, szivárvány, szúnyog (V13.93, N1) ─
+  '幣': { parts: 'rongyos kendő (敝) + kendő (巾)', mn: 'Áldozati kendő (巾), később a pénz neve: pénz.', on: 'ヘイ: 紙幣 (しへい) papírpénz; 貨幣 (かへい) pénz; 御幣 (ごへい) sintó áldozati pálca' },
+  '膜': { parts: 'test (月) + eltűnik (莫)', mn: 'A testben (月) szinte láthatatlan (莫) vékony hártya: membrán.', on: 'マク: 鼓膜 (こまく) dobhártya; 粘膜 (ねんまく) nyálkahártya' },
+  '槽': { parts: 'fa (木) + csoport (曹)', mn: 'Fából (木) készült hosszú vályú, sokaknak (曹): tartály.', on: 'ソウ: 浴槽 (よくそう) fürdőkád; 水槽 (すいそう) akvárium, víztartály' },
+  '惰': { parts: 'szív (忄) + lehanyatlik (左 + 月)', mn: 'A szív (忄) lehanyatlik, nincs kedve semmihez: lusta.', on: 'ダ: 怠惰 (たいだ) lustaság; 惰性 (だせい) tehetetlenség, megszokás' },
+  '冴': { parts: 'jég (冫) + agyar (牙)', mn: 'A jég (冫) éles, mint az agyar (牙): tiszta, hideg; éles eszű.', kun: '冴える (さえる) kitisztul; éles lesz (ész)' },
+  '煩': { parts: 'tűz (火) + fej (頁)', mn: 'A fej (頁) ég, mint a tűz (火): bosszúság, gond.', kun: '煩う (わずらう) gyötrődik; 煩わしい (わずらわしい) bosszantó', on: 'ハン: 煩雑 (はんざつ) bonyolult; ボン: 煩悩 (ぼんのう) világi vágyak' },
+  '寧': { parts: 'tető (宀) + szív (心) + tál (皿) + kampó (丁)', mn: 'A tető (宀) alatt teli tál (皿), a szív (心) nyugodt: nyugalom; udvarias.', on: 'ネイ: 丁寧 (ていねい) udvarias, gondos; 安寧 (あんねい) béke' },
+  '循': { parts: 'lépés (彳) + pajzs (盾)', mn: 'Pajzzsal (盾) lépked (彳) körbe a fal mentén: körforgás.', on: 'ジュン: 循環 (じゅんかん) körforgás' },
+  '虹': { parts: 'rovar (虫) + munka (工)', mn: 'Az égen átívelő, kígyóként (虫) hajló híd (工): szivárvány.', kun: '虹 (にじ) szivárvány', on: 'コウ: 虹彩 (こうさい) szivárványhártya' },
+  '湧': { parts: 'víz (氵) + bátor (勇)', mn: 'A víz (氵) bátran (勇) feltör: forrásként fakad.', kun: '湧く (わく) fakad, feltör (érzés is)', on: 'ユウ: 湧出 (ゆうしゅつ) feltörés (forrásé)' },
+  '蚊': { parts: 'rovar (虫) + írás (文)', mn: 'A rovar (虫), amely zümmögve „ír” a bőrre: szúnyog.', kun: '蚊 (か) szúnyog; 蚊取り線香 (かとりせんこう) szúnyogriasztó füstölő' },
+
+  // ─── 140. lecke: baj, lakk, rabló ──────────────
+  '厄': { parts: 'szikla (厂) + térdelő (㔾)', mn: 'A szikla (厂) alatt térdre kényszerül (㔾): baj, balszerencse.', on: 'ヤク: 厄介 (やっかい) kellemetlen, nehéz; 災厄 (さいやく) csapás; 厄年 (やくどし) balszerencsés év' },
+  '崇': { parts: 'hegy (山) + vallás (宗)', mn: 'A hegyen (山) álló szentély (宗): tisztel.', kun: '崇める (あがめる) tisztel, imád', on: 'スウ: 崇拝 (すうはい) imádat; 崇高 (すうこう) magasztos' },
+  '漆': { parts: 'víz (氵) + fa (木) + cseppek (氺)', mn: 'A fából (木) csepegő (氺) nedv (氵): lakk.', kun: '漆 (うるし) lakk', on: 'シツ: 漆器 (しっき) lakkáru; 漆黒 (しっこく) koromfekete' },
+  '癖': { parts: 'betegség (疒) + tilalom (辟)', mn: 'Betegségként (疒) rátapadt szokás, amelyet nem tud abbahagyni: rossz szokás.', kun: '癖 (くせ) szokás, rigolya; 口癖 (くちぐせ) szavajárás', on: 'ヘキ: 潔癖 (けっぺき) tisztaságmánia' },
+  '礁': { parts: 'kő (石) + perzsel (焦)', mn: 'A víz alól kiálló, perzselt (焦) kő (石): zátony.', on: 'ショウ: 座礁 (ざしょう) zátonyra futás; 珊瑚礁 (さんごしょう) korallzátony' },
+  '塁': { parts: 'rizsföld (田) + föld (土)', mn: 'Földből (土) halmozott sánc: erődítmény; bázis (baseball).', on: 'ルイ: 本塁打 (ほんるいだ) hazafutás; 一塁 (いちるい) első bázis' },
+  '帳': { parts: 'kendő (巾) + hosszú (長)', mn: 'Hosszú (長) kendő (巾), később a füzet lapjai: függöny; füzet.', on: 'チョウ: 手帳 (てちょう) zsebnaptár; 通帳 (つうちょう) bankbetétkönyv; 几帳面 (きちょうめん) precíz' },
+  '諭': { parts: 'szó (言) + csónak (兪)', mn: 'Szóval (言) vezeti át, mint csónak (兪) a túlpartra: int, meggyőz.', kun: '諭す (さとす) int, észre térít', on: 'ユ: 教諭 (きょうゆ) tanár (hivatalos)' },
+  '慕': { parts: 'eltűnik (莫) + szív (⺗)', mn: 'Aki eltűnt (莫), utána sóvárog a szív (⺗): vágyódik.', kun: '慕う (したう) vágyódik, ragaszkodik', on: 'ボ: 思慕 (しぼ) vágyakozás; 敬慕 (けいぼ) tisztelet és szeretet' },
+  '奨': { parts: 'vezér (将) + nagy (大)', mn: 'A vezér (将) nagyra (大) biztat: ösztönöz.', on: 'ショウ: 奨学金 (しょうがくきん) ösztöndíj; 推奨 (すいしょう) ajánlás' },
+  '賊': { parts: 'pénz (貝) + alabárd (戈) + tíz (十)', mn: 'Fegyverrel (戈) veszi el a pénzt (貝): rabló.', on: 'ゾク: 海賊 (かいぞく) kalóz; 盗賊 (とうぞく) rabló' },
+  '窃': { parts: 'lyuk (穴) + vág (切)', mn: 'Lyukat (穴) vág (切), és titokban lop: lopás.', on: 'セツ: 窃盗 (せっとう) lopás' },
+
+  // ─── 141. lecke: középút, vicc, messzeség ──────
+  '庸': { parts: 'tető (广) + használ (用)', mn: 'A ház (广) mindennapi használata (用): közönséges, mérsékelt.', on: 'ヨウ: 中庸 (ちゅうよう) középút; 凡庸 (ぼんよう) középszerű' },
+  '弥': { parts: 'íj (弓) + kicsi (小)', mn: 'Az íj (弓) egyre messzebbre lő: egyre inkább.', kun: '弥 (や) egyre (nevekben); 弥生 (やよい) március (régies)', on: 'ミ: 阿弥陀 (あみだ) Amida Buddha' },
+  '丁': { mn: 'Képírás: szög vagy kapocs: pontosan; háztömb.', on: 'チョウ: 丁度 (ちょうど) pontosan; 一丁目 (いっちょうめ) első háztömb; テイ: 丁寧 (ていねい) udvarias' },
+  '朋': { parts: 'hold (月) + hold (月)', mn: 'Két egyforma (月) egymás mellett: társ, barát.', kun: '朋 (とも) barát', on: 'ホウ: 朋友 (ほうゆう) barát' },
+  '妥': { parts: 'kéz (⺤) + nő (女)', mn: 'Kézzel (⺤) megnyugtatja a nőt (女): egyezség, megfelelő.', on: 'ダ: 妥協 (だきょう) kompromisszum; 妥当 (だとう) helyénvaló' },
+  '冗': { parts: 'tető (冖) + asztalka (几)', mn: 'A tető (冖) alatt álló, fölösleges asztalka (几): fölösleges.', on: 'ジョウ: 冗談 (じょうだん) vicc; 冗長 (じょうちょう) bőbeszédű' },
+  '斉': { mn: 'Képírás: egyforma magasságú gabonakalászok: egyforma, egyszerre.', on: 'セイ: 一斉に (いっせいに) egyszerre; 斉唱 (せいしょう) egyszólamú ének' },
+  '惟': { parts: 'szív (忄) + madár (隹)', mn: 'A szív (忄) gondolatai, mint a röpködő madár (隹): gondol.', kun: '惟う (おもう) gondol (írott)', on: 'イ: 思惟 (しい) gondolkodás' },
+  '遥': { parts: 'út (⻌) + agyagkorsó (䍃)', mn: 'Hosszú úton (⻌) viszi a korsót (䍃): messzi.', kun: '遥か (はるか) messze', on: 'ヨウ: 遥拝 (ようはい) imádás messziről' },
+  '祐': { parts: 'oltár (礻) + jobb (右)', mn: 'Az istenek (礻) jobb keze (右) segít: isteni segítség.', kun: '祐ける (たすける) segít (írott)', on: 'ユウ: 天祐 (てんゆう) isteni segítség' },
+  '允': { parts: 'magán (厶) + lábak (儿)', mn: 'Az ember (儿) rábólint: engedély; őszinte.', kun: '允に (まことに) valóban (írott)', on: 'イン: 允許 (いんきょ) engedély' },
+  '侯': { parts: 'ember (亻) + nyíl (矢)', mn: 'Az ember (亻), aki nyíllal (矢) őrzi a határt: főúr, márki.', on: 'コウ: 侯爵 (こうしゃく) márki; 諸侯 (しょこう) hűbérurak' },
+
+  // ─── 142. lecke: írott kötőszavak ──────────────
+  '但': { parts: 'ember (亻) + hajnal (旦)', mn: 'Az ember (亻) a hajnalban (旦) még csak egyedül: csak, azonban.', kun: '但し (ただし) azonban, kivéve' },
+  '又': { mn: 'Képírás: jobb kéz: ismét, szintén.', kun: '又 (また) ismét, szintén; 又は (または) vagy' },
+  '且': { mn: 'Képírás: egymásra rakott áldozati tál: továbbá.', kun: '且つ (かつ) és, továbbá' },
+  '乃': { mn: 'Képírás: meghajló vonal, kötőszó jele: tehát.', kun: '乃ち (すなわち) tehát (írott)', on: 'ナイ: 乃至 (ないし) vagy; -tól -ig' },
+  '之': { mn: 'Képírás: előre lépő láb: megy; ez; birtokos jel.', kun: '之 (これ) ez (írott)', on: 'シ: 之繞 (しんにょう) az ⻌ gyök neve' },
+  '也': { mn: 'Képírás: kígyó vagy kanál alakú jel; a klasszikus nyelvben: van, így van.', kun: '也 (なり) van (klasszikus)', on: 'ヤ: 拓也 (たくや) Takuja (név)' },
+  '於': { parts: 'zászló (方) + jég (冫)', mn: 'A zászló (方) helyén: -ban, -nál (írott elöljáró).', kun: '於いて (おいて) -ban, -nál (írott)' },
+  '只': { parts: 'száj (口) + nyolc (八)', mn: 'A szájból (口) kiáramló kis sóhaj (八): csak.', kun: '只 (ただ) csak; ingyen', on: 'シ: 只管 (しかん) kizárólag (írott)' },
+
+  // ─── Lecke nélkül: ételek az étlapról (V13.93, N1) ─
+  '麺': { parts: 'búza (麦) + arc, lap (面)', mn: 'Búzából (麦) nyújtott, lapos (面) tészta: tészta.', on: 'メン: 麺 (めん) tészta; 麺類 (めんるい) tésztafélék' },
+  '丼': { parts: 'kút (井) + pont', mn: 'A kútba (井) pottyanó kő képe, később a mély tál: rizstál.', kun: '丼 (どんぶり) mély tál, donburi', on: 'ドン: 牛丼 (ぎゅうどん) marhahúsos rizstál; 天丼 (てんどん) tempurás rizstál' },
+  '鮪': { parts: 'hal (魚) + van (有)', mn: 'A hal (魚), amelyből sok van (有) a tengerben: tonhal.', kun: '鮪 (まぐろ) tonhal' },
+  '鮭': { parts: 'hal (魚) + föld (圭)', mn: 'A hal (魚), amely felúszik a folyón a szülőföldjére (圭): lazac.', kun: '鮭 (さけ / しゃけ) lazac' },
+  '蟹': { parts: 'bont (解) + rovar (虫)', mn: 'A páncélos állat (虫), amelyet ki kell bontani (解): rák.', kun: '蟹 (かに) rák' },
+  '珈': { parts: 'jáde (王) + hozzáad (加)', mn: 'Hangzás szerinti jel, csak a 珈琲 (kávé) szóban.', on: 'カ: 珈琲 (コーヒー) kávé (hangzás szerinti írás)' },
+  '琲': { parts: 'jáde (王) + nem (非)', mn: 'A 珈琲 (kávé) második jele; eredetileg gyöngysor.', on: 'ヒ: 珈琲 (コーヒー) kávé (hangzás szerinti írás)' },
+  '葱': { parts: 'fű (艹) + üreges (悤)', mn: 'Üreges szárú növény (艹): újhagyma.', kun: '葱 (ねぎ) újhagyma; 玉葱 (たまねぎ) vöröshagyma' },
+  '蛸': { parts: 'rovar (虫) + hasonló (肖)', mn: 'Puhatestű állat (虫), sok karral: polip.', kun: '蛸 (たこ) polip; 蛸焼き (たこやき) takojaki' },
+  '鰻': { parts: 'hal (魚) + elnyúlik (曼)', mn: 'Hosszan elnyúló (曼) hal (魚): angolna.', kun: '鰻 (うなぎ) angolna; 鰻重 (うなじゅう) angolna dobozban rizzsel' },
+  '醤': { parts: 'vezér (将) + korsó (酉)', mn: 'A korsóban (酉) érlelt szósz, amely az étel ízét vezeti (将): szósz.', on: 'ショウ: 醤油 (しょうゆ) szójaszósz' },
+  '酢': { parts: 'korsó (酉) + hirtelen (乍)', mn: 'A korsóban (酉) álló bor egyszer csak (乍) megsavanyodik: ecet.', kun: '酢 (す) ecet', on: 'サク: 酢酸 (さくさん) ecetsav' },
+  '酎': { parts: 'korsó (酉) + mérték (寸)', mn: 'A korsóból (酉) mérték (寸) szerint töltött erős szesz: párlat.', on: 'チュウ: 焼酎 (しょうちゅう) sócsú; 酎ハイ (ちゅうハイ) sócsús koktél' },
+  '茸': { parts: 'fű (艹) + fül (耳)', mn: 'A fű (艹) közül kibújó, fül (耳) alakú termés: gomba.', kun: '茸 (きのこ) gomba; 松茸 (まつたけ) macutake gomba' },
+  '鴨': { parts: 'első (甲) + madár (鳥)', mn: 'A vízimadarak (鳥) között az első (甲): kacsa.', kun: '鴨 (かも) vadkacsa; 鴨南蛮 (かもなんばん) kacsás tésztaleves' },
+  '鯛': { parts: 'hal (魚) + kerek (周)', mn: 'A kerek (周) testű, ünnepi hal (魚): tengeri durbincs.', kun: '鯛 (たい) tengeri durbincs' }
 };
