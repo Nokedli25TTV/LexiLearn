@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -738,5 +738,75 @@ const KANJI_NOTES = {
   '各': { parts: 'láb (夂) + száj, kapu (口)', mn: 'Mindegyik láb (夂) a maga kapujához (口) ér: minden egyes.', kun: '各 (おのおの) mindegyik (írott)', on: 'カク: 各地 (かくち) mindenhol; 各自 (かくじ) mindenki külön' },
 
   // ─── Lecke nélkül (az adatban nincs leckeszáma) ─
-  '無': { mn: 'Képírás: táncoló ember, kezében tollakkal; a táncban minden eltűnik: nincs, semmi.', kun: '無い (ない) nincs (inkább kanával)', on: 'ム: 無理 (むり) lehetetlen; 無料 (むりょう) ingyenes; ブ: 無事 (ぶじ) épségben' }
+  '無': { mn: 'Képírás: táncoló ember, kezében tollakkal; a táncban minden eltűnik: nincs, semmi.', kun: '無い (ない) nincs (inkább kanával)', on: 'ム: 無理 (むり) lehetetlen; 無料 (むりょう) ingyenes; ブ: 無事 (ぶじ) épségben' },
+
+  // ─── 53. lecke: falu, határ, szállítás (V13.76, N2) ─
+  '革': { mn: 'Képírás: kifeszített, megnyúzott állatbőr: bőr; a kikészítéssel átalakul, innen a reform.', kun: '革 (かわ) bőr (kikészített)', on: 'カク: 革命 (かくめい) forradalom; 改革 (かいかく) reform' },
+  '村': { parts: 'fa (木) + kéz (寸)', mn: 'Fák (木) között kézzel (寸) épített házak: falu.', kun: '村 (むら) falu', on: 'ソン: 農村 (のうそん) mezőgazdasági falu; 村長 (そんちょう) falusi elöljáró' },
+  '勢': { parts: 'ültet (埶) + erő (力)', mn: 'Ültetés (埶) teljes erővel (力): lendület, erő.', kun: '勢い (いきおい) lendület', on: 'セイ: 大勢 (おおぜい) sok ember; 姿勢 (しせい) testtartás' },
+  '再': { mn: 'Képírás: egymásra rakott fa, újra és újra: újra.', kun: '再び (ふたたび) újra', on: 'サイ: 再開 (さいかい) újrakezdés; サ: 再来週 (さらいしゅう) két hét múlva' },
+  '比': { mn: 'Képírás: két egymás mellett álló ember: összehasonlít.', kun: '比べる (くらべる) összehasonlít', on: 'ヒ: 比較 (ひかく) összehasonlítás; 比例 (ひれい) arányosság' },
+  '補': { parts: 'ruha (衤) + kiegészít (甫)', mn: 'A ruhát (衤) megfoltozza: kiegészít, pótol.', kun: '補う (おぎなう) pótol', on: 'ホ: 補足 (ほそく) kiegészítés; 候補 (こうほ) jelölt' },
+  '境': { parts: 'föld (土) + vég (竟)', mn: 'Ahol a föld (土) véget ér (竟): határ.', kun: '境 (さかい) határ', on: 'キョウ: 環境 (かんきょう) környezet; 国境 (こっきょう) országhatár' },
+  '算': { parts: 'bambusz (竹) + szem (目) + két kéz (廾)', mn: 'Két kézzel (廾) bambuszpálcikákat (竹) rak sorba: számol.', on: 'サン: 計算 (けいさん) számolás; 予算 (よさん) költségvetés' },
+  '輸': { parts: 'kocsi (車) + átvisz (兪)', mn: 'Kocsival (車) átviszi: szállít.', on: 'ユ: 輸出 (ゆしゅつ) export; 輸入 (ゆにゅう) import' },
+  '述': { parts: 'út (⻌) + köles (朮)', mn: 'Az úton (⻌) végigmenve elmondja: kifejt, említ.', kun: '述べる (のべる) kifejt', on: 'ジュツ: 記述 (きじゅつ) leírás' },
+  '線': { parts: 'fonal (糸) + forrás (泉)', mn: 'A forrásból (泉) eredő hosszú fonal (糸): vonal.', on: 'セン: 線 (せん) vonal; 新幹線 (しんかんせん) gyorsvasút; 路線 (ろせん) járat' },
+  '域': { parts: 'föld (土) + ország (或)', mn: 'A föld (土), amit az ország (或) határa övez: terület.', on: 'イキ: 地域 (ちいき) régió; 領域 (りょういき) terület' },
+
+  // ─── 54. lecke: mérce, környék, mennyiség ──────
+  '準': { parts: 'víz (氵) + madár (隹) + tíz (十)', mn: 'A víz (氵) szintje a mérce: mérték, előkészület.', on: 'ジュン: 準備 (じゅんび) előkészület; 基準 (きじゅん) mérce; 水準 (すいじゅん) szint' },
+  '辺': { parts: 'út (⻌) + kés (刀)', mn: 'Az út (⻌) széle, ahol a kés (刀) levág: környék, szél.', kun: '辺り (あたり) környék; べ: 海辺 (うみべ) tengerpart', on: 'ヘン: この辺 (このへん) errefelé; 周辺 (しゅうへん) környék' },
+  '復': { parts: 'lépés (彳) + visszatér (复)', mn: 'Ugyanazon az úton (彳) visszatér: helyreállít, ismétel.', on: 'フク: 復習 (ふくしゅう) ismétlés; 往復 (おうふく) oda-vissza; 回復 (かいふく) felépülés' },
+  '移': { parts: 'gabona (禾) + sok (多)', mn: 'A sok (多) gabonát (禾) átrakják: áthelyez.', kun: '移る (うつる) átköltözik; 移す (うつす) áthelyez', on: 'イ: 移動 (いどう) helyváltoztatás; 移民 (いみん) bevándorló' },
+  '個': { parts: 'ember (亻) + szilárd (固)', mn: 'Egy ember (亻), szilárdan (固) önmaga: egyén; darab.', on: 'コ: 個人 (こじん) egyén; 一個 (いっこ) egy darab' },
+  '門': { mn: 'Képírás: kétszárnyú kapu.', kun: '門 (かど) kapu (ritka)', on: 'モン: 門 (もん) kapu; 専門 (せんもん) szakterület' },
+  '極': { parts: 'fa (木) + végső (亟)', mn: 'A fa (木) legvége: pólus, végső.', kun: '極める (きわめる) a csúcsra ér', on: 'キョク: 北極 (ほっきょく) Északi-sark; 積極的 (せっきょくてき) aktív; ゴク: 極楽 (ごくらく) paradicsom' },
+  '含': { parts: 'most (今) + száj (口)', mn: 'A szájban (口) tartja még most (今): tartalmaz.', kun: '含む (ふくむ) tartalmaz', on: 'ガン: 含有 (がんゆう) tartalom (anyagé)' },
+  '蔵': { parts: 'fű (艹) + rejt (臧)', mn: 'A fű (艹) alá rejtett kincs: raktár.', kun: '蔵 (くら) raktár, magtár', on: 'ゾウ: 冷蔵庫 (れいぞうこ) hűtő; 貯蔵 (ちょぞう) tárolás' },
+  '量': { parts: 'nap (日) + egy (一) + falu (里)', mn: 'A nap (日) alatt a falu (里) termését mérik: mennyiség.', kun: '量る (はかる) mér (súlyt)', on: 'リョウ: 量 (りょう) mennyiség; 大量 (たいりょう) nagy mennyiség' },
+  '型': { parts: 'formál (刑) + föld (土)', mn: 'Földbe (土) vágott öntőforma: minta, típus.', kun: '型 (かた) forma, minta; 大型 (おおがた) nagy méretű', on: 'ケイ: 典型 (てんけい) tipikus' },
+  '況': { parts: 'víz (氵) + báty (兄)', mn: 'A víz (氵) állása: helyzet.', on: 'キョウ: 状況 (じょうきょう) helyzet; 不況 (ふきょう) recesszió' },
+
+  // ─── 55. lecke: emelet, hatás, híd ─────────────
+  '針': { parts: 'fém (金) + tíz (十)', mn: 'Fémből (金) készült, hegyes (十) eszköz: tű.', kun: '針 (はり) tű; óramutató', on: 'シン: 方針 (ほうしん) irányelv' },
+  '階': { parts: 'domb (⻖) + mind (皆)', mn: 'A dombra (⻖) mindenki (皆) együtt lépcsőzik: emelet, szint.', on: 'カイ: 一階 (いっかい) földszint; 二階 (にかい) első emelet; 階段 (かいだん) lépcső' },
+  '効': { parts: 'keresztez (交) + erő (力)', mn: 'Az erő (力), ami keresztülhat (交): hatás.', kun: '効く (きく) hat (gyógyszer)', on: 'コウ: 効果 (こうか) hatás; 有効 (ゆうこう) érvényes' },
+  '丸': { mn: 'Képírás: összegömbölyödött ember: kerek.', kun: '丸い (まるい) kerek; 丸 (まる) kör, helyes jel', on: 'ガン: 弾丸 (だんがん) lövedék' },
+  '録': { parts: 'fém (金) + vés (彔)', mn: 'Fémbe (金) vésett jel: feljegyzés.', on: 'ロク: 記録 (きろく) feljegyzés, rekord; 録音 (ろくおん) hangfelvétel; 登録 (とうろく) regisztráció' },
+  '省': { parts: 'kicsi (少) + szem (目)', mn: 'A szem (目) egy kicsit (少) visszanéz: elmélkedik; elhagy, takarékoskodik.', kun: '省く (はぶく) kihagy; 省みる (かえりみる) visszatekint', on: 'セイ: 反省 (はんせい) önvizsgálat; ショウ: 外務省 (がいむしょう) külügyminisztérium' },
+  '橋': { parts: 'fa (木) + magas (喬)', mn: 'Fából (木) épült magas (喬) ív: híd.', kun: '橋 (はし) híd (a pálcika 箸)', on: 'キョウ: 歩道橋 (ほどうきょう) gyalogos felüljáró' },
+  '周': { mn: 'Képírás: körülkerített mező: kör, körül.', kun: '周り (まわり) körülötte, környék', on: 'シュウ: 周辺 (しゅうへん) környék; 一周 (いっしゅう) egy kör' },
+  '材': { parts: 'fa (木) + tehetség (才)', mn: 'A fa (木), amiből a mester (才) dolgozik: anyag.', on: 'ザイ: 材料 (ざいりょう) alapanyag; 人材 (じんざい) tehetséges munkaerő' },
+  '戸': { mn: 'Képírás: egyszárnyú ajtó.', kun: '戸 (と) ajtó (tolóajtó); 戸棚 (とだな) szekrény', on: 'コ: 一戸建て (いっこだて) családi ház' },
+  '央': { parts: 'nagy (大) + keret', mn: 'Ember (大) a keret közepén: közép.', on: 'オウ: 中央 (ちゅうおう) középpont' },
+  '券': { parts: 'két kéz + kés (刀)', mn: 'Késsel (刀) levágott szelvény: jegy.', on: 'ケン: 乗車券 (じょうしゃけん) menetjegy; 食券 (しょっけん) étkezési jegy' },
+
+  // ─── 56. lecke: szerkesztés, gyökér, előadás ───
+  '編': { parts: 'fonal (糸) + lap (扁)', mn: 'A lapokat (扁) fonallal (糸) összefűzi: szerkeszt, köt.', kun: '編む (あむ) köt (fonalat)', on: 'ヘン: 編集 (へんしゅう) szerkesztés' },
+  '超': { parts: 'fut (走) + hív (召)', mn: 'Futva (走) átugorja: meghalad; szuper-.', kun: '超える (こえる) meghalad (mennyiséget)', on: 'チョウ: 超過 (ちょうか) túllépés; 超 (ちょう) nagyon (köznapi)' },
+  '並': { mn: 'Képírás: két egymás mellett álló ember: sorban; átlagos.', kun: '並ぶ (ならぶ) sorba áll; 並べる (ならべる) sorba rak; 並 (なみ) átlagos', on: 'ヘイ: 並行 (へいこう) párhuzamos' },
+  '療': { parts: 'betegség (疒) + ápol (尞)', mn: 'A beteget (疒) ápolják: gyógyít.', on: 'リョウ: 治療 (ちりょう) kezelés; 医療 (いりょう) egészségügy' },
+  '介': { parts: 'ember (人) + két vonás', mn: 'Ember (人) két dolog között: közvetít.', on: 'カイ: 紹介 (しょうかい) bemutatás; 介護 (かいご) gondozás' },
+  '根': { parts: 'fa (木) + határ (艮)', mn: 'A fa (木) határa a föld alatt: gyökér.', kun: '根 (ね) gyökér; 屋根 (やね) tető', on: 'コン: 根本 (こんぽん) alap; 大根 (だいこん) jégcsapretek' },
+  '歴': { parts: 'szikla (厂) + gabona (禾) + megáll (止)', mn: 'Lépésről lépésre (止) megtett út: múlt, történelem.', on: 'レキ: 歴史 (れきし) történelem; 学歴 (がくれき) iskolai végzettség' },
+  '幅': { parts: 'kendő (巾) + teli edény (畐)', mn: 'A kendő (巾) szélessége: szélesség.', kun: '幅 (はば) szélesség; 大幅 (おおはば) jelentős mértékben', on: 'フク: 振幅 (しんぷく) amplitúdó' },
+  '般': { parts: 'csónak (舟) + evező, bunkó (殳)', mn: 'A csónak (舟) evezővel (殳) fordul: fajta, általános.', on: 'ハン: 一般 (いっぱん) általános; 全般 (ぜんぱん) egész' },
+  '講': { parts: 'beszéd (言) + összerak (冓)', mn: 'Összerakott (冓) beszéd (言): előadás.', on: 'コウ: 講義 (こうぎ) egyetemi előadás; 講座 (こうざ) tanfolyam' },
+  '装': { parts: 'erős (壮) + ruha (衣)', mn: 'A ruhába (衣) öltözött erős (壮) alak: öltözék; tettet.', kun: '装う (よそおう) öltözik; tetteti', on: 'ソウ: 服装 (ふくそう) öltözet; ショウ: 衣装 (いしょう) jelmez' },
+  '諸': { parts: 'beszéd (言) + személy (者)', mn: 'Sok ember (者) szava (言): különféle.', on: 'ショ: 諸国 (しょこく) különböző országok' },
+
+  // ─── 57. lecke: kerék, olaj, öv ────────────────
+  '航': { parts: 'csónak (舟) + nyak (亢)', mn: 'A csónak (舟) orra előre tör: hajózás, repülés.', on: 'コウ: 航空 (こうくう) légi; 航空券 (こうくうけん) repülőjegy' },
+  '印': { parts: 'kéz + térdelő ember (卩)', mn: 'A kéz lenyomja a térdelő embert (卩): pecsét, nyom.', kun: '印 (しるし) jel', on: 'イン: 印刷 (いんさつ) nyomtatás; 印象 (いんしょう) benyomás' },
+  '逆': { parts: 'út (⻌) + fordított ember (屰)', mn: 'Fejjel lefelé (屰) haladás az úton (⻌): fordított.', kun: '逆らう (さからう) ellenszegül; 逆さ (さかさ) fejjel lefelé', on: 'ギャク: 逆 (ぎゃく) fordított, ellentétes' },
+  '久': { mn: 'Képírás: ember, akit hátulról visszatartanak: hosszú idő.', kun: '久しい (ひさしい) régóta tartó; 久しぶり (ひさしぶり) rég láttalak', on: 'キュウ: 永久 (えいきゅう) örök' },
+  '油': { parts: 'víz (氵) + ok (由)', mn: 'A folyadék (氵), ami kifolyik (由): olaj.', kun: '油 (あぶら) olaj', on: 'ユ: 石油 (せきゆ) kőolaj; 醤油 (しょうゆ) szójaszósz' },
+  '輪': { parts: 'kocsi (車) + rend (侖)', mn: 'A kocsi (車) küllőkbe rendezett (侖) kereke: kerék, gyűrű.', kun: '輪 (わ) kör; 指輪 (ゆびわ) gyűrű', on: 'リン: 車輪 (しゃりん) kerék; 五輪 (ごりん) olimpia' },
+  '倍': { parts: 'ember (亻) + elválik (咅)', mn: 'Az ember (亻) megkettőződik: kétszeres.', on: 'バイ: 二倍 (にばい) kétszeres; 倍 (ばい) dupla' },
+  '均': { parts: 'föld (土) + egyenletes (匀)', mn: 'Egyenletesen (匀) elsimított föld (土): egyenletes.', kun: '均す (ならす) elegyenget', on: 'キン: 平均 (へいきん) átlag; 均等 (きんとう) egyenlő' },
+  '億': { parts: 'ember (亻) + gondolat (意)', mn: 'Ember (亻) számára elképzelhetetlenül (意) nagy szám: százmillió.', on: 'オク: 一億 (いちおく) százmillió' },
+  '停': { parts: 'ember (亻) + pavilon (亭)', mn: 'Az ember (亻) megpihen a pavilonban (亭): megáll.', kun: '停める (とめる) leállít, leparkol', on: 'テイ: 停電 (ていでん) áramszünet; バス停 (バスてい) buszmegálló' },
+  '玉': { mn: 'Képírás: a király (王) mellett egy pont: drágakő, golyó.', kun: '玉 (たま) golyó, gyöngy; 玉ねぎ (たまねぎ) hagyma', on: 'ギョク: 玉座 (ぎょくざ) trón' },
+  '帯': { mn: 'Képírás: öv, rajta lógó díszekkel (巾): öv, sáv.', kun: '帯 (おび) öv (kimonóé); 帯びる (おびる) magán visel', on: 'タイ: 携帯 (けいたい) mobiltelefon; 時間帯 (じかんたい) idősáv' }
 };
