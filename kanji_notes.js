@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1), 20. adag = 99–103. lecke (N1), 21. adag = 104–108. lecke (N1), 22. adag = 109–113. lecke (N1).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2), 15. adag = 73–77. lecke (N2), 16. adag = 78–83. lecke (N2, és a lecke 6 N1 kandzsija), 17. adag = 84–88. lecke (N1), 18. adag = 89–93. lecke (N1), 19. adag = 94–98. lecke (N1), 20. adag = 99–103. lecke (N1), 21. adag = 104–108. lecke (N1), 22. adag = 109–113. lecke (N1), 23. adag = 114–118. lecke (N1).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -1592,5 +1592,75 @@ const KANJI_NOTES = {
   '冒': { parts: 'sapka (冃) + szem (目)', mn: 'Szeméig (目) lehúzott sapkában (冃) vakmerően előretör: kockáztat.', kun: '冒す (おかす) kockáztat, megtámad (betegség)', on: 'ボウ: 冒険 (ぼうけん) kaland; 冒頭 (ぼうとう) kezdet' },
   '倫': { parts: 'ember (亻) + sorba rakott tekercsek (侖)', mn: 'Az emberek (亻) közti rend, mint a sorba rakott könyvtekercsek (侖): erkölcs.', on: 'リン: 倫理 (りんり) etika; 不倫 (ふりん) házasságtörés' },
   '憶': { parts: 'szív (忄) + szándék (意)', mn: 'A szívben (忄) őrzött gondolat (意): emlékezet.', on: 'オク: 記憶 (きおく) emlékezet; 憶測 (おくそく) találgatás' },
-  '潜': { parts: 'víz (氵) + két ember + nap (日)', mn: 'A víz (氵) alá merül, hogy ne lássa a nap (日): elmerül, rejtőzik.', kun: '潜る (もぐる) alámerül; 潜む (ひそむ) lappang', on: 'セン: 潜水 (せんすい) búvárkodás; 潜在 (せんざい) lappangó' }
+  '潜': { parts: 'víz (氵) + két ember + nap (日)', mn: 'A víz (氵) alá merül, hogy ne lássa a nap (日): elmerül, rejtőzik.', kun: '潜る (もぐる) alámerül; 潜む (ひそむ) lappang', on: 'セン: 潜水 (せんすい) búvárkodás; 潜在 (せんざい) lappangó' },
+
+  // ─── 114. lecke: erény, sír, csend (V13.88, N1) ─
+  '仁': { parts: 'ember (亻) + kettő (二)', mn: 'Két ember (亻, 二) között az emberség: jóindulat.', on: 'ジン: 仁義 (じんぎ) emberség és igazság; ニ: 仁王 (におう) templomőr szobor' },
+  '克': { mn: 'Képírás: nehéz sisakot viselő ember, aki elbírja: legyőz.', on: 'コク: 克服 (こくふく) leküzdés; 克明 (こくめい) aprólékos' },
+  '岳': { parts: 'domb (丘) + hegy (山)', mn: 'Dombok (丘) fölött magasodó hegy (山): hegycsúcs.', kun: '岳 (たけ) magas hegy (nevekben)', on: 'ガク: 山岳 (さんがく) hegyvidék' },
+  '概': { parts: 'fa (木) + már (既)', mn: 'A fa (木) léc, amellyel már (既) nagyjából mérni lehet: nagyjából.', kun: '概ね (おおむね) nagyjából', on: 'ガイ: 概念 (がいねん) fogalom; 大概 (たいがい) általában; 概要 (がいよう) áttekintés' },
+  '拘': { parts: 'kéz (扌) + horog (句)', mn: 'Kézzel (扌) horogra (句) akasztja: lefog; ragaszkodik.', on: 'コウ: 拘束 (こうそく) korlátozás; 拘留 (こうりゅう) őrizetbe vétel' },
+  '墓': { parts: 'eltűnik (莫) + föld (土)', mn: 'A föld (土), amely alatt valaki eltűnt (莫): sír.', kun: '墓 (はか) sír; 墓参り (はかまいり) sírlátogatás', on: 'ボ: 墓地 (ぼち) temető' },
+  '黙': { parts: 'fekete (黒) + kutya (犬)', mn: 'A sötétben (黒) a kutya (犬) némán lapul: hallgat.', kun: '黙る (だまる) elhallgat', on: 'モク: 沈黙 (ちんもく) csend; 黙認 (もくにん) hallgatólagos beleegyezés' },
+  '偏': { parts: 'ember (亻) + lapos tábla (扁)', mn: 'Az ember (亻) egyik oldalra billenő táblája (扁): elfogult.', kun: '偏る (かたよる) egyoldalúvá válik', on: 'ヘン: 偏見 (へんけん) előítélet; 偏差値 (へんさち) szórásérték (iskolai rangsor)' },
+  '雰': { parts: 'eső (雨) + szétoszt (分)', mn: 'Az eső (雨) apró cseppekre oszlik (分): pára, légkör.', on: 'フン: 雰囲気 (ふんいき) hangulat, légkör' },
+  '遇': { parts: 'út (⻌) + majom (禺)', mn: 'Az úton (⻌) váratlanul majommal (禺) találkozik: véletlen találkozás; bánásmód.', on: 'グウ: 待遇 (たいぐう) bánásmód, juttatás; 遭遇 (そうぐう) találkozás; 境遇 (きょうぐう) körülmények' },
+  '狭': { parts: 'kutya (犭) + két ember közt (夾)', mn: 'A kutya (犭) két ember (夾) közé szorul: szűk.', kun: '狭い (せまい) szűk; 狭める (せばめる) szűkít', on: 'キョウ: 狭義 (きょうぎ) szűkebb értelem' },
+  '糧': { parts: 'rizs (米) + mennyiség (量)', mn: 'A rizs (米) kimért (量) adagja: élelem.', kun: '糧 (かて) táplálék, forrás (lelki is)', on: 'リョウ: 食糧 (しょくりょう) élelmiszer; ロウ: 兵糧 (ひょうろう) hadi élelem' },
+
+  // ─── 115. lecke: kemence, furcsa, meleg ────────
+  '炉': { parts: 'tűz (火) + ajtó (戸)', mn: 'A tűz (火), amelyet ajtó (戸) mögött őriznek: kemence.', on: 'ロ: 原子炉 (げんしろ) atomreaktor; 暖炉 (だんろ) kandalló' },
+  '殊': { parts: 'csont (歹) + vörös (朱)', mn: 'Halál (歹) és vér (朱), ritka látvány: különleges.', kun: '殊に (ことに) különösen', on: 'シュ: 特殊 (とくしゅ) különleges; 殊勝 (しゅしょう) dicséretes' },
+  '殖': { parts: 'csont (歹) + egyenes (直)', mn: 'A halál (歹) után egyenesen (直) új élet sarjad: szaporodik.', kun: '殖える (ふえる) szaporodik; 殖やす (ふやす) gyarapít', on: 'ショク: 繁殖 (はんしょく) szaporodás; 養殖 (ようしょく) tenyésztés' },
+  '艦': { parts: 'hajó (舟) + felügyel (監)', mn: 'A hajó (舟), amely őrködik (監) a tengeren: hadihajó.', on: 'カン: 軍艦 (ぐんかん) hadihajó; 艦隊 (かんたい) hajóhad' },
+  '穴': { mn: 'Képírás: barlang bejárata, fölötte a tető.', kun: '穴 (あな) lyuk; 落とし穴 (おとしあな) csapda', on: 'ケツ: 墓穴 (ぼけつ) sírgödör' },
+  '奇': { parts: 'nagy (大) + lehetséges (可)', mn: 'A nagy (大) ember szinte lehetetlen (可) pózban áll: furcsa.', on: 'キ: 奇妙 (きみょう) furcsa; 奇跡 (きせき) csoda; 好奇心 (こうきしん) kíváncsiság' },
+  '慢': { parts: 'szív (忄) + elnyúlik (曼)', mn: 'A szív (忄) elnyúlik (曼), elkényelmesedik: gőg, hanyagság.', on: 'マン: 我慢 (がまん) türelem; 自慢 (じまん) dicsekvés; 傲慢 (ごうまん) gőgös' },
+  '謀': { parts: 'szó (言) + valaki (某)', mn: 'Valaki (某) titokban szót (言) vált: összeesküszik.', kun: '謀る (はかる) tervez, cselt sző', on: 'ボウ: 陰謀 (いんぼう) összeesküvés; 無謀 (むぼう) vakmerő; ム: 謀反 (むほん) lázadás' },
+  '暖': { parts: 'nap (日) + nyújtott kéz (爰)', mn: 'A nap (日) melege átér, mint a kinyújtott kéz (爰): meleg.', kun: '暖かい (あたたかい) meleg (idő); 暖める (あたためる) melegít', on: 'ダン: 暖房 (だんぼう) fűtés; 温暖 (おんだん) enyhe (éghajlat)' },
+  '拍': { parts: 'kéz (扌) + fehér (白)', mn: 'Kézzel (扌) tapsol, ütemre: taps, ütem.', on: 'ハク: 拍手 (はくしゅ) taps; ヒョウ: 拍子 (ひょうし) ütem' },
+  '朗': { parts: 'jó (良) + hold (月)', mn: 'Jó (良) holdfény (月): tiszta, derűs.', kun: '朗らか (ほがらか) derűs', on: 'ロウ: 朗読 (ろうどく) felolvasás; 明朗 (めいろう) derűs' },
+  '寛': { parts: 'tető (宀) + fű (艹) + lát (見)', mn: 'A tető (宀) alól messzire lát (見): tágas, nagyvonalú.', on: 'カン: 寛大 (かんだい) nagylelkű; 寛容 (かんよう) türelmes' },
+
+  // ─── 116. lecke: takarás, sírás, árnyék ────────
+  '覆': { parts: 'fedél (覀) + újra (復)', mn: 'Fedéllel (覀) újra és újra (復) letakarja: beborít; felborít.', kun: '覆う (おおう) beborít; 覆す (くつがえす) felborít', on: 'フク: 覆面 (ふくめん) álarc' },
+  '泣': { parts: 'víz (氵) + áll (立)', mn: 'Ott áll (立), és folyik a könnye (氵): sír.', kun: '泣く (なく) sír; 泣き虫 (なきむし) sírós', on: 'キュウ: 号泣 (ごうきゅう) zokogás' },
+  '隔': { parts: 'domb (阝) + üst (鬲)', mn: 'A domb (阝) úgy választja el, mint üst (鬲) a tűztől: elválaszt.', kun: '隔てる (へだてる) elválaszt', on: 'カク: 間隔 (かんかく) távolság, időköz; 隔週 (かくしゅう) kéthetente' },
+  '浄': { parts: 'víz (氵) + viszály (争)', mn: 'A víz (氵), amely a viszályt (争) is elmossa: tiszta.', on: 'ジョウ: 浄化 (じょうか) tisztítás; 清浄 (せいじょう) tiszta' },
+  '没': { parts: 'víz (氵) + örvény (殳 alak)', mn: 'A víz (氵) örvénye elnyeli: elmerül, eltűnik.', on: 'ボツ: 没頭 (ぼっとう) elmerülés (munkában); 没収 (ぼっしゅう) elkobzás; 日没 (にちぼつ) napnyugta' },
+  '暇': { parts: 'nap (日) + kölcsönvesz (叚)', mn: 'A napból (日) kölcsönvett (叚) idő: szabadidő.', kun: '暇 (ひま) szabadidő, ráérés', on: 'カ: 休暇 (きゅうか) szabadság; 余暇 (よか) szabadidő' },
+  '肺': { parts: 'test (月) + piac (市 alak)', mn: 'A test (月) szerve, ahol a levegő gazdát cserél, mint a piacon (市): tüdő.', on: 'ハイ: 肺 (はい) tüdő; 肺炎 (はいえん) tüdőgyulladás' },
+  '鑑': { parts: 'fém (金) + felügyel (監)', mn: 'Fém (金) tükör, amelybe belenéz (監): minta; mérlegel.', kun: '鑑みる (かんがみる) figyelembe vesz', on: 'カン: 図鑑 (ずかん) képes ismeretterjesztő könyv; 鑑賞 (かんしょう) műélvezet; 鑑定 (かんてい) szakvélemény' },
+  '飼': { parts: 'étel (飠) + igazgat (司)', mn: 'Ételt (飠) ad, és gondját viseli (司): állatot tart.', kun: '飼う (かう) állatot tart', on: 'シ: 飼育 (しいく) tenyésztés; 飼料 (しりょう) takarmány' },
+  '陰': { parts: 'domb (阝) + most (今) + felhő (云)', mn: 'A domb (阝) mögött felhő (云) takarja a napot: árnyék.', kun: '陰 (かげ) árnyék; お陰で (おかげで) hála neki', on: 'イン: 陰気 (いんき) komor; 陰謀 (いんぼう) összeesküvés' },
+  '銘': { parts: 'fém (金) + név (名)', mn: 'Fémbe (金) vésett név (名): felirat; márka.', on: 'メイ: 銘柄 (めいがら) márka; 感銘 (かんめい) mély benyomás' },
+  '随': { parts: 'domb (阝) + út (⻌) + kéz', mn: 'Az úton (⻌) a dombon (阝) át követi: követ.', on: 'ズイ: 随筆 (ずいひつ) esszé; 随分 (ずいぶん) eléggé; 随時 (ずいじ) bármikor' },
+
+  // ─── 117. lecke: kézirat, manga, érettség ──────
+  '烈': { parts: 'sor (列) + tűz (灬)', mn: 'Sorban (列) lobogó tüzek (灬): heves.', on: 'レツ: 強烈 (きょうれつ) intenzív; 熱烈 (ねつれつ) lelkes; 猛烈 (もうれつ) heves' },
+  '尋': { parts: 'kéz (⺕) + munka (工) + száj (口) + kéz (寸)', mn: 'Két kézzel (⺕, 寸) mér, és szájjal (口) kérdez: kérdez, keres.', kun: '尋ねる (たずねる) kérdez, keres', on: 'ジン: 尋問 (じんもん) kihallgatás; 尋常 (じんじょう) szokásos' },
+  '稿': { parts: 'gabona (禾) + magas (高)', mn: 'Magasra (高) halmozott szalma (禾), mint a sok vázlatlap: kézirat.', on: 'コウ: 原稿 (げんこう) kézirat; 投稿 (とうこう) beküldés, poszt' },
+  '啓': { parts: 'ajtó (戸) + üt (攵) + száj (口)', mn: 'Kinyitja az ajtót (戸), és szóval (口) tanít: feltár, megvilágosít.', on: 'ケイ: 啓発 (けいはつ) felvilágosítás; 拝啓 (はいけい) Tisztelt (levél elején)' },
+  '棟': { parts: 'fa (木) + kelet (東)', mn: 'A fa (木) gerenda, amely kelet (東) felé fut a tetőn: tetőgerinc; épület.', kun: '棟 (むね) tetőgerinc', on: 'トウ: 病棟 (びょうとう) kórházi szárny; 一棟 (いっとう) egy épület' },
+  '漫': { parts: 'víz (氵) + elnyúlik (曼)', mn: 'A víz (氵) céltalanul szétterül (曼): kötetlen; képregény.', on: 'マン: 漫画 (まんが) manga; 漫才 (まんざい) komikus duó; 散漫 (さんまん) szétszórt' },
+  '玄': { mn: 'Képírás: vékony, sötét fonal: mély, titokzatos.', on: 'ゲン: 玄関 (げんかん) bejárat, előtér; 玄米 (げんまい) barna rizs' },
+  '粘': { parts: 'rizs (米) + jóslat (占)', mn: 'A főtt rizs (米) ragad: ragadós; kitartó.', kun: '粘る (ねばる) ragad; kitart', on: 'ネン: 粘土 (ねんど) agyag; 粘着 (ねんちゃく) tapadás' },
+  '悟': { parts: 'szív (忄) + én (吾)', mn: 'A szív (忄) megérti az ént (吾): megvilágosodik.', kun: '悟る (さとる) ráébred', on: 'ゴ: 覚悟 (かくご) felkészültség (a legrosszabbra); 悟性 (ごせい) értelem' },
+  '妊': { parts: 'nő (女) + teher (壬)', mn: 'A nő (女), aki terhet (壬) hord: terhes.', on: 'ニン: 妊娠 (にんしん) terhesség; 妊婦 (にんぷ) várandós nő' },
+  '熟': { parts: 'érlel (孰) + tűz (灬)', mn: 'A tűzön (灬) lassan megérik (孰): érett.', kun: '熟れる (うれる) megérik', on: 'ジュク: 成熟 (せいじゅく) érettség; 熟練 (じゅくれん) jártasság; 半熟 (はんじゅく) lágy (tojás)' },
+  '恩': { parts: 'ok (因) + szív (心)', mn: 'A szívben (心) őrzött ok (因), amiért hálás: kegy.', on: 'オン: 恩 (おん) jótétemény; 恩人 (おんじん) jótevő; 恩返し (おんがえし) viszonzás' },
+
+  // ─── 118. lecke: bab, cukor, pajzs ─────────────
+  '豆': { mn: 'Képírás: magas talpú edény, később a bab neve.', kun: '豆 (まめ) bab', on: 'トウ: 豆腐 (とうふ) tofu; ズ: 大豆 (だいず) szójabab' },
+  '遂': { parts: 'út (⻌) + disznó (豕)', mn: 'Az úton (⻌) üldözi a vaddisznót (豕), míg el nem éri: véghezvisz.', kun: '遂げる (とげる) véghezvisz; 遂に (ついに) végül', on: 'スイ: 遂行 (すいこう) végrehajtás; 未遂 (みすい) kísérlet (bűné)' },
+  '狂': { parts: 'kutya (犭) + király (王)', mn: 'A kutya (犭), amely királynak (王) képzeli magát: őrült.', kun: '狂う (くるう) megőrül, elromlik', on: 'キョウ: 熱狂 (ねっきょう) lelkesedés; 狂言 (きょうげん) kjógen (vígjáték)' },
+  '培': { parts: 'föld (土) + halmoz (咅)', mn: 'Földet (土) halmoz a növény tövére: művel, nevel.', kun: '培う (つちかう) kifejleszt', on: 'バイ: 栽培 (さいばい) termesztés; 培養 (ばいよう) tenyésztés (sejteké)' },
+  '衰': { parts: 'ruha (衣) + szalmaköpeny', mn: 'A ruha (衣) elrongyolódik: hanyatlik.', kun: '衰える (おとろえる) gyengül', on: 'スイ: 衰退 (すいたい) hanyatlás; 老衰 (ろうすい) végelgyengülés' },
+  '屈': { parts: 'test (尸) + kijön (出)', mn: 'A test (尸) meghajlik, hogy kijusson (出): hajlik.', on: 'クツ: 退屈 (たいくつ) unalmas; 理屈 (りくつ) érvelés; 屈折 (くっせつ) fénytörés' },
+  '淡': { parts: 'víz (氵) + láng (炎)', mn: 'A víz (氵) elveszi a láng (炎) erejét: halvány.', kun: '淡い (あわい) halvány', on: 'タン: 冷淡 (れいたん) közönyös; 淡水 (たんすい) édesvíz' },
+  '糖': { parts: 'rizs (米) + Tang (唐)', mn: 'Rizsből (米) főzött édes szirup, a Tang (唐) korból ismert: cukor.', on: 'トウ: 砂糖 (さとう) cukor; 糖分 (とうぶん) cukortartalom; 糖尿病 (とうにょうびょう) cukorbetegség' },
+  '盾': { parts: 'pajzs + szem (目)', mn: 'A szem (目) elé tartott pajzs: pajzs.', kun: '盾 (たて) pajzs', on: 'ジュン: 矛盾 (むじゅん) ellentmondás' },
+  '脈': { parts: 'test (月) + elágazó folyó (𠂢)', mn: 'A testben (月) elágazó folyók: ér; pulzus.', on: 'ミャク: 山脈 (さんみゃく) hegylánc; 脈 (みゃく) pulzus; 文脈 (ぶんみゃく) szövegkörnyezet' },
+  '軌': { parts: 'kocsi (車) + kilenc (九)', mn: 'A kocsi (車) kerekei vájta nyom: pálya.', on: 'キ: 軌道 (きどう) pálya; 常軌 (じょうき) megszokott út' },
+  '妨': { parts: 'nő (女) + irány (方)', mn: 'A nő (女) elállja az irányt (方): akadályoz.', kun: '妨げる (さまたげる) akadályoz', on: 'ボウ: 妨害 (ぼうがい) zavarás' }
 };
