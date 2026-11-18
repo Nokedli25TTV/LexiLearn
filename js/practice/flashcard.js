@@ -48,8 +48,9 @@ function speakFlashcard3D() {
       }
     } else if ((currentMode === 'japanese' || currentMode === 'kanji') && typeof JAPANESE_SENTENCES !== 'undefined') {
       const found = JAPANESE_SENTENCES.find(s => s.baseWord === word.en);
-      if (found && found.fullSentenceHTML) {
-        exampleText = found.fullSentenceHTML.replace(/<[^>]+>/g, '').trim();
+      // V13.94: a kana felolvasás; a furiganás HTML-ből a tagek levétele után a kandzsi és az olvasata is benne maradna
+      if (found && (found.ttsSentence || found.fullSentenceHTML)) {
+        exampleText = (found.ttsSentence || found.fullSentenceHTML.replace(/<rt>[^<]*<\/rt>/g, '').replace(/<[^>]+>/g, '')).trim();
       }
     }
     if (!exampleText && word.sentence) exampleText = String(word.sentence).replace(/<[^>]+>/g, '').trim();

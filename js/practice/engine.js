@@ -305,7 +305,9 @@ function showQuestion() {
     
     // V9: Okos hamis opciók – azonos témakör/nehézség alapján (!isEnHu: mondat kitöltésénél a forrás mezőt kell distraktornak)
     const fakeOptions = getSmartDistractors(word, 3, !isEnHu);
-    const options = shuffle([isEnHu ? sObj.correctAnswer : word.hu, ...fakeOptions]);
+    // V13.94: a helyes lehetőség ugyanolyan alakú, mint a többi (a szó kana alakja), különben a kandzsis
+    // correctAnswer (学校 a kana lehetőségek között) elárulná a választ; a mondatba az írott alak kerül
+    const options = shuffle([isEnHu ? word.en : word.hu, ...fakeOptions]);
 
     contentHtml = `
       <div class="q-word" style="font-size: 22px; margin-bottom:15px; line-height: 1.6;">${sentenceDisplay}</div>
@@ -666,7 +668,7 @@ function checkSentenceAnswer(btn, chosen) {
   checkDailyReset();
 
   const isEnHu = practiceDir() === 'en-hu';
-  const correctOptionText = isEnHu ? sObj.correctAnswer : word.hu;
+  const correctOptionText = isEnHu ? word.en : word.hu;
   const isCorrect = (chosen === correctOptionText);
   const qCard = document.getElementById('q-card');
   const blankSpace = document.getElementById('blank-space');
@@ -1064,9 +1066,13 @@ function getExampleSentence(word) {
     const found = JAPANESE_SENTENCES.find(s => s.baseWord === word.en);
     if (found) {
       html = found.fullSentenceHTML || '';
-      if (found.correctAnswer) {
+      if (found.correctAnswer && html.includes(found.correctAnswer)) {
         const baseWordRegex = new RegExp(`(${escRegex(found.correctAnswer)})`, 'g');
         html = html.replace(baseWordRegex, '<span class="fc-highlight">$1</span>');
+      } else if (found.correctAnswer) {
+        // V13.94: okuriganás alak (<ruby>帰国<rt>きこく</rt></ruby>する): a szót tartalmazó szakasz kap kiemelést
+        const baseText = t => t.replace(/<rt>[^<]*<\/rt>/g, '').replace(/<[^>]+>/g, '');
+        html = html.split(' ').map(t => (baseText(t).includes(found.correctAnswer) ? `<span class="fc-highlight">${t}</span>` : t)).join(' ');
       }
       hu = found.hungarian || '';
     }

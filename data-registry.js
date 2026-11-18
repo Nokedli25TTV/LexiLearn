@@ -87,6 +87,7 @@ window.LEXI_DATA = {
     typeof JAPANESE_SENTENCES_L27 !== 'undefined' ? JAPANESE_SENTENCES_L27 : null,
     typeof JAPANESE_SENTENCES_L28 !== 'undefined' ? JAPANESE_SENTENCES_L28 : null,
     typeof JAPANESE_SENTENCES_L29 !== 'undefined' ? JAPANESE_SENTENCES_L29 : null,
-    typeof JAPANESE_SENTENCES_L30 !== 'undefined' ? JAPANESE_SENTENCES_L30 : null
+    typeof JAPANESE_SENTENCES_L30 !== 'undefined' ? JAPANESE_SENTENCES_L30 : null,
+    typeof JAPANESE_SENTENCES_BOOK2 !== 'undefined' ? JAPANESE_SENTENCES_BOOK2 : null
   ].filter(l => Array.isArray(l))
 };

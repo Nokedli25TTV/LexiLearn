@@ -8,10 +8,10 @@ const JAPANESE_SENTENCES_L1 = [
 
 // A がくせい résznél csak ez a 2 mondat maradjon:
 { baseWord: "がくせい", sentenceWithBlank: "わたしは ___BLANK___ です。", fullSentenceHTML: "わたし は <ruby>学生<rt>がくせい</rt></ruby> です。", ttsSentence: "わたし は がくせい です。", correctAnswer: "学生", hungarian: "Diák vagyok." },
-{ baseWord: "がくせい", sentenceWithBlank: "あそこの ___BLANK___ は だれ ですか。", fullSentenceHTML: "あそこの <ruby>学生<rt>가くせい</rt></ruby> は だれ です か。", ttsSentence: "あそこの がくせい は だれ です か。", correctAnswer: "学生", hungarian: "Ki az a diák amott?" },
+{ baseWord: "がくせい", sentenceWithBlank: "あそこの ___BLANK___ は だれ ですか。", fullSentenceHTML: "あそこの <ruby>学生<rt>がくせい</rt></ruby> は だれ です か。", ttsSentence: "あそこの がくせい は だれ です か。", correctAnswer: "学生", hungarian: "Ki az a diák amott?" },
 
 // A はい résznél csak ez a 2 mondat maradjon:
-  { baseWord: "はい", sentenceWithBlank: "「がくせい ですか？」「___BLANK___、そう です。」", fullSentenceHTML: "「<ruby>学生<rt>가くせい</rt></ruby> ですか？」「はい、そう です。」", ttsSentence: "「가くせい ですか？」「はい、そう です。」", correctAnswer: "はい", hungarian: "„Diák vagy?” „Igen, az vagyok.”" },
+  { baseWord: "はい", sentenceWithBlank: "「がくせい ですか？」「___BLANK___、そう です。」", fullSentenceHTML: "「<ruby>学生<rt>がくせい</rt></ruby> ですか？」「はい、そう です。」", ttsSentence: "「がくせい ですか？」「はい、そう です。」", correctAnswer: "はい", hungarian: "„Diák vagy?” „Igen, az vagyok.”" },
   { baseWord: "はい", sentenceWithBlank: "___BLANK___ 、わかりました。", fullSentenceHTML: "はい 、わかりました。", ttsSentence: "はい 、わかりました。", correctAnswer: "はい", hungarian: "Igen, értettem." },  
   { baseWord: "わたし", sentenceWithBlank: "___BLANK___ は がくせい です。", fullSentenceHTML: "わたし は <ruby>学生<rt>がくせい</rt></ruby> です。", ttsSentence: "わたし は がくせい です。", correctAnswer: "わたし", hungarian: "Én diák vagyok." },
   { baseWord: "わたし", sentenceWithBlank: "___BLANK___ の なまえは アンナ です。", fullSentenceHTML: "わたし の <ruby>名前<rt>なまえ</rt></ruby> は アンナ です。", ttsSentence: "わたし の なまえ は あんな です。", correctAnswer: "わたし", hungarian: "Az én nevem Anna." },
