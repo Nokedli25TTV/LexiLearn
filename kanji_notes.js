@@ -7,7 +7,7 @@
      mn    – az emlékeztető: rövid kép a részekből, képírásnál az eredet
      kun   – kun olvasatok teljes alakban, jelentéssel
      on    – on olvasatok, mindegyik egy példával
-   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2).
+   Adagonként a kandzsi-leckék sorrendjében: 1. adag = 1–5. lecke (N5), 2. adag = 6–10. lecke (N5, N4), 3. adag = 11–15. lecke (N4), 4. adag = 16–20. lecke (N4), 5. adag = 21–25. lecke (N4, N3), 6. adag = 26–30. lecke (N3), 7. adag = 31–35. lecke (N3), 8. adag = 36–40. lecke (N3), 9. adag = 41–45. lecke (N3), 10. adag = 46–52. lecke (N3, és a lecke 7 N2 kandzsija), 11. adag = 53–57. lecke (N2), 12. adag = 58–62. lecke (N2), 13. adag = 63–67. lecke (N2), 14. adag = 68–72. lecke (N2).
 ══════════════════════════════════════════════════════ */
 const KANJI_NOTES = {
   // ─── 1. lecke: számok, nap, hold ───────────────
@@ -948,5 +948,75 @@ const KANJI_NOTES = {
   '派': { parts: 'víz (氵) + elágazás (𠂢)', mn: 'A folyó (氵) mellékágai: irányzat, csoport.', on: 'ハ: 派手 (はで) feltűnő, rikító; 立派 (りっぱ) kiváló' },
   '査': { parts: 'fa (木) + halom (且)', mn: 'A fa (木) mellé rakott halmot (且) átnézik: vizsgál.', on: 'サ: 調査 (ちょうさ) felmérés; 検査 (けんさ) vizsgálat' },
   '委': { parts: 'gabona (禾) + nő (女)', mn: 'A gabonát (禾) a nőre (女) bízzák: rábíz.', kun: '委ねる (ゆだねる) rábíz', on: 'イ: 委員 (いいん) bizottsági tag; 委員会 (いいんかい) bizottság' },
-  '軍': { parts: 'fedő (冖) + kocsi (車)', mn: 'Letakart harci kocsik (車) köre: hadsereg.', on: 'グン: 軍隊 (ぐんたい) hadsereg; 軍人 (ぐんじん) katona' }
+  '軍': { parts: 'fedő (冖) + kocsi (車)', mn: 'Letakart harci kocsik (車) köre: hadsereg.', on: 'グン: 軍隊 (ぐんたい) hadsereg; 軍人 (ぐんじん) katona' },
+
+  // ─── 68. lecke: terv, adó, védelem (V13.79, N2) ─
+  '案': { parts: 'nyugalom (安) + fa (木)', mn: 'Nyugodtan (安), a fa (木) asztalnál kidolgozott terv: javaslat.', on: 'アン: 案内 (あんない) útbaigazítás; 提案 (ていあん) javaslat; 答案 (とうあん) dolgozat' },
+  '策': { parts: 'bambusz (竹) + tüske (朿)', mn: 'Bambuszpálca (竹), amivel a lovat irányítják: terv, stratégia.', on: 'サク: 対策 (たいさく) intézkedés; 政策 (せいさく) szakpolitika' },
+  '団': { parts: 'keret (囗) + kéz (寸)', mn: 'A keretben (囗) összefogott csoport: társulás.', on: 'ダン: 団体 (だんたい) csoport; 集団 (しゅうだん) tömeg; トン: 布団 (ふとん) futon' },
+  '島': { parts: 'madár (鳥) + hegy (山)', mn: 'A tengerből kiálló hegy (山), amin madár (鳥) pihen: sziget.', kun: '島 (しま) sziget', on: 'トウ: 半島 (はんとう) félsziget; 列島 (れっとう) szigetlánc' },
+  '減': { parts: 'víz (氵) + mind (咸)', mn: 'A víz (氵) mind (咸) elfogy: csökken.', kun: '減る (へる) csökken; 減らす (へらす) csökkent', on: 'ゲン: 減少 (げんしょう) csökkenés' },
+  '税': { parts: 'gabona (禾) + kivon (兑)', mn: 'A gabonából (禾) elvett rész: adó.', on: 'ゼイ: 税金 (ぜいきん) adó; 消費税 (しょうひぜい) fogyasztási adó' },
+  '営': { parts: 'ragyogás (⺍) + fedő (冖) + két száj (呂)', mn: 'Tűz ég a tető alatt, ahol emberek dolgoznak: üzletet vezet.', kun: '営む (いとなむ) vezet (üzletet)', on: 'エイ: 営業 (えいぎょう) értékesítés; 経営 (けいえい) vállalatvezetés' },
+  '防': { parts: 'domb (⻖) + irány (方)', mn: 'A domb (⻖) gátként áll az irányban (方): véd.', kun: '防ぐ (ふせぐ) megakadályoz, véd', on: 'ボウ: 予防 (よぼう) megelőzés; 消防 (しょうぼう) tűzoltóság' },
+  '導': { parts: 'út (道) + kéz (寸)', mn: 'Kézen (寸) fogva az úton (道) vezet: irányít.', kun: '導く (みちびく) vezet', on: 'ドウ: 指導 (しどう) irányítás; 導入 (どうにゅう) bevezetés' },
+  '副': { parts: 'teli edény (畐) + kés (刂)', mn: 'Késsel (刂) kettévágott edény (畐) másik fele: mellék-, helyettes.', on: 'フク: 副社長 (ふくしゃちょう) alelnök; 副作用 (ふくさよう) mellékhatás' },
+  '農': { parts: 'dél, ekeszarv (辰) + rét (曲)', mn: 'Az ekével (辰) művelt föld: mezőgazdaság.', on: 'ノウ: 農業 (のうぎょう) mezőgazdaság; 農家 (のうか) gazdálkodó' },
+  '州': { mn: 'Képírás: folyó (川) közepén felbukkanó szigetek: tartomány.', kun: '州 (す) homokpad', on: 'シュウ: 九州 (きゅうしゅう) Kjúsú; 州 (しゅう) állam (pl. USA)' },
+
+  // ─── 69. lecke: harcos, díj, technika ──────────
+  '武': { parts: 'megáll (止) + alabárd (弋)', mn: 'Alabárddal (弋) megállítja (止) a támadást: harcos.', on: 'ブ: 武士 (ぶし) szamuráj; 武器 (ぶき) fegyver; ム: 武者 (むしゃ) harcos' },
+  '象': { mn: 'Képírás: elefánt az ormányával: elefánt; alak, jelenség.', on: 'ゾウ: 象 (ぞう) elefánt; ショウ: 印象 (いんしょう) benyomás; 現象 (げんしょう) jelenség' },
+  '額': { parts: 'vendég (客) + fej (頁)', mn: 'A fej (頁) eleje, amit a vendég (客) elsőként lát: homlok; összeg, keret.', kun: '額 (ひたい) homlok', on: 'ガク: 金額 (きんがく) összeg; 額 (がく) képkeret' },
+  '欧': { parts: 'doboz (区) + tátott száj (欠)', mn: 'Hangalaki írás: Európa.', on: 'オウ: 欧米 (おうべい) Európa és Amerika; 欧州 (おうしゅう) Európa' },
+  '担': { parts: 'kéz (扌) + hajnal (旦)', mn: 'A kéz (扌) már hajnalban (旦) a vállán viszi: vállal.', kun: '担ぐ (かつぐ) vállon visz; 担う (になう) visel (felelősséget)', on: 'タン: 担当 (たんとう) felelős; 負担 (ふたん) teher' },
+  '賞': { parts: 'ragyogó (尚) + pénz (貝)', mn: 'Ragyogó (尚) pénz (貝) jutalomként: díj.', on: 'ショウ: 賞 (しょう) díj; 賞金 (しょうきん) pénzdíj' },
+  '造': { parts: 'út (⻌) + közöl (告)', mn: 'Az úton (⻌) összegyűjtött anyagból épít: alkot.', kun: '造る (つくる) épít, gyárt (nagyban)', on: 'ゾウ: 製造 (せいぞう) gyártás; 構造 (こうぞう) szerkezet' },
+  '被': { parts: 'ruha (衤) + bőr (皮)', mn: 'A ruha (衤), ami bőrként (皮) takar: visel; elszenved.', kun: '被る (かぶる) visel (fejre); 被る (こうむる) elszenved', on: 'ヒ: 被害 (ひがい) kár; 被害者 (ひがいしゃ) áldozat' },
+  '技': { parts: 'kéz (扌) + ág (支)', mn: 'Kézzel (扌) ügyesen formált ág (支): technika.', kun: '技 (わざ) technika, fogás', on: 'ギ: 技術 (ぎじゅつ) technológia; 競技 (きょうぎ) sportág' },
+  '低': { parts: 'ember (亻) + alap (氐)', mn: 'Az ember (亻), aki a talajig (氐) hajol: alacsony.', kun: '低い (ひくい) alacsony', on: 'テイ: 最低 (さいてい) legalacsonyabb; 低下 (ていか) csökkenés' },
+  '課': { parts: 'beszéd (言) + gyümölcs (果)', mn: 'A szóval (言) kiszabott, eredményt (果) kívánó feladat: lecke, osztály.', on: 'カ: 第一課 (だいいっか) első lecke; 課長 (かちょう) osztályvezető; 課題 (かだい) feladat' },
+  '脳': { parts: 'test (月) + fej teteje', mn: 'A test (月) fejében lévő szerv: agy.', on: 'ノウ: 脳 (のう) agy; 頭脳 (ずのう) ész' },
+
+  // ─── 70. lecke: völgy, történelem, part ────────
+  '専': { parts: 'orsó + kéz (寸)', mn: 'Kézzel (寸) egyetlen orsót teker: kizárólagos, szak-.', kun: '専ら (もっぱら) főleg', on: 'セン: 専門 (せんもん) szakterület; 専攻 (せんこう) szak' },
+  '谷': { mn: 'Képírás: két hegy közé nyíló völgy, alul a torkolattal.', kun: '谷 (たに) völgy', on: 'コク: 渓谷 (けいこく) szurdok' },
+  '史': { parts: 'kéz + feljegyzés (中)', mn: 'A kéz írást tart: krónika, történelem.', on: 'シ: 歴史 (れきし) történelem; 日本史 (にほんし) japán történelem' },
+  '管': { parts: 'bambusz (竹) + hivatal (官)', mn: 'Bambusz (竹) cső, amin át a hivatal (官) irányít: cső; kezel.', kun: '管 (くだ) cső', on: 'カン: 管理 (かんり) kezelés, irányítás; 血管 (けっかん) ér' },
+  '兵': { parts: 'fejsze (斤) + két kéz', mn: 'Két kézben fejsze (斤): katona.', on: 'ヘイ: 兵隊 (へいたい) katonaság; 兵士 (へいし) katona; ヒョウ: 兵庫 (ひょうご) Hjógo' },
+  '接': { parts: 'kéz (扌) + szolgálólány (妾)', mn: 'Kézzel (扌) fogad és kiszolgál: érintkezik, összeköt.', on: 'セツ: 直接 (ちょくせつ) közvetlen; 面接 (めんせつ) állásinterjú; 接続 (せつぞく) csatlakozás' },
+  '細': { parts: 'fonal (糸) + rizsföld (田)', mn: 'Vékony fonal (糸) a rizsföld (田) gátjain: vékony, apró.', kun: '細い (ほそい) vékony; 細かい (こまかい) apró, részletes', on: 'サイ: 詳細 (しょうさい) részletek' },
+  '湾': { parts: 'víz (氵) + hajlít (弯)', mn: 'A víz (氵) befelé hajló (弯) partja: öböl.', on: 'ワン: 東京湾 (とうきょうわん) Tokiói-öböl; 台湾 (たいわん) Tajvan' },
+  '旧': { parts: 'nap (日) + vonal (丨)', mn: 'Egy nap (日) mellett húzott vonal (丨): ami elmúlt, régi.', on: 'キュウ: 旧 (きゅう) korábbi; 旧暦 (きゅうれき) régi naptár' },
+  '岸': { parts: 'hegy (山) + szikla (厂) + szárít (干)', mn: 'A víz fölé emelkedő szikla (厂) és hegy (山): part.', kun: '岸 (きし) part', on: 'ガン: 海岸 (かいがん) tengerpart; 対岸 (たいがん) túlpart' },
+  '捜': { parts: 'kéz (扌) + öreg kéz (叟)', mn: 'Kézzel (扌) tapogatva keres.', kun: '捜す (さがす) keres (elveszett dolgot, embert)', on: 'ソウ: 捜査 (そうさ) nyomozás' },
+  '竹': { mn: 'Képírás: két bambuszszár levelekkel.', kun: '竹 (たけ) bambusz', on: 'チク: 竹林 (ちくりん) bambuszliget' },
+
+  // ─── 71. lecke: erdő, verseny, vas ─────────────
+  '採': { parts: 'kéz (扌) + szed (采)', mn: 'Kézzel (扌) szedi a fáról: gyűjt; felvesz.', kun: '採る (とる) gyűjt, felvesz', on: 'サイ: 採用 (さいよう) felvétel (munkára); 採点 (さいてん) pontozás' },
+  '森': { parts: 'három fa (木)', mn: 'Három fa (木): sűrű erdő.', kun: '森 (もり) erdő', on: 'シン: 森林 (しんりん) erdőség' },
+  '競': { parts: 'két egymás mellett álló, beszélő ember', mn: 'Két ember egymás mellett fut: versenyez.', kun: '競う (きそう) versenyez', on: 'キョウ: 競争 (きょうそう) verseny; ケイ: 競馬 (けいば) lóverseny' },
+  '販': { parts: 'pénz (貝) + visszafordul (反)', mn: 'Pénzért (貝) újra és újra (反) eladott áru: értékesítés.', on: 'ハン: 販売 (はんばい) értékesítés; 自動販売機 (じどうはんばいき) automata' },
+  '将': { parts: 'deszka (⺦) + kéz (⺤) + kéz (寸)', mn: 'A kezében (寸) parancsot tartó vezér: hadvezér; jövő.', on: 'ショウ: 将来 (しょうらい) jövő; 将軍 (しょうぐん) sógun' },
+  '貿': { parts: 'kinyit (卯) + pénz (貝)', mn: 'Pénzért (貝) kicserélt áru: kereskedelem.', on: 'ボウ: 貿易 (ぼうえき) külkereskedelem' },
+  '林': { parts: 'két fa (木)', mn: 'Két fa (木): liget.', kun: '林 (はやし) liget', on: 'リン: 森林 (しんりん) erdőség; 山林 (さんりん) erdős hegyvidék' },
+  '劇': { parts: 'tigris (虍) + disznó (豕) + kés (刂)', mn: 'Tigris (虍) és vadkan (豕) harca késsel (刂): heves, dráma.', on: 'ゲキ: 劇場 (げきじょう) színház; 演劇 (えんげき) színjátszás' },
+  '河': { parts: 'víz (氵) + lehet (可)', mn: 'A nagy víz (氵), amin át lehet (可) kelni: folyam.', kun: '河 (かわ) nagy folyó', on: 'カ: 運河 (うんが) csatorna; 河川 (かせん) folyók' },
+  '鉄': { parts: 'fém (金) + elveszít (失)', mn: 'A fém (金), ami kemény: vas; a vasút is.', on: 'テツ: 鉄道 (てつどう) vasút; 地下鉄 (ちかてつ) metró' },
+  '児': { parts: 'régi (旧) + lábak (儿)', mn: 'Kisgyerek, aki még csak tipeg (儿): csecsemő, gyermek.', on: 'ジ: 児童 (じどう) gyermek (hivatalos); ニ: 小児科 (しょうにか) gyermekgyógyászat' },
+  '禁': { parts: 'liget (林) + oltár (示)', mn: 'A szent liget (林) oltára (示) körül minden tilos: tilalom.', on: 'キン: 禁止 (きんし) tilalom; 禁煙 (きんえん) dohányozni tilos' },
+
+  // ─── 72. lecke: csere, nyomás, robbanás ────────
+  '換': { parts: 'kéz (扌) + kicserél (奐)', mn: 'Kézből (扌) kézbe adja: cserél.', kun: '換える (かえる) kicserél', on: 'カン: 交換 (こうかん) csere; 換気 (かんき) szellőztetés' },
+  '短': { parts: 'nyíl (矢) + edény (豆)', mn: 'Nyílnyi (矢) hosszú, mint egy kis edény (豆): rövid.', kun: '短い (みじかい) rövid', on: 'タン: 短所 (たんしょ) gyenge pont; 短期 (たんき) rövid távú' },
+  '暴': { parts: 'nap (日) + két kéz + víz (氺)', mn: 'A nap (日) alá kiteregetett, a szélben verődő gabona: erőszak, tombol.', kun: '暴れる (あばれる) tombol', on: 'ボウ: 暴力 (ぼうりょく) erőszak; 乱暴 (らんぼう) durva' },
+  '占': { parts: 'jósjel (卜) + száj (口)', mn: 'A száj (口) kimondja a jósjelet (卜): jósol; elfoglal.', kun: '占う (うらなう) jósol; 占める (しめる) elfoglal', on: 'セン: 独占 (どくせん) monopólium' },
+  '植': { parts: 'fa (木) + egyenes (直)', mn: 'A fát (木) egyenesen (直) a földbe teszi: ültet.', kun: '植える (うえる) ültet; 植木 (うえき) kerti fa', on: 'ショク: 植物 (しょくぶつ) növény' },
+  '清': { parts: 'víz (氵) + kék, tiszta (青)', mn: 'Tiszta (青) víz (氵): tiszta.', kun: '清い (きよい) tiszta (írott)', on: 'セイ: 清潔 (せいけつ) tiszta; 清掃 (せいそう) takarítás' },
+  '圧': { parts: 'szikla (厂) + föld (土)', mn: 'A szikla (厂) a földre (土) nehezedik: nyomás.', on: 'アツ: 圧力 (あつりょく) nyomás; 血圧 (けつあつ) vérnyomás' },
+  '芸': { parts: 'fű (艹) + mond (云)', mn: 'A növények (艹) gondozásának tudománya: mesterség, művészet.', on: 'ゲイ: 芸術 (げいじゅつ) művészet; 芸能人 (げいのうじん) híresség' },
+  '署': { parts: 'háló (罒) + személy (者)', mn: 'A hálóba (罒) gyűjtött személyek (者) hivatala: hivatal; aláírás.', on: 'ショ: 警察署 (けいさつしょ) rendőrkapitányság; 署名 (しょめい) aláírás' },
+  '伸': { parts: 'ember (亻) + nyújt (申)', mn: 'Az ember (亻) kinyújtózik (申): nyúlik.', kun: '伸びる (のびる) megnyúlik, nő; 伸ばす (のばす) kinyújt', on: 'シン: 伸縮 (しんしゅく) nyúlás és összehúzódás' },
+  '爆': { parts: 'tűz (火) + tombol (暴)', mn: 'A tombolva (暴) kitörő tűz (火): robbanás.', on: 'バク: 爆発 (ばくはつ) robbanás; 爆弾 (ばくだん) bomba' },
+  '陸': { parts: 'domb (⻖) + földhalmok', mn: 'Egymást követő dombok (⻖) és földhalmok: szárazföld.', on: 'リク: 大陸 (たいりく) kontinens; 着陸 (ちゃくりく) leszállás' }
 };
