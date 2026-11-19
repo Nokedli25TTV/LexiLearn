@@ -55,7 +55,7 @@ function partsOf(kanji) {
 }
 const missingRadicals = (kanji, known) => partsOf(kanji).filter(r => !known.has(r));
 const isKanjiReady = (kanji, known) => missingRadicals(kanji, known).length === 0;
-// V13.27: a kandzsik sorrendjéhez elég, ha a radikál már el van kezdve (a megtanulás két ismétlésig tart)
+// V13.27: a kandzsik sorrendjéhez elég, ha a radikál már el van kezdve (a megtanuláshoz öt egymás utáni helyes gyakorlóválasz kell)
 const knownRadicals = radicalWords => new Set(radicalWords.filter(isStartedWord).map(w => w.en));
 
 /**

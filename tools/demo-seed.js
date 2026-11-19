@@ -66,11 +66,12 @@ function seedMode(mode, { active, perDay, todayCount, lessonsOnly, pendingBias, 
       // Egy részük szabad gyakorlásban is előkerült
       const quizzed = rnd() < 0.45;
       const tc = quizzed ? ri(1, 6) : 0, tw = quizzed && rnd() < 0.3 ? ri(1, 2) : 0;
+      // V13.97: ismétlőkártyája csak megtanult szónak van; a többi Tanulás alatt marad, kártya nélkül
       w.stats = {
-        ...w.stats, introducedAt: keyAt(t), reviewPasses: passes, ...(learnedT === null ? {} : { learnedAt: keyAt(learnedT) }),
+        ...w.stats, introducedAt: keyAt(t), ...(learnedT === null ? {} : { learnedAt: keyAt(learnedT) }),
         streak: quizzed ? Math.max(1, tc - tw) : 0, totalCorrect: tc, totalWrong: tw,
         lastAttempt: quizzed ? stampAt(Math.min(T, last + ri(0, 2))) : null,
-        srs: { due: keyAt(dueT), s: +s.toFixed(2), d: +d.toFixed(2), last: keyAt(last), reps, lapses }
+        ...(learnedT === null ? {} : { srs: { due: keyAt(dueT), s: +s.toFixed(2), d: +d.toFixed(2), last: keyAt(last), reps, lapses } })
       };
       learned.push(w);
     }

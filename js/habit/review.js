@@ -20,7 +20,7 @@ import { saveStats, saveWords } from '../core/storage.js';
 import { escHtml, japaneseBackLine, shuffle } from '../core/util.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
 import { AGAIN, HARD, GOOD, EASY } from '../srs/fsrs.js';
-import { MATURE_DAYS, markReviewLearned } from '../goal/jlpt.js';
+import { MATURE_DAYS } from '../goal/jlpt.js';
 import { cardInterval, dueForecast, fmtInterval, getDueCards, previewWord, rateWord, seedReverseCards } from '../srs/schedule.js';
 import { getDailyGoal, getNewWordPool, getReviewBatch, getReviewStyle, getTodayWords, logActivity } from './goal.js';
 import { renderHome } from './home.js';
@@ -374,8 +374,7 @@ function resolveReview(rating) {
   if (word) {
     const today = todayKey();
     const mature = cardInterval(word, rev) >= MATURE_DAYS; // az értékelés előtti köz
-    rateWord(word, rating, today, rev);
-    if (!rev && markReviewLearned(word, rating, today)) p.learnedNow.push(word.id); // V13.27
+    rateWord(word, rating, today, rev); // V13.97: ismétlésben már csak megtanult szó van, az értékelés nem tanít meg
     p.counts[rating]++;
     // A megtartási arányba csak a kártya első mai eredménye számít (az Újra utáni ismétlés már nem)
     const first = !p.loggedIds.includes(key);
@@ -406,7 +405,6 @@ function showReviewComplete() {
   const unit = unitOf();
   const c = p.counts;
   const summary = RATINGS.filter(r => c[r.rating] > 0).map(r => `${r.label} ${c[r.rating]}`).join(' · ');
-  const learned = p.learnedNow.map(id => state.words.find(w => w.id === id)).filter(Boolean);
 
   let next;
   if (remaining > 0) {
@@ -428,8 +426,6 @@ function showReviewComplete() {
       <p class="learn-done-sub">${sub}</p>
       ${summary ? `<p class="review-summary">${summary}</p>` : ''}
       ${milestoneNoteHtml(p)}
-      ${learned.length ? `<p class="review-learned">${learned.length} új megtanult ${unit}</p>
-      <div class="learn-done-words">${learned.map(w => `<span class="word-chip">${escHtml(w.en)} <span>${escHtml(w.hu)}</span></span>`).join('')}</div>` : ''}
       <div class="learn-done-actions">
         ${next}
         <button class="btn-quiet" onclick="showScreen('home')">Vissza a kezdőlapra</button>

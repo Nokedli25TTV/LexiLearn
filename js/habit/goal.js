@@ -11,7 +11,7 @@ import { REVIEW_BATCH_SIZE } from '../srs/schedule.js';
    V13: NAPI SZOKÁS MOTOR – új szavak, napi cél, mai ismétlés
    - Egy szó "új", ha a napi tanulásban még nem kezdted el és gyakorlásban sem válaszoltál rá 5-ször egymás után helyesen.
    - Tanuláskor ("Tudom" / jobbra húzás) a szó stats.introducedAt = mai nap (helyi dátum): ez számít a napi penzumba.
-     Megtanult két sikeres ismétlés után lesz (stats.learnedAt, lásd goal/jlpt.js).
+     Megtanult gyakorlásban öt egymás utáni helyes válasz után lesz, és csak ekkor kap ismétlőkártyát (V13.97, lásd goal/jlpt.js).
      A stats objektumban van, így a felhő szinkron módosítás nélkül viszi.
    - A napi cél módonként állítható (globalStats.dailyGoal, szinkronizált).
      Ha elérted, mára lezárjuk az új szavakat: holnap nagyobb kedvvel jössz vissza.

@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.96" src="https://img.shields.io/badge/verzi%C3%B3-13.96-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.97" src="https://img.shields.io/badge/verzi%C3%B3-13.97-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -92,7 +92,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 - **Megtartási arány:** a Statisztikában, hogy az esedékes szavak hány százalékát tudtad elsőre (friss és rögzült bontásban, a 90%-os célhoz mérve).
 - 90%-os célzott megtartás, napi felbontás; a „Rögzült” szó ismétlési köze legalább 21 nap.
 - Egy alkalom alapból legfeljebb 20 kártya (a Profilban módonként 10, 20, 30 vagy 50); az „Újra” még aznap visszajön. Húzással (balra Újra, jobbra Jó) és az 1-4 billentyűkkel is értékelhetsz.
-- A napi tanulás „Tudom” gombja csak elkezdi a szót (Tanulás alatt): kap ismétlőkártyát, de megtanult csak két egymás utáni sikeres ismétlés után lesz.
+- A napi tanulás „Tudom” gombja csak elkezdi a szót (Tanulás alatt), ismétlőkártyát még nem ad. Megtanult akkor lesz, ha gyakorlásban ötször egymás után eltalálod, és csak ezután kerül az ismétlésbe (V13.97; a korábban két ismétléssel megtanult szavak megmaradnak).
 - A szabad gyakorlásban ötször egymás után helyesen megválaszolt szó (egy hiba újraindítja a számolást) megtanult, és ő is ismétlőkártyát kap. A kör végén Nehéz / Jó / Könnyű gombbal dönthetsz az első ismétlésről (1, 3 vagy 16 nap), különben 3 nap múlva jön. A korábban így megtanult szavak módonként napi legfeljebb 5-tel kerülnek be. Egy gyakorlási hiba a kártyát holnapra hozza.
 - **Kezelhető ismétlési sor:** minden kártyán látszik a lecke, a bekerülés oka és az esedékesség; a kártya holnapra vagy egy héttel halasztható, szüneteltethető és később visszaállítható.
 

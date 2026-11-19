@@ -5,7 +5,7 @@ import { MODES, appData, createEmptyState, currentMode } from './state.js';
 import { renderHome } from '../habit/home.js';
 import { renderDashboard } from '../library/list.js';
 import { setMode } from '../ui/screens.js';
-import { seedMissing, seedPracticeBacklog, seedReverseCards } from '../srs/schedule.js';
+import { dropLearningCards, seedMissing, seedPracticeBacklog, seedReverseCards } from '../srs/schedule.js';
 import { backfillPracticeLearned } from '../goal/jlpt.js';
 import { applyTheme } from '../ui/theme.js';
 
@@ -396,8 +396,10 @@ async function renderStorageInfo() {
 // V13.5: a már tanult, de még ütemezés nélküli szavak beosztása (az SRS bevezetésekor egyszer,
 // utána csak ha pl. régi eszközről szinkronizált szó érkezik)
 function seedSrsAll() {
-  let seeded = 0, backlog = 0, backfilled = 0, reverse = 0;
+  let seeded = 0, backlog = 0, backfilled = 0, reverse = 0, dropped = 0;
   MODES.forEach(lang => {
+    // V13.97: a még meg nem tanult (Tanulás alatt) szó nem lehet az ismétlésben; a régi "Tudom"-kártyák lekerülnek
+    dropped += dropLearningCards(appData[lang].words);
     // V13.17: egyszeri átállás az egymás utáni 5 helyes válasz szabályára (a régi, összesítve
     // megtanult szavak megmaradnak). A jelző a statisztikával együtt a felhőbe is szinkronizálódik.
     const gs = appData[lang].globalStats;
@@ -413,7 +415,8 @@ function seedSrsAll() {
   if (seeded > 0) console.log(`[LexiLearn] Ismétlésütemezés: ${seeded} napi tanulásból származó szó beosztva.`);
   if (backlog > 0) console.log(`[LexiLearn] Ismétlésütemezés: ${backlog} gyakorlásból megtanult szó beosztva, napi adagokban.`);
   if (backfilled > 0) console.log(`[LexiLearn] Átállás: ${backfilled} gyakorlásból már megtanult szó megtartva.`);
-  if (seeded > 0 || backlog > 0 || backfilled > 0 || reverse > 0) saveWords();
+  if (dropped > 0) console.log(`[LexiLearn] Ismétlésütemezés: ${dropped} tanulás alatti szó kártyája levéve (megtanulás után kap újat).`);
+  if (seeded > 0 || backlog > 0 || backfilled > 0 || reverse > 0 || dropped > 0) saveWords();
   if (backfilled > 0 || reverse > 0) saveStats();
   return seeded + backlog;
 }

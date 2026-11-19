@@ -177,7 +177,7 @@ function statusMenuHtml() {
   const rows = STATUS_OPTIONS.map(([v]) => menuOption({
     selected: status === v, label: labels[v], meta: counts[v].toLocaleString('hu-HU'), action: `setStatusFilter('${v}')`
   })).join('');
-  const note = `<p class="menu-note">A napi tanulás „Tudom” gombja csak elkezdi a szót (Tanulás alatt). Megtanultnak az számít, amit két ismétlésen egymás után tudtál, vagy amire gyakorlásban ${PRACTICE_LEARNED_CORRECT}-ször egymás után helyesen válaszoltál. Egy hiba újraindítja a számolást.</p>`;
+  const note = `<p class="menu-note">A napi tanulás „Tudom” gombja csak elkezdi a szót (Tanulás alatt). Megtanultnak az számít, amire gyakorlásban ${PRACTICE_LEARNED_CORRECT}-ször egymás után helyesen válaszoltál (egy hiba újraindítja a számolást); csak ezután kerül az ismétlésbe.</p>`;
   return menuShell('Állapot', '', `<div role="listbox" aria-label="Állapot">${rows}</div>${note}`);
 }
 

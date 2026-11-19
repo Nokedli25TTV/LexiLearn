@@ -4,7 +4,7 @@
 // A stats-szal együtt mentődik és szinkronizálódik (helyi tár + felhő), külön kezelés nélkül.
 import { addDays, dateKey, keyToDate, todayKey } from '../core/dates.js';
 import { isLearnedWord, isPracticeLearned } from '../goal/jlpt.js';
-import { AGAIN, GOOD, W, intervalFor, previewAll, retrievability } from './fsrs.js';
+import { AGAIN, W, intervalFor, previewAll, retrievability } from './fsrs.js';
 
 const REVIEW_BATCH_SIZE = 20;       // egy alkalom legfeljebb ennyi kártya (5-15 perces alkalmak)
 const SEED_SPREAD_MAX_DAYS = 21;    // a már tanult szavak beosztása legfeljebb 3 hétre
@@ -94,12 +94,20 @@ function seedReverseCards(words, gs, today = todayKey()) {
   return ready.length;
 }
 
-// Új kártya: a napi tanulásban a "Tudom", a gyakorlásban az ötödik egymás utáni találat hozza létre.
-// Jó értékelés; ha közben "Még nem" is volt, előbb Újra (még ma)
-function scheduleLearnedWord(word, hadAgain, today = todayKey()) {
-  if (word.stats) delete word.stats.srsSuspended;
-  if (hadAgain) rateWord(word, AGAIN, today);
-  return rateWord(word, GOOD, today);
+// V13.97: ismétlőkártyája csak megtanult szónak van. A napi tanulás "Tudom" gombja csak elkezdi a szót
+// (Tanulás alatt), kártyát az ötödik egymás utáni gyakorlótalálat ad. A korábban a "Tudom"-mal kapott
+// kártyát a még meg nem tanult szóról betöltéskor (és szinkron után) levesszük; a kézi szüneteltetés marad.
+function dropLearningCards(words) {
+  let dropped = 0;
+  words.forEach(w => {
+    const s = w.stats;
+    if (!s || isLearnedWord(w)) return;
+    if (s.srs || s.srsRev) dropped++;
+    delete s.srs;
+    delete s.srsRev;
+    delete s.reviewPasses;
+  });
+  return dropped;
 }
 
 // V13.27: a gyakorlásban most megtanult szó első értékelése a kör végén (Nehéz / Jó / Könnyű).
@@ -127,14 +135,15 @@ function practiceLapse(word, today = todayKey()) {
   return word.stats.srs;
 }
 
-/* ── Már tanult szavak beosztása (az SRS bevezetésekor, és ha szinkronból ütemezés nélküli szó jön) ──
+/* ── Már megtanult szavak beosztása (az SRS bevezetésekor, és ha szinkronból ütemezés nélküli szó jön) ──
    A meglévő eredményekből becsül stabilitást és nehézséget:
-   - csak megtanult ("Tudom"), még nem kvízelt: mint egy friss Jó értékelés
+   - megtanult, még nem kvízelt: mint egy friss Jó értékelés
    - az utolsó válasz hibás volt (sorozat 0): 1 nap
    - egymás utáni helyes válaszok: minden további kb. 1,9-szeres köz, a pontossággal súlyozva
-   Ami így már esedékes lenne, azt a leginkább felejtettel kezdve napi adagokra osztja (legfeljebb 3 hét). */
+   Ami így már esedékes lenne, azt a leginkább felejtettel kezdve napi adagokra osztja (legfeljebb 3 hét).
+   V13.97: a csak elkezdett (Tanulás alatt) szó nem kap kártyát. */
 function hasHistory(w) {
-  return !!(w.stats?.learnedAt || w.stats?.introducedAt) && !w.stats.srsSuspended;
+  return !!(w.stats?.learnedAt || w.stats?.introducedAt) && isLearnedWord(w) && !w.stats.srsSuspended;
 }
 
 function estimateCard(w, today) {
@@ -184,5 +193,5 @@ function fmtInterval(days) {
   return `${(Math.round(days / 36.5) / 10).toLocaleString('hu-HU')} év`;
 }
 
-export { PRACTICE_BACKLOG_PER_DAY, REVERSE_MIN_INTERVAL, REVERSE_PER_DAY, REVIEW_BATCH_SIZE, cardInterval, daysBetween, dueForecast, fmtInterval, getDueCards, getDueWords, hasHistory, isDue, newCardPreview, practiceLapse, seedReverseCards,
-  previewWord, rateWord, rescheduleNewCard, scheduleLearnedWord, seedMissing, seedPracticeBacklog, shiftKey, srsOf };
+export { PRACTICE_BACKLOG_PER_DAY, REVERSE_MIN_INTERVAL, REVERSE_PER_DAY, REVIEW_BATCH_SIZE, cardInterval, daysBetween, dropLearningCards, dueForecast, fmtInterval, getDueCards, getDueWords, hasHistory, isDue, newCardPreview, practiceLapse, seedReverseCards,
+  previewWord, rateWord, rescheduleNewCard, seedMissing, seedPracticeBacklog, shiftKey, srsOf };

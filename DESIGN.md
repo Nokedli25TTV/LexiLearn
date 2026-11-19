@@ -347,7 +347,7 @@ Csak állapotváltásra, transform és opacity, 240–900 ms, `--ease-out` lassu
 - Alattuk egy csendes, középre zárt előrejelző sor: "Holnap 15 · a következő 7 napban 45" (13px, a számok 800-as súllyal). Így nincs meglepetés-hegy.
 
 ### Tanuló kártya (Signature Component)
-28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat; kandzsi módban fölötte a vonássorrend). A "Tudom" csak elkezdi a szót (Tanulás alatt, V13.27): megtanult két egymás utáni sikeres ismétlés után lesz, vagy ha a gyakorlásban ötször egymás után eltalálod. A vége képernyő ezért "N új szó elkezdve", alatta egy csendes sor a szabályról.
+28px-es kártya, ami követi az ujjat: jobbra "Tudom", balra "Még nem" pecsét jelenik meg a húzás mértékével, küszöb felett kirepül. Koppintásra megfordul (jelentés + példamondat; kandzsi módban fölötte a vonássorrend). A "Tudom" csak elkezdi a szót (Tanulás alatt, V13.27): megtanult akkor lesz, ha a gyakorlásban ötször egymás után eltalálod, és csak ezután kerül az ismétlésbe (V13.97; előtte két sikeres ismétlés is elég volt). A vége képernyő ezért "N új szó elkezdve", alatta egy csendes sor a szabályról.
 
 ### 3D kártya (Gyakorlás, V13.34)
 A gyakorlás önértékelős kártyája: elöl a forrás, hátul a cél és a példamondat, sarokban a „MAGYAR” / „FORRÁS” jelölő, a hátoldalon az „i” gomb, elöl alul a „Koppints vagy húzd el” tipp.

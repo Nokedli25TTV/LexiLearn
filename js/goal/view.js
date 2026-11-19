@@ -396,7 +396,7 @@ function renderPathScreen(host) {
         <p class="jl-coverage">A sorrend: minden következő radikál az, amelyik a legtöbb új kandzsit teszi teljessé, a szövegbeli gyakoriságuk szerint súlyozva. Ezért jön előre a 日, 木, 月 és 人: rengeteg gyakori kandzsi épül rájuk.</p>
         <p class="jl-coverage">Egy kandzsi akkor lefedett, ha minden alkotórészének a radikálját megtanultad (a KanjiVG felbontása szerint). Ez a felismerést és a megjegyzést könnyíti; a kandzsi olvasatát külön kell megtanulni.</p>
         <p class="jl-coverage">Szöveg-lefedettség: a lefedett kandzsik aránya a japán Wikinews és Wikipédia szövegeiben előforduló összes kandzsiból (scriptin/kanji-frequency, CC BY 4.0). A teljes útvonallal kb. ${pctText(p.lessons.at(-1)?.text || 0)} érhető el; a maradék olyan ritkább kandzsi, ami nincs az app kandzsilistájában.</p>
-        <p class="jl-coverage">Egy radikál akkor megtanult, ha két ismétlésen egymás után tudtad, vagy ötször egymás után helyesen válaszoltál rá.</p>
+        <p class="jl-coverage">Egy radikál akkor megtanult, ha gyakorlásban ötször egymás után helyesen válaszoltál rá; csak ezután kerül az ismétlésbe.</p>
       </details>
     </section>`;
   bindPathTips(host, p);

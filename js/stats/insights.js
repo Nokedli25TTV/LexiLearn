@@ -125,7 +125,7 @@ function renderGrowthChart() {
   const monthAgo = pts[pts.length - 31] ? pts[pts.length - 31].total : pts[0].total;
   setText('viz-growth-note', now ? `${fmtNum(now)} megtanult ${unit} · az elmúlt 30 napban +${fmtNum(now - monthAgo)}` : '');
   if (now === 0) {
-    host.innerHTML = vizEmpty('Még nincs megtanult szó. Két sikeres ismétlés vagy öt egymás utáni helyes válasz után itt nő a vonal.');
+    host.innerHTML = vizEmpty('Még nincs megtanult szó. Gyakorlásban öt egymás utáni helyes válasz után itt nő a vonal.');
     setHtml('growth-table', '');
     return;
   }

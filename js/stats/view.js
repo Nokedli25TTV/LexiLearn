@@ -288,7 +288,7 @@ function renderMaturity() {
         <li><button onclick="openWordInspector('${key}')"><i class="mat-sw ${cls}" aria-hidden="true"></i><span class="mat-name">${label}</span><span class="mat-count">${fmtNum(v)}</span><span class="mat-pct">${pct(v)}%</span></button></li>`).join('')}
     </ul>
     <div class="learning-breakdown" aria-label="Miből számít megtanultnak">
-      <button onclick="openWordInspector('daily')"><b>${fmtNum(dailyLearned)}</b><span>Napi tanulás</span></button>
+      <button onclick="openWordInspector('daily')"><b>${fmtNum(dailyLearned)}</b><span>Ismétléssel</span></button>
       <button onclick="openWordInspector('practice')"><b>${fmtNum(practiceLearned)}</b><span>5× egymás után helyes</span></button>
       <button onclick="openWordInspector('learning')"><b>${fmtNum(learning)}</b><span>Tanulás alatt</span></button>
       <button onclick="openWordInspector('review')"><b>${fmtNum(activeReview)}</b><span>Aktív ismétlés</span></button>

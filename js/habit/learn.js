@@ -7,7 +7,7 @@ import { saveStats } from '../core/storage.js';
 import { az, escHtml, shuffle } from '../core/util.js';
 import { calcStreak } from '../features/streak.js';
 import { LEARN_BATCH_SIZE, getDailyGoal, getNewWordPool, getTodayWords, logActivity, markWordIntroduced } from './goal.js';
-import { dueForecast, scheduleLearnedWord } from '../srs/schedule.js';
+import { dueForecast } from '../srs/schedule.js';
 import { crossedMilestones, isLearnedWord } from '../goal/jlpt.js';
 import { completedLessons, coverageOf, kanjiUnlockStatus } from '../goal/radical-path.js';
 import { mountStrokes, playStrokes, stopStrokes, strokeFigureHtml } from '../features/strokes.js';
@@ -204,9 +204,8 @@ function resolveLearnCard(known) {
   logActivity({ known });
   if (word) {
     if (known) {
-      // V13.5: a "Tudom" Jó értékelés; ha közben "Még nem" is volt, előbb Újra (így hamarabb jön vissza)
-      // V13.27: ez csak elkezdi a szót, megtanult két sikeres ismétlés után lesz
-      scheduleLearnedWord(word, p.againIds.includes(id));
+      // V13.97: a "Tudom" csak elkezdi a szót (Tanulás alatt), ismétlőkártyát nem ad. Megtanult akkor lesz,
+      // ha gyakorlásban ötször egymás után eltalálod; a kártyát is az ötödik találat adja.
       markWordIntroduced(word);
       p.learnedIds.push(id);
     } else {
@@ -241,9 +240,11 @@ function showLearnComplete() {
       <div class="learn-done-badge" aria-hidden="true">✓</div>
       <h2 class="learn-done-title">${p.learnedIds.length} új ${unitOf()} elkezdve</h2>
       <p class="learn-done-sub">${goalReached
-        ? 'A napi limit teljesítve. Az új szavak holnap folytatódnak; addig ismételd a maiakat.'
+        ? 'A napi limit teljesítve. Az új szavak holnap folytatódnak; addig gyakorold a maiakat.'
         : `Napi penzum: ${learnedToday}/${goal}. Még ${remaining} van hátra.`}</p>
-      <p class="review-summary">Két sikeres ismétlés után ${p.learnedIds.length === 1 ? 'számít' : 'számítanak'} megtanultnak.</p>
+      <p class="review-summary">${p.learnedIds.length === 1
+        ? 'Tanulás alatt van. Ha gyakorlásban ötször egymás után eltalálod, megtanultnak számít, és csak utána kerül az ismétlésbe.'
+        : 'Tanulás alatt vannak. Ha gyakorlásban ötször egymás után eltalálod őket, megtanultnak számítanak, és csak utána kerülnek az ismétlésbe.'}</p>
       <div class="learn-done-meter">
         <div class="goal-bar ${goalReached ? 'is-done' : ''}" style="--p:${pct}"><div class="goal-bar-fill"></div></div>
         <span class="learn-done-streak">Konzisztencia: ${streak} nap</span>

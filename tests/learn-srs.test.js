@@ -1,11 +1,12 @@
-// Tanulás ("Tudom") → ütemezés, és a már tanult szavak beosztása (betöltéskor / szinkron után).
+// Tanulás ("Tudom") és ütemezés, és a már megtanult szavak beosztása (betöltéskor / szinkron után).
+// V13.97: a "Tudom" nem ad ismétlőkártyát (a szó Tanulás alatt marad, amíg gyakorlásban meg nem tanulod).
 // Külön fájl: a bootApp fájlonként egyszer futtatható (az adatfájlok globális konstansai miatt).
 import { it, expect } from 'vitest';
 import { bootApp } from './harness/boot.js';
 
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
-it('a "Tudom" ütemez, a már tanult szavakat pedig beosztja', async () => {
+it('a "Tudom" nem ütemez, a már megtanult szavakat pedig beosztja', async () => {
   const { api, win } = await bootApp();
   for (let i = 0; i < 200 && !win.appData.japanese.words.length; i++) await wait(10);
   api.setMode('japanese');
@@ -18,14 +19,15 @@ it('a "Tudom" ütemez, a már tanult szavakat pedig beosztja', async () => {
   await wait(300);
   win.learnSwipe('right');  // második: tudom
   await wait(300);
-  expect(second.stats.srs).toMatchObject({ due: '2026-10-02', reps: 1 });
-  expect(first.stats.srs).toBeUndefined();
-  // a többit is végigtudjuk; az elsőt ("Még nem" után) hamarabbra ütemezi
+  expect(second.stats.introducedAt).toBe('2026-09-29');
+  expect(second.stats.srs).toBeUndefined();
   for (let i = 0; i < 10 && ja.practice.queue.length; i++) { win.learnSwipe('right'); await wait(300); }
-  expect(first.stats.srs.due < second.stats.srs.due).toBe(true);
+  expect(first.stats.introducedAt).toBe('2026-09-29');
+  expect(first.stats.srs).toBeUndefined();
+  expect(win.seedSrsAll()).toBe(0); // a csak elkezdett szavakat a beosztás sem ütemezi
 
-  // Régi, ütemezés nélküli tanult szavak: betöltéskor (és szinkron után) beosztja őket
-  const old = ja.words.filter(w => !w.stats.srs).slice(0, 40);
+  // Régi, ütemezés nélküli megtanult szavak: betöltéskor (és szinkron után) beosztja őket
+  const old = ja.words.filter(w => !w.stats.srs && !w.stats.introducedAt).slice(0, 40);
   old.forEach((w, i) => Object.assign(w.stats, { learnedAt: '2026-06-01', totalCorrect: 2, totalWrong: i % 2, streak: 1, lastAttempt: new Date(2026, 5, 1).getTime() }));
   expect(win.seedSrsAll()).toBeGreaterThanOrEqual(40);
   const dueToday = old.filter(w => w.stats.srs.due === '2026-09-29').length;

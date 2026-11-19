@@ -120,12 +120,12 @@ function restoreReviewWord(id) {
 const INSPECTORS = {
   learned: ['JLPT-haladásba számító megtanult szavak', w => LEVELS.includes(w.diff) && isLearnedWord(w)],
   learnedAll: ['Megtanult', w => isLearnedWord(w)], // V13.24: Radikál-útvonal (a radikálok nem JLPT-szintűek)
-  dailyJlpt: ['JLPT-haladás: napi tanulás', w => LEVELS.includes(w.diff) && !!w.stats?.learnedAt],
-  practiceJlpt: ['JLPT-haladás: gyakorlásból ismert', w => LEVELS.includes(w.diff) && !w.stats?.learnedAt && isPracticeLearned(w)],
+  dailyJlpt: ['JLPT-haladás: ismétléssel megtanult', w => LEVELS.includes(w.diff) && !!w.stats?.learnedAt],
+  practiceJlpt: ['JLPT-haladás: gyakorlásban megtanult', w => LEVELS.includes(w.diff) && !w.stats?.learnedAt && isPracticeLearned(w)],
   reviewJlpt: ['JLPT-haladás: aktív ismétlés', w => LEVELS.includes(w.diff) && !!w.stats?.srs],
   matureJlpt: ['JLPT-haladás: rögzült', w => LEVELS.includes(w.diff) && isMatureWord(w)],
-  daily: ['Napi tanulásban megtanult', w => !!w.stats?.learnedAt],
-  practice: ['Gyakorlásból ismert', w => !w.stats?.learnedAt && isPracticeLearned(w)],
+  daily: ['Ismétléssel megtanult', w => !!w.stats?.learnedAt],
+  practice: ['Gyakorlásban megtanult', w => !w.stats?.learnedAt && isPracticeLearned(w)],
   review: ['Aktív ismétlőkártyák', w => !!w.stats?.srs],
   learning: ['Tanulás alatt', w => isLearningWord(w)], // V13.27: elkezdve, még nem megtanult
   fresh: ['Ismerkedés', w => isStartedWord(w) && srsInterval(w) < 7],
@@ -223,13 +223,13 @@ function openStatsExplanation(mode = currentMode) {
     <span><b>${escHtml(label)}</b><small>${escHtml(note)}</small></span><strong>${fmtNum(value)}</strong>
   </button>`;
   showInspector('Hogyan számoljuk a haladást?', `JLPT N5–N3 · ${selectedMode === 'kanji' ? 'kandzsi' : 'szókincs'}`, `
-    <div class="calc-equation"><b>${fmtNum(daily.length)}</b> napi tanulás <span>+</span> <b>${fmtNum(practice.length)}</b> csak gyakorlás <span>=</span> <strong>${fmtNum(learned.length)} / ${fmtNum(target)}</strong></div>
-    <p class="inspect-explain">A napi tanulás „Tudom” gombja csak elkezdi a szót. Egy ${unit} akkor számít megtanultnak, ha két ismétlésen egymás után tudtad (Jó vagy Könnyű), vagy a klasszikus, gépelős, mondat-kiegészítő és hallás gyakorlatokban ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást). Ugyanaz a ${unit} csak egyszer számít.</p>
+    <div class="calc-equation"><b>${fmtNum(daily.length)}</b> ismétléssel <span>+</span> <b>${fmtNum(practice.length)}</b> gyakorlásban <span>=</span> <strong>${fmtNum(learned.length)} / ${fmtNum(target)}</strong></div>
+    <p class="inspect-explain">A napi tanulás „Tudom” gombja csak elkezdi a szót (Tanulás alatt), ismétlésre még nem kerül. Egy ${unit} akkor számít megtanultnak, ha a klasszikus, gépelős, mondat-kiegészítő és hallás gyakorlatokban ötször egymás után helyesen válaszoltál rá (egy hiba újraindítja a számolást); ekkor kerül az ismétlésbe. A V13.97 előtt két sikeres ismétléssel megtanultak megmaradnak. Ugyanaz a ${unit} csak egyszer számít.</p>
     <div class="calc-list">
-      ${row('Napi tanulás', daily.length, 'Két sikeres ismétlés után', 'dailyJlpt')}
-      ${row('Csak gyakorlásból ismert', practice.length, '5 helyes válasz egymás után', 'practiceJlpt')}
+      ${row('Ismétléssel megtanult', daily.length, 'V13.97 előtt, két sikeres ismétléssel', 'dailyJlpt')}
+      ${row('Gyakorlásban megtanult', practice.length, '5 helyes válasz egymás után', 'practiceJlpt')}
       ${row('JLPT-haladás összesen', learned.length, `A cél ${fmtNum(target)} ${unit}`, 'learned')}
-      ${row('Tanulás alatt', learning.length, 'Elkezdve, még nem számít bele', 'learning')}
+      ${row('Tanulás alatt', learning.length, 'Elkezdve, még nem számít bele és nincs ismétlésben', 'learning')}
       ${row('Aktív ismétlés', review.length, 'Van SRS-időpontja', 'reviewJlpt')}
       ${row('Szüneteltetett ismétlés', suspended.length, 'Megtanult, de nincs a sorban')}
       ${row('Rögzült', mature.length, 'Legalább 21 napos ismétlési köz', 'matureJlpt')}

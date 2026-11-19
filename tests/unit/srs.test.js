@@ -2,8 +2,8 @@
 import { describe, it, expect } from 'vitest';
 import { AGAIN, HARD, GOOD, EASY, intervalFor, initDifficulty, nextState, previewAll, retrievability } from '../../js/srs/fsrs.js';
 import {
-  cardInterval, dueForecast, fmtInterval, getDueCards, getDueWords, newCardPreview, practiceLapse, previewWord, rateWord, rescheduleNewCard, seedPracticeBacklog, seedReverseCards,
-  scheduleLearnedWord, seedMissing
+  cardInterval, dropLearningCards, dueForecast, fmtInterval, getDueCards, getDueWords, newCardPreview, practiceLapse, previewWord, rateWord, rescheduleNewCard, seedPracticeBacklog, seedReverseCards,
+  seedMissing
 } from '../../js/srs/schedule.js';
 
 const TODAY = '2026-09-29';
@@ -47,13 +47,20 @@ describe('szavak ütemezése', () => {
     rateWord(w, GOOD, '2026-10-02'); // még aznap: rövid távú stabilitás
     expect(w.stats.srs.due > '2026-10-02').toBe(true);
   });
-  it('tanulás: "Még nem" után hamarabb jön vissza, mint elsőre tudva', () => {
-    const a = word('a'), b = word('b');
-    scheduleLearnedWord(a, false, TODAY);
-    scheduleLearnedWord(b, true, TODAY);
-    expect(a.stats.srs.due).toBe('2026-10-02');
-    expect(b.stats.srs.due < a.stats.srs.due).toBe(true);
-    expect(b.stats.srs.lapses).toBe(0);
+  it('V13.97: a még meg nem tanult szó kártyája lekerül, a megtanulté és a kézi szüneteltetés marad', () => {
+    const card = () => ({ due: '2026-10-02', s: 3, d: 5, last: TODAY, reps: 1, lapses: 0 });
+    const tudom = word('tudom', { introducedAt: TODAY, srs: card(), reviewPasses: 1 });
+    const paused = word('szunet', { introducedAt: TODAY, srsSuspended: true });
+    const learned = word('kesz', { introducedAt: '2026-09-01', practiceLearnedAt: '2026-09-10', srs: card(), srsRev: card() });
+    const legacy = word('regi', { learnedAt: '2026-09-01', srs: card() });
+    expect(dropLearningCards([tudom, paused, learned, legacy])).toBe(1);
+    expect(tudom.stats.srs).toBeUndefined();
+    expect(tudom.stats.reviewPasses).toBeUndefined();
+    expect(paused.stats.srsSuspended).toBe(true);
+    expect(learned.stats.srs).toBeDefined();
+    expect(learned.stats.srsRev).toBeDefined();
+    expect(legacy.stats.srs).toBeDefined();
+    expect(dropLearningCards([tudom, paused, learned, legacy])).toBe(0);
   });
   it('szabad gyakorlás hibája holnapra hozza, a stabilitáshoz nem nyúl', () => {
     const w = word('a', { learnedAt: TODAY });
@@ -122,11 +129,12 @@ describe('már tanult szavak beosztása', () => {
     expect(getDueWords([practiced], '2026-09-30').map(w => w.id)).toEqual(['gyakorlas']);
     expect(dueForecast([practiced], TODAY).tomorrow).toBe(1);
   });
-  it('az elkezdett, még nem megtanult szó is sorra kerül', () => {
-    const started = word('elkezdett', { introducedAt: '2026-09-26', srs: { due: TODAY, s: 3, d: 5, last: '2026-09-26' } });
-    expect(getDueWords([started], TODAY).map(w => w.id)).toEqual(['elkezdett']);
-    delete started.stats.srs;
-    expect(seedMissing([started], TODAY)).toBe(1); // szinkronból kártya nélkül érkezett
+  it('V13.97: az elkezdett, még nem megtanult szó nem kap kártyát, a gyakorlásban megtanult igen', () => {
+    const started = word('elkezdett', { introducedAt: '2026-09-26' });
+    expect(seedMissing([started], TODAY)).toBe(0);
+    expect(started.stats.srs).toBeUndefined();
+    started.stats.practiceLearnedAt = '2026-09-28'; // szinkronból kártya nélkül érkezett, már megtanultként
+    expect(seedMissing([started], TODAY)).toBe(1);
     expect(started.stats.srs).toBeDefined();
   });
   it('a régi, csak gyakorlásból megtanult szavak legfeljebb napi 5-tel kapnak kártyát, a leginkább felejtettel kezdve', () => {
@@ -135,7 +143,7 @@ describe('már tanult szavak beosztása', () => {
     const weakest = word('gyenge', { practiceLearnedLegacy: true, lastAttempt: at, totalCorrect: 5, totalWrong: 4, streak: 0 });
     const paused = word('szunet', { practiceLearnedAt: '2026-09-01', srsSuspended: true });
     const untouched = word('kartyas', { practiceLearnedAt: '2026-09-01', srs: { due: '2026-10-20', s: 30, d: 5, last: '2026-09-20' } });
-    const started = word('napi', { introducedAt: '2026-09-28' }); // ezt a seedMissing kezeli
+    const started = word('napi', { introducedAt: '2026-09-28' }); // még nem megtanult: nem kap kártyát
     const all = [...words, weakest, paused, untouched, started];
     expect(seedPracticeBacklog(all, TODAY)).toBe(8);
     expect(weakest.stats.srs.due).toBe(TODAY);
