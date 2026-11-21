@@ -342,6 +342,14 @@ Csak állapotváltásra, transform és opacity, 240–900 ms, `--ease-out` lassu
 - **Kezdőlap:** a konzisztencia és a napi penzum száma a legutóbb mutatott értékről pörög fel (420–900 ms, ease-out-quart), utána egyszer 1,08-ra emelkedik és visszaül; az első megnyitáskor nem animál. A mai nap pöttye 0,82-ről ugrik a helyére, amikor a mai alkalom megvan.
 - **Napi feladat teljesült:** a sor erdő-köd háttérből halványul ki (900 ms), a pipa 0,6-ról úszik be. Ünneplés (konfetti) továbbra is csak a napi cél elérésekor.
 
+### Konzisztencia-visszaállítás (V13.101)
+A heti pöttysor alatt, csak a kimaradt nap utáni napon (tegnap kimaradt, tegnapelőtt megvolt).
+- **Sor:** a leckekártya alatti sorok formája (`.lesson-hard-btn`): fent „Konzisztencia visszaállítása” (15px 800, a haladás zöldje, `--primary-h`), alatta egy csendes mondat: „Tegnap kimaradt; a 21 napos konzisztencia ma még menthető. 1 visszaállításod van.” Jobbra 16px-es visszaforduló nyíl, zölden. Korall nem lehet: a Kezdőlapon a fő gomb az egyetlen korall elem.
+- **Nincs visszaállítás:** ugyanaz a sor, de nem gomb (`role="note"`, a cím szövegszínű): „Tegnap kimaradt”, alatta mivel lehet szerezni („Egy Dekiru-lecke lezárásáért kapsz egyet.”).
+- **Koppintásra:** azonnal visszaállít (nincs megerősítő ablak: a sor csak ebben a helyzetben látszik), a sor eltűnik, a szám a megszokott módon pörög fel, értesítés: „Konzisztencia visszaállítva: 22 nap. Még 1 visszaállításod van.”
+- **Pöttysor:** a visszaállított nap a tanult napok halvány zöldjén pipa helyett 12px-es visszaforduló nyilat kap (`.week-day-dot.restored`, `title`: Visszaállított nap). A statisztika hőtérképén és az aktív napok között nem jelenik meg: ott csak a valódi tanulás.
+- **Szerzés:** a Lecke-zárás eredményképernyőjén, ha a lecke először lett lezárva, az alcím végén: „A lezárásért kaptál egy konzisztencia-visszaállítást (most 2 van).”
+
 ### Kezdőlap cselekvések (V13.5)
 - Ha van esedékes ismétlés, az "Ismétlés" a korall fő gomb (darabszám chippel, "kb. N perc"), az "Új szavak tanulása" alatta másodlagos (felület háttér, nyíl nélkül). Ha nincs esedékes, az új szavak a fő gomb.
 - Alattuk egy csendes, középre zárt előrejelző sor: "Holnap 15 · a következő 7 napban 45" (13px, a számok 800-as súllyal). Így nincs meglepetés-hegy.

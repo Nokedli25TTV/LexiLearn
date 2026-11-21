@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.100" src="https://img.shields.io/badge/verzi%C3%B3-13.100-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.101" src="https://img.shields.io/badge/verzi%C3%B3-13.101-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -62,6 +62,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 ### Napi szokás, nem hajrá
 
 - **Konzisztencia:** hány egymást követő napon tanultál, alatta a hét napjai pöttysorban. A kihagyott nap nem büntetés, csak tény.
+- **Konzisztencia-visszaállítás** (V13.101): ha egy nap kimarad, a következő napon (24 óráig) a pöttysor alatti sorral visszaállítható; a nap pöttyén visszaforduló nyíl jelzi. Kezdésnek egy visszaállítás jár, újat egy Dekiru-lecke első lezárása ad (90%). A visszaállított nap a konzisztenciába számít, a statisztikába (aktív napok, hőtérkép) nem; egy visszaállítás minden módban pótolja ugyanazt a napot.
 - **Napi penzum:** japán módban automatikusan a Dekiru 1. leckétől halad előre, leckénként; ha egy lecke végén kevesebb szó marad a napi célnál, a következő leckéből tölti fel az adagot. A Gyakorlás fül szűrői ezt nem módosítják.
 - **Aktuális lecke:** a Kezdőlapon látszik a lecke haladása, a hátralévő és ismétlés alatt álló szavak száma, valamint a következő napi adag lecke szerinti összetétele.
 - **A lecke nehéz szavai egy koppintással:** a leckekártya alatt, ha a leckében van zászlós, makacs vagy elrontott (még nem sorozatban menő) szó. A Gyakorlás fül beállításaival indul, a kijelölésedhez nem nyúl, és a végén a Kezdőlapra tér vissza.

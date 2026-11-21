@@ -15,6 +15,7 @@ import { showScreen } from '../ui/screens.js';
 import { showToast } from '../ui/toast.js';
 import { showQuestion } from './engine.js';
 import { grammarRowHtml } from '../features/grammar.js';
+import { grantRestore } from '../features/streak.js';
 
 const PASS_PCT = 90;
 
@@ -137,9 +138,11 @@ function finishLessonTestRound(p, pct) {
   const setEl = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
   const lesson = p.lessonTest;
   const first = p.roundNumber === 1;
+  let earned = 0; // V13.101: a lecke első lezárásáért egy konzisztencia-visszaállítás jár
   if (first && !p.resultSaved) {
     const all = state.globalStats.lessonTests || (state.globalStats.lessonTests = {});
     const prev = all[String(lesson)];
+    if (pct >= PASS_PCT && !(prev && prev.best >= PASS_PCT)) earned = grantRestore();
     all[String(lesson)] = { date: todayKey(), pct, total: p.roundWords.length, best: Math.max(pct, prev?.best || 0) };
     p.resultSaved = true;
     saveStats();
@@ -149,6 +152,7 @@ function finishLessonTestRound(p, pct) {
     setEl('re-title', pct >= PASS_PCT ? `${lesson}. lecke lezárva` : `${lesson}. lecke zárása`);
     setEl('re-subtitle', pct >= PASS_PCT
       ? (p.errorList.length ? 'A lecke szavai ülnek. A lenti néhányat még érdemes átvenni.' : 'A lecke minden szava ül.')
+        + (earned ? ` A lezárásért kaptál egy konzisztencia-visszaállítást (most ${earned} van).` : '')
       : pct >= 70 ? `Majdnem kész, a záráshoz ${PASS_PCT}% kell. A lenti szavakat érdemes még átvenni.`
         : 'Ezt a leckét érdemes még gyakorolni, mielőtt továbblépsz.');
   } else {

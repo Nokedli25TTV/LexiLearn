@@ -118,6 +118,8 @@ body, .app-header, .card, .modal, .q-card, .search-input, .sort-select, .btn, .m
 .week-day-dot.not-studied { background: var(--surface-2); color: var(--text-3); font-size: 9px; }
 .week-day-dot.today-studied { background: var(--primary); color: var(--on-strong); box-shadow: 0 2px 8px rgba(45,106,79,0.4); }
 .week-day-dot.today-not { background: var(--surface-2); border: 2px dashed var(--border); color: var(--text-3); font-size: 9px; }
+/* V13.101: visszaállított nap: a tanult napok árnyalata, pipa helyett visszaforduló nyíl */
+.week-day-dot.restored { background: var(--primary-dim); color: var(--primary-h); }
 
 /* Szövegmező (gépelős gyakorlás) */
 .search-input { width: 100%; padding: 9px 12px 9px 12px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 14px; background: var(--bg); color: var(--text); }
@@ -1089,6 +1091,15 @@ body:not([data-screen="practice"]):not([data-screen="roundend"]) .toast {
 /* V13.35: a lecke nyelvtana – semleges sor, alatta a szerkezetek egy sorban, levágva */
 .lesson-grammar-btn .lesson-hard-main { color: var(--text); }
 .lesson-grammar-btn .lesson-hard-sub { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* V13.101: konzisztencia-visszaállítás a heti sáv alatt: ugyanaz a sor, a haladás zöldjével (korall nem lehet) */
+.streak-restore:empty { display: none; }
+.streak-restore .restore-row { margin-top: 14px; }
+.restore-row .lesson-hard-main { color: var(--primary-h); }
+@media (hover: hover) { .restore-row:not(.is-empty):hover { border-color: var(--primary-h); } }
+.restore-row svg { color: var(--primary-h); }
+.restore-row.is-empty { cursor: default; }
+.restore-row.is-empty:active { transform: none; }
+.restore-row.is-empty .lesson-hard-main { color: var(--text); }
 .cta-learn, .cta-review {
   width: 100%;
   display: grid;

@@ -4,7 +4,8 @@ import { todayKey } from '../core/dates.js';
 import { currentMode, MODE_LABELS, NEW_ITEMS, state, unitOf } from '../core/state.js';
 import { az, escHtml } from '../core/util.js';
 import { checkDailyReset, renderDailyQuests } from '../features/quests.js';
-import { calcStreak, renderWeekTracker } from '../features/streak.js';
+import { RESTORE_ICON, applyRestore, calcStreak, renderWeekTracker, restoreWindow, restoresLeft } from '../features/streak.js';
+import { saveStats } from '../core/storage.js';
 import { LEARN_BATCH_SIZE, describePoolSource, getCurrentLessonProgress, getDailyGoal, getNewWordPool, getReviewBatch, getTodayWords } from './goal.js';
 import { applyFilters } from '../library/list.js';
 import { closeFilterMenu, renderFilterBar } from '../library/menus.js';
@@ -41,6 +42,7 @@ function renderHome() {
     : streak > 0 ? 'Egy rövid alkalom ma is elég a folytonossághoz.'
     : 'Egy rövid alkalom ma: ebből épül a rutin.');
   renderWeekTracker();
+  renderStreakRestore();
   // a mai nap pöttye egyszer kiemelkedik, amikor a mai alkalom megvan
   const todayKeyMode = `${currentMode}:${today}`;
   if (studiedToday && _studiedSeen.get(todayKeyMode) === false) pulse(document.querySelector('#week-tracker .today-studied'), 'is-popped');
@@ -139,6 +141,44 @@ function renderHome() {
   renderDailyQuests();
 }
 
+// V13.101: konzisztencia-visszaállítás a heti sáv alatt, csak a kimaradt nap utáni napon. Ugyanaz a sor, mint a
+// leckekártya alatti soroké, a haladás zöldjével; korall nem lehet (a Kezdőlapon a fő gomb az egyetlen).
+// Ha nincs visszaállítás, nem gomb: elmondja, mivel lehet szerezni.
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+function streakRestoreHtml() {
+  const w = restoreWindow();
+  if (!w) return '';
+  const left = restoresLeft();
+  const lost = `${az(w.lost)} ${w.lost} napos konzisztencia`;
+  if (left < 1) {
+    return `
+    <div class="lesson-hard-btn restore-row is-empty" role="note">
+      <span class="lesson-hard-main">Tegnap kimaradt</span>
+      <span class="lesson-hard-sub">${cap(lost)} egy visszaállítással menthető lenne, de most nincs. Egy Dekiru-lecke lezárásáért kapsz egyet.</span>
+    </div>`;
+  }
+  return `
+    <button class="lesson-hard-btn restore-row" onclick="restoreStreak()">
+      <span class="lesson-hard-main">Konzisztencia visszaállítása</span>
+      <span class="lesson-hard-sub">Tegnap kimaradt; ${lost} ma még menthető. ${left} visszaállításod van.</span>
+      ${RESTORE_ICON(16)}
+    </button>`;
+}
+
+function renderStreakRestore() {
+  const host = document.getElementById('streak-restore');
+  if (host) host.innerHTML = streakRestoreHtml();
+}
+
+function restoreStreak() {
+  const done = applyRestore();
+  if (!done) { renderHome(); return; }
+  saveStats();
+  renderHome();
+  const left = restoresLeft();
+  showToast(`Konzisztencia visszaállítva: ${calcStreak()} nap. ${left > 0 ? `Még ${left} visszaállításod van.` : 'Több visszaállításod most nincs.'}`);
+}
+
 // Régi globális kezelő kompatibilitásához megtartva; a napi sorrend már automatikus.
 function openPoolSource() {
   showToast('A napi új szavak automatikusan, lecke szerint következnek.');
@@ -197,4 +237,4 @@ function clearFilters() {
   showToast('Szűrők törölve');
 }
 
-export { clearFilters, openCurrentLesson, openPoolSource, renderCurrentLesson, renderHome };
+export { clearFilters, openCurrentLesson, openPoolSource, renderCurrentLesson, renderHome, restoreStreak, streakRestoreHtml };

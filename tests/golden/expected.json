@@ -17,36 +17,43 @@
       {
         "label": "H",
         "studied": true,
+        "restored": false,
         "isToday": false
       },
       {
         "label": "K",
         "studied": true,
+        "restored": false,
         "isToday": true
       },
       {
         "label": "Sz",
         "studied": false,
+        "restored": false,
         "isToday": false
       },
       {
         "label": "Cs",
         "studied": false,
+        "restored": false,
         "isToday": false
       },
       {
         "label": "P",
         "studied": false,
+        "restored": false,
         "isToday": false
       },
       {
         "label": "Szo",
         "studied": false,
+        "restored": false,
         "isToday": false
       },
       {
         "label": "V",
         "studied": false,
+        "restored": false,
         "isToday": false
       }
     ],
