@@ -1,11 +1,11 @@
 {
   "wordCounts": {
-    "en": 927,
+    "en": 920,
     "ja": 4254,
     "kj": 1715
   },
   "wordsHash": {
-    "en": "215270:eff4203",
+    "en": "214634:a768a074",
     "ja": "1030270:ed667914",
     "kj": "480257:8c75dd46"
   },
@@ -866,7 +866,7 @@
     "history": "<div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 08. 15. 21:00:00</span> <span class=\"hist-score\">5 helyes · 5 hibás</span></div> <span class=\"hist-meta\">1 kör · 2 p 0 mp</span> </div> <div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 09. 22. 07:30:00</span> <span class=\"hist-score\">30 helyes · 5 hibás</span></div> <span class=\"hist-meta\">3 kör · 15 p 0 mp</span> </div> <div class=\"hist-row\"> <div><span class=\"hist-date\">2026. 09. 15. 18:10:00</span> <span class=\"hist-score\">18 helyes · 2 hibás</span></div> <span class=\"hist-meta\">2 kör · 7 p 0 mp</span> </div>"
   },
   "english": {
-    "pool": 777,
+    "pool": 771,
     "poolFirst": [
       "en_delighted",
       "en_perhaps",
@@ -875,12 +875,12 @@
       "en_North",
       "en_East",
       "en_compulsory",
-      "en_despite_,_-_of"
+      "en_despite"
     ],
     "goal": 10,
     "actions": "<div class=\"home-note is-success\" role=\"status\"> <span class=\"home-note-icon\" aria-hidden=\"true\">✓</span> <div> <p class=\"home-note-title\">A napi limit teljesítve.</p> <p class=\"home-note-sub\">Az új szavak holnap folytatódnak.</p> </div> </div>",
     "pills": "<button class=\"pill \" data-menu=\"status\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('status')\"> <span class=\"pill-label\">Állapot</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"tags\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('tags')\"> <span class=\"pill-label\">Témakör</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"diff\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('diff')\"> <span class=\"pill-label\">Szint</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button> <button class=\"pill \" data-menu=\"list\" aria-haspopup=\"true\" aria-expanded=\"false\" onclick=\"toggleFilterMenu('list')\"> <span class=\"pill-label\">Lista</span><svg class=\"pill-chev\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg> </button>",
-    "count": "927 szó"
+    "count": "920 szó"
   },
   "kanji": {
     "pool": 1439,
@@ -934,7 +934,7 @@
         "selectedIds"
       ]
     },
-    "statsHash": "9507:4101ca64"
+    "statsHash": "9520:6420202e"
   },
   "__errors": []
 }

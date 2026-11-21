@@ -113,8 +113,12 @@ const RENAMED_WORDS = {
     // V13.44: kis っ / zöngésség hiányzott; a javított alak az N3 szóval egyesül
     'てんきゅう': 'でんきゅう', 'じつけん': 'じっけん',
     // V13.45: マイペース (a ペース tempó) ベ-vel állt
-    'マイベース(な)': 'マイペース(な)', 'はつけん': 'はっけん' }
+    'マイベース(な)': 'マイペース(な)', 'はつけん': 'はっけん' },
+  // V13.110: fordítás-ellenőrzés, elírt angol szavak (a mondataik is javultak)
+  english: { 'assesment': 'assessment', 'artielly unit': 'artillery unit', 'despite , - of': 'despite', 'apenty': 'aplenty' }
 };
+// V13.110: az azonosító előtagja módonként (az angol szó en_, a japán ja_)
+const idPrefix = lang => (lang === 'english' ? 'en' : 'ja');
 
 // V13.45: elírt kana, ami egy másik, valódi szóval olvadt össze. A Dekiru 1 villamosa しでん, nem
 // してん; a Dekiru 2 してん (szempont) önálló szó. Csak a régi, összevont mentett szó költözik (amelyikben
@@ -182,7 +186,7 @@ function migrateRenamedWords() {
       const old = words.find(w => w.en === oldEn);
       if (!old) return;
       const oldId = old.id;
-      const newId = stableWordId('ja', newEn);
+      const newId = stableWordId(idPrefix(lang), newEn);
       const current = words.find(w => w.en === newEn);
       if (current) {
         // Az új alak már megvan (pl. másik eszközről): a régi haladás csak akkor költözik, ha az újnak nincs
@@ -207,7 +211,7 @@ function migrateRenamedWords() {
       if (!old || words.some(w => w.en === to)) return;
       const oldId = old.id;
       old.en = to;
-      old.id = stableWordId('ja', to);
+      old.id = stableWordId(idPrefix(lang), to);
       oldToNew.set(oldId, old.id);
       changed = true;
     });
@@ -471,6 +475,17 @@ function syncNewWords() {
       if (w.id && (w.id.startsWith('en_') || w.id.startsWith('en_new_'))) {
         if (!w.source) w.source = 'data_js';
       }
+    });
+
+    // V13.110: hét angol szó kétszer szerepelt az adatban (alert, celestial, emblem …), egy friss telepítés
+    // mindkét példányt elmentette, azonos azonosítóval. Egy marad; a haladás azé, amelyiknek van.
+    const firstByEn = new Map();
+    appData.english.words = appData.english.words.filter(w => {
+      if (w.source !== 'data_js') return true;
+      const first = firstByEn.get(w.en);
+      if (!first) { firstByEn.set(w.en, w); return true; }
+      if (!hasWordProgress(first) && hasWordProgress(w)) { first.stats = w.stats; first.bookmarked = !!w.bookmarked; }
+      return false;
     });
 
     if (appData.english.words.length === 0) {

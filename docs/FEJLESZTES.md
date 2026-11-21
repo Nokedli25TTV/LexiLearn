@@ -88,7 +88,9 @@ Az app a japán szavakat kana szerint azonosítja (`ja_<kana>`), ezért egy Deki
   a régi is megmaradna. A régi rész a `js/core/storage.js` `MEANING_FIXES` táblájába kerül (kana → { régi rész: új rész },
   üres új rész = törlés), a `tests/meaning-audit.test.js` pedig egy régi mentéssel ellenőrzi.
 - **N3, alapszótár és angol szó:** a jelentés betöltéskor az adatfájlból jön, elég az adatot javítani. Az angol szó
-  (`en`) vagy a kana elírása viszont az azonosítót változtatja: az a `RENAMED_WORDS`-be kerül.
+  (`en`) vagy a kana elírása viszont az azonosítót változtatja: az a `RENAMED_WORDS`-be kerül (V13.110 óta az
+  `english` ága is működik, `en_` előtaggal), és a szó példamondatában is át kell írni. Egy angol szó csak egyszer
+  szerepelhet az adatban (a teszt ellenőrzi); a korábban kétszer mentett példányokat a betöltés egyesíti.
 - **Azonos Dekiru- és N3-szó** (nem homográf): a kártyán az N3 jelentése látszik, a leckéé nem. Ha a lecke egy
   jelentést hozzátesz (えらい: magas rangú, わかれる: elbúcsúzik), azt az N3 adatba kell felvenni (V13.109).
 - Ha a szónak példamondata van, a fordítását is a javított jelentéshez kell igazítani.
