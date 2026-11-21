@@ -6,7 +6,7 @@
 
 <p align="center">
   <a href="https://nokedli25ttv.github.io/LexiLearn/"><img alt="Élő verzió" src="https://img.shields.io/badge/%C3%89l%C5%91%20verzi%C3%B3-megnyit%C3%A1s-f57e4d?style=for-the-badge&labelColor=22110b"></a>
-  <img alt="Verzió 13.104" src="https://img.shields.io/badge/verzi%C3%B3-13.104-2d6a4f?style=for-the-badge&labelColor=171c1a">
+  <img alt="Verzió 13.105" src="https://img.shields.io/badge/verzi%C3%B3-13.105-2d6a4f?style=for-the-badge&labelColor=171c1a">
   <img alt="JLPT N5-től N3-ig" src="https://img.shields.io/badge/JLPT-N5%20%E2%86%92%20N3-e76f51?style=for-the-badge&labelColor=171c1a">
   <img alt="PWA, offline is" src="https://img.shields.io/badge/PWA-offline%20is-52b788?style=for-the-badge&logo=pwa&logoColor=white&labelColor=171c1a">
   <br>
@@ -167,7 +167,7 @@ A Kezdőlapon mindig egyetlen korall gomb mutatja a következő lépést: ha van
 
 | Mód | Tartalom |
 |---|---|
-| Japán | 4257 szó, kanával, romajival, kandzsi írásmóddal és témakörökkel; a Dekiru 1–2 teljes, 48 leckés szószedete; 3403 példamondat (az 1. könyv minden szavához; a 2. könyvé leckénként készül, V13.104 óta a 25–42. lecke kész) |
+| Japán | 4257 szó, kanával, romajival, kandzsi írásmóddal és témakörökkel; a Dekiru 1–2 teljes, 48 leckés szószedete; 3478 példamondat (az 1. könyv minden szavához; a 2. könyvé leckénként készül, V13.105 óta a 25–44. lecke kész) |
 | Kandzsi | 1715 kandzsi N5-től N1-ig, jelentéssel, olvasatokkal és vonássorrenddel |
 | Angol | 927 szó szintekkel és témakörökkel, 920 példamondat |
 | Úti terv | 15 napos szó- és 25 napos kandzsi-terv egy japán útra, napra bontva |
