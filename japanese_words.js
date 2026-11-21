@@ -30,7 +30,7 @@ const JAPANESE_WORDS = [
   { kana: 'はと', romaji: 'hato', hu: 'galamb', tags: ['állatok'], jlpt: 'N5' },
   { kana: 'からす', romaji: 'karasu', hu: 'varjú', tags: ['állatok'], jlpt: 'N4' },
   { kana: 'わし', romaji: 'washi', hu: 'sas', tags: ['állatok'], jlpt: 'N3' },
-  { kana: 'たか', romaji: 'taka', hu: 'ölyv / héja', tags: ['állatok'], jlpt: 'N3' },
+  { kana: 'たか', romaji: 'taka', hu: 'héja / sólyom', tags: ['állatok'], jlpt: 'N3' },
   { kana: 'かも', romaji: 'kamo', hu: 'vadkacsa', tags: ['állatok','ételek'], jlpt: 'N4' },
   { kana: 'つばめ', romaji: 'tsubame', hu: 'fecske', tags: ['állatok'], jlpt: 'N4' },
   { kana: 'かえる', kanji: '蛙', romaji: 'kaeru', hu: 'béka', tags: ['állatok'], jlpt: 'N5' },
@@ -73,7 +73,7 @@ const JAPANESE_WORDS = [
   { kana: 'びようし', romaji: 'biyōshi', hu: 'fodrász', tags: ['munka'], jlpt: 'N4' },
   { kana: 'しかい', romaji: 'shikai', hu: 'fogorvos', tags: ['munka'], jlpt: 'N3' },
   { kana: 'べんごし', romaji: 'bengoshi', hu: 'ügyvéd', tags: ['munka'], jlpt: 'N3' },
-  { kana: 'うけつけ', romaji: 'uketsuke', hu: 'recepciós', tags: ['munka'], jlpt: 'N4' },
+  { kana: 'うけつけ', romaji: 'uketsuke', hu: 'recepció / ügyfélfogadás', tags: ['munka'], jlpt: 'N4' },
   { kana: 'けんきゅうしゃ', romaji: 'kenkyūsha', hu: 'kutató', tags: ['munka'], jlpt: 'N3' },
   { kana: 'ほんやくしゃ', romaji: 'honyakusha', hu: 'fordító', tags: ['munka'], jlpt: 'N3' },
   { kana: 'はんばいいん', romaji: 'hanbaiin', hu: 'értékesítő', tags: ['munka'], jlpt: 'N4' },
@@ -96,7 +96,7 @@ const JAPANESE_WORDS = [
   { kana: 'りょうりはいたついん', romaji: 'ryōri haitatsuin', hu: 'ételfutár', tags: ['munka'], jlpt: 'N4' },
   { kana: 'ひしょ', romaji: 'hisho', hu: 'titkár / asszisztens', tags: ['munka'], jlpt: 'N3' },
   { kana: 'かがくしゃ', romaji: 'kagakusha', hu: 'tudós', tags: ['munka'], jlpt: 'N2' },
-  { kana: 'てんぽスタッフ', romaji: 'tenpo sutaffu', hu: 'üzleti alkalmazott', tags: ['munka'], jlpt: 'N5' },
+  { kana: 'てんぽスタッフ', romaji: 'tenpo sutaffu', hu: 'bolti alkalmazott', tags: ['munka'], jlpt: 'N5' },
   { kana: 'ソフトウェアかいはつしゃ', romaji: 'sofutowea kaihatsusha', hu: 'szoftverfejlesztő', tags: ['munka'], jlpt: 'N2' },
 
   // ============================
@@ -115,10 +115,10 @@ const JAPANESE_WORDS = [
   { kana: 'カフェめぐり', romaji: 'kafe meguri', hu: 'kávézók felfedezése', tags: ['hobbi'], jlpt: 'N4' },
   { kana: 'ショッピング', romaji: 'shoppingu', hu: 'vásárlás', tags: ['hobbi'], jlpt: 'N5' },
   { kana: 'ボードゲーム', romaji: 'bōdogēmu', hu: 'társasjáték', tags: ['hobbi'], jlpt: 'N5' },
-  { kana: 'アニメかんしょう', romaji: 'anime kanshō', hu: 'anime nézés', tags: ['hobbi'], jlpt: 'N4' },
+  { kana: 'アニメかんしょう', romaji: 'anime kanshō', hu: 'animenézés', tags: ['hobbi'], jlpt: 'N4' },
   { kana: 'めいそう', romaji: 'meisō', hu: 'meditáció', tags: ['hobbi'], jlpt: 'N3' },
   { kana: 'ヨガ', romaji: 'yoga', hu: 'jóga', tags: ['hobbi'], jlpt: 'N5' },
-  { kana: 'りょうりけんきゅう', romaji: 'ryōri kenkyū', hu: 'receptek kísérletezése', tags: ['hobbi'], jlpt: 'N2' },
+  { kana: 'りょうりけんきゅう', romaji: 'ryōri kenkyū', hu: 'kísérletezés receptekkel', tags: ['hobbi'], jlpt: 'N2' },
   { kana: 'ディーアイワイ', romaji: 'dī ai wai', hu: 'barkácsolás (DIY)', tags: ['hobbi'], jlpt: 'N5' },
 
   // ══════════════════════════════════════════
@@ -141,7 +141,7 @@ const JAPANESE_WORDS = [
   // — 3. nap —
   { kana: 'タクシーのりば', romaji: 'takushii noriba', hu: 'taxiállomás', tags: ['közlekedés'], jlpt: 'N4' }, // タクシー乗り場
   { kana: 'かいさつ', romaji: 'kaisatsu', hu: 'jegykapu', tags: ['közlekedés'], jlpt: 'N2' }, // 改札
-  { kana: 'ICカード', romaji: 'IC kaado', hu: 'IC kártya (Suica)', tags: ['közlekedés'], jlpt: 'N4' }, // ＩＣカード
+  { kana: 'ICカード', romaji: 'IC kaado', hu: 'IC-kártya (Suica)', tags: ['közlekedés'], jlpt: 'N4' }, // ＩＣカード
   { kana: 'ぜいかん', romaji: 'zeikan', hu: 'vám', tags: ['közlekedés'], jlpt: 'N2' }, // 税関
   { kana: 'とうちゃく', romaji: 'touchaku', hu: 'érkezés', tags: ['közlekedés'], jlpt: 'N3' }, // 到着
   { kana: 'しゅっぱつ', romaji: 'shuppatsu', hu: 'indulás', tags: ['közlekedés'], jlpt: 'N4' }, // 出発
@@ -155,7 +155,7 @@ const JAPANESE_WORDS = [
   // ══════════════════════════════════════════
   // — 4. nap —
   { kana: 'よにん', romaji: 'yonin', hu: 'négy fő / négy személy', tags: ['étterem'], jlpt: 'N4' }, // 四人 / 四名
-  { kana: 'てんない', romaji: 'tennai', hu: 'helyben fogyasztás', tags: ['étterem'], jlpt: 'N3' }, // 店内
+  { kana: 'てんない', romaji: 'tennai', hu: 'az üzletben / helyben (fogyasztás)', tags: ['étterem'], jlpt: 'N3' }, // 店内
   { kana: 'もちかえり', romaji: 'mochikaeri', hu: 'elvitelre', tags: ['étterem'], jlpt: 'N3' }, // 持ち帰り / テイクアウト
   { kana: 'おしぼり', romaji: 'oshibori', hu: 'nedves kéztörlő kendő', tags: ['étterem'], jlpt: 'N3' }, // おしぼり
   { kana: 'ちゅうもん', romaji: 'chuumon', hu: 'rendelés', tags: ['étterem'], jlpt: 'N4' }, // 注文
@@ -186,7 +186,7 @@ const JAPANESE_WORDS = [
   // — 7. nap —
   { kana: 'おみせ', romaji: 'omise', hu: 'bolt / üzlet', tags: ['bolt'], jlpt: 'N5' }, // お店
   { kana: 'おべんとう', romaji: 'obentou', hu: 'bento / dobozos étel', tags: ['bolt'], jlpt: 'N4' }, // お弁当
-  { kana: 'あたためる', romaji: 'atatameru', hu: 'felmelegíteni', tags: ['bolt'], jlpt: 'N3' }, // 温める
+  { kana: 'あたためる', romaji: 'atatameru', hu: 'felmelegít', tags: ['bolt'], jlpt: 'N3' }, // 温める
   { kana: 'わりばし', romaji: 'waribashi', hu: 'eldobható pálcika', tags: ['bolt'], jlpt: 'N3' }, // 割り箸
   { kana: 'わりびき', romaji: 'waribiki', hu: 'kedvezmény / leárazás', tags: ['bolt'], jlpt: 'N3' }, // 割引
   { kana: 'でんち', romaji: 'denchi', hu: 'elem / akkumulátor', tags: ['bolt'], jlpt: 'N4' }, // 電池
@@ -207,7 +207,7 @@ const JAPANESE_WORDS = [
   { kana: 'じゅんびちゅう', romaji: 'junbi chuu', hu: 'zárva (előkészületben)', tags: ['bolt'], jlpt: 'N3' }, // 準備中
   { kana: 'さがしています', romaji: 'sagashite imasu', hu: 'keresek (valamit)', tags: ['bolt'], jlpt: 'N4' }, // 探しています
   { kana: 'みているだけです', romaji: 'mite iru dake desu', hu: 'csak nézelődöm', tags: ['bolt'], jlpt: 'N4' }, // 見ているだけです
-  { kana: 'うりきれ', romaji: 'urikire', hu: 'elfogyott / sold out', tags: ['bolt'], jlpt: 'N3' }, // 売り切れ
+  { kana: 'うりきれ', romaji: 'urikire', hu: 'elfogyott / kifogyott', tags: ['bolt'], jlpt: 'N3' }, // 売り切れ
   { kana: 'ちゅうこ', romaji: 'chuuko', hu: 'használt (cikk)', tags: ['bolt'], jlpt: 'N2' }, // 中古
   { kana: 'あたらしいもの', romaji: 'atarashii mono', hu: 'új darab / bontatlan', tags: ['bolt'], jlpt: 'N4' }, // 新しいもの
 
@@ -227,15 +227,15 @@ const JAPANESE_WORDS = [
   { kana: 'きつえんルーム', romaji: 'kitsuen ruumu', hu: 'dohányzó szoba', tags: ['szállás'], jlpt: 'N2' }, // 喫煙ルーム
   { kana: 'もんげん', romaji: 'mongen', hu: 'kapuzárás / takarodó', tags: ['szállás'], jlpt: 'N1' }, // 門限
   // — 11. nap —
-  { kana: 'あんしょうばんごう', romaji: 'anshou bangou', hu: 'PIN kód / ajtókód', tags: ['szállás'], jlpt: 'N1' }, // 暗証番号
-  { kana: 'キーボックス', romaji: 'kii bokkusu', hu: 'kulcsszéf / lockbox', tags: ['szállás'], jlpt: 'N3' }, // キーボックス
+  { kana: 'あんしょうばんごう', romaji: 'anshou bangou', hu: 'PIN-kód / ajtókód', tags: ['szállás'], jlpt: 'N1' }, // 暗証番号
+  { kana: 'キーボックス', romaji: 'kii bokkusu', hu: 'kulcsszéf / kulcsdoboz', tags: ['szállás'], jlpt: 'N3' }, // キーボックス
   { kana: 'ぶんべつ', romaji: 'bunbetsu', hu: 'szelektív hulladékgyűjtés', tags: ['szállás'], jlpt: 'N2' }, // 分別
   { kana: 'せんたくき', romaji: 'sentakuki', hu: 'mosógép', tags: ['szállás'], jlpt: 'N4' }, // 洗濯機
   { kana: 'でんしレンジ', romaji: 'denshi renji', hu: 'mikrohullámú sütő', tags: ['szállás'], jlpt: 'N3' }, // 電子レンジ
   { kana: 'つかいかた', romaji: 'tsukaikata', hu: 'használati útmutató', tags: ['szállás'], jlpt: 'N4' }, // 使い方
   { kana: 'タオル', romaji: 'taoru', hu: 'törölköző', tags: ['szállás'], jlpt: 'N5' }, // タオル
   { kana: 'おふろ', romaji: 'ofuro', hu: 'fürdőkád / fürdőszoba', tags: ['szállás'], jlpt: 'N5' }, // お風呂
-  { kana: 'トイレットペーパー', romaji: 'toiretto peepaa', hu: 'WC papír', tags: ['szállás'], jlpt: 'N4' }, // トイレットペーパー
+  { kana: 'トイレットペーパー', romaji: 'toiretto peepaa', hu: 'WC-papír', tags: ['szállás'], jlpt: 'N4' }, // トイレットペーパー
   { kana: 'ホスト', romaji: 'hosuto', hu: 'szállásadó / host', tags: ['szállás'], jlpt: 'N3' }, // ホスト
   { kana: 'こわれています', romaji: 'kowarete imasu', hu: 'elromlott / nem működik', tags: ['szállás'], jlpt: 'N3' }, // 壊れています
   { kana: 'おゆがでません', romaji: 'oyu ga demasen', hu: 'nincs meleg víz', tags: ['szállás'], jlpt: 'N4' }, // お湯が出ません
@@ -249,11 +249,11 @@ const JAPANESE_WORDS = [
   { kana: 'さつえいきんし', romaji: 'satsuei kinshi', hu: 'fényképezés tilos', tags: ['szórakozás'], jlpt: 'N1' }, // 撮影禁止
   { kana: 'さいしゅうにゅうじょう', romaji: 'saishuu nyuujou', hu: 'utolsó belépés', tags: ['szórakozás'], jlpt: 'N1' }, // 最終入場
   { kana: 'れつ', romaji: 'retsu', hu: 'sor (sorban állás)', tags: ['szórakozás'], jlpt: 'N3' }, // 列
-  { kana: 'ならんでいます', romaji: 'narande imasu', hu: 'sorban állni', tags: ['szórakozás'], jlpt: 'N4' }, // 並んでいます
+  { kana: 'ならんでいます', romaji: 'narande imasu', hu: 'sorban állnak', tags: ['szórakozás'], jlpt: 'N4' }, // 並んでいます
   // — 13. nap —
-  { kana: 'ゲームセンター', romaji: 'geemu sentaa', hu: 'játékterem / game center', tags: ['szórakozás'], jlpt: 'N4' }, // ゲームセンター / ゲーセン
+  { kana: 'ゲームセンター', romaji: 'geemu sentaa', hu: 'játékterem', tags: ['szórakozás'], jlpt: 'N4' }, // ゲームセンター / ゲーセン
   { kana: 'ガチャガチャ', romaji: 'gachagacha', hu: 'kapszulajáték-automata', tags: ['szórakozás'], jlpt: 'N4' }, // ガチャガチャ
-  { kana: 'UFOキャッチャー', romaji: 'yuufoo kyatchaa', hu: 'darus játék / claw machine', tags: ['szórakozás'], jlpt: 'N4' }, // UFOキャッチャー
+  { kana: 'UFOキャッチャー', romaji: 'yuufoo kyatchaa', hu: 'darus (markolós) játékautomata', tags: ['szórakozás'], jlpt: 'N4' }, // UFOキャッチャー
   { kana: 'けいひん', romaji: 'keihin', hu: 'nyeremény / díj', tags: ['szórakozás'], jlpt: 'N2' }, // 景品
   { kana: 'かんぱい', romaji: 'kanpai', hu: 'egészségedre! / koccintás', tags: ['szórakozás'], jlpt: 'N3' }, // 乾杯
   { kana: 'のみほうだい', romaji: 'nomihoudai', hu: 'korlátlan italfogyasztás', tags: ['szórakozás'], jlpt: 'N2' }, // 飲み放題

@@ -1,4 +1,4 @@
-// V13.108: fordítás-ellenőrzés. A javított jelentés a mentett szóra is kiér (a betöltés a mentett
+// V13.108–: fordítás-ellenőrzés. A javított jelentés a mentett szóra is kiér (a betöltés a mentett
 // jelentéshez fűzi az adatfájlét, ezért a régi rész a MEANING_FIXES nélkül megmaradna), és a lecke
 // nélkül maradt Dekiru-szavak a saját leckéjükbe kerülnek.
 import { it, expect } from 'vitest';
@@ -23,6 +23,12 @@ const SAVED = {
   '~さい': ['- éves', '...éves'],
   '(お)としより': ['idős', 'idős ember'],
   'かし': ['édesség/sütemény', 'édesség/sütemény'],
+  // V13.109 (alapszótár, N3): ezek az adatfájlból jönnek; a Dekiru-szónál is az N3 jelentése látszik
+  'うけつけ': ['recepciós', 'recepció / ügyfélfogadás'],
+  'キーボックス': ['kulcsszéf / lockbox', 'kulcsszéf / kulcsdoboz'],
+  'ICカード': ['IC kártya (Suica)', 'IC-kártya (Suica)'],
+  'えらい': ['nagyszerű, tiszteletre méltó', 'nagyszerű, tiszteletre méltó; magas rangú'],
+  'わかれる': ['elválik, szakít', 'elválik, szakít; elbúcsúzik'],
 };
 
 it('a javított jelentés a mentett szóban is felváltja a régit, és nem ismétlődik', async () => {
