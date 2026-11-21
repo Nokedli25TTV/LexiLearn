@@ -60,7 +60,7 @@ const DEKIRU_L1 = [
   { kana: 'れい', romaji: 'rei', hu: 'példa', tags: ['iskola'], jlpt: 'N5', lesson: [1], source: 'dekiru' },
   { kana: 'なに/なん', romaji: 'nani/nan', hu: 'mi?, micsoda?', tags: ['kérdőszavak'], jlpt: 'N5', lesson: [1], source: 'dekiru' },
   { kana: '~ねんせい', romaji: '~nensei', hu: '-dikos, -dik évfolyamos', tags: ['számlálószavak'], jlpt: 'N5', lesson: [1], source: 'dekiru' },
-  { kana: '~さい', romaji: '~sai', hu: '- éves', tags: ['számlálószavak'], jlpt: 'N5', lesson: [1], source: 'dekiru' },
+  { kana: '~さい', romaji: '~sai', hu: '...éves', tags: ['számlálószavak'], jlpt: 'N5', lesson: [1], source: 'dekiru' },
   { kana: 'はたち', romaji: 'hatachi', hu: 'húszéves', tags: ['alapszavak'], jlpt: 'N4', lesson: [1], source: 'dekiru' },
   { kana: 'はい', romaji: 'hai', hu: 'igen', tags: ['alapszavak'], jlpt: 'N5', lesson: [1], source: 'dekiru' },
   { kana: 'いいえ', romaji: 'iie', hu: 'nem', tags: ['alapszavak'], jlpt: 'N5', lesson: [1], source: 'dekiru' },
@@ -89,7 +89,7 @@ const DEKIRU_L2 = [
   { kana: 'きょうしつ', romaji: 'kyoushitsu', hu: 'tanterem', tags: ['helyek', 'iskola'], jlpt: 'N4', lesson: [2], source: 'dekiru' },
   { kana: 'うんどうじょう', romaji: 'undoujou', hu: 'sportpálya', tags: ['helyek', 'iskola'], jlpt: 'N4', lesson: [2], source: 'dekiru' },
   { kana: 'たいいくかん', romaji: 'taiikukan', hu: 'tornaterem', tags: ['helyek', 'iskola'], jlpt: 'N4', lesson: [2], source: 'dekiru' },
-  { kana: 'としょしつ', romaji: 'toshoshitsu', hu: 'könyvolvasó, könyvtárszoba', tags: ['helyek', 'iskola'], jlpt: 'N4', lesson: [2], source: 'dekiru' },
+  { kana: 'としょしつ', romaji: 'toshoshitsu', hu: 'iskolai könyvtár, könyvtárterem', tags: ['helyek', 'iskola'], jlpt: 'N4', lesson: [2], source: 'dekiru' },
   { kana: 'こくばん', romaji: 'kokuban', hu: 'iskolai tábla', tags: ['iskola'], jlpt: 'N4', lesson: [2], source: 'dekiru' },
   { kana: 'いけ', romaji: 'ike', hu: 'tó, mesterséges tó', tags: ['természet'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
   { kana: 'えんぴつ', romaji: 'enpitsu', hu: 'ceruza', tags: ['tárgyak', 'iskola'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
@@ -98,7 +98,7 @@ const DEKIRU_L2 = [
   { kana: 'ノート', romaji: 'nooto', hu: '(jegyzet)füzet', tags: ['tárgyak', 'iskola'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
   { kana: 'けしゴム', romaji: 'keshigomu', hu: 'radir(gumi)', tags: ['tárgyak', 'iskola'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
   { kana: 'じしょ', romaji: 'jisho', hu: 'szótár', tags: ['tárgyak', 'iskola'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
-  { kana: 'でんしじしょ', romaji: 'denshijisho', hu: 'elektronikus szótár' },
+  { kana: 'でんしじしょ', romaji: 'denshijisho', hu: 'elektronikus szótár', tags: ['tárgyak', 'iskola'], jlpt: 'N4', lesson: [2], source: 'dekiru' },
   { kana: 'コンピューター', romaji: 'konpyuutaa', hu: 'számítógép, komputer', tags: ['tárgyak', 'iskola'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
 
   // Személyes tárgyak
@@ -122,7 +122,7 @@ const DEKIRU_L2 = [
   { kana: 'ちゃ', romaji: 'cha', hu: 'zöld tea, teaceremónia', tags: ['italok'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
   { kana: 'こうちゃ', romaji: 'kocha', hu: '(fekete) tea', tags: ['italok'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
   { kana: 'むぎちゃ', romaji: 'mugicha', hu: 'mugicha (gabonatea)', tags: ['italok'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
-  { kana: 'かし', romaji: 'kashi', hu: 'édesség/sütemény ', tags: ['ételek'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
+  { kana: 'かし', romaji: 'kashi', hu: 'édesség/sütemény', tags: ['ételek'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
   { kana: 'まんじゅう', romaji: 'manjuu', hu: 'manjú (édesség)', tags: ['ételek'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
   { kana: 'すし', romaji: 'sushi', hu: 'szusi (japán étel)', tags: ['ételek'], jlpt: 'N5', lesson: [2], source: 'dekiru' },
 
@@ -290,7 +290,7 @@ const DEKIRU_L4 = [
   { kana: 'はん', romaji: 'han', hu: 'fél', tags: ['alapszavak'], jlpt: 'N5', lesson: [4], source: 'dekiru' },
   { kana: 'こんな', romaji: 'konna', hu: 'ilyen', tags: ['alapszavak'], jlpt: 'N5', lesson: [4], source: 'dekiru' },
   { kana: 'そんな', romaji: 'sonna', hu: 'olyan', tags: ['alapszavak'], jlpt: 'N5', lesson: [4], source: 'dekiru' },
-  { kana: 'あんな', romaji: 'anna', hu: 'olyan', tags: ['alapszavak'], jlpt: 'N5', lesson: [4], source: 'dekiru' },
+  { kana: 'あんな', romaji: 'anna', hu: '(am)olyan', tags: ['alapszavak'], jlpt: 'N5', lesson: [4], source: 'dekiru' },
   { kana: 'でも', romaji: 'demo', hu: 'de, viszont', tags: ['alapszavak'], jlpt: 'N5', lesson: [4], source: 'dekiru' }
 ];
 const DEKIRU_L5 = [
@@ -415,7 +415,7 @@ const DEKIRU_L6 = [
   { kana: 'しんぶん', romaji: 'shinbun', hu: 'újság', tags: ['alapszavak'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
   { kana: 'ニュース', romaji: 'nyuusu', hu: 'híradó, hírek', tags: ['szórakozás'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
   { kana: 'まんが', romaji: 'manga', hu: 'manga, képregény', tags: ['szórakozás'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
-  { kana: 'ドラマ', romaji: 'dorama', hu: 'TV sorozat', tags: ['szórakozás'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
+  { kana: 'ドラマ', romaji: 'dorama', hu: 'tévésorozat', tags: ['szórakozás'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
   { kana: 'ふく', romaji: 'fuku', hu: 'ruha', tags: ['tárgyak'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
   { kana: 'シャワー', romaji: 'shawaa', hu: 'zuhany, tus', tags: ['mindennapi élet'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
   { kana: 'パーティー', romaji: 'paatii', hu: 'összejövetel, buli', tags: ['szórakozás'], jlpt: 'N5', lesson: [6], source: 'dekiru' },
@@ -673,7 +673,7 @@ const DEKIRU_L10 = [
   { kana: 'うさぎ', romaji: 'usagi', hu: 'nyúl', tags: ['állatok'], jlpt: 'N4', lesson: [10], source: 'dekiru' },
   { kana: 'うま', romaji: 'uma', hu: 'ló', tags: ['állatok'], jlpt: 'N4', lesson: [10], source: 'dekiru' },
   { kana: 'トラ', romaji: 'tora', hu: 'tigris', tags: ['állatok'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
-  { kana: 'ひつじ', romaji: 'hitsuji', hu: 'bárány', tags: ['állatok'], jlpt: 'N4', lesson: [10], source: 'dekiru' },
+  { kana: 'ひつじ', romaji: 'hitsuji', hu: 'juh, birka', tags: ['állatok'], jlpt: 'N4', lesson: [10], source: 'dekiru' },
   { kana: 'ねずみ', romaji: 'nezumi', hu: 'egér', tags: ['állatok'], jlpt: 'N4', lesson: [10], source: 'dekiru' },
 
   // Gasztronómia (Ételek/Étterem)
@@ -722,7 +722,7 @@ const DEKIRU_L10 = [
   { kana: 'つよい', romaji: 'tsuyoi', hu: 'erős', tags: ['melléknevek'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
   { kana: 'よわい', romaji: 'yowai', hu: 'gyenge', tags: ['melléknevek'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
   { kana: 'おそい', romaji: 'osoi', hu: 'lassú, késő', tags: ['melléknevek'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
-  { kana: 'はやい', romaji: 'hayai', hu: 'korai / gyors', tags: ['melléknevek'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
+  { kana: 'はやい', romaji: 'hayai', hu: 'korai', tags: ['melléknevek'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
   { kana: 'ひくい', romaji: 'hikui', hu: 'alacsony', tags: ['melléknevek'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
   { kana: 'いろいろ', romaji: 'iroiro', hu: 'sokféle, változatos', tags: ['melléknevek'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
   { kana: 'いちばん', romaji: 'ichiban', hu: 'leg...bb (felsőfok)', tags: ['határozószavak'], jlpt: 'N5', lesson: [10], source: 'dekiru' },
@@ -828,11 +828,11 @@ const DEKIRU_L12 = [
   { kana: 'はなし', romaji: 'hanashi', hu: 'beszélgetés, beszéd, történet', tags: ['kommunikáció'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
   { kana: 'ついしん', romaji: 'tsuishin', hu: 'utóirat', tags: ['kommunikáció'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
   { kana: 'まわり', romaji: 'mawari', hu: 'környék', tags: ['helyek'], jlpt: 'N4', lesson: [12], source: 'dekiru' }, // [cite: 1532]
-  { kana: 'かれ', romaji: 'kare', hu: 'ő (férfi); barát', tags: ['kapcsolatok'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
+  { kana: 'かれ', romaji: 'kare', hu: 'ő (férfi); (fiú)barát', tags: ['kapcsolatok'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
   { kana: 'かのじょ', romaji: 'kanojo', hu: 'ő (nő); barátnő', tags: ['kapcsolatok'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
 
   // Melléknevek és Határozók
-  { kana: 'かっこいい', romaji: 'kakkoii', hu: 'jól néz ki, aranyos', tags: ['melléknevek'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
+  { kana: 'かっこいい', romaji: 'kakkoii', hu: 'jól néz ki, menő', tags: ['melléknevek'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
   { kana: 'ながい', romaji: 'nagai', hu: 'hosszú', tags: ['melléknevek'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
   { kana: 'みじかい', romaji: 'mijikai', hu: 'rövid', tags: ['melléknevek'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
   { kana: 'やさしい', romaji: 'yasashii', hu: 'kedves, gyengéd', tags: ['melléknevek'], jlpt: 'N5', lesson: [12], source: 'dekiru' }, // [cite: 1532]
@@ -876,7 +876,7 @@ const DEKIRU_L13 = [
   { kana: 'ハンカチ', romaji: 'hankachi', hu: 'zsebkendő', tags: ['tárgyak'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1599, 1600]
   { kana: 'ベルト', romaji: 'beruto', hu: 'öv', tags: ['tárgyak'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1601, 1611]
   { kana: 'ティーシャツ', romaji: 'tiishatsu', hu: 'póló', tags: ['tárgyak'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1603, 1612]
-  { kana: 'もも', romaji: 'momo', hu: 'barack', tags: ['ételek'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1604, 1613]
+  { kana: 'もも', romaji: 'momo', hu: 'őszibarack', tags: ['ételek'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1604, 1613]
   { kana: 'アイスコーヒー', romaji: 'aisukoohii', hu: 'jegeskávé', tags: ['italok'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1605, 1614]
   { kana: 'バラ', romaji: 'bara', hu: 'rózsa', tags: ['természet'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1606, 1615]
   { kana: 'カーネーション', romaji: 'kaaneeshon', hu: 'szegfű', tags: ['természet'], jlpt: 'N5', lesson: [13], source: 'dekiru' }, // [cite: 1607, 1616]
@@ -974,7 +974,7 @@ const DEKIRU_L15 = [
   { kana: 'やくそくする', romaji: 'yakusokusuru', hu: 'ígéretet tesz', tags: ['igék'], jlpt: 'N4', lesson: [15], source: 'dekiru' },
 
   // Főnevek (Hobbi és Események)
-  { kana: 'ライブ', romaji: 'raibu', hu: 'live, élő (koncert)', tags: ['szórakozás'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
+  { kana: 'ライブ', romaji: 'raibu', hu: 'élő koncert, élő fellépés', tags: ['szórakozás'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
   { kana: 'ギター', romaji: 'gitaa', hu: 'gitár', tags: ['szórakozás', 'tárgyak'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
   { kana: 'たいこ', romaji: 'taiko', hu: 'taiko (japán dob)', tags: ['szórakozás', 'tárgyak'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
   { kana: 'じょうば', romaji: 'jouba', hu: 'lovaglás', tags: ['szórakozás', 'sport'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
@@ -995,7 +995,7 @@ const DEKIRU_L15 = [
   { kana: 'おととし', romaji: 'ototoshi', hu: 'tavalyelőtt', tags: ['idő'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
   { kana: 'さらいねん', romaji: 'sarainen', hu: 'a jövő év utáni év', tags: ['idő'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
   { kana: 'さらいしゅう', romaji: 'saraishuu', hu: 'a jövő hét utáni hét', tags: ['idő'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
-  { kana: 'さらいげつ', romaji: 'saraigetsu', hu: 'a jövő hónap utáni hó', tags: ['idő'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
+  { kana: 'さらいげつ', romaji: 'saraigetsu', hu: 'a jövő hónap utáni hónap', tags: ['idő'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
 
   // Melléknevek és Határozószók
   { kana: 'うまい', romaji: 'umai', hu: 'ügyes; finom', tags: ['melléknevek'], jlpt: 'N5', lesson: [15], source: 'dekiru' },
@@ -1152,7 +1152,7 @@ const DEKIRU_L18 = [
   { kana: 'へん', romaji: 'hen', hu: 'furcsa', tags: ['melléknevek'], jlpt: 'N5', lesson: [18], source: 'dekiru' }, // [cite: 2141]
   { kana: 'ちょうど', romaji: 'choudo', hu: 'éppen, pont, pontosan', tags: ['határozószavak'], jlpt: 'N4', lesson: [18], source: 'dekiru' }, // [cite: 2142]
   { kana: 'もうすこし', romaji: 'mou sukoshi', hu: 'még egy kicsit', tags: ['alapszavak'], jlpt: 'N5', lesson: [18], source: 'dekiru' }, // [cite: 2143]
-  { kana: 'ころ/ごろ', romaji: 'koro/goro', hu: '- körül (idő)', tags: ['idő'], jlpt: 'N5', lesson: [18], source: 'dekiru' }, // [cite: 2144]
+  { kana: 'ころ/ごろ', romaji: 'koro/goro', hu: '...körül (idő)', tags: ['idő'], jlpt: 'N5', lesson: [18], source: 'dekiru' }, // [cite: 2144]
   { kana: 'ところで', romaji: 'tokorode', hu: 'mellesleg, apropó', tags: ['alapszavak'], jlpt: 'N5', lesson: [18], source: 'dekiru' } // [cite: 2145]
 ];
 const DEKIRU_L19 = [
@@ -1290,7 +1290,7 @@ const DEKIRU_L20 = [
   { kana: 'みなみ', romaji: 'minami', hu: 'dél (égtáj)', tags: ['irányok'], jlpt: 'N4', lesson: [20], source: 'dekiru' },
   { kana: 'きた', romaji: 'kita', hu: 'észak', tags: ['irányok'], jlpt: 'N4', lesson: [20], source: 'dekiru' },
   { kana: 'ふたご', romaji: 'futago', hu: 'iker', tags: ['kapcsolatok'], jlpt: 'N5', lesson: [20], source: 'dekiru' },
-  { kana: 'けんか', romaji: 'kenka', hu: 'veszekedés', tags: ['alapszavak'], jlpt: 'N5'},
+  { kana: 'けんか', romaji: 'kenka', hu: 'veszekedés', tags: ['alapszavak'], jlpt: 'N5', lesson: [20], source: 'dekiru' },
 ];
 const DEKIRU_L21 = [
   // Igék
@@ -1356,7 +1356,7 @@ const DEKIRU_L21 = [
   { kana: 'うすい', romaji: 'usui', hu: 'vékony, gyenge, halvány, híg', tags: ['melléknevek'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
   { kana: 'きびしい', romaji: 'kibishii', hu: 'szigorú', tags: ['melléknevek'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
   { kana: 'じょうぶ', romaji: 'joubu', hu: 'erős, tartós', tags: ['melléknevek'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
-  { kana: 'すてき', romaji: 'suteki', hu: 'helyes, édes', tags: ['melléknevek'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
+  { kana: 'すてき', romaji: 'suteki', hu: 'csodás, nagyszerű, helyes', tags: ['melléknevek'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
   { kana: 'つぎに', romaji: 'tsugi ni', hu: 'utána, ezt követően', tags: ['határozószavak'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
   { kana: 'たとえば', romaji: 'tatoeba', hu: 'például', tags: ['határozószavak'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
   { kana: 'けど', romaji: 'kedo', hu: 'de', tags: ['alapszavak'], jlpt: 'N5', lesson: [21], source: 'dekiru' },
@@ -1472,7 +1472,7 @@ const DEKIRU_L24 = [
   { kana: 'ちる', romaji: 'chiru', hu: 'szertehullik', tags: ['természet', 'igék'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 495, 519]
   { kana: 'かれる', romaji: 'kareru', hu: 'elhal, elszárad', tags: ['természet', 'igék'], jlpt: 'N4', lesson: [24], source: 'dekiru' }, // [cite: 496, 520]
   { kana: 'ひかる', romaji: 'hikaru', hu: 'fénylik, ragyog', tags: ['természet', 'igék'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 497, 521]
-  { kana: 'てる', romaji: 'teru', hu: '(a hold) feljön / fénylik', tags: ['természet', 'igék'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 498, 522]
+  { kana: 'てる', romaji: 'teru', hu: 'süt, ragyog (nap, hold)', tags: ['természet', 'igék'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 498, 522]
   { kana: 'ぬれる', romaji: 'nureru', hu: 'elázik, átázik, vizes (nedves) lesz', tags: ['igék'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 499, 523]
   { kana: 'とまる', romaji: 'tomaru', hu: 'megáll', tags: ['igék'], jlpt: 'N4', lesson: [24], source: 'dekiru' }, // [cite: 500, 524]
   { kana: 'つく', romaji: 'tsuku', hu: 'hozzátartozik', tags: ['igék'], jlpt: 'N5', lesson: [24], source: 'dekiru' }, // [cite: 502, 525]

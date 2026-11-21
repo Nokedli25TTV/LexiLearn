@@ -82,6 +82,15 @@ Az app a japán szavakat kana szerint azonosítja (`ja_<kana>`), ezért egy Deki
 - **Témakörök:** a Dekiru-szavak címkéi betöltéskor az adatfájlból jönnek (V13.45 óta nem adódnak a mentett
   címkékhez), így egy címkejavítás a meglévő mentésekben is érvényes, külön migráció nélkül.
 
+## Jelentés javítása (fordítás-ellenőrzés, V13.108 óta adagonként)
+
+- **Dekiru-szó:** a betöltés a mentett jelentéshez fűzi az adatfájlét (`mergeText`), ezért egy javított rész mellett
+  a régi is megmaradna. A régi rész a `js/core/storage.js` `MEANING_FIXES` táblájába kerül (kana → { régi rész: új rész },
+  üres új rész = törlés), a `tests/meaning-audit.test.js` pedig egy régi mentéssel ellenőrzi.
+- **N3, alapszótár és angol szó:** a jelentés betöltéskor az adatfájlból jön, elég az adatot javítani. Az angol szó
+  (`en`) vagy a kana elírása viszont az azonosítót változtatja: az a `RENAMED_WORDS`-be kerül.
+- Ha a szónak példamondata van, a fordítását is a javított jelentéshez kell igazítani.
+
 ## Felhő adat (Firestore)
 
 Minden a `users/{uid}/data/` alatt van (a Firestore szabály ezt a gyűjteményt engedi a saját felhasználónak):
@@ -225,7 +234,8 @@ A Statisztika alképernyője (`js/stats/week.js`), hétfőtől vasárnapig szám
 - **`tests/lesson-test.test.js`** – a Lecke-zárás: melyik leckét ajánlja a Kezdőlap, minden szó egyszer és mind a négy kérdésfajta, a toldalékos szó nem gépelős, a kör vége (Még nem ül a kérdésfajtával, mentett eredmény, a második kör nem írja felül), a Gyakorlás fül sora, a lezárt lecke a menüben és a Statisztikában.
 - **`tests/grammar-notes.test.js`, `tests/grammar.test.js`** – a nyelvtan adatai (létező lecke, minden pontban minta, név, magyarázat és japán példa, hossz, írásjelek); a Gyakorlás fül sora, a lap (pontok, példák, buktató, lapozás, Escape), több lecke és angol mód esetén nincs nyelvtan.
 - **`tests/homographs.test.js`** – a homográfok (いか, だい, かい, かえる, くも …) a lecke jelentésével és mindkét írásmóddal, a régi mentés helyreállása (felülírt jelentés, téves címkék), és a `tools/homographs.mjs` besorolása.
-- **`tests/data.test.js`** (V13.33 óta) a kana mezőben latin betűt sem enged (elgépelés); az így javított szavak a `RENAMED_WORDS`-be kerülnek, hogy a haladás átköltözzön.
+- **`tests/data.test.js`** (V13.33 óta) a kana mezőben latin betűt sem enged (elgépelés); az így javított szavak a `RENAMED_WORDS`-be kerülnek, hogy a haladás átköltözzön. V13.108 óta a Dekiru 1. könyv minden rekordja teljes és a saját leckéjében van.
+- **`tests/meaning-audit.test.js`** – a fordítás-ellenőrzés javításai: a régi mentett jelentés a betöltéskor a javítottra cserélődik, nem ismétlődik, és a lecke nélkül maradt szó a leckéjébe kerül.
 - **`tests/unit/counters.test.js`, `tests/stats-shortcuts.test.js`** – mit számol a számlálószó; a Statisztika szólistájából gyakorlás, a JLPT-kártya két sora, a heti sor hét napja, és a számlálószó-címke a tanuló, a gyakorló és a 3D kártyán.
 - **`tests/tts.test.js`, `tests/tts-android.test.js`** – a hangútvonal: Google-hang, újrapróbálás, nyelvhez illő tartalék, a hangkimenet ébren tartása, napló.
 - **`tests/flashcard-fit.test.js`** – a 3D kártya főszövegének méretosztálya (`is-long` / `is-very-long`, latin és kana küszöbök, kandzsi mód), a `.fc-body` szerkezet (a sarokelemek kívül), és hogy a `style.css` ugyanezeket az osztályneveket használja.

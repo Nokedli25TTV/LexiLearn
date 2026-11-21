@@ -50,6 +50,18 @@ describe('JLPT N3 szókincs (jlpt_n3_words.js)', () => {
   });
 });
 
+describe('Dekiru 1 szókincs (dekiru.js)', () => {
+  it('minden rekord teljes, és a saját leckéje szerepel benne (V13.108: két szó lecke nélkül maradt)', () => {
+    const bad = [];
+    for (let i = 1; i <= 24; i++) (get(`DEKIRU_L${i}`) || []).forEach(w => {
+      if (!(w.kana || '').trim() || !(w.romaji || '').trim() || !(w.hu || '').trim() || w.hu !== w.hu.trim() ||
+        !Array.isArray(w.tags) || w.tags.length === 0 || !Array.isArray(w.lesson) || !w.lesson.includes(i) ||
+        !['N5', 'N4', 'N3', 'N2', 'N1'].includes(w.jlpt) || w.source !== 'dekiru') bad.push(`${i}: ${w.kana}`);
+    });
+    expect(bad).toEqual([]);
+  });
+});
+
 describe('Dekiru 2 szókincs (dekiru2.js)', () => {
   it('a 25–48. leckét teljesen és leckenövekvő sorrendben tartalmazza', () => {
     expect(DEKIRU_2.length).toBe(885);

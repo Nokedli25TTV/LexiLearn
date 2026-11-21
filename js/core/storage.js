@@ -143,7 +143,29 @@ const MEANING_FIXES = {
   // V13.45: a szétválasztott しでん mentett jelentéséből kikerül a szempont; két pontozási elírás
   'しでん': { 'szempont': '' },
   '～だて': { '.. .szintes (épület)': '...szintes (épület)' },
-  '～せい': { '. gyártmányú': '...gyártmányú' }
+  '～せい': { '. gyártmányú': '...gyártmányú' },
+  // V13.108: fordítás-ellenőrzés, 1. adag (Dekiru-szavak): téves vagy pontatlan jelentések, elírások
+  '~さい': { '- éves': '...éves' },
+  'としょしつ': { 'könyvolvasó, könyvtárszoba': 'iskolai könyvtár, könyvtárterem' },
+  'あんな': { 'olyan': '(am)olyan' },
+  'ドラマ': { 'TV sorozat': 'tévésorozat' },
+  'はやい': { 'korai / gyors': 'korai' },
+  'ひつじ': { 'bárány': 'juh, birka' },
+  'かれ': { 'barát': '(fiú)barát' },
+  'かっこいい': { 'jól néz ki, aranyos': 'jól néz ki, menő' },
+  'もも': { 'barack': 'őszibarack' },
+  'ライブ': { 'live, élő (koncert)': 'élő koncert, élő fellépés' },
+  'さらいげつ': { 'a jövő hónap utáni hó': 'a jövő hónap utáni hónap' },
+  'ころ/ごろ': { '- körül (idő)': '...körül (idő)' },
+  'すてき': { 'helyes, édes': 'csodás, nagyszerű, helyes' },
+  'てる': { '(a hold) feljön / fénylik': 'süt, ragyog (nap, hold)' },
+  'たからくじ': { 'szerencsejáték': 'sorsjáték, sorsjegy' },
+  'エアコン': { 'légkondicionáló készülék': '' },
+  'エビ': { 'tengeri rák, homár': 'garnélarák, rák' },
+  'たてなおす': { 'átépít, ujjáépít': 'átépít, újjáépít' },
+  'トルコ': { 'Törökország, török': 'török' },
+  'カフェテリア': { 'kávézó': 'önkiszolgáló étterem, menza' },
+  '(お)としより': { 'idős': 'idős ember' }
 };
 const fixMeaning = (kana, hu) => {
   const fixes = MEANING_FIXES[kana];
